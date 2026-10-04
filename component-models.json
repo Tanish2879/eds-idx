@@ -142,7 +142,7 @@
     ]
   },
   {
-    "id": "block-listing",
+    "id": "blog-list",
     "fields": [
       {
         "component": "text",

@@ -1,36 +1,48 @@
+.blog-list,
 .block-listing {
   margin: 32px 0;
 }
 
+.blog-list .blog-filter-wrapper,
 .block-listing .blog-filter-wrapper {
   margin-bottom: 24px;
 }
 
+.blog-list .blog-tag-filter,
 .block-listing .blog-tag-filter {
   padding: 8px 16px;
   font-size: var(--body-font-size-m);
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: var(--background-color, #fff);
+  cursor: pointer;
 }
 
+.blog-list .blog-list-wrapper,
 .block-listing .blog-list-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
 
+.blog-list .blog-card,
 .block-listing .blog-card {
   border: 1px solid #dadada;
-  background-color: var(--background-color);
+  background-color: var(--background-color, #fff);
   border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
+.blog-list .blog-card:hover,
 .block-listing .blog-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
 }
 
+.blog-list .blog-card-link,
 .block-listing .blog-card-link {
   text-decoration: none;
   color: inherit;
@@ -39,6 +51,7 @@
   height: 100%;
 }
 
+.blog-list .blog-card-image img,
 .block-listing .blog-card-image img {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -46,6 +59,7 @@
   display: block;
 }
 
+.blog-list .blog-card-content,
 .block-listing .blog-card-content {
   padding: 16px;
   display: flex;
@@ -53,25 +67,35 @@
   flex-grow: 1;
 }
 
+.blog-list .blog-card-date,
 .block-listing .blog-card-date {
   font-size: var(--body-font-size-s);
   color: #666;
   margin: 0 0 8px;
 }
 
+.blog-list .blog-card-title,
 .block-listing .blog-card-title {
-  font-size: var(--heading-font-size-m);
+  font-size: var(--heading-font-size-m, 1.25rem);
   margin: 0 0 8px;
+  color: var(--text-color, #000);
 }
 
+.blog-list .blog-card-description,
 .block-listing .blog-card-description {
   font-size: var(--body-font-size-m);
   margin: 0 0 12px;
   flex-grow: 1;
+  color: #444;
 }
 
+.blog-list .blog-card-tags,
 .block-listing .blog-card-tags {
-  font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-xs, 0.75rem);
   color: #888;
   margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
