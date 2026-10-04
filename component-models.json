@@ -142,6 +142,17 @@
     ]
   },
   {
+    "id": "block-listing",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading (Optional)"
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -214,19 +225,5 @@
         "valueType": "string"
       }
     ]
-  },
-  {
-    "id": "blog-list",
-    "title": "Blog List",
-    "group": "Blocks",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading (Optional)"
-      }
-    ]
   }
 ]
- 
