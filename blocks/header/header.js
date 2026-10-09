@@ -26,11 +26,12 @@ function navPath() {
 
 async function fetchNav() {
   const path = navPath();
-  // /content first (local preview), then site root (AEM/EDS), then a copy kept in the repo's
-  // /drafts folder (used while the nav document isn't published in AEM yet)
+  // /content first (local preview), then site root (AEM/EDS), then a copy kept in the repo at
+  // /drafts/<nav path>/nav.html, used while the nav document isn't published in AEM yet
+  // (a plain .html file: the live site never serves *.plain.html from the repository)
   let resp = await fetch(`/content${path}.plain.html`);
   if (!resp.ok) resp = await fetch(`${path}.plain.html`);
-  if (!resp.ok && path !== '/nav') resp = await fetch(`/drafts${path}.plain.html`);
+  if (!resp.ok && path !== '/nav') resp = await fetch(`/drafts${path}/nav.html`);
   if (!resp.ok) return null;
   const tmp = document.createElement('div');
   tmp.innerHTML = await resp.text();
