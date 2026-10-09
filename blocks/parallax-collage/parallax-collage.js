@@ -19,13 +19,34 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const CARDS_PER_SCREEN = 4;
 const CARD_CLASSES = ['card-a', 'card-b', 'card-c', 'card-d'];
+const IMAGE_FILE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
 
-function buildItem(row, img, className) {
+/*
+ * The image of a row: an <img>, or a link to an image file. AEM delivers an image reference it
+ * can't resolve (an asset that isn't in AEM Assets yet) as a plain link; placeholder images under
+ * a /drafts/ folder are then loaded from the copy in this repository.
+ */
+function rowImage(row) {
+  const img = row.querySelector('img');
+  if (img) return { src: img.src, alt: img.alt, source: img };
+  const link = [...row.querySelectorAll('a[href]')]
+    .find((a) => IMAGE_FILE.test(new URL(a.href, window.location).pathname));
+  if (!link) return null;
+  const { pathname } = new URL(link.href, window.location);
+  const drafts = pathname.indexOf('/drafts/');
+  return {
+    src: drafts > 0 ? pathname.slice(drafts) : link.href,
+    alt: link.textContent.trim(),
+    source: link,
+  };
+}
+
+function buildItem(row, image, className) {
   const item = document.createElement('figure');
   item.className = `item ${className}`;
   moveInstrumentation(row, item);
-  const picture = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-  moveInstrumentation(img, picture.querySelector('img'));
+  const picture = createOptimizedPicture(image.src, image.alt, false, [{ width: '750' }]);
+  moveInstrumentation(image.source, picture.querySelector('img'));
   item.append(picture);
   return item;
 }
@@ -49,10 +70,10 @@ export default function decorate(block) {
 
   // image cards in authored order; "large" picks the hero
   const images = imageRows.map((row) => {
-    const img = row.querySelector('img');
-    if (!img) return null;
-    const modifier = [...row.children].find((c) => !c.querySelector('img'))?.textContent || '';
-    return { row, img, large: /\blarge\b/i.test(modifier) };
+    const image = rowImage(row);
+    if (!image) return null;
+    const modifier = [...row.children].find((c) => !c.contains(image.source))?.textContent || '';
+    return { row, image, large: /\blarge\b/i.test(modifier) };
   }).filter(Boolean);
   const hero = images.splice(Math.max(images.findIndex((i) => i.large), 0), 1)[0];
 
@@ -61,10 +82,10 @@ export default function decorate(block) {
     screen.className = `screen-${n}`;
     return screen;
   });
-  if (hero) screens[0].append(buildItem(hero.row, hero.img, 'engine'));
-  images.slice(0, CARDS_PER_SCREEN * 2).forEach(({ row, img }, i) => {
+  if (hero) screens[0].append(buildItem(hero.row, hero.image, 'engine'));
+  images.slice(0, CARDS_PER_SCREEN * 2).forEach(({ row, image }, i) => {
     const screen = screens[Math.floor(i / CARDS_PER_SCREEN)];
-    screen.append(buildItem(row, img, CARD_CLASSES[i % CARDS_PER_SCREEN]));
+    screen.append(buildItem(row, image, CARD_CLASSES[i % CARDS_PER_SCREEN]));
   });
 
   const imagesLayer = document.createElement('div');

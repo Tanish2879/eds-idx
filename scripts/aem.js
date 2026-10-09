@@ -328,10 +328,12 @@ function createOptimizedPicture(
   breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
 ) {
   // --- BEGIN DM dispatch (excat-generated) ---
+  /* eslint-disable no-underscore-dangle -- DM hook registered by scripts.js */
   if (typeof window.__dmRender__ === 'function') {
     const dmPicture = window.__dmRender__(src, alt);
     if (dmPicture) return dmPicture;
   }
+  /* eslint-enable no-underscore-dangle */
   // --- END DM dispatch (excat-generated) ---
   const url = !src.startsWith('http') ? new URL(src, window.location.href) : new URL(src);
   const picture = document.createElement('picture');
