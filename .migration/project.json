@@ -1,0 +1,15 @@
+{
+  "type": "xwalk",
+  "sites": {
+    "eds-idx": {
+      "previewOrg": "tanish2879",
+      "previewSite": "eds-idx",
+      "contentHostUrl": "author-p8803-e1283844.adobeaemcloud.com",
+      "aemSitePath": "/content/uet-eds",
+      "aemAssetsFolderPath": "/content/dam/uet-eds",
+      "aemSiteName": "uet-eds",
+      "aemSiteTitle": "UET-EDS",
+      "libraryUrl": "https://main--sta-xwalk-boilerplate--aemysites.aem.page/tools/sidekick/library.json"
+    }
+  }
+}

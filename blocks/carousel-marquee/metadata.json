@@ -1,0 +1,14 @@
+{
+  "variantName": "carousel-marquee",
+  "baseBlock": "carousel",
+  "canonicalModel": "collection",
+  "visualCharacteristics": "Auto-scrolling marquee strip of 10 images. Edge-to-edge horizontal strip of equal-width images (~4 visible on desktop) with mixed 16:9 / 4:3 aspect ratios, bottom-aligned, continuously looping; no text, no controls. Sits in the 'manifesto' section below centred intro text.",
+  "contentPattern": "Per slide (row): cell 1 image + alt (10 unique images, de-duplicated from the 20 source DOM slides); cell 2 optional caption richtext (empty in source). Section metadata style: manifesto.",
+  "usage": {
+    "pagesUsing": ["https://www.mgselect.co.in/"],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-06"
+  },
+  "options": [],
+  "memberVariantIds": []
+}

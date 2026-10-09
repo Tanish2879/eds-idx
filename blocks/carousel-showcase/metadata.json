@@ -1,0 +1,14 @@
+{
+  "variantName": "carousel-showcase",
+  "baseBlock": "carousel",
+  "canonicalModel": "collection",
+  "visualCharacteristics": "2-slide car model slider with day/night theme toggle. Full-viewport slides: product image centred over a full-bleed scene background, heading + description + two CTAs (outlined 'Explore now', text 'Download brochure') bottom-left, large circular prev/next arrows at mid-height, progress-bar indicators bottom-centre, day/night toggle bottom-left.",
+  "contentPattern": "Per slide (row): cell 1 day image + alt; cell 2 optional night image + alt; cell 3 richtext with h2/h3 model name, description paragraph, 'EXPLORE NOW' link, 'DOWNLOAD BROCHURE' PDF link. Day/night scene backgrounds are block-level styling (CSS background, swapped via the .is-night state class).",
+  "usage": {
+    "pagesUsing": ["https://www.mgselect.co.in/"],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-06"
+  },
+  "options": [],
+  "memberVariantIds": []
+}

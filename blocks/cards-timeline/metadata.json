@@ -1,0 +1,14 @@
+{
+  "variantName": "cards-timeline",
+  "baseBlock": "cards",
+  "canonicalModel": "collection",
+  "visualCharacteristics": "18 timeline items (year, image, title, description) in horizontal swiper. Single row of cards, vertically centred, the centred card enlarged; year label right-aligned above each image; '+ TITLE' bar overlaid at the top of the image that reveals the description; tick scale below with one major tick per item (active tick taller).",
+  "contentPattern": "Per card (row): cell 1 image (timeline photo, e.g. 1924); cell 2 richtext with year (first paragraph, e.g. '1924'), title (h3, e.g. 'A Star is Born'), description (paragraphs).",
+  "usage": {
+    "pagesUsing": ["https://www.mgselect.co.in/"],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-06"
+  },
+  "options": [],
+  "memberVariantIds": []
+}

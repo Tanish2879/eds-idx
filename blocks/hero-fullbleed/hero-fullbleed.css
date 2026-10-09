@@ -1,0 +1,138 @@
+/* dark imagery behind the header: header uses its light logo/icons */
+.hero-fullbleed-container {
+  --header-theme: dark;
+}
+
+/* full-bleed: escape the section max-width/gutter */
+.hero-fullbleed-container .hero-fullbleed-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+/* viewport panel: fills the screen below the EDS header */
+.hero-fullbleed {
+  position: relative;
+  box-sizing: border-box;
+  min-height: calc(var(--section-min-height) - var(--nav-height));
+  overflow: hidden;
+  color: var(--text-inverse-color);
+}
+
+.hero-fullbleed .hero-fullbleed-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-fullbleed .hero-fullbleed-media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-fullbleed .hero-fullbleed-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+/* overlaid copy: centred, anchored near the bottom of the panel */
+.hero-fullbleed .hero-fullbleed-content {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 90%;
+  max-width: 408px;
+  padding: 0 var(--spacing-m);
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.hero-fullbleed .hero-fullbleed-content > * {
+  margin: 0;
+}
+
+.hero-fullbleed .hero-fullbleed-content > :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--text-inverse-color);
+  font-family: var(--display-font-family);
+  font-size: 24.9px;
+  line-height: 32px;
+  letter-spacing: 0.16px;
+}
+
+.hero-fullbleed .hero-fullbleed-content > * + * {
+  margin-top: var(--spacing-s);
+}
+
+/* outline CTA with diagonal arrow */
+.hero-fullbleed a.hero-fullbleed-cta:any-link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--button-gap);
+  min-width: var(--button-min-width);
+  max-width: 100%;
+  border: var(--button-border-width) solid var(--border-color);
+  border-radius: 0;
+  padding: var(--button-padding);
+  background-color: transparent;
+  color: var(--text-inverse-color);
+  font-family: var(--button-font-family);
+  font-size: var(--button-font-size);
+  font-weight: 400;
+  line-height: var(--button-line-height);
+  letter-spacing: 0.16px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hero-fullbleed a.hero-fullbleed-cta:hover {
+  color: var(--text-inverse-color);
+  text-decoration: none;
+}
+
+.hero-fullbleed a.hero-fullbleed-cta::after {
+  content: '';
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 13'%3E%3Cpath fill-rule='evenodd' d='M1.538 1.019c-.292.008-.671.016-.842.018l-.312.003.012.276c.014.339.06.5.154.545.118.055.326.067 1.476.081 2.054.025 8.003-.1 8.569-.18l.098-.014-1.829 1.84-5.177 5.204-3.348 3.365.345.346c.19.19.351.343.358.34a878 878 0 0 0 3.326-3.288c3.797-3.763 6.413-6.347 6.687-6.606.107-.101.2-.172.214-.164.017.011.022 1.346.016 4.916-.007 4.635-.005 4.903.03 4.958.047.07.124.093.443.127.292.031.355.014.404-.108.071-.177.124-.987.189-2.874.046-1.353.087-8.175.051-8.399-.012-.069-.027-.084-.125-.129a1 1 0 0 1-.227-.16l-.116-.108-4.933-.002c-2.712-.001-5.171.005-5.463.013'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
+}
+
+/* no image: keep a usable panel on a dark ground */
+.hero-fullbleed.no-image {
+  min-height: 300px;
+  background-color: var(--dark-color);
+}
+
+@media (width >= 600px) {
+  .hero-fullbleed .hero-fullbleed-content {
+    max-width: 828px;
+    padding: 0;
+  }
+
+  .hero-fullbleed .hero-fullbleed-content > * + * {
+    margin-top: 28px;
+  }
+}
+
+@media (width >= 900px) {
+  .hero-fullbleed .hero-fullbleed-content {
+    bottom: 7.5%;
+  }
+}
+
+@media (width >= 1200px) {
+  .hero-fullbleed .hero-fullbleed-content > * + * {
+    margin-top: 44px;
+  }
+}

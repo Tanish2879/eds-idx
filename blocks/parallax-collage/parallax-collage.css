@@ -1,0 +1,257 @@
+/* Parallax Collage: heading + paragraph pinned in the centre of the screen while two screens of
+   image cards scroll over it (scroll phases: see parallax-collage.js).
+   Mobile-first: base = phones (< 768px); >= 768px = the 1280x720 desktop design, sized with a
+   design-pixel unit (--u) so it is exact at 1280x720 and scales down proportionally. */
+
+main .section.parallax-collage-container > .parallax-collage-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.parallax-collage {
+  /* colors */
+  --pc-bg: #fff;
+  --pc-heading: #111;
+  --pc-subtext: #666;
+
+  /* type: scaled by screen height so the text always fits between the card rows */
+  --pc-heading-font: var(--display-font-family);
+  --pc-body-font: var(--body-font-family);
+  --pc-heading-size: min(24px, 2.95svh, 6.4vw);
+  --pc-heading-lh: 1.15;
+  --pc-subtitle-size: max(11px, min(14.5px, 1.78svh, 3.87vw));
+  --pc-subtitle-lh: 1.65;
+  --pc-text-gap: min(40px, 4.9svh);
+
+  /* cards */
+  --pc-radius: 16px;
+  --pc-card-w: min(31.8vw, 14.6svh);
+  --pc-card-ratio: 119 / 155;
+
+  /* motion: scroll (in svh) during which the cards hold still and the engine shrinks */
+  --hold: 60;
+  --progress: 0;
+
+  position: relative;
+  overflow: clip; /* not hidden: that would break the sticky text */
+  background-color: var(--pc-bg);
+  color: var(--pc-heading);
+}
+
+/* pinned text */
+.parallax-collage .sticky-text-layer {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 100svh;
+  padding: 0 24px;
+}
+
+.parallax-collage .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--pc-text-gap);
+  max-width: 600px;
+  text-align: center;
+}
+
+.parallax-collage .content > * {
+  margin: 0;
+}
+
+.parallax-collage .parallax-collage-heading {
+  max-width: min(17.5em, 100%);
+  color: var(--pc-heading);
+  font-family: var(--pc-heading-font);
+  font-size: var(--pc-heading-size);
+  font-weight: 400;
+  line-height: var(--pc-heading-lh);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.parallax-collage .parallax-collage-subtitle {
+  max-width: min(34.5em, 100%);
+  color: var(--pc-subtext);
+  font-family: var(--pc-body-font);
+  font-size: var(--pc-subtitle-size);
+  font-weight: 300;
+  line-height: var(--pc-subtitle-lh);
+}
+
+/* image layer: overlaps the text; its bottom padding is the scroll room for the hold phase
+   (it has to sit inside this layer: padding on the block would not extend the sticky pin) */
+.parallax-collage .scrolling-images-layer {
+  position: relative;
+  z-index: 5;
+  margin-top: -100svh;
+  padding-bottom: calc(var(--hold) * 1svh);
+  pointer-events: none;
+}
+
+.parallax-collage .screen-1 {
+  position: relative;
+  height: 100svh;
+  margin-bottom: 30svh; /* empty gap before screen 2 */
+}
+
+.parallax-collage .screen-2 {
+  position: relative;
+  height: 100svh;
+}
+
+.parallax-collage .item {
+  position: absolute;
+  width: var(--pc-card-w);
+  aspect-ratio: var(--pc-card-ratio);
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--pc-radius);
+  background-color: #000;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 10%);
+}
+
+.parallax-collage .item picture,
+.parallax-collage .item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.parallax-collage .item img {
+  object-fit: cover;
+}
+
+/* engine: on top of the text, shrinks into the top-centre card during the hold */
+.parallax-collage .engine {
+  top: 51%;
+  left: 50%;
+  z-index: 2; /* above the side cards it overlaps at first */
+  width: 93.3vw;
+  aspect-ratio: 350 / 479;
+  border-radius: 20px;
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(var(--progress) * -45.2svh))
+    scale(calc(1 - var(--progress) * 0.66));
+}
+
+/* phones: top pair runs off the screen edges, bottom pair inset (mirrored on screen 2) */
+.parallax-collage .screen-1 .card-a {
+  top: 13%;
+  left: -9.6vw;
+}
+
+.parallax-collage .screen-1 .card-b {
+  top: 13%;
+  right: -9.6vw;
+}
+
+.parallax-collage .screen-1 .card-c {
+  top: 72.8%;
+  left: 4.5vw;
+}
+
+.parallax-collage .screen-1 .card-d {
+  top: 72.8%;
+  right: 5vw;
+}
+
+.parallax-collage .screen-2 .card-a {
+  top: 13%;
+  left: 4.5vw;
+}
+
+.parallax-collage .screen-2 .card-b {
+  top: 13%;
+  right: 5vw;
+}
+
+.parallax-collage .screen-2 .card-c {
+  top: 72.8%;
+  left: -9.6vw;
+}
+
+.parallax-collage .screen-2 .card-d {
+  top: 72.8%;
+  right: -9.6vw;
+}
+
+/* desktop: the 1280x720 design in design pixels */
+@media (width >= 768px) {
+  .parallax-collage {
+    --u: min(1px, 0.1389svh, 0.0781vw);
+    --pc-heading-size: max(18px, calc(26 * var(--u)));
+    --pc-heading-lh: 1;
+    --pc-subtitle-size: max(12px, calc(15.5 * var(--u)));
+    --pc-subtitle-lh: 1.42;
+    --pc-text-gap: calc(24 * var(--u));
+    --pc-card-w: calc(162 * var(--u));
+    --pc-card-ratio: 113 / 146;
+  }
+
+  /* the text column always stays between the inner card columns (13.2% + one card + a gap) */
+  .parallax-collage .sticky-text-layer {
+    padding: 0;
+  }
+
+  .parallax-collage .content {
+    max-width: min(600px, calc(100% - 2 * (13.2% + var(--pc-card-w) + 20px)));
+  }
+
+  .parallax-collage .engine {
+    top: 52.2%;
+    width: calc(340 * var(--u));
+    aspect-ratio: 236 / 306;
+    transform:
+      translate(-50%, -50%)
+      translateY(calc(var(--progress) * -45.4svh))
+      scale(calc(1 - var(--progress) * 0.524)); /* ends ~162px wide at the top centre */
+  }
+
+  .parallax-collage .screen-1 .card-a {
+    top: 18.6%;
+    left: 4.9%;
+  }
+
+  .parallax-collage .screen-1 .card-b {
+    top: 18.6%;
+    right: 5%;
+  }
+
+  .parallax-collage .screen-1 .card-c {
+    top: 57.6%;
+    left: 13.1%;
+  }
+
+  .parallax-collage .screen-1 .card-d {
+    top: 57.6%;
+    right: 13.2%;
+  }
+
+  .parallax-collage .screen-2 .card-a {
+    top: 7.6%;
+    left: 13.1%;
+  }
+
+  .parallax-collage .screen-2 .card-b {
+    top: 7.6%;
+    right: 13.2%;
+  }
+
+  .parallax-collage .screen-2 .card-c {
+    top: 44.2%;
+    left: 4.1%;
+  }
+
+  .parallax-collage .screen-2 .card-d {
+    top: 44.2%;
+    right: 4.2%;
+  }
+}

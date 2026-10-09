@@ -1,0 +1,14 @@
+{
+  "variantName": "hero-fullbleed",
+  "baseBlock": "hero",
+  "canonicalModel": "standalone",
+  "visualCharacteristics": "Full-bleed image + heading + single CTA. Edge-to-edge, viewport-height background image; heading and one CTA stacked and centred near the bottom (dark image / light text).",
+  "contentPattern": "Row 1: image (hero banner, desktop 1920) + alt. Row 2: richtext with heading (h1/h2, e.g. 'MG SELECT x GAURAV GUPTA') and one CTA link (e.g. 'EXPLORE' to /brand-collaboration/mg-select-x-gaurav-gupta).",
+  "usage": {
+    "pagesUsing": ["https://www.mgselect.co.in/"],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-06"
+  },
+  "options": [],
+  "memberVariantIds": []
+}

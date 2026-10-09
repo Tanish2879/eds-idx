@@ -1,0 +1,86 @@
+{
+  "definitions": [
+    {
+      "title": "Carousel Dealer",
+      "id": "carousel-dealer",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Carousel Dealer",
+              "filter": "carousel-dealer"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Carousel Dealer Slide",
+      "id": "carousel-dealer-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Carousel Dealer Slide",
+              "model": "carousel-dealer-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "carousel-dealer-item",
+      "fields": [
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "media_image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "media_imageAlt",
+          "value": "",
+          "label": "Image Alt",
+          "description": "Describe the artwork, e.g. 'New Delhi Experience Centre'"
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "media_mobileImage",
+          "label": "Mobile image (portrait, below 600px)",
+          "description": "Optional. Portrait artwork (e.g. 1080x1920) shown on phones.",
+          "multi": false
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Link"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkText",
+          "value": "",
+          "label": "Link Text",
+          "description": "Read by screen readers, e.g. 'New Delhi Experience Centre - Know more'"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "carousel-dealer",
+      "components": [
+        "carousel-dealer-item"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+/*
+ * Carousel Marquee: edge-to-edge, continuously scrolling image strip.
+ * Source (mgselect .brand-manifesto__gallery): strip height 21.63vh (35.64vh desktop),
+ * slides sized from the viewport height, images contained + bottom-aligned so the
+ * 16:9 / 4:3 images alternate short / tall along a common baseline.
+ */
+
+/* full-bleed wrapper; grows to fill the panel so the strip sits on its bottom edge */
+.carousel-marquee-container .carousel-marquee-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-marquee {
+  --carousel-marquee-gap: 9.5px;
+  --carousel-marquee-height: 21.63vh;
+  --carousel-marquee-slide-width: 23.46vh;
+
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  text-align: start;
+}
+
+.carousel-marquee .carousel-marquee-viewport {
+  height: var(--carousel-marquee-height);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.carousel-marquee .carousel-marquee-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-marquee .carousel-marquee-track {
+  display: flex;
+  gap: var(--carousel-marquee-gap);
+  width: max-content;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.carousel-marquee .carousel-marquee-slide {
+  display: flex;
+  flex: 0 0 var(--carousel-marquee-slide-width);
+  flex-direction: column;
+  width: var(--carousel-marquee-slide-width);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-marquee .carousel-marquee-slide-image {
+  flex: 1 1 auto;
+  min-height: 0;
+  line-height: 0;
+}
+
+.carousel-marquee .carousel-marquee-slide-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-marquee .carousel-marquee-slide-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+
+.carousel-marquee .carousel-marquee-slide-content > * {
+  margin: var(--spacing-xs) 0 0;
+}
+
+/* continuous loop: the track holds the slides twice, so -50% (+ half a gap) is one full cycle */
+.carousel-marquee.is-animated .carousel-marquee-viewport {
+  overflow: hidden;
+}
+
+.carousel-marquee.is-animated .carousel-marquee-track {
+  animation: carousel-marquee-scroll var(--carousel-marquee-duration, 30s) linear infinite;
+}
+
+.carousel-marquee.is-animated:hover .carousel-marquee-track,
+.carousel-marquee.is-animated:focus-within .carousel-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes carousel-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - (var(--carousel-marquee-gap) / 2)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-marquee.is-animated .carousel-marquee-viewport {
+    overflow-x: auto;
+  }
+
+  .carousel-marquee.is-animated .carousel-marquee-track {
+    animation: none;
+  }
+
+  .carousel-marquee.is-animated .carousel-marquee-clone {
+    display: none;
+  }
+}
+
+@media (width >= 600px) {
+  .carousel-marquee {
+    --carousel-marquee-gap: 16px;
+  }
+}
+
+@media (width >= 900px) {
+  .carousel-marquee {
+    --carousel-marquee-height: 35.64vh;
+    --carousel-marquee-slide-width: 38.12vh;
+  }
+}
+
+@media (width >= 1200px) {
+  .carousel-marquee {
+    --carousel-marquee-gap: 19px;
+  }
+}

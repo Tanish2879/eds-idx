@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/sustainable-future/source.html",
+  "path": "sustainable-future",
+  "timestamp": "2026-10-09T08:58:41.555Z",
+  "title": "Driving India into a More Sustainable Future",
+  "template": "sustainable-future",
+  "blocks": [
+    "parallax-collage"
+  ]
+}

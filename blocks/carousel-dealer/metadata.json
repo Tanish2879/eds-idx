@@ -1,0 +1,14 @@
+{
+  "variantName": "carousel-dealer",
+  "baseBlock": "carousel",
+  "canonicalModel": "collection",
+  "visualCharacteristics": "14 image-only linked slides. Full-viewport slides, each a single artwork image (location title and 'Know more' baked in) centred over a map-pattern block background; whole slide clickable; large circular prev/next arrows at mid-height; short dash indicators bottom-centre.",
+  "contentPattern": "Per slide (row): cell 1 image + alt ('<City> Experience Centre', desktop 1920x1080 rendition); cell 2 link to /dealer/<slug> + link text (screen-reader label, e.g. 'New Delhi Experience Centre - Know more'). Map-pattern background (dealer-carousel-bg) is block-level CSS.",
+  "usage": {
+    "pagesUsing": ["https://www.mgselect.co.in/"],
+    "reuseCount": 1,
+    "lastUsed": "2026-10-06"
+  },
+  "options": [],
+  "memberVariantIds": []
+}

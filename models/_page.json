@@ -21,6 +21,20 @@
           "name": "keywords",
           "multi": true,
           "label": "Keywords"
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "nav",
+          "label": "Navigation",
+          "description": "Nav document for this page (e.g. /jsw-nav). Leave empty for the site default /nav."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "footer",
+          "label": "Footer",
+          "description": "Footer document path, or \"off\" to hide the footer. Leave empty for the site default /footer."
         }
       ]
     }

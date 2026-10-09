@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/new-energy/source.html",
+  "path": "new-energy",
+  "timestamp": "2026-10-08T19:27:02.871Z",
+  "title": "New Energy | Built for Beyond",
+  "template": "new-energy",
+  "blocks": [
+    "hero-interactive"
+  ]
+}

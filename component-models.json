@@ -20,6 +20,20 @@
         "name": "keywords",
         "multi": true,
         "label": "Keywords"
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "nav",
+        "label": "Navigation",
+        "description": "Nav document for this page (e.g. /jsw-nav). Leave empty for the site default /nav."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "footer",
+        "label": "Footer",
+        "description": "Footer document path, or \"off\" to hide the footer. Leave empty for the site default /footer."
       }
     ]
   },
@@ -153,6 +167,26 @@
     ]
   },
   {
+    "id": "cards-timeline-card",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string",
+        "description": "First paragraph: year (e.g. 1924). Then a heading for the title, then the description."
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -165,6 +199,130 @@
       {
         "component": "richtext",
         "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "carousel-dealer-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "media_image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "media_imageAlt",
+        "value": "",
+        "label": "Image Alt",
+        "description": "Describe the artwork, e.g. 'New Delhi Experience Centre'"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "media_mobileImage",
+        "label": "Mobile image (portrait, below 600px)",
+        "description": "Optional. Portrait artwork (e.g. 1080x1920) shown on phones.",
+        "multi": false
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkText",
+        "value": "",
+        "label": "Link Text",
+        "description": "Read by screen readers, e.g. 'New Delhi Experience Centre - Know more'"
+      }
+    ]
+  },
+  {
+    "id": "carousel-marquee-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "media_image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "media_imageAlt",
+        "value": "",
+        "label": "Image Alt"
+      },
+      {
+        "component": "richtext",
+        "name": "content_text",
+        "value": "",
+        "label": "Caption (optional)",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "carousel-showcase-item",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "media_image",
+        "label": "Image (day)",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "media_imageAlt",
+        "value": "",
+        "label": "Image Alt (day)"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "media_mobileImage",
+        "label": "Mobile image (day, square, below 900px)",
+        "description": "Optional. Square transparent cut-out shown on phones/tablets.",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "night_image",
+        "label": "Image (night, optional)",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "night_imageAlt",
+        "value": "",
+        "label": "Image Alt (night)"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "night_mobileImage",
+        "label": "Mobile image (night, square, below 900px)",
+        "description": "Optional. Square transparent cut-out shown on phones/tablets.",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "content_text",
         "value": "",
         "label": "Text",
         "valueType": "string"
@@ -201,6 +359,104 @@
     ]
   },
   {
+    "id": "hero-fullbleed",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "mobileImage",
+        "label": "Mobile image (portrait, below 600px)",
+        "description": "Optional. Shown on phones instead of the main image.",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "text",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "hero-interactive",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "media",
+        "label": "Background media (image or video)",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "mediaAlt",
+        "label": "Background media alt text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "cta",
+        "label": "Button link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaText",
+        "label": "Button text"
+      }
+    ]
+  },
+  {
+    "id": "hero-interactive-slide",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Slide image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Slide image alt text",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "hero",
     "fields": [
       {
@@ -223,6 +479,45 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "parallax-collage",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Heading and subtitle",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "parallax-collage-image",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "position",
+        "label": "Position (optional)",
+        "description": "Optional. \"large\" marks the hero image that shrinks to the top (default: the first image). Images then fill screen 1 (4 cards) and screen 2 (4 cards) in order.",
+        "value": ""
       }
     ]
   }

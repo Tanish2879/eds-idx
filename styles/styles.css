@@ -11,62 +11,127 @@
  */
 
 :root {
-  /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  /* brand colors (MG Select) */
+  --color-black: #000;
+  --color-white: #fff;
+  --color-charcoal: #1e1e1e;
+  --color-ink: #1e1e20;
+  --color-grey-125: #828282;
+  --color-grey-400: #4d4d4d;
+  --color-stone-100: #f4f0ee;
+
+  /* semantic colors */
+  --background-color: var(--color-white);
+  --light-color: var(--color-stone-100);
+  --dark-color: var(--color-ink);
+  --text-color: var(--color-black);
+  --text-muted-color: var(--color-charcoal);
+  --text-inverse-color: var(--color-white);
+  --link-color: var(--color-black);
+  --link-hover-color: var(--color-grey-400);
+  --border-color: var(--color-stone-100);
+  --overlay-color: rgb(0 0 0 / 35%);
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --display-font-family: sequel, sequel-fallback, arial, sans-serif;
+  --heading-font-family: var(--display-font-family);
+  --body-font-family: inter, inter-fallback, arial, sans-serif;
+  --mono-font-family: roboto-mono, roboto-mono-fallback, 'Courier New', monospace;
 
   /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 19px;
-  --body-font-size-xs: 17px;
+  --body-font-size-l: 16px;
+  --body-font-size-m: 16px;
+  --body-font-size-s: 14px;
+  --body-font-size-xs: 12px;
+  --body-line-height: 1.5;
+  --body-letter-spacing: 0.01em;
 
   /* heading sizes */
-  --heading-font-size-xxl: 55px;
-  --heading-font-size-xl: 44px;
-  --heading-font-size-l: 34px;
-  --heading-font-size-m: 27px;
-  --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
+  --heading-font-size-xxl: 24px;
+  --heading-font-size-xl: 30px;
+  --heading-font-size-l: 29.5px;
+  --heading-font-size-m: 24px;
+  --heading-font-size-s: 20px;
+  --heading-font-size-xs: 16px;
+  --heading-line-height: 1.1;
 
-  /* nav height */
-  --nav-height: 64px;
+  /* Sequel ships as a single face; the source renders headings with synthesized bold */
+  --heading-font-weight: 700;
+
+  /* buttons / CTAs */
+  --button-font-family: var(--mono-font-family);
+  --button-font-size: 14px;
+  --button-line-height: 32px;
+  --button-padding: 8px 20px;
+  --button-border-width: 1px;
+  --button-gap: 24px;
+  --button-min-width: 155px;
+
+  /* spacing */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-s: 16px;
+  --spacing-m: 24px;
+  --spacing-l: 32px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 64px;
+  --section-spacing: 48px;
+  --gutter: 16px;
+
+  /* layout */
+  --content-max-width: 1440px;
+  --text-max-width: 823px;
+  --section-min-height: 100svh;
+
+  /* motion */
+  --transition-fast: 0.2s ease;
+  --ease-power2-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* power2.inOut: the JSW pages' curve */
+
+  /* nav height: the header is a transparent overlay, so it reserves no space */
+  --nav-height: 0px;
 }
 
-/* fallback fonts */
+/* fallback fonts (metric-matched to reduce CLS while web fonts load) */
 @font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
+  font-family: sequel-fallback;
+  size-adjust: 113%;
   src: local('Arial');
 }
 
 @font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
+  font-family: inter-fallback;
+  size-adjust: 95%;
   src: local('Arial');
+}
+
+@font-face {
+  font-family: roboto-mono-fallback;
+  size-adjust: 100%;
+  src: local('Courier New');
+}
+
+@media (width >= 600px) {
+  :root {
+    --heading-font-size-xxl: 40px;
+    --gutter: 32px;
+  }
 }
 
 @media (width >= 900px) {
   :root {
-    /* body sizes */
-    --body-font-size-m: 18px;
-    --body-font-size-s: 16px;
-    --body-font-size-xs: 14px;
+    --body-font-size-l: 18px;
+    --heading-font-size-xl: 44.7px;
+    --heading-font-size-l: 36.9px;
+    --heading-font-size-m: 30px;
+    --section-spacing: 64px;
+    --gutter: 60px;
+  }
+}
 
-    /* heading sizes */
-    --heading-font-size-xxl: 45px;
-    --heading-font-size-xl: 36px;
-    --heading-font-size-l: 28px;
-    --heading-font-size-m: 22px;
-    --heading-font-size-s: 20px;
-    --heading-font-size-xs: 18px;
+@media (width >= 1200px) {
+  :root {
+    --body-font-size-l: 24px;
+    --heading-font-size-xxl: 60px;
   }
 }
 
@@ -77,7 +142,9 @@ body {
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
-  line-height: 1.6;
+  line-height: var(--body-line-height);
+  letter-spacing: var(--body-letter-spacing);
+  -webkit-font-smoothing: antialiased;
 }
 
 body.appear {
@@ -107,16 +174,17 @@ h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
-  font-weight: 600;
-  line-height: 1.25;
+  font-weight: var(--heading-font-weight);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--body-letter-spacing);
   scroll-margin: 40px;
 }
 
 h1 { font-size: var(--heading-font-size-xxl); }
-h2 { font-size: var(--heading-font-size-xl); }
-h3 { font-size: var(--heading-font-size-l); }
-h4 { font-size: var(--heading-font-size-m); }
-h5 { font-size: var(--heading-font-size-s); }
+h2 { font-size: var(--heading-font-size-l); }
+h3 { font-size: var(--heading-font-size-m); }
+h4 { font-size: var(--heading-font-size-s); }
+h5 { font-size: var(--heading-font-size-xs); }
 h6 { font-size: var(--heading-font-size-xs); }
 
 p,
@@ -131,12 +199,12 @@ blockquote {
 
 code,
 pre {
+  font-family: var(--mono-font-family);
   font-size: var(--body-font-size-s);
 }
 
 pre {
   padding: 16px;
-  border-radius: 8px;
   background-color: var(--light-color);
   overflow-x: auto;
   white-space: pre;
@@ -158,6 +226,7 @@ a:any-link {
   color: var(--link-color);
   text-decoration: none;
   overflow-wrap: break-word;
+  transition: color var(--transition-fast), opacity var(--transition-fast);
 }
 
 a:hover {
@@ -165,7 +234,13 @@ a:hover {
   text-decoration: underline;
 }
 
-/* buttons */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* buttons: MG Select square, outlined, monospaced CTA */
 p.button-wrapper {
   margin: 12px 0;
 }
@@ -175,20 +250,26 @@ button.button {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: var(--button-gap);
+  min-width: var(--button-min-width);
   max-width: 100%;
   margin: 0;
-  border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
-  font: inherit;
-  font-weight: 500;
-  line-height: 1.25;
+  border: var(--button-border-width) solid transparent;
+  border-radius: 0;
+  padding: var(--button-padding);
+  font-family: var(--button-font-family);
+  font-size: var(--button-font-size);
+  font-weight: 400;
+  line-height: var(--button-line-height);
+  letter-spacing: 0;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 a.button[aria-disabled="true"],
@@ -210,7 +291,7 @@ button.button.primary:hover,
 button.button.primary:focus-visible {
   border-color: var(--dark-color);
   background-color: var(--dark-color);
-  color: var(--light-color);
+  color: var(--text-inverse-color);
 }
 
 a.button.primary[aria-disabled="true"],
@@ -221,12 +302,12 @@ button.button.primary:disabled:hover,
 button.button.primary:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--dark-color);
+  color: var(--color-grey-125);
 }
 
 a.button.secondary,
 button.button.secondary {
-  border-color: var(--text-color);
+  border-color: currentcolor;
   background-color: transparent;
   color: var(--text-color);
 }
@@ -235,9 +316,9 @@ a.button.secondary:hover,
 a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--light-color);
-  color: var(--dark-color);
+  background-color: var(--text-color);
+  border-color: var(--text-color);
+  color: var(--background-color);
 }
 
 a.button.secondary[aria-disabled="true"],
@@ -248,23 +329,24 @@ button.button.secondary:disabled:hover,
 button.button.secondary:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--dark-color);
+  color: var(--color-grey-125);
 }
 
-/* high-impact call-to-action */
+/* high-impact call-to-action: outline on dark imagery */
 a.button.accent,
 button.button.accent {
-  border-color: var(--link-color);
-  background-color: var(--link-color);
-  color: var(--background-color);
+  border-color: var(--border-color);
+  background-color: transparent;
+  color: var(--text-inverse-color);
 }
 
 a.button.accent:hover,
 a.button.accent:focus-visible,
 button.button.accent:hover,
 button.button.accent:focus-visible {
-  border-color: var(--link-hover-color);
-  background-color: var(--link-hover-color);
+  border-color: var(--color-white);
+  background-color: var(--color-white);
+  color: var(--text-color);
 }
 
 a.button.accent[aria-disabled="true"],
@@ -275,7 +357,7 @@ button.button.accent:disabled:hover,
 button.button.accent:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--dark-color);
+  color: var(--color-grey-125);
 }
 
 main img {
@@ -295,25 +377,28 @@ main img {
   width: 100%;
 }
 
-/* sections */
+/* sections: MG Select sections are edge-to-edge panels */
 main > .section {
-  margin: 40px 0;
+  margin: 0;
 }
 
 main > .section > div {
-  max-width: 1200px;
+  max-width: var(--content-max-width);
   margin: auto;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
 }
 
-main > .section:first-of-type {
-  margin-top: 0;
+main > .section > .default-content-wrapper {
+  padding-top: var(--section-spacing);
 }
 
-@media (width >= 900px) {
-  main > .section > div {
-    padding: 0 32px;
-  }
+main > .section > .default-content-wrapper:last-child {
+  padding-bottom: var(--section-spacing);
+}
+
+/* page metadata table: published pages turn it into <meta> tags; never render it as content */
+main .metadata {
+  display: none;
 }
 
 /* section metadata */
@@ -321,5 +406,123 @@ main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
-  padding: 40px 0;
+  padding: var(--section-spacing) 0;
+}
+
+main .section.dark {
+  background-color: var(--dark-color);
+  color: var(--text-inverse-color);
+}
+
+main .section.dark a:any-link {
+  color: var(--text-inverse-color);
+}
+
+/* eyebrow paragraph directly above a section heading (e.g. "OUR HERITAGE") */
+main > .section > .default-content-wrapper > p:has(+ h2) {
+  margin: 0 0 var(--spacing-s);
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+  color: var(--text-muted-color);
+  text-transform: uppercase;
+}
+
+main > .section > .default-content-wrapper > p + h2 {
+  margin-top: 0;
+}
+
+/* manifesto: full-height, centred brand statement */
+main .section.manifesto {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: var(--section-min-height);
+  padding-bottom: 54px;
+  background-color: var(--background-color);
+  text-align: center;
+}
+
+main .section.manifesto > .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: none;
+  padding-top: 80px;
+}
+
+main .section.manifesto > .default-content-wrapper > * {
+  max-width: var(--text-max-width);
+  margin: 0;
+}
+
+/* brand logo */
+main .section.manifesto > .default-content-wrapper > picture {
+  display: block;
+  width: 192px;
+  margin-top: 12px;
+}
+
+main .section.manifesto > .default-content-wrapper > picture img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+main .section.manifesto > .default-content-wrapper > h2 {
+  max-width: none;
+  margin: var(--spacing-xxl) 0 var(--spacing-l);
+  font-size: var(--heading-font-size-xxl);
+  line-height: 1.08;
+}
+
+/* lead + body copy */
+main .section.manifesto > .default-content-wrapper > h2 ~ p {
+  font-size: var(--body-font-size-l);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-muted-color);
+}
+
+main .section.manifesto > .default-content-wrapper > h2 + p {
+  color: var(--text-color);
+  letter-spacing: var(--body-letter-spacing);
+}
+
+@media (width >= 900px) {
+  main .section.manifesto > .default-content-wrapper > picture {
+    width: 254px;
+    margin-top: 16px;
+  }
+}
+
+/* eyebrow ("WELCOME TO") */
+main .section.manifesto > .default-content-wrapper > p:first-child {
+  max-width: none;
+  font-family: var(--display-font-family);
+  font-size: var(--heading-font-size-m);
+  line-height: 1.1;
+}
+
+/* heritage timeline: eyebrow renders as the source's centred, underlined tab label */
+main > .section.cards-timeline-container > .default-content-wrapper {
+  padding-top: 0;
+}
+
+main > .section.cards-timeline-container > .default-content-wrapper > p:first-child:has(+ h2) {
+  width: fit-content;
+  margin: 0 auto 42px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-black);
+  text-align: center;
+}
+
+main > .section.cards-timeline-container > .default-content-wrapper > p + h2 {
+  margin-bottom: 0;
+}
+
+/* collage pages: link/button transitions use the shared power2.inOut curve. No CSS scroll
+   snapping or smooth scroll-behavior here: wheel steps are eased by scripts/scroll-stops.js */
+html:has(main .parallax-collage) {
+  --transition-fast: 0.2s var(--ease-power2-in-out);
 }

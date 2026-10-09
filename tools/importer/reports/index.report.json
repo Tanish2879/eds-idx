@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "url": "https://www.mgselect.co.in/",
+  "path": "index",
+  "timestamp": "2026-10-06T09:04:37.094Z",
+  "title": "MG Latest Luxury & Electric Cars in India - Prices & Models",
+  "template": "home",
+  "blocks": [
+    "hero-fullbleed",
+    "carousel-showcase",
+    "carousel-marquee",
+    "carousel-dealer",
+    "cards-timeline"
+  ]
+}

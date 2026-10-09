@@ -50,7 +50,14 @@
         "hero",
         "cards",
         "columns",
-        "fragment"
+        "fragment",
+        "hero-fullbleed",
+        "carousel-showcase",
+        "carousel-marquee",
+        "carousel-dealer",
+        "cards-timeline",
+        "hero-interactive",
+        "parallax-collage"
       ]
     }
   ]

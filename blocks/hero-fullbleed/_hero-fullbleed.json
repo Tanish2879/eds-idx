@@ -1,0 +1,56 @@
+{
+  "definitions": [
+    {
+      "title": "Hero Fullbleed",
+      "id": "hero-fullbleed",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Hero Fullbleed",
+              "model": "hero-fullbleed"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "hero-fullbleed",
+      "fields": [
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Alt",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "mobileImage",
+          "label": "Mobile image (portrait, below 600px)",
+          "description": "Optional. Shown on phones instead of the main image.",
+          "multi": false
+        },
+        {
+          "component": "richtext",
+          "name": "text",
+          "value": "",
+          "label": "Text",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

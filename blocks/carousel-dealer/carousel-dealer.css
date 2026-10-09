@@ -1,0 +1,218 @@
+/*
+ * Carousel Dealer: full-viewport (100vh x 100vw) slider of linked city-launch
+ * artwork over a map-pattern background. Values from source computed styles
+ * (mgselect.co.in .mg-carousel, desktop 1440x900 / mobile 390x844).
+ */
+
+.carousel-dealer-container .carousel-dealer-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.carousel-dealer {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-dealer .carousel-dealer-slides-container {
+  position: relative;
+}
+
+.carousel-dealer .carousel-dealer-slides,
+.carousel-dealer .carousel-dealer-slide-indicators {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.carousel-dealer .carousel-dealer-slides {
+  display: flex;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  overflow: scroll clip;
+  scrollbar-width: none;
+}
+
+.carousel-dealer .carousel-dealer-slides::-webkit-scrollbar {
+  display: none;
+}
+
+/* each slide is a full panel; map pattern is a fixed design asset (not authored) */
+.carousel-dealer .carousel-dealer-slide {
+  position: relative;
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--section-min-height, 100svh);
+  background-color: var(--color-white);
+  background-image: url('https://mgmotor.scene7.com/is/image/mgmotor/dealer-carousel-bg?fmt=webp-alpha&resMode=bisharp&fit=constrain&qlt=90&wid=720');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  scroll-snap-align: start;
+}
+
+/* artwork fills the slide; text is baked into the image so it must not be cropped */
+.carousel-dealer .carousel-dealer-slide-image {
+  position: absolute;
+  inset: 0;
+}
+
+.carousel-dealer .carousel-dealer-slide-image picture {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-dealer .carousel-dealer-slide-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 50%;
+}
+
+/* phones: portrait mobile artwork (1080x1920) covers the whole slide, like the source */
+@media (width < 600px) {
+  .carousel-dealer .carousel-dealer-slide-image.is-art-directed img {
+    object-fit: cover;
+  }
+}
+
+.carousel-dealer .carousel-dealer-slide-content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--content-max-width);
+  text-align: center;
+}
+
+/*
+ * whole-slide link: the link is stretched over the slide; its text stays in the
+ * DOM for screen readers but is not shown (the artwork carries the visible label)
+ */
+.carousel-dealer .carousel-dealer-slide.has-link .carousel-dealer-slide-content {
+  position: static;
+}
+
+.carousel-dealer .carousel-dealer-slide-content p {
+  margin: 0;
+}
+
+.carousel-dealer .carousel-dealer-slide-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  color: transparent;
+  font-size: 0;
+  white-space: nowrap;
+}
+
+.carousel-dealer .carousel-dealer-slide-link:hover {
+  color: transparent;
+  text-decoration: none;
+}
+
+.carousel-dealer .carousel-dealer-slide-link:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: -4px;
+}
+
+/* prev / next: frosted grey circles, desktop only (source hides them on mobile) */
+.carousel-dealer .carousel-dealer-navigation-buttons {
+  display: none;
+}
+
+.carousel-dealer .carousel-dealer-navigation-buttons button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 99px;
+  height: 99px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 0%);
+  border-radius: 100%;
+  background-color: var(--color-grey-125);
+  color: var(--color-white);
+  backdrop-filter: blur(44px);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* long arrow icon (source sprite #swiper-carousel-arrow, 21.5 x 15) */
+.carousel-dealer .carousel-dealer-navigation-buttons button::after {
+  content: '';
+  display: block;
+  width: 21.5px;
+  height: 15px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 23 17' fill='none'%3E%3Cpath stroke='%23fff' d='M.75 8.5h21.5m0 0L14.75 1m7.5 7.5-7.5 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.carousel-dealer .carousel-dealer-navigation-buttons button.slide-prev {
+  transform: rotate(180deg);
+}
+
+/* short dash indicators, bottom centre */
+.carousel-dealer .carousel-dealer-slide-indicators {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  transform: translateX(-50%);
+}
+
+.carousel-dealer .carousel-dealer-slide-indicator button {
+  display: block;
+  width: 20px;
+  height: 3px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: rgb(217 217 217 / 30%);
+  cursor: pointer;
+}
+
+.carousel-dealer .carousel-dealer-slide-indicator button[aria-current='true'] {
+  background-color: rgb(217 217 217);
+}
+
+.carousel-dealer .carousel-dealer-navigation-buttons button:focus-visible,
+.carousel-dealer .carousel-dealer-slide-indicator button:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
+}
+
+@media (width >= 600px) {
+  .carousel-dealer .carousel-dealer-slide {
+    background-image: url('https://mgmotor.scene7.com/is/image/mgmotor/dealer-carousel-bg?fmt=webp-alpha&resMode=bisharp&fit=constrain&qlt=90&wid=1920');
+  }
+}
+
+@media (width >= 900px) {
+  .carousel-dealer .carousel-dealer-navigation-buttons {
+    position: absolute;
+    top: 50%;
+    left: 36px;
+    right: 36px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
