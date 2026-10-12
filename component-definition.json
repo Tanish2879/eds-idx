@@ -263,6 +263,37 @@
           }
         },
         {
+          "title": "Engine Showcase",
+          "id": "engine-showcase",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Engine Showcase",
+                  "model": "engine-showcase",
+                  "filter": "engine-showcase"
+                }
+              }
+            }
+          }
+        },
+        {
+          "title": "Engine",
+          "id": "engine-showcase-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Engine",
+                  "model": "engine-showcase-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "plugins": {

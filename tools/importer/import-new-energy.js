@@ -3,7 +3,8 @@
 
 /**
  * Importer for the /new-energy page (design source: drafts/new-energy/source.html).
- * Builds one hero-video block (xwalk field hints) + page metadata (JSW nav, no footer).
+ * Builds a hero-video block and an engine-showcase block (xwalk field hints) + page metadata
+ * (JSW nav, no footer).
  * Writes ONLY /new-energy — no other page is created or modified.
  *
  * Block rows:
@@ -84,6 +85,37 @@ export default {
     if (scroll) rows.push([hinted(document, 'scrollLabel', document.createTextNode(clean(scroll.textContent)))]);
 
     main.append(WebImporter.Blocks.createBlock(document, { name: 'hero-video', cells: rows }));
+
+    // section 2: engine-showcase (headline row + one row per engine:
+    // image | title | description | hotspots, one paragraph per hotspot)
+    const showcase = document.querySelector('.engine-showcase-source');
+    if (showcase) {
+      const cells = [];
+      const h2 = document.createElement('h2');
+      h2.textContent = clean(showcase.querySelector('h2')?.textContent);
+      cells.push([hinted(document, 'headline', h2)]);
+      showcase.querySelectorAll('article').forEach((art) => {
+        const source = art.querySelector('img');
+        const img = document.createElement('img');
+        img.src = rootRelative(source.getAttribute('src'));
+        img.alt = clean(source.getAttribute('alt'));
+        const desc = document.createElement('p');
+        desc.textContent = clean(art.querySelector('.description')?.textContent);
+        const spots = [...art.querySelectorAll('.hotspots li')].map((li) => {
+          const p = document.createElement('p');
+          p.textContent = clean(li.textContent);
+          return p;
+        });
+        cells.push([
+          hinted(document, 'image', img),
+          hinted(document, 'title', document.createTextNode(clean(art.querySelector('h3')?.textContent))),
+          hinted(document, 'description', desc),
+          hinted(document, 'hotspots', ...spots),
+        ]);
+      });
+      main.append(document.createElement('hr'));
+      main.append(WebImporter.Blocks.createBlock(document, { name: 'engine-showcase', cells }));
+    }
     main.append(WebImporter.Blocks.getMetadataBlock(document, {
       Title: clean(document.title),
       Description: clean(document.querySelector('meta[name="description"]')?.getAttribute('content')),
@@ -97,7 +129,7 @@ export default {
     return [{
       element: document.body,
       path: '/new-energy',
-      report: { title: document.title, template: 'new-energy', blocks: ['hero-video'] },
+      report: { title: document.title, template: 'new-energy', blocks: ['hero-video', 'engine-showcase'] },
     }];
   },
 };

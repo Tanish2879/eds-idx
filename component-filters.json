@@ -23,7 +23,8 @@
       "cards-timeline",
       "hero-interactive",
       "parallax-collage",
-      "hero-video"
+      "hero-video",
+      "engine-showcase"
     ]
   },
   {
@@ -69,6 +70,12 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "engine-showcase",
+    "components": [
+      "engine-showcase-item"
     ]
   },
   {

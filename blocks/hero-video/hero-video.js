@@ -11,6 +11,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  */
 
 const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
+const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const VIDEO_TYPES = {
   mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm',
 };
@@ -59,24 +60,31 @@ export default function decorate(block) {
   const rows = [...block.children];
   const allLinks = [...block.querySelectorAll('a[href]')];
   const videoLinks = allLinks.filter((a) => VIDEO_FILE.test(pathOf(a.href)));
+  // the poster: an <img>, or a link to an image file (an asset AEM couldn't resolve)
   const img = block.querySelector('img');
+  const posterLink = img ? null : allLinks.find((a) => IMAGE_FILE.test(pathOf(a.href)));
+  const poster = (img && { src: img.src, alt: img.alt, source: img })
+    || (posterLink && {
+      src: mediaUrl(posterLink.href), alt: posterLink.textContent.trim(), source: posterLink,
+    });
   const heading = block.querySelector('h1, h2, h3, h4, h5, h6');
   const textRow = heading ? rows.find((r) => r.contains(heading)) : null;
-  const cta = allLinks.find((a) => !videoLinks.includes(a) && !(textRow && textRow.contains(a)));
+  const cta = allLinks.find((a) => !videoLinks.includes(a) && a !== posterLink
+    && !(textRow && textRow.contains(a)));
   const ctaRow = cta ? rows.find((r) => r.contains(cta)) : null;
   const used = [textRow, ctaRow, ...videoLinks.map((a) => rows.find((r) => r.contains(a)))];
-  if (img) used.push(rows.find((r) => r.contains(img)));
+  if (poster) used.push(rows.find((r) => r.contains(poster.source)));
   // the scroll label: a remaining row with plain text only
   const labelRow = rows.find((r) => !used.includes(r) && r.textContent.trim() && !r.querySelector('a, img'));
 
   // background: poster image + video
   const media = el('div', { class: 'hero-video-media' });
   let posterSrc;
-  if (img) {
-    const picture = createOptimizedPicture(img.src, img.alt, true, [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]);
+  if (poster) {
+    const picture = createOptimizedPicture(poster.src, poster.alt, true, [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]);
     const posterImg = picture.querySelector('img');
     posterImg.setAttribute('fetchpriority', 'high');
-    moveInstrumentation(img, posterImg);
+    moveInstrumentation(poster.source, posterImg);
     posterSrc = posterImg.currentSrc || picture.querySelector('img').src;
     media.append(picture);
   }

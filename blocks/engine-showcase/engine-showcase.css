@@ -1,0 +1,459 @@
+/* Engine Showcase: white section, headline + switching text + thumbnails (left), large engine image
+   with glass '+' hotspots (right). Values from the 1280x720 design.
+   Mobile-first: base = phones (stacked), >= 768px = two columns. */
+
+/* entry: the hero above stays pinned while this white section slides up over it */
+main > .section.hero-video-container:has(+ .section.engine-showcase-container) {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+
+main > .section.engine-showcase-container {
+  position: relative;
+  z-index: 1;
+  border-radius: 24px 24px 0 0;
+  background-color: var(--es-bg, #fff);
+  box-shadow: 0 -24px 48px rgb(0 0 0 / 18%);
+}
+
+main .section.engine-showcase-container > .engine-showcase-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.engine-showcase {
+  /* colors */
+  --es-bg: #fff;
+  --es-ink: #111;
+  --es-muted: #666;
+  --es-glass: rgb(70 70 70 / 45%);
+  --es-glass-card: rgb(70 70 70 / 57%);
+  --es-glass-border: rgb(255 255 255 / 14%);
+  --es-glass-text: rgb(255 255 255 / 78%);
+
+  /* type */
+  --es-headline-font: var(--display-font-family);
+  --es-body-font: var(--body-font-family);
+  --es-ui-font: var(--mono-font-family);
+  --es-headline-size: clamp(24px, 2.7vw, 44px); /* 34.5px at 1280 */
+
+  /* motion */
+  --es-ease: var(--ease-power2-in-out, ease-in-out);
+  --es-fade: 0.7s;
+
+  display: grid;
+  grid-template-areas:
+    'headline'
+    'display'
+    'details'
+    'thumbs';
+  gap: 28px;
+  box-sizing: border-box;
+  padding: 96px 20px 48px;
+  background-color: var(--es-bg);
+  color: var(--es-ink);
+}
+
+/* the left column's children take part in the block grid on phones */
+.engine-showcase .engine-showcase-content {
+  display: contents;
+}
+
+.engine-showcase .engine-showcase-headline {
+  grid-area: headline;
+  max-width: 14em;
+  margin: 0;
+  color: var(--es-ink);
+  font-family: var(--es-headline-font);
+  font-size: var(--es-headline-size);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+/* text panels: stacked in one cell; the active one is shown */
+.engine-showcase .engine-showcase-details {
+  display: grid;
+  grid-area: details;
+}
+
+.engine-showcase .engine-showcase-detail {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--es-ease), visibility 0s linear 0.4s;
+}
+
+.engine-showcase .engine-showcase-detail.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s var(--es-ease) 0.15s, visibility 0s;
+}
+
+.engine-showcase .engine-showcase-counter {
+  margin: 0 0 12px;
+  color: var(--es-muted);
+  font-family: var(--es-body-font);
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+}
+
+.engine-showcase .engine-showcase-title {
+  margin: 0 0 10px;
+  color: var(--es-ink);
+  font-family: var(--es-body-font);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.engine-showcase .engine-showcase-description {
+  max-width: 435px; /* the design's three-line wrap at 13px */
+  color: var(--es-muted);
+  font-family: var(--es-body-font);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.engine-showcase .engine-showcase-description p {
+  margin: 0;
+}
+
+/* thumbnails */
+.engine-showcase .engine-showcase-thumbs {
+  display: grid;
+  grid-area: thumbs;
+  grid-template-columns: repeat(3, minmax(0, 127px));
+  gap: 12px;
+}
+
+.engine-showcase .engine-showcase-thumb {
+  display: block;
+  aspect-ratio: 127 / 157;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 6px;
+  background-color: #000;
+  cursor: pointer;
+  filter: grayscale(1);
+  opacity: 0.9;
+  transition: filter 0.5s var(--es-ease), opacity 0.5s var(--es-ease), transform 0.5s var(--es-ease);
+}
+
+.engine-showcase .engine-showcase-thumb picture,
+.engine-showcase .engine-showcase-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.engine-showcase .engine-showcase-thumb img {
+  object-fit: cover;
+  transition: transform 0.6s var(--es-ease);
+}
+
+/* large display: slides stacked in the same box, crossfading */
+.engine-showcase .engine-showcase-display {
+  position: relative;
+  grid-area: display;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 16px;
+  background-color: #000;
+}
+
+.engine-showcase .engine-showcase-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--es-fade) var(--es-ease), visibility 0s linear var(--es-fade);
+}
+
+.engine-showcase .engine-showcase-slide.is-active {
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--es-fade) var(--es-ease), visibility 0s;
+}
+
+.engine-showcase .engine-showcase-slide picture,
+.engine-showcase .engine-showcase-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.engine-showcase .engine-showcase-slide img {
+  object-fit: cover;
+}
+
+.engine-showcase .engine-showcase-thumb:hover {
+  filter: grayscale(0.4);
+  opacity: 1;
+}
+
+.engine-showcase .engine-showcase-thumb:hover img {
+  transform: scale(1.04);
+}
+
+.engine-showcase .engine-showcase-thumb.is-active {
+  filter: none;
+  opacity: 1;
+}
+
+/* hotspots: glass '+' buttons that open a glass card */
+.engine-showcase .engine-showcase-hotspots {
+  position: absolute;
+  inset: 0;
+}
+
+/* phones: the '+' sits on the image and its card opens as a panel along the image bottom */
+.engine-showcase .engine-showcase-hotspot {
+  position: static;
+}
+
+.engine-showcase .engine-showcase-hotspot-toggle,
+.engine-showcase .engine-showcase-hotspot-close {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.engine-showcase .engine-showcase-hotspot-toggle {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--es-glass-border);
+  border-radius: 8px;
+  background-color: var(--es-glass);
+  backdrop-filter: blur(14px);
+  transform: translate(-50%, -50%);
+  transition: background-color 0.3s var(--es-ease), scale 0.3s var(--es-ease), opacity 0.3s var(--es-ease);
+}
+
+.engine-showcase .engine-showcase-hotspot-toggle:hover {
+  background-color: rgb(20 20 20 / 70%);
+  scale: 1.06;
+}
+
+.engine-showcase .engine-showcase-thumb:focus-visible {
+  outline: 2px solid var(--es-ink);
+  outline-offset: 3px;
+}
+
+.engine-showcase .engine-showcase-hotspot-toggle:focus-visible,
+.engine-showcase .engine-showcase-hotspot-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* '+' / '—' drawn with two strokes */
+.engine-showcase .engine-showcase-hotspot-toggle::before,
+.engine-showcase .engine-showcase-hotspot-toggle::after,
+.engine-showcase .engine-showcase-hotspot-close::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 1.5px;
+  background-color: currentcolor;
+  transform: translate(-50%, -50%);
+}
+
+.engine-showcase .engine-showcase-hotspot-toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.engine-showcase .engine-showcase-hotspot.is-open .engine-showcase-hotspot-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.engine-showcase .engine-showcase-hotspot-card {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 14px 16px 16px;
+  border: 1px solid var(--es-glass-border);
+  border-radius: 10px;
+  background-color: var(--es-glass-card);
+  color: #fff;
+  backdrop-filter: blur(18px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.35s var(--es-ease), transform 0.35s var(--es-ease), visibility 0s linear 0.35s;
+}
+
+.engine-showcase .engine-showcase-hotspot.is-open .engine-showcase-hotspot-card {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.35s var(--es-ease), transform 0.35s var(--es-ease), visibility 0s;
+}
+
+.engine-showcase .engine-showcase-hotspot-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.engine-showcase .engine-showcase-hotspot-title {
+  margin: 0;
+  font-family: var(--es-ui-font);
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.engine-showcase .engine-showcase-hotspot-head .engine-showcase-hotspot-close {
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
+
+.engine-showcase .engine-showcase-hotspot-text {
+  margin: 12px 0 0;
+  color: var(--es-glass-text);
+  font-family: var(--es-body-font);
+  font-size: 11.5px;
+  font-weight: 300;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
+/* entry reveal: content fades in and rises as the section slides into place */
+.engine-showcase.is-armed .engine-showcase-headline,
+.engine-showcase.is-armed .engine-showcase-details,
+.engine-showcase.is-armed .engine-showcase-thumbs,
+.engine-showcase.is-armed .engine-showcase-display {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s var(--es-ease), transform 0.9s var(--es-ease);
+}
+
+.engine-showcase.is-revealed .engine-showcase-headline,
+.engine-showcase.is-revealed .engine-showcase-details,
+.engine-showcase.is-revealed .engine-showcase-thumbs,
+.engine-showcase.is-revealed .engine-showcase-display {
+  opacity: 1;
+  transform: none;
+}
+
+.engine-showcase.is-revealed .engine-showcase-display {
+  transition-delay: 0.1s;
+}
+
+.engine-showcase.is-revealed .engine-showcase-details {
+  transition-delay: 0.2s;
+}
+
+.engine-showcase.is-revealed .engine-showcase-thumbs {
+  transition-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .engine-showcase.is-armed .engine-showcase-headline,
+  .engine-showcase.is-armed .engine-showcase-details,
+  .engine-showcase.is-armed .engine-showcase-thumbs,
+  .engine-showcase.is-armed .engine-showcase-display {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .engine-showcase .engine-showcase-slide,
+  .engine-showcase .engine-showcase-detail {
+    transition-duration: 0s;
+  }
+}
+
+/* two columns: text + thumbnails left, large image right */
+@media (width >= 768px) {
+  .engine-showcase {
+    grid-template:
+      'headline display' auto
+      '. display' 1fr
+      'details display' auto
+      'thumbs display' auto / minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 0 48px;
+    min-height: max(600px, 100svh);
+    padding: clamp(96px, 13.3svh, 140px) 48px clamp(40px, 6.7svh, 64px);
+  }
+
+  .engine-showcase .engine-showcase-headline {
+    margin-top: clamp(24px, 7.5svh, 72px); /* sits at 150px of 720 */
+  }
+
+  .engine-showcase .engine-showcase-details {
+    margin-bottom: 26px;
+  }
+
+  .engine-showcase .engine-showcase-thumbs {
+    gap: 18px;
+    margin-bottom: 20px;
+  }
+
+  .engine-showcase .engine-showcase-display {
+    aspect-ratio: auto;
+    min-height: 420px;
+  }
+
+  /* hotspots: the card opens next to its '+' (towards the image centre) */
+  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    width: 58px;
+    height: 58px;
+    transform: translate(-50%, -50%);
+  }
+
+  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot.is-open {
+    z-index: 2;
+  }
+
+  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot .engine-showcase-hotspot-toggle {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
+
+  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot .engine-showcase-hotspot-card {
+    inset: 0 auto auto 0;
+    width: 272px;
+  }
+
+  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot.opens-left .engine-showcase-hotspot-card {
+    right: 0;
+    left: auto;
+  }
+
+  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot.opens-up .engine-showcase-hotspot-card {
+    top: auto;
+    bottom: 0;
+  }
+}

@@ -48,7 +48,7 @@ var CustomImportScript = (() => {
   }
   var import_new_energy_default = {
     transform: (payload) => {
-      var _a, _b, _c;
+      var _a, _b, _c, _d;
       const { document } = payload;
       const src = document.querySelector(".hero-video-source");
       const main = document.createElement("main");
@@ -89,19 +89,48 @@ var CustomImportScript = (() => {
       const scroll = src.querySelector(".scroll");
       if (scroll) rows.push([hinted(document, "scrollLabel", document.createTextNode(clean(scroll.textContent)))]);
       main.append(WebImporter.Blocks.createBlock(document, { name: "hero-video", cells: rows }));
+      const showcase = document.querySelector(".engine-showcase-source");
+      if (showcase) {
+        const cells = [];
+        const h2 = document.createElement("h2");
+        h2.textContent = clean((_a = showcase.querySelector("h2")) == null ? void 0 : _a.textContent);
+        cells.push([hinted(document, "headline", h2)]);
+        showcase.querySelectorAll("article").forEach((art) => {
+          var _a2, _b2;
+          const source = art.querySelector("img");
+          const img = document.createElement("img");
+          img.src = rootRelative(source.getAttribute("src"));
+          img.alt = clean(source.getAttribute("alt"));
+          const desc2 = document.createElement("p");
+          desc2.textContent = clean((_a2 = art.querySelector(".description")) == null ? void 0 : _a2.textContent);
+          const spots = [...art.querySelectorAll(".hotspots li")].map((li) => {
+            const p = document.createElement("p");
+            p.textContent = clean(li.textContent);
+            return p;
+          });
+          cells.push([
+            hinted(document, "image", img),
+            hinted(document, "title", document.createTextNode(clean((_b2 = art.querySelector("h3")) == null ? void 0 : _b2.textContent))),
+            hinted(document, "description", desc2),
+            hinted(document, "hotspots", ...spots)
+          ]);
+        });
+        main.append(document.createElement("hr"));
+        main.append(WebImporter.Blocks.createBlock(document, { name: "engine-showcase", cells }));
+      }
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
-        Description: clean((_a = document.querySelector('meta[name="description"]')) == null ? void 0 : _a.getAttribute("content")),
+        Description: clean((_b = document.querySelector('meta[name="description"]')) == null ? void 0 : _b.getAttribute("content")),
         // JSW Motors nav document (pill header); the design has no footer
-        nav: clean((_b = document.querySelector('meta[name="nav"]')) == null ? void 0 : _b.getAttribute("content")),
-        footer: clean((_c = document.querySelector('meta[name="footer"]')) == null ? void 0 : _c.getAttribute("content"))
+        nav: clean((_c = document.querySelector('meta[name="nav"]')) == null ? void 0 : _c.getAttribute("content")),
+        footer: clean((_d = document.querySelector('meta[name="footer"]')) == null ? void 0 : _d.getAttribute("content"))
       }));
       document.body.innerHTML = "";
       document.body.append(main);
       return [{
         element: document.body,
         path: "/new-energy",
-        report: { title: document.title, template: "new-energy", blocks: ["hero-video"] }
+        report: { title: document.title, template: "new-energy", blocks: ["hero-video", "engine-showcase"] }
       }];
     }
   };
