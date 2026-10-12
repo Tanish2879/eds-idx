@@ -1,8 +1,10 @@
-/* Engine Showcase: white section, headline + switching text + thumbnails (left), large engine image
-   with glass '+' hotspots (right). Values from the 1280x720 design.
+/* Engine Showcase: headline + switching text + thumbnails (left, bottom-anchored), large engine
+   image with glass '+' hotspots filling the right half. Values from the reference walkthrough
+   (Figma frame 1280 wide; drafts/new-energy/jsw_walkthrough.mp4).
    Mobile-first: base = phones (stacked), >= 768px = two columns. */
 
-/* entry: the hero above stays pinned while this white section slides up over it */
+/* entry: the hero above stays pinned while this section slides up over it as a rounded card,
+   scaling from 0.945 to 1 as it rises (--es-rise 0 → 1, set by the block JS) */
 main > .section.hero-video-container:has(+ .section.engine-showcase-container) {
   position: sticky;
   top: 0;
@@ -12,9 +14,11 @@ main > .section.hero-video-container:has(+ .section.engine-showcase-container) {
 main > .section.engine-showcase-container {
   position: relative;
   z-index: 1;
-  border-radius: 24px 24px 0 0;
-  background-color: var(--es-bg, #fff);
-  box-shadow: 0 -24px 48px rgb(0 0 0 / 18%);
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: #fff;
+  transform: scale(calc(0.945 + 0.055 * var(--es-rise, 1)));
+  transform-origin: 50% 0;
 }
 
 main .section.engine-showcase-container > .engine-showcase-wrapper {
@@ -24,10 +28,10 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
 .engine-showcase {
   /* colors */
-  --es-bg: #fff;
+  --es-bg: linear-gradient(112deg, #fff 47%, #d2d2d2 100%); /* white left → grey bottom right */
   --es-ink: #111;
   --es-muted: #666;
-  --es-glass: rgb(70 70 70 / 45%);
+  --es-glass: rgb(48 48 48 / 31%); /* reads light grey over white, near-black over the engine */
   --es-glass-card: rgb(70 70 70 / 57%);
   --es-glass-border: rgb(255 255 255 / 14%);
   --es-glass-text: rgb(255 255 255 / 78%);
@@ -36,12 +40,15 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   --es-headline-font: var(--display-font-family);
   --es-body-font: var(--body-font-family);
   --es-ui-font: var(--mono-font-family);
-  --es-headline-size: clamp(24px, 2.7vw, 44px); /* 34.5px at 1280 */
+  --es-headline-size: clamp(24px, 2.66vw, 44px); /* 34px at 1280 */
 
-  /* motion */
-  --es-ease: var(--ease-power2-in-out, ease-in-out);
-  --es-fade: 0.7s;
+  /* motion (walkthrough timings) */
+  --es-reveal-delay: 0.95s; /* content waits for the card to settle */
+  --es-reveal: 0.55s;
+  --es-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --es-crossfade: 0.6s; /* engine image switch */
 
+  position: relative;
   display: grid;
   grid-template-areas:
     'headline'
@@ -51,7 +58,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   gap: 28px;
   box-sizing: border-box;
   padding: 96px 20px 48px;
-  background-color: var(--es-bg);
+  background: var(--es-bg);
   color: var(--es-ink);
 }
 
@@ -68,7 +75,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   font-family: var(--es-headline-font);
   font-size: var(--es-headline-size);
   font-weight: 400;
-  line-height: 1.12;
+  line-height: 1.29;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -83,22 +90,22 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   grid-area: 1 / 1;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s var(--es-ease), visibility 0s linear 0.4s;
+  transition: opacity 0.35s ease-out, visibility 0s linear 0.35s;
 }
 
 .engine-showcase .engine-showcase-detail.is-active {
   opacity: 1;
   visibility: visible;
-  transition: opacity 0.4s var(--es-ease) 0.15s, visibility 0s;
+  transition: opacity 0.35s ease-out 0.2s, visibility 0s;
 }
 
 .engine-showcase .engine-showcase-counter {
-  margin: 0 0 12px;
+  margin: 0 0 13px;
   color: var(--es-muted);
   font-family: var(--es-body-font);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.4;
-  letter-spacing: 0.12em;
+  letter-spacing: 0;
 }
 
 .engine-showcase .engine-showcase-title {
@@ -112,12 +119,12 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 }
 
 .engine-showcase .engine-showcase-description {
-  max-width: 435px; /* the design's three-line wrap at 13px */
+  max-width: 405px; /* lines end "…engine for" / "…motor work" / "…axle.", as in the walkthrough */
   color: var(--es-muted);
   font-family: var(--es-body-font);
-  font-size: 13px;
+  font-size: 12.25px;
   font-weight: 300;
-  line-height: 20px;
+  line-height: 18px;
   letter-spacing: 0;
 }
 
@@ -125,17 +132,17 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   margin: 0;
 }
 
-/* thumbnails */
+/* thumbnails: full colour when active, greyscale otherwise */
 .engine-showcase .engine-showcase-thumbs {
   display: grid;
   grid-area: thumbs;
   grid-template-columns: repeat(3, minmax(0, 127px));
-  gap: 12px;
+  gap: 9px;
 }
 
 .engine-showcase .engine-showcase-thumb {
   display: block;
-  aspect-ratio: 127 / 157;
+  aspect-ratio: 127 / 156;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -144,8 +151,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   background-color: #000;
   cursor: pointer;
   filter: grayscale(1);
-  opacity: 0.9;
-  transition: filter 0.5s var(--es-ease), opacity 0.5s var(--es-ease), transform 0.5s var(--es-ease);
+  transition: filter 0.3s ease-out;
 }
 
 .engine-showcase .engine-showcase-thumb picture,
@@ -157,48 +163,51 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
 .engine-showcase .engine-showcase-thumb img {
   object-fit: cover;
-  transition: transform 0.6s var(--es-ease);
+  transition: transform 0.5s var(--es-out);
 }
 
-/* large display: slides stacked in the same box, crossfading */
+/* large display: slides stacked in the same box; the engine renders sit on black, so the display
+   is black and shows each engine whole */
 .engine-showcase .engine-showcase-display {
   position: relative;
+  z-index: 1; /* above the hand-off darkening layer */
   grid-area: display;
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: 16px;
   background-color: #000;
+  transform-origin: 0 0; /* the hand-off scales it towards the collage slot */
 }
 
+/* engine switch: pure crossfade in place (the current image fades out while the next fades in) */
 .engine-showcase .engine-showcase-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--es-fade) var(--es-ease), visibility 0s linear var(--es-fade);
+  transition: opacity var(--es-crossfade) ease-in-out, visibility 0s linear var(--es-crossfade);
 }
 
 .engine-showcase .engine-showcase-slide.is-active {
   z-index: 1;
   opacity: 1;
   visibility: visible;
-  transition: opacity var(--es-fade) var(--es-ease), visibility 0s;
+  transition: opacity var(--es-crossfade) ease-in-out, visibility 0s;
 }
 
-.engine-showcase .engine-showcase-slide picture,
+/* the image is placed by its framing (zoom + centre, set by the block JS); until then it shows whole */
 .engine-showcase .engine-showcase-slide img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
+  max-width: none;
   height: 100%;
-}
-
-.engine-showcase .engine-showcase-slide img {
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .engine-showcase .engine-showcase-thumb:hover {
   filter: grayscale(0.4);
-  opacity: 1;
 }
 
 .engine-showcase .engine-showcase-thumb:hover img {
@@ -207,13 +216,13 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
 .engine-showcase .engine-showcase-thumb.is-active {
   filter: none;
-  opacity: 1;
 }
 
 /* hotspots: glass '+' buttons that open a glass card */
 .engine-showcase .engine-showcase-hotspots {
   position: absolute;
   inset: 0;
+  opacity: var(--es-hotspots, 1); /* faded by the hand-off */
 }
 
 /* phones: the '+' sits on the image and its card opens as a panel along the image bottom */
@@ -236,14 +245,14 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   position: absolute;
   top: var(--y);
   left: var(--x);
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--es-glass-border);
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: var(--es-glass);
   backdrop-filter: blur(14px);
   transform: translate(-50%, -50%);
-  transition: background-color 0.3s var(--es-ease), scale 0.3s var(--es-ease), opacity 0.3s var(--es-ease);
+  transition: background-color 0.3s ease-out, scale 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .engine-showcase .engine-showcase-hotspot-toggle:hover {
@@ -262,7 +271,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   outline-offset: 3px;
 }
 
-/* '+' / '—' drawn with two strokes */
+/* '+' / '—' drawn with strokes */
 .engine-showcase .engine-showcase-hotspot-toggle::before,
 .engine-showcase .engine-showcase-hotspot-toggle::after,
 .engine-showcase .engine-showcase-hotspot-close::before {
@@ -270,7 +279,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
+  width: 14px;
   height: 1.5px;
   background-color: currentcolor;
   transform: translate(-50%, -50%);
@@ -301,14 +310,14 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   opacity: 0;
   visibility: hidden;
   transform: translateY(6px);
-  transition: opacity 0.35s var(--es-ease), transform 0.35s var(--es-ease), visibility 0s linear 0.35s;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out, visibility 0s linear 0.35s;
 }
 
 .engine-showcase .engine-showcase-hotspot.is-open .engine-showcase-hotspot-card {
   opacity: 1;
   visibility: visible;
   transform: none;
-  transition: opacity 0.35s var(--es-ease), transform 0.35s var(--es-ease), visibility 0s;
+  transition: opacity 0.35s ease-out, transform 0.35s ease-out, visibility 0s;
 }
 
 .engine-showcase .engine-showcase-hotspot-head {
@@ -343,14 +352,22 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   letter-spacing: 0;
 }
 
-/* entry reveal: content fades in and rises as the section slides into place */
+/* entry reveal (after the card settles): headline fades; text + thumbnails rise 48px and the
+   engine 70px while fading in, all together. Hidden instantly; revealed with the delay. */
 .engine-showcase.is-armed .engine-showcase-headline,
 .engine-showcase.is-armed .engine-showcase-details,
 .engine-showcase.is-armed .engine-showcase-thumbs,
 .engine-showcase.is-armed .engine-showcase-display {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.9s var(--es-ease), transform 0.9s var(--es-ease);
+}
+
+.engine-showcase.is-armed .engine-showcase-details,
+.engine-showcase.is-armed .engine-showcase-thumbs {
+  transform: translateY(48px);
+}
+
+.engine-showcase.is-armed .engine-showcase-display {
+  transform: translateY(70px);
 }
 
 .engine-showcase.is-revealed .engine-showcase-headline,
@@ -359,21 +376,16 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 .engine-showcase.is-revealed .engine-showcase-display {
   opacity: 1;
   transform: none;
-}
-
-.engine-showcase.is-revealed .engine-showcase-display {
-  transition-delay: 0.1s;
-}
-
-.engine-showcase.is-revealed .engine-showcase-details {
-  transition-delay: 0.2s;
-}
-
-.engine-showcase.is-revealed .engine-showcase-thumbs {
-  transition-delay: 0.3s;
+  transition:
+    opacity var(--es-reveal) ease-out var(--es-reveal-delay),
+    transform var(--es-reveal) ease-out var(--es-reveal-delay); /* rise in step with the fade */
 }
 
 @media (prefers-reduced-motion: reduce) {
+  main > .section.engine-showcase-container {
+    transform: none;
+  }
+
   .engine-showcase.is-armed .engine-showcase-headline,
   .engine-showcase.is-armed .engine-showcase-details,
   .engine-showcase.is-armed .engine-showcase-thumbs,
@@ -384,49 +396,52 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   }
 
   .engine-showcase .engine-showcase-slide,
-  .engine-showcase .engine-showcase-detail {
+  .engine-showcase .engine-showcase-slide.is-active,
+  .engine-showcase .engine-showcase-detail,
+  .engine-showcase .engine-showcase-detail.is-active {
+    transform: none;
     transition-duration: 0s;
+    transition-delay: 0s;
   }
 }
 
-/* two columns: text + thumbnails left, large image right */
+/* two columns: bottom-anchored text + thumbnails left, engine image filling the right half */
 @media (width >= 768px) {
   .engine-showcase {
     grid-template:
-      'headline display' auto
-      '. display' 1fr
-      'details display' auto
-      'thumbs display' auto / minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: 0 48px;
-    min-height: max(600px, 100svh);
-    padding: clamp(96px, 13.3svh, 140px) 48px clamp(40px, 6.7svh, 64px);
+      'content display' minmax(max(600px, 100svh), auto) / minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0;
+    padding: 0;
+  }
+
+  .engine-showcase .engine-showcase-content {
+    display: flex;
+    flex-direction: column;
+    grid-area: content;
+    justify-content: flex-end;
+    padding: 96px 48px clamp(48px, 10.4svh, 100px);
   }
 
   .engine-showcase .engine-showcase-headline {
-    margin-top: clamp(24px, 7.5svh, 72px); /* sits at 150px of 720 */
+    margin-bottom: 83px;
   }
 
   .engine-showcase .engine-showcase-details {
-    margin-bottom: 26px;
-  }
-
-  .engine-showcase .engine-showcase-thumbs {
-    gap: 18px;
-    margin-bottom: 20px;
+    margin-bottom: 44px;
   }
 
   .engine-showcase .engine-showcase-display {
     aspect-ratio: auto;
-    min-height: 420px;
+    border-radius: 0;
   }
 
-  /* hotspots: the card opens next to its '+' (towards the image centre) */
+  /* hotspots: 46px glass squares; the card opens next to its '+' (towards the image centre) */
   .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot {
     position: absolute;
     top: var(--y);
     left: var(--x);
-    width: 58px;
-    height: 58px;
+    width: 46px;
+    height: 46px;
     transform: translate(-50%, -50%);
   }
 
@@ -456,4 +471,38 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
     top: auto;
     bottom: 0;
   }
+}
+
+/* sections after the showcase sit above the pinned hero */
+main > .section.engine-showcase-container ~ .section {
+  position: relative;
+  z-index: 1;
+}
+
+/* hand-off to a following parallax collage (desktop, toggled by the block JS): the showcase stays
+   pinned above the collage, which starts at the same scroll position underneath; the card then
+   shrinks (clip-path, set by the JS) into the collage's engine slot while darkening to black */
+main > .section.engine-showcase-container.is-handoff {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.engine-showcase::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: #000;
+  opacity: var(--es-dark, 0);
+  pointer-events: none;
+}
+
+/* the collage's engine waits in its slot (no entry from the right) until the card has landed */
+.parallax-collage.is-handoff .engine {
+  --pc-enter-x: 0px; /* a length: it is used inside translateX() */
+  --pc-enter-scale: 1;
+}
+
+.parallax-collage.is-handoff:not(.is-handed) .engine {
+  visibility: hidden;
 }
