@@ -11,10 +11,12 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
  * 1 as it rises; once it has settled at the top, its content fades / rises in. The section top is
  * a scroll stop (scripts/scroll-stops.js) with the walkthrough's 1.5s ease-out glide.
  * Hand-off (desktop): when a parallax-collage section follows, the showcase stays pinned while the
- * collage, starting at the same scroll position underneath, holds still; over the collage's first
- * hold phase the showcase text fades, then the whole card shrinks into the collage's engine slot,
- * darkening to black, and the collage's engine takes over. Whichever engine is active is the one
- * that shrinks: the collage card is given that same image (whole, on black), so it carries over.
+ * collage, starting at the same scroll position underneath, holds still. Over the collage's first
+ * hold phase: 1. the text, thumbnails and hotspots fade out, leaving only the engine; 2. the engine
+ * alone travels to the collage's central card slot, shrinking as it goes (its crop opens up so it
+ * lands whole); 3. it locks in as that card (the collage card is given the same image) and the
+ * showcase fades away, revealing the rest of the collage around it. Whichever engine is active is
+ * the one that travels.
  * Timings follow the reference walkthrough (drafts/new-energy/jsw_walkthrough.mp4).
  * Rows:
  *   1.  headline
@@ -29,13 +31,15 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 // hero → showcase glide, fitted to the walkthrough's card rise
 const SCROLL_GLIDE = { duration: '1.5', ease: 'cubic-bezier(0.25, 0.3, 0.15, 1)' };
-// hand-off to a following collage, as fractions of the collage's first hold phase (walkthrough:
-// text fades 12.95–13.1s, pause, card shrinks ≈13.6–14.47s with this curve; darkening = shrink^1.8)
+// hand-off to a following collage, as fractions of the collage's first hold phase, glided over 2s
+// (walkthrough: the text fades in 0.15s, a 0.5s pause, the engine shrinks over 0.87s with this
+// curve); then the collage fades in around the landed engine
 const HANDOFF_MEDIA = window.matchMedia('(width >= 768px) and (prefers-reduced-motion: no-preference)');
 const HANDOFF = {
-  fadeEnd: 0.1, shrinkStart: 0.43, darken: 1.8, glide: { duration: '1.52 1.8', ease: 'none;power2.inOut' },
+  fadeEnd: 0.075, shrinkStart: 0.325, lockAt: 0.76, glide: { duration: '2 1.8', ease: 'none;power2.inOut' },
 };
 const shrinkEase = cubicBezier(0.65, 0, 0.15, 0.9);
+const revealEase = (t) => 1 - (1 - t) ** 2;
 const clamp01 = (v) => Math.min(Math.max(v, 0), 1);
 let showcaseId = 0;
 
@@ -323,13 +327,54 @@ export default function decorate(block) {
       restoreCard();
       section.classList.remove('is-handoff');
       collage.classList.remove('is-handoff', 'is-handed');
-      [section.style, next.style, content.style, display.style].forEach((st) => {
-        ['clipPath', 'marginTop', 'opacity', 'transform', 'transition', 'pointerEvents'].forEach((k) => { st[k] = ''; });
+      [section, next, content, display].forEach(({ style }) => {
+        ['marginTop', 'opacity', 'overflow', 'transform', 'transition', 'pointerEvents'].forEach((k) => { style[k] = ''; });
       });
+      display.querySelectorAll('.engine-showcase-slide img').forEach((img) => { img.style.clipPath = ''; });
       section.inert = false;
       next.inert = false;
-      block.style.removeProperty('--es-dark');
       display.style.removeProperty('--es-hotspots');
+    };
+    // the engine leaves its crop: the image is clipped to the display box at p = 0 and whole at 1
+    const travel = (p, slot, sec) => {
+      const slide = display.querySelector('.engine-showcase-slide.is-active');
+      const img = slide?.querySelector('img');
+      display.querySelectorAll('.engine-showcase-slide img').forEach((other) => {
+        if (other !== img) other.style.clipPath = '';
+      });
+      if (!img?.naturalWidth || !slot || p <= 0) {
+        display.style.transform = '';
+        display.style.transition = '';
+        display.style.overflow = '';
+        if (img) img.style.clipPath = '';
+        return;
+      }
+      const w = img.offsetWidth;
+      const h = img.offsetHeight;
+      const crop = [
+        Math.max(0, -img.offsetTop),
+        Math.max(0, img.offsetLeft + w - display.clientWidth),
+        Math.max(0, img.offsetTop + h - display.clientHeight),
+        Math.max(0, -img.offsetLeft),
+      ];
+      if (slide.framing?.flip) [crop[1], crop[3]] = [crop[3], crop[1]]; // clip-path is pre-flip
+      img.style.clipPath = `inset(${crop.map((v) => `${(v * (1 - p)).toFixed(2)}px`).join(' ')})`;
+      display.style.overflow = 'visible';
+      // the image box R travels to T, the whole image fitted in the card slot (contain, centred);
+      // the display is scaled from its top-left
+      const D = { left: sec.left + display.offsetLeft, top: sec.top + display.offsetTop };
+      const R = { left: D.left + img.offsetLeft, top: D.top + img.offsetTop, w };
+      const fit = Math.min(slot.width / img.naturalWidth, slot.height / img.naturalHeight);
+      const T = { w: img.naturalWidth * fit, h: img.naturalHeight * fit };
+      T.left = slot.left + (slot.width - T.w) / 2;
+      T.top = slot.top + (slot.height - T.h) / 2;
+      const k = (R.w + (T.w - R.w) * p) / R.w;
+      const left = R.left + (T.left - R.left) * p;
+      const top = R.top + (T.top - R.top) * p;
+      const tx = left - (D.left + (R.left - D.left) * k);
+      const ty = top - (D.top + (R.top - D.top) * k);
+      display.style.transition = 'none'; // follow the scroll exactly (no reveal transition)
+      display.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(5)})`;
     };
     const handoff = () => {
       const fits = section.offsetHeight && section.offsetHeight <= window.innerHeight + 1;
@@ -356,16 +401,17 @@ export default function decorate(block) {
       const collageTop = collage.getBoundingClientRect().top;
       const u = enterPx ? clamp01(-collageTop / enterPx) : 0;
 
-      // 1. the text, thumbnails and hotspots fade out
-      const fade = 1 - (1 - clamp01(u / HANDOFF.fadeEnd)) ** 2;
+      // 1. the text, thumbnails and hotspots fade out: only the engine is left
+      const fade = revealEase(clamp01(u / HANDOFF.fadeEnd));
       content.style.opacity = u > 0 ? String(1 - fade) : '';
       display.style.setProperty('--es-hotspots', String(1 - fade));
 
       // the active engine (whichever thumbnail is selected) becomes the collage card's image
       carry(current);
 
-      // 2. the card shrinks into the collage's engine slot and darkens
-      const p = shrinkEase(clamp01((u - HANDOFF.shrinkStart) / (1 - HANDOFF.shrinkStart)));
+      // 2. the engine travels to the collage's central card slot, shrinking
+      const { shrinkStart, lockAt } = HANDOFF;
+      const p = shrinkEase(clamp01((u - shrinkStart) / (lockAt - shrinkStart)));
       // the slot where the collage's engine sits now: its rendered box, corrected for the collage
       // hold offset it will apply this frame (its own scroll handler may not have run yet)
       const engine = collage.querySelector('.engine');
@@ -384,50 +430,16 @@ export default function decorate(block) {
           bottom: r.bottom + dy,
         };
       }
-      if (slot && p > 0) {
-        const W = sec.width;
-        const H = sec.height;
-        const inset = [slot.top, W - slot.right, H - slot.bottom, slot.left].map((v) => `${v * p}px`);
-        section.style.clipPath = `inset(${inset.join(' ')} round 20px)`;
-        block.style.setProperty('--es-dark', (p ** HANDOFF.darken).toFixed(4));
-        // the engine image travels to where the card shows it: whole, fitted in the slot (contain,
-        // centred), as in the walkthrough; the display is scaled from its top-left
-        const img = display.querySelector('.engine-showcase-slide.is-active img');
-        if (img?.naturalWidth) {
-          const D = { left: sec.left + display.offsetLeft, top: sec.top + display.offsetTop };
-          const R = {
-            left: D.left + img.offsetLeft,
-            top: D.top + img.offsetTop,
-            w: img.offsetWidth,
-            h: img.offsetHeight,
-          };
-          const fit = Math.min(slot.width / img.naturalWidth, slot.height / img.naturalHeight);
-          const T = {
-            w: img.naturalWidth * fit, h: img.naturalHeight * fit, left: 0, top: 0,
-          };
-          T.left = slot.left + (slot.width - T.w) / 2;
-          T.top = slot.top + (slot.height - T.h) / 2;
-          const k = (R.w + (T.w - R.w) * p) / R.w;
-          const left = R.left + (T.left - R.left) * p;
-          const top = R.top + (T.top - R.top) * p;
-          const tx = left - (D.left + (R.left - D.left) * k);
-          const ty = top - (D.top + (R.top - D.top) * k);
-          display.style.transition = 'none'; // follow the scroll exactly (no reveal transition)
-          display.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(5)})`;
-        }
-      } else {
-        section.style.clipPath = '';
-        block.style.removeProperty('--es-dark');
-        display.style.transform = '';
-        display.style.transition = '';
-      }
+      travel(p, slot, sec);
 
-      // 3. done: the collage's own engine takes over
-      const done = u >= 1;
-      collage.classList.toggle('is-handed', done);
-      section.style.opacity = done ? '0' : '';
-      section.style.pointerEvents = done ? 'none' : '';
-      section.inert = done;
+      // 3. landed: the collage's card (same image, same place) takes over underneath and the
+      // showcase fades away, revealing the rest of the collage around the engine
+      const locked = u >= HANDOFF.lockAt;
+      const reveal = revealEase(clamp01((u - HANDOFF.lockAt) / (1 - HANDOFF.lockAt)));
+      collage.classList.toggle('is-handed', locked);
+      section.style.opacity = locked ? (1 - reveal).toFixed(4) : '';
+      section.style.pointerEvents = locked ? 'none' : '';
+      section.inert = locked;
     };
     let handoffTick = false;
     const onHandoff = () => {

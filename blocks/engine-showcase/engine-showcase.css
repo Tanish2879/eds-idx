@@ -170,7 +170,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
    section's white-to-grey gradient, as in the walkthrough */
 .engine-showcase .engine-showcase-display {
   position: relative;
-  z-index: 1; /* above the hand-off darkening layer */
+  z-index: 1; /* the travelling engine passes over the content column */
   grid-area: display;
   aspect-ratio: 4 / 5;
   overflow: hidden;
@@ -479,24 +479,15 @@ main > .section.engine-showcase-container ~ .section {
 }
 
 /* hand-off to a following parallax collage (desktop, toggled by the block JS): the showcase stays
-   pinned above the collage, which starts at the same scroll position underneath; the card then
-   shrinks (clip-path, set by the JS) into the collage's engine slot while darkening to black */
+   pinned above the collage, which starts at the same scroll position underneath; its engine then
+   travels alone into the collage's card slot, and the showcase fades away around it */
 main > .section.engine-showcase-container.is-handoff {
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
-.engine-showcase::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-color: #000;
-  opacity: var(--es-dark, 0);
-  pointer-events: none;
-}
-
-/* the collage's engine waits in its slot (no entry from the right) until the card has landed */
+/* the collage's engine waits in its slot (no entry from the right) until the engine has landed */
 .parallax-collage.is-handoff .engine {
   --pc-enter-x: 0px; /* a length: it is used inside translateX() */
   --pc-enter-scale: 1;
