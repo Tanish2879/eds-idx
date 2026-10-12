@@ -124,9 +124,17 @@ export default function decorate(block) {
     el('span', { class: 'hero-video-scroll-label' }, label),
   );
   if (labelRow) moveInstrumentation(labelRow, scroll);
-  scroll.addEventListener('click', () => {
+  scroll.addEventListener('click', async () => {
     const top = block.getBoundingClientRect().bottom + window.scrollY;
-    window.scrollTo({ top, behavior: REDUCED_MOTION.matches ? 'auto' : 'smooth' });
+    // glide like a wheel step: use the glide of the scroll stop that starts there, if any
+    const stop = [...document.querySelectorAll('[data-scroll-stops]')]
+      .find((s) => Math.abs(s.getBoundingClientRect().top + window.scrollY - top) < 2);
+    const glide = stop ? {
+      duration: Number(stop.dataset.scrollDuration) || undefined,
+      ease: stop.dataset.scrollEase || undefined,
+    } : undefined;
+    const { glideTo } = await import('../../scripts/scroll-stops.js');
+    glideTo(top, glide);
   });
 
   block.replaceChildren(media, content, scroll);

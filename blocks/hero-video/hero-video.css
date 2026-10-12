@@ -62,12 +62,15 @@ main .section.hero-video-container > .hero-video-wrapper {
   opacity: 1;
 }
 
-/* legibility: darken the top (headline) and bottom (description / button) */
+/* vignette (matched to the walkthrough): near-black top band behind the header + headline, dark
+   sides, softer darkening at the bottom (description / button) */
 .hero-video .hero-video-media::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgb(0 0 0 / 45%), transparent 32%, transparent 68%, rgb(0 0 0 / 55%));
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 100%), rgb(0 0 0 / 90%) 16%, transparent 38%, transparent 68%, rgb(0 0 0 / 65%)),
+    linear-gradient(to right, rgb(0 0 0 / 90%), transparent 34%, transparent 72%, rgb(0 0 0 / 82%));
   pointer-events: none;
 }
 
@@ -95,7 +98,7 @@ main .section.hero-video-container > .hero-video-wrapper {
   font-family: var(--hv-headline-font);
   font-size: var(--hv-headline-size);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.13; /* 60px line pitch at 1280, as in the walkthrough */
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -170,21 +173,21 @@ main .section.hero-video-container > .hero-video-wrapper {
   transform: rotate(90deg);
 }
 
-/* scroll indicator: right edge */
+/* scroll indicator: right edge (56.7% of the height, as in the walkthrough) */
 .hero-video .hero-video-scroll {
   position: absolute;
-  top: 57.6%;
+  top: 56.7%;
   right: var(--hv-pad-x);
   z-index: 1;
   display: inline-flex;
-  gap: 8px;
+  gap: 7px;
   align-items: center;
   box-sizing: border-box;
-  height: 34px;
+  height: 32px;
   margin: 0;
-  padding: 0 13px 0 15px;
+  padding: 0 12px;
   border: 1px solid var(--hv-chip-border);
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: var(--hv-chip-bg);
   color: var(--hv-text);
   font-family: var(--hv-ui-font);
@@ -195,42 +198,12 @@ main .section.hero-video-container > .hero-video-wrapper {
   transform: translateY(-50%);
 }
 
+/* icon: rounded mouse outline with an up/down arrow inside */
 .hero-video .hero-video-scroll-mouse {
-  position: relative;
-  width: 8px;
-  height: 12px;
-  border: 1px solid currentcolor;
-  border-radius: 4px;
-}
-
-.hero-video .hero-video-scroll-mouse::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  width: 1px;
-  height: 3px;
-  border-radius: 1px;
+  width: 9px;
+  height: 13px;
   background-color: currentcolor;
-  transform: translateX(-50%);
-  animation: hero-video-wheel 1.6s var(--hv-ease) infinite;
-}
-
-@keyframes hero-video-wheel {
-  0% {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-
-  70% {
-    opacity: 0;
-    transform: translate(-50%, 4px);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(-50%, 0);
-  }
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 13'%3E%3Crect x='.5' y='.5' width='8' height='12' rx='3' fill='none' stroke='%23000'/%3E%3Cpath d='M4.5 3.2v6.6M3 4.6l1.5-1.5L6 4.6M3 8.4l1.5 1.5L6 8.4' fill='none' stroke='%23000' stroke-width='.9'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .hero-video .hero-video-cta:focus-visible,
@@ -240,10 +213,6 @@ main .section.hero-video-container > .hero-video-wrapper {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-video .hero-video-scroll-mouse::after {
-    animation: none;
-  }
-
   .hero-video .hero-video-media video {
     transition: none;
   }
@@ -253,7 +222,7 @@ main .section.hero-video-container > .hero-video-wrapper {
 @media (width >= 768px) {
   .hero-video {
     --hv-pad-x: 48px;
-    --hv-pad-top: clamp(112px, 18.9svh, 180px); /* 136px at 720 tall */
+    --hv-pad-top: 128px; /* headline cap top at ~141px, as in the walkthrough */
     --hv-pad-bottom: 40px;
   }
 
@@ -277,6 +246,6 @@ main .section.hero-video-container > .hero-video-wrapper {
   }
 
   .hero-video .hero-video-scroll {
-    right: 85px;
+    right: 84px;
   }
 }

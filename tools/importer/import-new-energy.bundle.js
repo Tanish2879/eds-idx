@@ -95,28 +95,70 @@ var CustomImportScript = (() => {
         const h2 = document.createElement("h2");
         h2.textContent = clean((_a = showcase.querySelector("h2")) == null ? void 0 : _a.textContent);
         cells.push([hinted(document, "headline", h2)]);
-        showcase.querySelectorAll("article").forEach((art) => {
-          var _a2, _b2;
-          const source = art.querySelector("img");
+        const image = (source) => {
           const img = document.createElement("img");
           img.src = rootRelative(source.getAttribute("src"));
           img.alt = clean(source.getAttribute("alt"));
+          return img;
+        };
+        showcase.querySelectorAll("article").forEach((art) => {
+          var _a2, _b2, _c2;
+          const media2 = document.createElement("div");
+          const main2 = art.querySelector("img.main") || art.querySelector("img");
+          media2.append(document.createComment(" field:media_image "), image(main2));
+          const thumb = art.querySelector("img.thumb");
+          if (thumb) media2.append(document.createComment(" field:media_thumbnail "), image(thumb));
+          const framing = clean((_a2 = art.querySelector(".framing")) == null ? void 0 : _a2.textContent);
+          if (framing) {
+            const fp = document.createElement("p");
+            fp.textContent = framing;
+            media2.append(document.createComment(" field:media_framing "), fp);
+          }
           const desc2 = document.createElement("p");
-          desc2.textContent = clean((_a2 = art.querySelector(".description")) == null ? void 0 : _a2.textContent);
+          desc2.textContent = clean((_b2 = art.querySelector(".description")) == null ? void 0 : _b2.textContent);
           const spots = [...art.querySelectorAll(".hotspots li")].map((li) => {
             const p = document.createElement("p");
             p.textContent = clean(li.textContent);
             return p;
           });
           cells.push([
-            hinted(document, "image", img),
-            hinted(document, "title", document.createTextNode(clean((_b2 = art.querySelector("h3")) == null ? void 0 : _b2.textContent))),
+            media2,
+            hinted(document, "title", document.createTextNode(clean((_c2 = art.querySelector("h3")) == null ? void 0 : _c2.textContent))),
             hinted(document, "description", desc2),
             hinted(document, "hotspots", ...spots)
           ]);
         });
         main.append(document.createElement("hr"));
         main.append(WebImporter.Blocks.createBlock(document, { name: "engine-showcase", cells }));
+      }
+      const collage = document.querySelector(".parallax-collage-source");
+      if (collage) {
+        const rowsC = [];
+        const text = [];
+        const h = collage.querySelector("h1, h2");
+        if (h) {
+          const h2 = document.createElement("h2");
+          h2.textContent = clean(h.textContent);
+          text.push(h2);
+        }
+        collage.querySelectorAll(":scope > p").forEach((para) => {
+          const out = document.createElement("p");
+          out.textContent = clean(para.textContent);
+          text.push(out);
+        });
+        rowsC.push([hinted(document, "text", ...text)]);
+        collage.querySelectorAll(".images li").forEach((li) => {
+          const src2 = li.querySelector("img");
+          const img = document.createElement("img");
+          img.src = rootRelative(src2.getAttribute("src"));
+          img.alt = clean(src2.getAttribute("alt"));
+          rowsC.push([
+            hinted(document, "image", img),
+            hinted(document, "position", document.createTextNode(clean(li.getAttribute("data-position"))))
+          ]);
+        });
+        main.append(document.createElement("hr"));
+        main.append(WebImporter.Blocks.createBlock(document, { name: "parallax-collage", cells: rowsC }));
       }
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
@@ -130,7 +172,7 @@ var CustomImportScript = (() => {
       return [{
         element: document.body,
         path: "/new-energy",
-        report: { title: document.title, template: "new-energy", blocks: ["hero-video", "engine-showcase"] }
+        report: { title: document.title, template: "new-energy", blocks: ["hero-video", "engine-showcase", "parallax-collage"] }
       }];
     }
   };
