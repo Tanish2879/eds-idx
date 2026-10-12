@@ -166,8 +166,8 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   transition: transform 0.5s var(--es-out);
 }
 
-/* large display: slides stacked in the same box; the engine renders sit on black, so the display
-   is black and shows each engine whole */
+/* large display: slides stacked in the same box; the engines are transparent cut-outs on the
+   section's white-to-grey gradient, as in the walkthrough */
 .engine-showcase .engine-showcase-display {
   position: relative;
   z-index: 1; /* above the hand-off darkening layer */
@@ -175,7 +175,6 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: 16px;
-  background-color: #000;
   transform-origin: 0 0; /* the hand-off scales it towards the collage slot */
 }
 
@@ -505,4 +504,9 @@ main > .section.engine-showcase-container.is-handoff {
 
 .parallax-collage.is-handoff:not(.is-handed) .engine {
   visibility: hidden;
+}
+
+/* the carried-over engine cut-out is shown whole on the card's black, as in the walkthrough */
+.parallax-collage.is-handoff .engine img {
+  object-fit: contain;
 }

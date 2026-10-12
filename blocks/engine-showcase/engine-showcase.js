@@ -13,12 +13,13 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
  * Hand-off (desktop): when a parallax-collage section follows, the showcase stays pinned while the
  * collage, starting at the same scroll position underneath, holds still; over the collage's first
  * hold phase the showcase text fades, then the whole card shrinks into the collage's engine slot,
- * darkening to black, and the collage's engine takes over.
+ * darkening to black, and the collage's engine takes over. Whichever engine is active is the one
+ * that shrinks: the collage card is given that same image (whole, on black), so it carries over.
  * Timings follow the reference walkthrough (drafts/new-energy/jsw_walkthrough.mp4).
  * Rows:
  *   1.  headline
  *   2+. one engine per row: engine image (+ optional thumbnail image, + optional framing
- *       "zoom left% top%") | engine type | description | hotspots
+ *       "zoom left% top% [flip]") | engine type | description | hotspots
  *       framing: zoom relative to showing the whole image, and where the image centre sits in the
  *       display (default "1 50% 50%"), so each engine can be cropped like the walkthrough
  *       hotspots: one paragraph each, "left% top% | TITLE | description", positioned on the
@@ -67,14 +68,22 @@ function rowImages(row) {
   }).filter(Boolean);
 }
 
-// "1.38 58% 52%" → { zoom, x, y }: zoom relative to showing the whole image, centre in the display
+// "1.38 58% 52% [flip]" → { zoom, x, y, flip }: zoom relative to showing the whole image, centre
+// in the display, and an optional horizontal flip (e.g. an asset delivered mirrored)
 function parseFraming(cell) {
   const text = [...(cell?.querySelectorAll('p') || [])]
     .filter((p) => !p.querySelector('img, picture, a'))
     .map((p) => p.textContent).join(' ');
   const m = /([\d.]+)\s+(-?[\d.]+)%\s+(-?[\d.]+)%/.exec(text);
-  if (!m) return { zoom: 1, x: 50, y: 50 };
-  return { zoom: Number(m[1]) || 1, x: Number(m[2]), y: Number(m[3]) };
+  const flip = /\b(flip|mirror)\b/i.test(text);
+  if (!m) {
+    return {
+      zoom: 1, x: 50, y: 50, flip,
+    };
+  }
+  return {
+    zoom: Number(m[1]) || 1, x: Number(m[2]), y: Number(m[3]), flip,
+  };
 }
 
 // places a slide's image (and its hotspot layer) by the engine's framing, relative to the
@@ -96,6 +105,7 @@ function frameSlide(slide, framing) {
   [img, slide.querySelector('.engine-showcase-hotspots')].forEach((node) => {
     if (node) Object.assign(node.style, box);
   });
+  img.style.transform = framing.flip ? 'scaleX(-1)' : ''; // hotspots stay on the displayed image
 }
 
 // "18% 24% | TITLE | description" → { x, y, title, text }
@@ -284,9 +294,33 @@ export default function decorate(block) {
   const next = section.nextElementSibling;
   const collage = next?.querySelector('.parallax-collage');
   if (collage) {
-    const fileOf = (img) => (img?.currentSrc || img?.src || '').split('/').pop().split('?')[0];
-    let switchedFrom = null;
+    // the collage card shows the active engine: its picture is carried over (the authored hero is
+    // restored when the hand-off is off, e.g. on phones)
+    const authoredPicture = collage.querySelector('.engine picture');
+    let carried = -1;
+    const carry = (index) => {
+      const card = collage.querySelector('.engine');
+      const slide = display.children[index];
+      const picture = slide?.querySelector('picture');
+      if (!card || !picture || carried === index) return;
+      const clone = picture.cloneNode(true);
+      [clone, ...clone.querySelectorAll('*')].forEach((node) => {
+        [...node.attributes].filter((a) => a.name.startsWith('data-aue')).forEach((a) => node.removeAttribute(a.name));
+      });
+      const img = clone.querySelector('img');
+      img.removeAttribute('style'); // drop the showcase framing; the card fits the whole image
+      img.loading = 'eager';
+      if (slide.framing?.flip) img.style.transform = 'scaleX(-1)';
+      card.querySelector('picture')?.replaceWith(clone);
+      carried = index;
+    };
+    const restoreCard = () => {
+      if (carried < 0 || !authoredPicture) return;
+      collage.querySelector('.engine picture')?.replaceWith(authoredPicture);
+      carried = -1;
+    };
     const reset = () => {
+      restoreCard();
       section.classList.remove('is-handoff');
       collage.classList.remove('is-handoff', 'is-handed');
       [section.style, next.style, content.style, display.style].forEach((st) => {
@@ -327,17 +361,8 @@ export default function decorate(block) {
       content.style.opacity = u > 0 ? String(1 - fade) : '';
       display.style.setProperty('--es-hotspots', String(1 - fade));
 
-      // show the collage's engine in the card before it shrinks (restored when scrolling back)
-      const heroImg = collage.querySelector('.engine img');
-      const match = [...display.children]
-        .findIndex((sl) => fileOf(sl.querySelector('img')) === fileOf(heroImg));
-      if (u > 0 && match >= 0 && current !== match) {
-        if (switchedFrom === null) switchedFrom = current;
-        select(match);
-      } else if (u === 0 && switchedFrom !== null) {
-        select(switchedFrom);
-        switchedFrom = null;
-      }
+      // the active engine (whichever thumbnail is selected) becomes the collage card's image
+      carry(current);
 
       // 2. the card shrinks into the collage's engine slot and darkens
       const p = shrinkEase(clamp01((u - HANDOFF.shrinkStart) / (1 - HANDOFF.shrinkStart)));
@@ -365,7 +390,8 @@ export default function decorate(block) {
         const inset = [slot.top, W - slot.right, H - slot.bottom, slot.left].map((v) => `${v * p}px`);
         section.style.clipPath = `inset(${inset.join(' ')} round 20px)`;
         block.style.setProperty('--es-dark', (p ** HANDOFF.darken).toFixed(4));
-        // the engine image travels to the slot's cover position (display scaled from its top-left)
+        // the engine image travels to where the card shows it: whole, fitted in the slot (contain,
+        // centred), as in the walkthrough; the display is scaled from its top-left
         const img = display.querySelector('.engine-showcase-slide.is-active img');
         if (img?.naturalWidth) {
           const D = { left: sec.left + display.offsetLeft, top: sec.top + display.offsetTop };
@@ -375,9 +401,9 @@ export default function decorate(block) {
             w: img.offsetWidth,
             h: img.offsetHeight,
           };
-          const cover = Math.max(slot.width / img.naturalWidth, slot.height / img.naturalHeight);
+          const fit = Math.min(slot.width / img.naturalWidth, slot.height / img.naturalHeight);
           const T = {
-            w: img.naturalWidth * cover, h: img.naturalHeight * cover, left: 0, top: 0,
+            w: img.naturalWidth * fit, h: img.naturalHeight * fit, left: 0, top: 0,
           };
           T.left = slot.left + (slot.width - T.w) / 2;
           T.top = slot.top + (slot.height - T.h) / 2;

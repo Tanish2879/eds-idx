@@ -77,7 +77,7 @@
           "valueType": "string",
           "name": "media_framing",
           "label": "Image framing",
-          "description": "Optional zoom and centre, e.g. \"1.38 58% 52%\": zoom relative to showing the whole image, then the image centre as left% top% of the display. Default: 1 50% 50%.",
+          "description": "Optional zoom and centre, e.g. \"1.38 58% 52%\": zoom relative to showing the whole image, then the image centre as left% top% of the display; add \"flip\" to mirror the image. Default: 1 50% 50%.",
           "value": ""
         },
         {
