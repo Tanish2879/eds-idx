@@ -5,16 +5,18 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * Parallax Collage: heading + paragraph pinned in the centre of the screen while two "screens"
  * of image cards scroll over it.
  *   Screen 1: a large hero card (the engine) on top of the text + 4 cards near the edges.
- *   Hold phase (--hold svh of scroll): the 4 cards stay still while the hero shrinks into a
- *   small card at the top centre (--progress 0 → 1), revealing the text.
+ *   Hold phase: the 4 cards stay still while
+ *     1. enter (--hold-enter svh of scroll): the hero starts scaled up on the right and slides /
+ *        shrinks into its centre slot (--enter 0 → 1);
+ *     2. fade (--hold-fade svh): the hero fades out, revealing the text (--fade 0 → 1).
  *   Then the image layer scrolls 1:1 with the page; after a gap, screen 2 (4 cards) scrolls in
  *   and settles around the text, where the page ends.
  * Rows:
  *   1.  heading + paragraph
  *   2+. image | optional modifier: "large" marks the hero image (default: the first image).
  *       The next 4 images fill screen 1, the following 4 screen 2 (extra images are ignored).
- * The hold distance is published as data-scroll-stops for the eased wheel scroller
- * (scripts/scroll-stops.js), so a wheel gesture stops exactly when the hero has shrunk.
+ * Both phase ends are published as data-scroll-stops for the eased wheel scroller
+ * (scripts/scroll-stops.js): one gesture lands the hero in its slot, the next fades it out.
  */
 
 const CARDS_PER_SCREEN = 4;
@@ -93,17 +95,21 @@ export default function decorate(block) {
   imagesLayer.append(...screens);
   block.replaceChildren(textLayer, imagesLayer);
 
-  // hold phase: cancel the scroll on the image layer while the hero shrinks
+  // hold phase: cancel the scroll on the image layer while the hero enters, then fades
   let ticking = false;
   const update = () => {
     ticking = false;
-    const holdVh = parseFloat(getComputedStyle(block).getPropertyValue('--hold'));
-    const hold = (holdVh / 100) * textLayer.clientHeight;
+    const style = getComputedStyle(block);
+    const svh = textLayer.clientHeight / 100;
+    const enter = parseFloat(style.getPropertyValue('--hold-enter')) * svh;
+    const fade = parseFloat(style.getPropertyValue('--hold-fade')) * svh;
+    const hold = enter + fade;
     if (!hold) return; // not laid out yet (CSS still loading): stay at the start
     const held = Math.min(hold, Math.max(0, -block.getBoundingClientRect().top));
     imagesLayer.style.transform = `translate3d(0, ${held.toFixed(1)}px, 0)`;
-    block.style.setProperty('--progress', (held / hold).toFixed(4));
-    block.dataset.scrollStops = String(Math.round(hold));
+    block.style.setProperty('--enter', (enter ? Math.min(held / enter, 1) : 1).toFixed(4));
+    block.style.setProperty('--fade', (fade ? Math.max(held - enter, 0) / fade : 1).toFixed(4));
+    block.dataset.scrollStops = `${Math.round(enter)} ${Math.round(hold)}`;
   };
   const onScroll = () => {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }

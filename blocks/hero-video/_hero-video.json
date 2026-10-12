@@ -1,0 +1,77 @@
+{
+  "definitions": [
+    {
+      "title": "Hero Video",
+      "id": "hero-video",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Hero Video",
+              "model": "hero-video"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "hero-video",
+      "fields": [
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "media_video",
+          "label": "Background video",
+          "description": "MP4 (H.264) or WebM file. Plays muted, looped and without controls."
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "media_poster",
+          "label": "Poster image",
+          "description": "Shown while the video loads, when it can't play, and with reduced motion.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "media_posterAlt",
+          "label": "Poster alt text",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "text",
+          "label": "Headline and description",
+          "description": "A heading (top left) followed by a paragraph (bottom left).",
+          "value": ""
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Button link"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkText",
+          "label": "Button text",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "scrollLabel",
+          "label": "Scroll indicator text",
+          "value": "SCROLL"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

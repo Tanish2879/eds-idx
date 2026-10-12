@@ -2,10 +2,10 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/new-energy/source.html",
   "path": "new-energy",
-  "timestamp": "2026-10-08T19:27:02.871Z",
+  "timestamp": "2026-10-12T06:50:04.351Z",
   "title": "New Energy | Built for Beyond",
   "template": "new-energy",
   "blocks": [
-    "hero-interactive"
+    "hero-video"
   ]
 }

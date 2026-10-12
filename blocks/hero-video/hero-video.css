@@ -1,0 +1,282 @@
+/* Hero Video: full-bleed background video; headline top left, description bottom left, button
+   bottom right (CSS grid), scroll indicator on the right edge. Values from the 1280x720 design.
+   Mobile-first: base = phones, >= 768px = desktop layout. */
+
+main .section.hero-video-container > .hero-video-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.hero-video {
+  /* colors */
+  --hv-bg: #000;
+  --hv-text: #fff;
+  --hv-muted: rgb(255 255 255 / 82%);
+  --hv-button-bg: #fff;
+  --hv-button-fg: #111;
+  --hv-chip-bg: rgb(12 12 12 / 85%);
+  --hv-chip-border: rgb(255 255 255 / 12%);
+
+  /* type */
+  --hv-headline-font: var(--display-font-family);
+  --hv-body-font: var(--body-font-family);
+  --hv-ui-font: var(--mono-font-family);
+  --hv-headline-size: clamp(30px, 4.18vw, 64px); /* 53.5px at 1280 */
+
+  /* layout */
+  --hv-pad-x: 20px;
+  --hv-pad-top: 112px; /* clears the floating header */
+  --hv-pad-bottom: 32px;
+  --hv-ease: var(--ease-power2-in-out, ease-in-out);
+
+  position: relative;
+  min-height: max(560px, 100svh);
+  overflow: hidden;
+  background-color: var(--hv-bg);
+  color: var(--hv-text);
+}
+
+/* background: poster image underneath, video fades in once it plays */
+.hero-video .hero-video-media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-video .hero-video-media picture,
+.hero-video .hero-video-media img,
+.hero-video .hero-video-media video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-video .hero-video-media video {
+  opacity: 0;
+  transition: opacity 0.8s var(--hv-ease);
+}
+
+.hero-video.is-playing .hero-video-media video {
+  opacity: 1;
+}
+
+/* legibility: darken the top (headline) and bottom (description / button) */
+.hero-video .hero-video-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 45%), transparent 32%, transparent 68%, rgb(0 0 0 / 55%));
+  pointer-events: none;
+}
+
+/* overlay grid: headline top left; description bottom left; button bottom right */
+.hero-video .hero-video-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template:
+    'headline' auto
+    '.' 1fr
+    'description' auto
+    'cta' auto / 1fr;
+  gap: 20px;
+  box-sizing: border-box;
+  min-height: inherit;
+  padding: var(--hv-pad-top) var(--hv-pad-x) var(--hv-pad-bottom);
+}
+
+.hero-video .hero-video-headline {
+  grid-area: headline;
+  max-width: 14em;
+  margin: 0;
+  color: var(--hv-text);
+  font-family: var(--hv-headline-font);
+  font-size: var(--hv-headline-size);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.hero-video .hero-video-description {
+  grid-area: description;
+  max-width: 495px;
+  color: var(--hv-muted);
+  font-family: var(--hv-body-font);
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.hero-video .hero-video-description p {
+  margin: 0;
+}
+
+.hero-video .hero-video-cta:any-link {
+  display: inline-flex;
+  grid-area: cta;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  justify-self: stretch;
+  box-sizing: border-box;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: 8px;
+  background-color: var(--hv-button-bg);
+  color: var(--hv-button-fg);
+  font-family: var(--hv-ui-font);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.3s var(--hv-ease), color 0.3s var(--hv-ease);
+}
+
+.hero-video .hero-video-cta-icon {
+  position: relative;
+  width: 11px;
+  height: 11px;
+  flex: none;
+  transition: transform 0.3s var(--hv-ease);
+}
+
+.hero-video .hero-video-cta-icon::before,
+.hero-video .hero-video-cta-icon::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 11px;
+  height: 1px;
+  background-color: currentcolor;
+}
+
+.hero-video .hero-video-cta-icon::after {
+  transform: rotate(90deg);
+}
+
+.hero-video .hero-video-cta:hover {
+  background-color: var(--hv-button-fg);
+  color: var(--hv-button-bg);
+}
+
+.hero-video .hero-video-cta:hover .hero-video-cta-icon {
+  transform: rotate(90deg);
+}
+
+/* scroll indicator: right edge */
+.hero-video .hero-video-scroll {
+  position: absolute;
+  top: 57.6%;
+  right: var(--hv-pad-x);
+  z-index: 1;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  box-sizing: border-box;
+  height: 34px;
+  margin: 0;
+  padding: 0 13px 0 15px;
+  border: 1px solid var(--hv-chip-border);
+  border-radius: 8px;
+  background-color: var(--hv-chip-bg);
+  color: var(--hv-text);
+  font-family: var(--hv-ui-font);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.hero-video .hero-video-scroll-mouse {
+  position: relative;
+  width: 8px;
+  height: 12px;
+  border: 1px solid currentcolor;
+  border-radius: 4px;
+}
+
+.hero-video .hero-video-scroll-mouse::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  width: 1px;
+  height: 3px;
+  border-radius: 1px;
+  background-color: currentcolor;
+  transform: translateX(-50%);
+  animation: hero-video-wheel 1.6s var(--hv-ease) infinite;
+}
+
+@keyframes hero-video-wheel {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  70% {
+    opacity: 0;
+    transform: translate(-50%, 4px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}
+
+.hero-video .hero-video-cta:focus-visible,
+.hero-video .hero-video-scroll:focus-visible {
+  outline: 2px solid var(--hv-text);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-video .hero-video-scroll-mouse::after {
+    animation: none;
+  }
+
+  .hero-video .hero-video-media video {
+    transition: none;
+  }
+}
+
+/* desktop: two-column grid, description and button share the bottom row */
+@media (width >= 768px) {
+  .hero-video {
+    --hv-pad-x: 48px;
+    --hv-pad-top: clamp(112px, 18.9svh, 180px); /* 136px at 720 tall */
+    --hv-pad-bottom: 40px;
+  }
+
+  .hero-video .hero-video-content {
+    grid-template:
+      'headline headline' auto
+      '. .' 1fr
+      'description cta' auto / 1fr auto;
+    gap: 24px 48px;
+  }
+
+  .hero-video .hero-video-description {
+    align-self: end;
+    font-size: 16px;
+    line-height: 21px;
+  }
+
+  .hero-video .hero-video-cta:any-link {
+    place-self: end;
+    width: 220px;
+  }
+
+  .hero-video .hero-video-scroll {
+    right: 85px;
+  }
+}

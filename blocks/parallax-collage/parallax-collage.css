@@ -28,9 +28,12 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   --pc-card-w: min(31.8vw, 14.6svh);
   --pc-card-ratio: 119 / 155;
 
-  /* motion: scroll (in svh) during which the cards hold still and the engine shrinks */
-  --hold: 60;
-  --progress: 0;
+  /* motion: scroll (in svh) during which the cards hold still: first the engine enters from the
+     right into its slot, then it fades out (--enter / --fade 0 → 1 are set by the block JS) */
+  --hold-enter: 50;
+  --hold-fade: 40;
+  --enter: 0;
+  --fade: 0;
 
   position: relative;
   overflow: clip; /* not hidden: that would break the sticky text */
@@ -91,7 +94,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   position: relative;
   z-index: 5;
   margin-top: -100svh;
-  padding-bottom: calc(var(--hold) * 1svh);
+  padding-bottom: calc((var(--hold-enter) + var(--hold-fade)) * 1svh);
   pointer-events: none;
 }
 
@@ -128,18 +131,23 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   object-fit: cover;
 }
 
-/* engine: on top of the text, shrinks into the top-centre card during the hold */
+/* engine: starts scaled up on the right, slides and shrinks into its centre slot (--enter),
+   then fades out to reveal the text (--fade) */
 .parallax-collage .engine {
+  --pc-enter-x: 42vw; /* start: offset to the right of the slot */
+  --pc-enter-scale: 1.15; /* start: size relative to the slot */
+
   top: 51%;
   left: 50%;
-  z-index: 2; /* above the side cards it overlaps at first */
+  z-index: 2; /* above the side cards it passes over */
   width: 93.3vw;
   aspect-ratio: 350 / 479;
   border-radius: 20px;
+  opacity: calc(1 - var(--fade));
   transform:
     translate(-50%, -50%)
-    translateY(calc(var(--progress) * -45.2svh))
-    scale(calc(1 - var(--progress) * 0.66));
+    translateX(calc((1 - var(--enter)) * var(--pc-enter-x)))
+    scale(calc(1 + (1 - var(--enter)) * (var(--pc-enter-scale) - 1)));
 }
 
 /* phones: top pair runs off the screen edges, bottom pair inset (mirrored on screen 2) */
@@ -206,13 +214,12 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   }
 
   .parallax-collage .engine {
+    --pc-enter-x: 30vw;
+    --pc-enter-scale: 1.4;
+
     top: 52.2%;
     width: calc(340 * var(--u));
     aspect-ratio: 236 / 306;
-    transform:
-      translate(-50%, -50%)
-      translateY(calc(var(--progress) * -45.4svh))
-      scale(calc(1 - var(--progress) * 0.524)); /* ends ~162px wide at the top centre */
   }
 
   .parallax-collage .screen-1 .card-a {
