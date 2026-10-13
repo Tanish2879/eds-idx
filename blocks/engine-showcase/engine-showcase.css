@@ -40,7 +40,7 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   --es-headline-font: var(--display-font-family);
   --es-body-font: var(--body-font-family);
   --es-ui-font: var(--mono-font-family);
-  --es-headline-size: clamp(24px, 2.66vw, 44px); /* 34px at 1280 */
+  --es-headline-size: clamp(24px, 7.4vw, 32px); /* 29px on a 390px phone; 34px at 1280 (below) */
 
   /* motion (walkthrough timings) */
   --es-reveal-delay: 0.95s; /* content waits for the card to settle */
@@ -54,12 +54,12 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   display: grid;
   grid-template-areas:
     'headline'
-    'display'
     'details'
-    'thumbs';
-  gap: 28px;
+    'thumbs'
+    'display';
+  gap: 0;
   box-sizing: border-box;
-  padding: 96px 20px 48px;
+  padding: 100px 24px 24px;
   background: var(--es-bg);
   color: var(--es-ink);
 }
@@ -71,13 +71,13 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
 .engine-showcase .engine-showcase-headline {
   grid-area: headline;
-  max-width: 14em;
-  margin: 0;
+  max-width: 10.5em; /* phones: "A NEW WAY TO / MOVE POWERED / BY TECH" */
+  margin: 0 0 36px;
   color: var(--es-ink);
   font-family: var(--es-headline-font);
   font-size: var(--es-headline-size);
   font-weight: 400;
-  line-height: 1.29;
+  line-height: 1.17;
   -webkit-text-stroke: var(--display-thin-large) #fff; /* lighter letters (see styles.css); on the white side of the gradient */
   letter-spacing: 0;
   text-transform: uppercase;
@@ -87,10 +87,16 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 .engine-showcase .engine-showcase-details {
   display: grid;
   grid-area: details;
+  margin-bottom: 44px;
 }
 
+/* phones: counter and engine type on one line, the description below */
 .engine-showcase .engine-showcase-detail {
+  display: grid;
   grid-area: 1 / 1;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  align-items: baseline;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.35s ease-out, visibility 0s linear 0.35s;
@@ -103,31 +109,34 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 }
 
 .engine-showcase .engine-showcase-counter {
-  margin: 0 0 13px;
-  color: var(--es-muted);
+  margin: 0;
+  color: var(--es-ink);
   font-family: var(--es-body-font);
-  font-size: 12px;
+  font-size: 16px;
+  font-weight: 300;
   line-height: 1.4;
   letter-spacing: 0;
 }
 
 .engine-showcase .engine-showcase-title {
-  margin: 0 0 10px;
+  margin: 0;
   color: var(--es-ink);
   font-family: var(--es-body-font);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 300;
   line-height: 1.3;
   letter-spacing: 0;
 }
 
 .engine-showcase .engine-showcase-description {
-  max-width: 405px; /* lines end "…engine for" / "…motor work" / "…axle.", as in the walkthrough */
+  grid-column: 1 / -1;
+  max-width: none;
+  margin-top: 12px;
   color: var(--es-muted);
   font-family: var(--es-body-font);
-  font-size: 12.25px;
+  font-size: 14px;
   font-weight: 300;
-  line-height: 18px;
+  line-height: 20px;
   letter-spacing: 0;
 }
 
@@ -138,9 +147,11 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 /* thumbnails: full colour when active, greyscale otherwise */
 .engine-showcase .engine-showcase-thumbs {
   display: grid;
+  position: relative;
+  z-index: 2; /* above the (transparent) top of the phone display box */
   grid-area: thumbs;
-  grid-template-columns: repeat(3, minmax(0, 127px));
-  gap: 9px;
+  grid-template-columns: repeat(3, 65px); /* phones; 127px from 768px */
+  gap: 5px;
 }
 
 .engine-showcase .engine-showcase-thumb {
@@ -175,9 +186,10 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   position: relative;
   z-index: 1; /* the travelling engine passes over the content column */
   grid-area: display;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 450 / 380;
+  margin: -24px -49px 0 -59px; /* phones: large, bleeding off the right edge below the thumbnails (the section clips it) */
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 0;
   transform-origin: 0 0; /* the hand-off scales it towards the collage slot */
 }
 
@@ -425,6 +437,8 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 /* two columns: bottom-anchored text + thumbnails left, engine image filling the right half */
 @media (width >= 768px) {
   .engine-showcase {
+    --es-headline-size: clamp(24px, 2.66vw, 44px); /* 34px at 1280 */
+
     grid-template:
       'content display' minmax(max(600px, 100svh), auto) / minmax(0, 1fr) minmax(0, 1fr);
     gap: 0;
@@ -443,15 +457,46 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   }
 
   .engine-showcase .engine-showcase-headline {
+    max-width: 14em;
     margin-bottom: clamp(48px, 10svh, 83px);
+    line-height: 1.29;
   }
 
   .engine-showcase .engine-showcase-details {
     margin-bottom: 44px;
   }
 
+  .engine-showcase .engine-showcase-detail {
+    display: block;
+  }
+
+  .engine-showcase .engine-showcase-counter {
+    margin: 0 0 13px;
+    color: var(--es-muted);
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .engine-showcase .engine-showcase-title {
+    margin: 0 0 10px;
+    font-size: 18px;
+  }
+
+  .engine-showcase .engine-showcase-description {
+    max-width: 405px; /* lines end "…engine for" / "…motor work" / "…axle.", as in the walkthrough */
+    margin-top: 0;
+    font-size: 12.25px;
+    line-height: 18px;
+  }
+
+  .engine-showcase .engine-showcase-thumbs {
+    grid-template-columns: repeat(3, minmax(0, 127px));
+    gap: 9px;
+  }
+
   .engine-showcase .engine-showcase-display {
     aspect-ratio: auto;
+    margin: 0;
     border-radius: 0;
   }
 
@@ -499,7 +544,8 @@ main > .section.engine-showcase-container ~ .section {
   z-index: 1;
 }
 
-/* hand-off to a following parallax collage (desktop, toggled by the block JS): the showcase stays
+/* hand-off to a following parallax collage (toggled by the block JS; on phones the showcase pins by
+   its bottom edge, see the JS): the showcase stays
    pinned above the collage, which starts at the same scroll position underneath; its engine then
    travels alone into the collage's card slot, and the showcase fades away around it */
 main > .section.engine-showcase-container.is-handoff {
@@ -508,20 +554,86 @@ main > .section.engine-showcase-container.is-handoff {
   z-index: 2;
 }
 
+/* on /new-energy without the hand-off (phones), the collage's engine starts fully off-screen to the
+   right, so it only appears as its slide-in runs, not while the section is still scrolling in */
+:where(main > .section.engine-showcase-container + .section) .parallax-collage:not(.is-handoff) .engine {
+  --pc-enter-x: 110vw; /* clear of the screen even at its 1.15 start scale */
+  --pc-exit-y: -45.4svh; /* phones (mobile design): parks at the top centre, a third of its size */
+  --pc-exit-scale: 0.34;
+
+  opacity: 1; /* it flies up out of the way instead of fading (as on desktop) */
+  transform:
+    translate(-50%, -50%)
+    translateX(calc((1 - var(--enter)) * var(--pc-enter-x)))
+    translateY(calc(var(--fade) * var(--pc-exit-y)))
+    scale(calc((1 + (1 - var(--enter)) * (var(--pc-enter-scale) - 1)) * (1 - var(--fade) * (1 - var(--pc-exit-scale)))));
+}
+
+/* phones (mobile design): the collage text is larger, 4 heading lines centred in a 335px column
+   (".section .parallax-collage" outranks the collage's own size rules) */
+:where(main > .section.engine-showcase-container) + .section .parallax-collage {
+  --pc-heading-size: min(27px, 6.9vw);
+  --pc-heading-lh: 1.22;
+  --pc-subtitle-size: min(15.5px, 3.97vw);
+  --pc-subtitle-lh: 1.61;
+  --pc-text-gap: 50px;
+}
+
+:where(main > .section.engine-showcase-container) + .section .parallax-collage .parallax-collage-heading,
+:where(main > .section.engine-showcase-container) + .section .parallax-collage .parallax-collage-subtitle {
+  max-width: min(335px, 100%);
+}
+
+:where(main > .section.engine-showcase-container) + .section .parallax-collage .parallax-collage-heading {
+  text-wrap: wrap; /* lines break as in the mobile design ("DRIVING INDIA INTO / A MORE / …") */
+}
+
+@media (width >= 768px) {
+  :where(main > .section.engine-showcase-container + .section) .parallax-collage:not(.is-handoff) .engine {
+    --pc-exit-y: -32.8svh;
+    --pc-exit-scale: 0.5;
+  }
+
+  /* desktop: back to the collage's own (width-based) sizes */
+  :where(main > .section.engine-showcase-container) + .section .parallax-collage {
+    --pc-heading-size: max(18px, calc(26 * var(--u-text)));
+    --pc-heading-lh: 1.05;
+    --pc-subtitle-size: max(12px, calc(15.5 * var(--u-text)));
+    --pc-subtitle-lh: 1.55;
+    --pc-text-gap: calc(30 * var(--u-text));
+  }
+
+  :where(main > .section.engine-showcase-container) + .section .parallax-collage .parallax-collage-heading {
+    max-width: min(17.5em, 100%);
+    text-wrap: balance;
+  }
+
+  :where(main > .section.engine-showcase-container) + .section .parallax-collage .parallax-collage-subtitle {
+    max-width: min(34.5em, 100%);
+  }
+}
+
 /* the collage's engine waits in its slot (no entry from the right) until the engine has landed;
    in the collage's fade phase it then flies up and shrinks out of the way instead of fading, with
    the text staying put (walkthrough 14.8–15.8s: centre to ≈19% of an 832px frame, half size) */
 .parallax-collage.is-handoff .engine {
   --pc-enter-x: 0px; /* a length: it is used inside translateX() */
   --pc-enter-scale: 1;
-  --pc-exit-y: -32.8svh;
-  --pc-exit-scale: 0.5;
+  --pc-exit-y: -45.4svh; /* phones (mobile design): parks at the top centre, a third of its size */
+  --pc-exit-scale: 0.34;
 
   opacity: 1;
   transform:
     translate(-50%, -50%)
     translateY(calc(var(--fade) * var(--pc-exit-y)))
     scale(calc(1 - var(--fade) * (1 - var(--pc-exit-scale))));
+}
+
+@media (width >= 768px) {
+  .parallax-collage.is-handoff .engine {
+    --pc-exit-y: -32.8svh;
+    --pc-exit-scale: 0.5;
+  }
 }
 
 .parallax-collage.is-handoff:not(.is-handed) .engine {
