@@ -7,6 +7,8 @@ import { loadScript } from './aem.js';
  * glide used for its own stops: data-scroll-duration (seconds) and data-scroll-ease (a GSAP ease
  * name or a CSS "cubic-bezier(x1, y1, x2, y2)"); otherwise steps take 1.8s with power2.inOut.
  * With several offsets, give one value per offset (durations separated by spaces, eases by ";").
+ * data-scroll-skip-up="<index>[ <index>…]" lists offsets that only stop the page on the way down
+ * (scrolling up glides past them).
  * A new gesture made while a glide is running is remembered (one step) and played as soon as the
  * glide ends, so a quick second scroll is never lost; the rest of a gesture (e.g. trackpad
  * momentum) still counts as the same gesture.
@@ -110,21 +112,28 @@ function innerCanScroll(target, deltaY) {
   return false;
 }
 
-// [{ y, glide }] sorted by y; element stops carry their element's glide
+// [{ y, glide, downOnly }] sorted by y; element stops carry their element's glide
 function collectStops() {
   const max = document.documentElement.scrollHeight - window.innerHeight;
   const stops = [{ y: 0, glide: null }, { y: max, glide: null }];
   document.querySelectorAll('[data-scroll-stops]').forEach((el) => {
     const top = el.getBoundingClientRect().top + window.scrollY;
+    const skipUp = (el.dataset.scrollSkipUp || '').split(/[\s,]+/).filter(Boolean).map(Number);
     el.dataset.scrollStops.split(/[\s,]+/).map(Number).filter(Number.isFinite)
-      .forEach((offset, i) => stops.push({ y: top + offset, glide: glideOf(el, i) }));
+      .forEach((offset, i) => stops.push({
+        y: top + offset, glide: glideOf(el, i), downOnly: skipUp.includes(i),
+      }));
   });
   const byY = new Map();
-  stops.forEach(({ y, glide }) => {
+  stops.forEach(({ y, glide, downOnly }) => {
     const key = Math.round(Math.min(Math.max(y, 0), max));
-    if (!byY.has(key) || glide) byY.set(key, glide || byY.get(key) || null);
+    const prev = byY.get(key);
+    byY.set(key, {
+      glide: glide || prev?.glide || null,
+      downOnly: prev ? prev.downOnly && !!downOnly : !!downOnly,
+    });
   });
-  return [...byY].map(([y, glide]) => ({ y, glide })).sort((a, b) => a.y - b.y);
+  return [...byY].map(([y, v]) => ({ y, ...v })).sort((a, b) => a.y - b.y);
 }
 
 /**
@@ -175,7 +184,7 @@ export default async function initScrollStops() {
     const stops = collectStops();
     const dest = direction > 0
       ? stops.find((s) => s.y > y + TOLERANCE)
-      : stops.reverse().find((s) => s.y < y - TOLERANCE);
+      : stops.reverse().find((s) => s.y < y - TOLERANCE && !s.downOnly);
     if (!dest) return;
     // the glide of the stop we go to, or of the stop we leave (e.g. back up to the top)
     const from = stops.find((s) => Math.abs(s.y - y) <= TOLERANCE);

@@ -130,6 +130,41 @@ function parseHotspots(cell) {
   }).filter(Boolean);
 }
 
+const PHONE = window.matchMedia('(width < 768px)');
+const EDGE = 16; // px kept clear of the screen edges by a phone hotspot card
+
+/*
+ * Phones: the engine image box is larger than the screen (it bleeds off the edges), so a hotspot
+ * card is placed against what is actually visible: as wide as the screen allows (up to 340px),
+ * centred on its '+' but kept inside the screen, below the '+' (or above it when there is no room),
+ * and always within the visible part of the display. From 768px the CSS places it.
+ */
+function placeCard(hotspot, toggle, card) {
+  Object.assign(card.style, {
+    top: '', left: '', right: '', bottom: '', width: '',
+  });
+  if (!PHONE.matches) return;
+  const layer = hotspot.offsetParent || hotspot.parentElement; // the card's containing block
+  const display = hotspot.closest('.engine-showcase-display');
+  if (!layer || !display) return;
+  const L = layer.getBoundingClientRect();
+  const D = display.getBoundingClientRect();
+  const t = toggle.getBoundingClientRect();
+  const width = Math.min(340, window.innerWidth - 2 * EDGE);
+  Object.assign(card.style, { width: `${width}px`, right: 'auto', bottom: 'auto' });
+  const height = card.offsetHeight;
+  const minX = Math.max(EDGE, D.left + 8);
+  const maxX = Math.min(window.innerWidth - EDGE, D.right - 8) - width;
+  const x = Math.min(Math.max(t.left + t.width / 2 - width / 2, minX), Math.max(minX, maxX));
+  const minY = Math.max(D.top + 8, 0);
+  const maxY = Math.min(D.bottom - 8, window.innerHeight - EDGE) - height;
+  const below = t.bottom + 8;
+  const above = t.top - 8 - height;
+  let y = below;
+  if (below > maxY) y = above >= minY ? above : Math.max(minY, maxY);
+  Object.assign(card.style, { left: `${(x - L.left).toFixed(1)}px`, top: `${(y - L.top).toFixed(1)}px` });
+}
+
 function buildHotspot(spot, id, open) {
   const cardId = `${id}-card`;
   const hotspot = el('div', {
@@ -148,27 +183,32 @@ function buildHotspot(spot, id, open) {
   );
   hotspot.append(toggle, card);
   const setOpen = (value) => {
+    if (value) placeCard(hotspot, toggle, card);
     hotspot.classList.toggle('is-open', value);
     toggle.setAttribute('aria-expanded', value);
     card.inert = !value;
   };
+  // a phone card placed against the screen is closed when the screen changes size
+  window.addEventListener('resize', () => {
+    if (PHONE.matches && hotspot.classList.contains('is-open')) setOpen(false);
+  }, { passive: true });
   setOpen(open);
   toggle.addEventListener('click', () => {
     // one open card per engine image
     hotspot.parentElement.querySelectorAll('.engine-showcase-hotspot.is-open')
       .forEach((h) => h.dispatchEvent(new Event('hotspot:close')));
     setOpen(true);
-    close.focus();
+    close.focus({ preventScroll: true }); // don't scroll the page (it would drive the hand-off)
   });
   close.addEventListener('click', () => {
     setOpen(false);
-    toggle.focus();
+    toggle.focus({ preventScroll: true });
   });
   hotspot.addEventListener('hotspot:close', () => setOpen(false));
   hotspot.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && hotspot.classList.contains('is-open')) {
       setOpen(false);
-      toggle.focus();
+      toggle.focus({ preventScroll: true });
     }
   });
   return hotspot;
