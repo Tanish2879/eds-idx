@@ -338,7 +338,13 @@ function buildPill(sections, uid) {
   });
   PILL_DESKTOP.addEventListener('change', () => togglePill(nav, button, false));
 
-  return el('div', { class: 'nav-pill-wrapper' }, nav);
+  // marks the page top (the CSS drops the grey bar there over a dark video hero, as in the
+  // walkthrough; it appears as soon as the page scrolls)
+  const wrapper = el('div', { class: 'nav-pill-wrapper' }, nav);
+  const atTop = () => wrapper.classList.toggle('is-at-top', window.scrollY <= 1);
+  window.addEventListener('scroll', atTop, { passive: true });
+  atTop();
+  return wrapper;
 }
 
 function toggleMenu(nav, button, force) {

@@ -691,7 +691,7 @@ header .nav-sticky-close {
    >= 768px: logo left, links + CTA right. */
 
 header .header.is-pill {
-  --pill-bg: #999;
+  --pill-bg: #a3a3a3;
   --pill-ink: #111;
   --pill-ease: var(--ease-power2-in-out);
 }
@@ -720,7 +720,15 @@ header .nav-pill {
   color: var(--color-white);
   font-family: var(--body-font-family);
   pointer-events: auto;
-  transition: border-radius 0.3s var(--pill-ease);
+  transition:
+    border-radius 0.3s var(--pill-ease),
+    background-color 0.25s var(--pill-ease);
+}
+
+/* over a dark video hero the bar has no background while the page is at the top: logo, links and
+   CTA sit straight on the video (walkthrough 0–1.5s); the grey bar appears once it scrolls */
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) {
+  background-color: transparent;
 }
 
 header .nav-pill[aria-expanded='true'] {
@@ -851,16 +859,17 @@ header .nav-pill-toggle:focus-visible {
 
 @media (width >= 768px) {
   header .nav-pill-wrapper {
-    inset: 26px 16px auto;
+    inset: 24px 16px auto;
   }
 
+  /* walkthrough at 1280: 738 × 39 bar, 8px corners, logo 16px in */
   header .nav-pill,
   header .nav-pill[aria-expanded='true'] {
     flex-wrap: nowrap;
-    width: min(670px, 100%);
-    min-height: 42px;
-    padding: 7px 6px 7px 13px;
-    border-radius: 50px;
+    width: min(738px, 100%);
+    min-height: 39px;
+    padding: 6px 4px 6px 16px;
+    border-radius: 8px;
   }
 
   header .nav-pill-brand {
@@ -893,14 +902,18 @@ header .nav-pill-toggle:focus-visible {
 
   header .nav-pill-links a:any-link {
     padding: 4px 0;
-    font-size: 13px;
+    font-size: 10.5px;
   }
 
   header .nav-pill-tools {
     flex-direction: row;
   }
 
+  /* walkthrough: 138 × 27 white button with 6px corners, ≈10px mono */
   header .nav-pill-cta:any-link {
-    min-height: 28px;
+    min-height: 27px;
+    padding: 0 13px;
+    border-radius: 6px;
+    font-size: 10px;
   }
 }

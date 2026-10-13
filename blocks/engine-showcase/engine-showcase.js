@@ -5,8 +5,9 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
 /*
  * Engine Showcase: white section with a persistent headline, a counter + engine type +
  * description that follow the selection, three thumbnails (bottom left) and a large engine image
- * with '+' hotspots (right). Thumbnails switch the engine with a crossfade: the current image fades
- * out while the next one fades in, in exactly the same place, and the text panel crossfades.
+ * with '+' hotspots (right). Thumbnails switch the engine with a vertical slide in the direction of
+ * the selection (to the right: the new image rises in from below; to the left: it drops in from
+ * above), the current one leaving through the opposite edge; the text panel crossfades.
  * Entry: the section slides up over the pinned hero (sticky hero, see CSS), scaling from 0.945 to
  * 1 as it rises; once it has settled at the top, its content fades / rises in. The section top is
  * a scroll stop (scripts/scroll-stops.js) with the walkthrough's 1.5s ease-out glide.
@@ -31,13 +32,14 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 // hero → showcase glide, fitted to the walkthrough's card rise
 const SCROLL_GLIDE = { duration: '1.5', ease: 'cubic-bezier(0.25, 0.3, 0.15, 1)' };
-// hand-off to a following collage, as fractions of the collage's first hold phase, glided over 2s
-// (walkthrough: the text fades in 0.15s, a 0.5s pause, the engine shrinks over 0.87s with this
-// curve); then the collage fades in around the landed engine; the next step (the engine flies
-// up out of the way, see CSS) glides in 1.1s
+// hand-off to a following collage, as fractions of the collage's first hold phase, glided over
+// the walkthrough's 1.55s (12.95–14.5s): the text fades in the first 0.155s, the engine travels
+// from 0.56s to 1.36s, then the collage fades in around it; the next step (the engine flies up out
+// of the way, see CSS) glides in 1.1s
 const HANDOFF_MEDIA = window.matchMedia('(width >= 768px) and (prefers-reduced-motion: no-preference)');
+const MOTION = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const HANDOFF = {
-  fadeEnd: 0.075, shrinkStart: 0.325, lockAt: 0.76, glide: { duration: '2 1.1', ease: 'none;power2.inOut' },
+  fadeEnd: 0.1, shrinkStart: 0.36, lockAt: 0.88, glide: { duration: '1.55 1.1', ease: 'none;power2.inOut' },
 };
 const shrinkEase = cubicBezier(0.65, 0, 0.15, 0.9);
 const revealEase = (t) => 1 - (1 - t) ** 2;
@@ -259,10 +261,35 @@ export default function decorate(block) {
   });
   new ResizeObserver(fitAll).observe(display);
 
-  // selection: crossfade the engine images and the text panel, mark the thumbnail
+  // selection: the engine images slide in the selection's direction (a thumbnail to the right of
+  // the current one: the new engine rises in from below and the current one leaves upwards; to the
+  // left: it drops in from above and the current one leaves downwards); the text panel crossfades
   let current = -1;
+  const slideEngines = (from, to) => {
+    const incoming = display.children[to];
+    const outgoing = display.children[from];
+    if (!incoming || !outgoing || !MOTION.matches) return;
+    const dir = to > from ? 1 : -1;
+    // the incoming engine jumps (untransitioned) to its start just outside one edge…
+    incoming.classList.remove('is-leaving');
+    incoming.style.transition = 'none';
+    incoming.style.transform = `translateY(${dir * 100}%)`;
+    incoming.getBoundingClientRect(); // commit the start position
+    incoming.style.transition = '';
+    incoming.style.transform = '';
+    // …while the current one travels out of the opposite edge
+    outgoing.style.setProperty('--es-slide-to', `${-dir * 100}%`);
+    outgoing.classList.add('is-leaving');
+    const done = (e) => {
+      if (e.target !== outgoing || e.propertyName !== 'transform') return;
+      outgoing.removeEventListener('transitionend', done);
+      if (!outgoing.classList.contains('is-active')) outgoing.classList.remove('is-leaving');
+    };
+    outgoing.addEventListener('transitionend', done);
+  };
   const select = (index) => {
     if (index === current) return;
+    if (current >= 0) slideEngines(current, index);
     [details.children, display.children, thumbs.children].forEach((list) => {
       [...list].forEach((node, i) => {
         node.classList.toggle('is-active', i === index);

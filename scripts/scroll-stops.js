@@ -7,6 +7,9 @@ import { loadScript } from './aem.js';
  * glide used for its own stops: data-scroll-duration (seconds) and data-scroll-ease (a GSAP ease
  * name or a CSS "cubic-bezier(x1, y1, x2, y2)"); otherwise steps take 1.8s with power2.inOut.
  * With several offsets, give one value per offset (durations separated by spaces, eases by ";").
+ * A new gesture made while a glide is running is remembered (one step) and played as soon as the
+ * glide ends, so a quick second scroll is never lost; the rest of a gesture (e.g. trackpad
+ * momentum) still counts as the same gesture.
  * Touch, keyboard and scrollbar scrolling stay native; nothing happens with reduced motion.
  * GSAP (+ ScrollToPlugin) is loaded from the CDN only when this is first used; blocks with
  * scroll-linked animations can load ScrollTrigger with it (loadScrollTrigger).
@@ -165,21 +168,12 @@ export default async function initScrollStops() {
 
   let tweening = false;
   let lastWheel = -Infinity;
+  let queued = 0; // direction of a gesture made during a glide (one step), 0 = none
 
-  window.addEventListener('wheel', (e) => {
-    if (e.ctrlKey) return; // pinch / ctrl+wheel zoom
-    if (!e.deltaY || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // horizontal
-    if (innerCanScroll(e.target, e.deltaY)) return;
-    e.preventDefault();
-
-    // one gesture = one step: ignore the rest of the gesture and wheels during a tween
-    const gap = e.timeStamp - lastWheel;
-    lastWheel = e.timeStamp;
-    if (tweening || gap < GESTURE_GAP) return;
-
+  const step = (direction) => {
     const y = window.scrollY;
     const stops = collectStops();
-    const dest = e.deltaY > 0
+    const dest = direction > 0
       ? stops.find((s) => s.y > y + TOLERANCE)
       : stops.reverse().find((s) => s.y < y - TOLERANCE);
     if (!dest) return;
@@ -188,6 +182,30 @@ export default async function initScrollStops() {
     const glide = dest.glide || from?.glide || DEFAULT_GLIDE;
 
     tweening = true;
-    glideTo(dest.y, glide).then(() => { tweening = false; });
+    glideTo(dest.y, glide).then(() => {
+      tweening = false;
+      const next = queued;
+      queued = 0;
+      if (next) step(next);
+    });
+  };
+
+  window.addEventListener('wheel', (e) => {
+    if (e.ctrlKey) return; // pinch / ctrl+wheel zoom
+    if (!e.deltaY || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // horizontal
+    if (innerCanScroll(e.target, e.deltaY)) return;
+    e.preventDefault();
+
+    // one gesture = one step: the rest of the gesture is ignored; a new gesture during a glide is
+    // queued for when it ends
+    const gap = e.timeStamp - lastWheel;
+    lastWheel = e.timeStamp;
+    if (gap < GESTURE_GAP) return;
+    const direction = Math.sign(e.deltaY);
+    if (tweening) {
+      queued = direction;
+      return;
+    }
+    step(direction);
   }, { passive: false });
 }
