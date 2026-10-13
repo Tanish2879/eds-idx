@@ -726,7 +726,8 @@ header .nav-pill {
 
 header .nav-pill-main {
   display: flex;
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0; /* narrow phones: the logo gives way, so the menu button stays on the same row */
   gap: 8px;
   align-items: center;
   justify-content: space-between;
@@ -740,6 +741,7 @@ header .nav-pill-main {
 
 header .nav-pill-quick:any-link {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   height: 33px;
   padding: 0 18px;
@@ -755,6 +757,7 @@ header .nav-pill-quick:any-link {
 
 header .nav-pill-brand {
   display: flex;
+  min-width: 0;
   align-items: center;
   height: 36px;
 }
@@ -763,7 +766,9 @@ header .nav-pill-brand {
 header .nav-pill-brand img {
   display: block;
   width: auto;
-  height: 24px;
+  max-width: 100%;
+  height: auto;
+  max-height: 24px;
 }
 
 header .nav-pill-toggle {

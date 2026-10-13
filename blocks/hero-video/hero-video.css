@@ -63,14 +63,17 @@ main .section.hero-video-container > .hero-video-wrapper {
   opacity: 1;
 }
 
-/* vignette, phones (mobile design): dark band behind the header, the video glowing in the upper
-   middle, near-black from just above the headline down */
+/* vignette, phones (mobile design): dark band behind the header, the video glowing above the text,
+   and near-black behind the headline, description and button. The dark part is measured from the
+   bottom (where the text sits) so the white headline never lands on the bright video, whatever the
+   screen height */
 .hero-video .hero-video-media::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to bottom, #000, rgb(0 0 0 / 85%) 20%, transparent 30%, transparent 45%, rgb(0 0 0 / 92%) 56%, #000 66%),
+    linear-gradient(to bottom, #000, rgb(0 0 0 / 85%) 90px, transparent 160px),
+    linear-gradient(to top, #000, #000 calc(var(--hv-pad-bottom) + 300px), rgb(0 0 0 / 70%) calc(var(--hv-pad-bottom) + 345px), transparent calc(var(--hv-pad-bottom) + 440px)),
     linear-gradient(to right, rgb(0 0 0 / 45%), transparent 25%, transparent 75%, rgb(0 0 0 / 45%));
   pointer-events: none;
 }
@@ -100,8 +103,7 @@ main .section.hero-video-container > .hero-video-wrapper {
   font-size: var(--hv-headline-size);
   font-weight: 400;
   line-height: 0.96; /* 34.5px line pitch, as in the mobile design */
-  -webkit-text-stroke: 0.03em #000; /* a little lighter (see styles.css); on the near-black lower half */
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
   text-align: center;
   text-transform: uppercase;
 }
@@ -253,8 +255,6 @@ main .section.hero-video-container > .hero-video-wrapper {
     max-width: 14em;
     margin: 0;
     line-height: 1.13; /* 60px line pitch at 1280, as in the walkthrough */
-    -webkit-text-stroke: 0; /* over the video: keeps its weight */
-    letter-spacing: 0;
     text-align: left;
   }
 
