@@ -89,12 +89,13 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
 }
 
 /* image layer: overlaps the text; its bottom padding is the scroll room for the hold phase
-   (it has to sit inside this layer: padding on the block would not extend the sticky pin) */
+   (it has to sit inside this layer: padding on the block would not extend the sticky pin), plus
+   an optional tail that keeps the text pinned longer (--pc-tail, set by a following section) */
 .parallax-collage .scrolling-images-layer {
   position: relative;
   z-index: 5;
   margin-top: -100svh;
-  padding-bottom: calc((var(--hold-enter) + var(--hold-fade)) * 1svh);
+  padding-bottom: calc((var(--hold-enter) + var(--hold-fade)) * 1svh + var(--pc-tail, 0px));
   pointer-events: none;
 }
 

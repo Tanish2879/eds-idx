@@ -1,0 +1,306 @@
+/* blog carousel: a full-screen stage that pins while the page background (--page-bg on <body>,
+   scrubbed by the block JS) goes from white to black behind one centred glass card; sizes follow
+   the walkthrough / design at 1280px wide (card 459 × 592) */
+body:has(.blog-carousel) {
+  background-color: var(--page-bg, #fff);
+}
+
+main > .section.blog-carousel-container {
+  --bc-pin: 70svh; /* scroll distance of the pinned colour change */
+
+  position: relative;
+  z-index: 2; /* over the previous section while the card rises */
+}
+
+/* after a parallax collage, the collage text stays pinned while the card rises over it (as in the
+   walkthrough): the collage gets one more screen of pinned scroll, and this section overlaps it */
+main > .section.parallax-collage-container:has(+ .section.blog-carousel-container) {
+  --pc-tail: 100svh;
+}
+
+main > .section.parallax-collage-container + .section.blog-carousel-container {
+  margin-top: -100svh;
+}
+
+main > .section.blog-carousel-container > .blog-carousel-wrapper {
+  max-width: none;
+  height: calc(100svh + var(--bc-pin));
+  padding: 0;
+}
+
+/* transparent while the card rises (the previous section shows around it); once pinned it takes
+   the page colour, covering what is behind */
+.blog-carousel {
+  --bc-settle: 73px; /* the card starts this far above centre and settles while it darkens */
+  --bc-glass: rgb(0 0 0 / 30%);
+  --bc-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: sticky;
+  top: 0;
+  display: grid;
+  place-items: center;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.blog-carousel.is-pinned {
+  background-color: var(--page-bg, #fff);
+}
+
+/* blurred backdrop, faded in by the scroll after the colour change */
+.blog-carousel .blog-carousel-backdrop {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.blog-carousel .blog-carousel-backdrop picture,
+.blog-carousel .blog-carousel-backdrop img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.blog-carousel .blog-carousel-backdrop img {
+  object-fit: cover;
+}
+
+/* the glass card: 30% black over a blurred view of whatever is behind it */
+.blog-carousel .blog-carousel-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(459px, calc(100% - 32px));
+  min-height: min(560px, calc(100svh - 120px));
+  overflow: hidden;
+  border-radius: 18px;
+  background-color: var(--bc-glass);
+  color: #fff;
+  backdrop-filter: blur(30px);
+}
+
+.blog-carousel .blog-carousel-head {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  align-items: center;
+  padding: 22px 18px 0;
+}
+
+.blog-carousel .blog-carousel-heading {
+  grid-column: 2;
+  margin: 0;
+  color: rgb(255 255 255 / 50%);
+  font-family: var(--display-font-family);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 28px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.blog-carousel .blog-carousel-prev,
+.blog-carousel .blog-carousel-next {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease-out;
+}
+
+.blog-carousel .blog-carousel-prev {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.blog-carousel .blog-carousel-next {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.blog-carousel .blog-carousel-prev:hover,
+.blog-carousel .blog-carousel-next:hover {
+  background-color: rgb(255 255 255 / 12%);
+}
+
+.blog-carousel .blog-carousel-prev:focus-visible,
+.blog-carousel .blog-carousel-next:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.blog-carousel .blog-carousel-prev svg,
+.blog-carousel .blog-carousel-next svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* slides share one grid cell; the outgoing one leaves to one side as the next comes in */
+.blog-carousel .blog-carousel-slides {
+  display: grid;
+  flex: 1;
+}
+
+.blog-carousel .blog-carousel-slide {
+  display: flex;
+  grid-area: 1 / 1;
+  flex-direction: column;
+  padding: 44px 28px 15px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(calc(var(--bc-dir, 1) * 28px));
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.6s var(--bc-out),
+    visibility 0s linear 0.6s;
+}
+
+.blog-carousel .blog-carousel-slide.is-leaving {
+  transform: translateX(calc(var(--bc-dir, 1) * -28px));
+}
+
+.blog-carousel .blog-carousel-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.45s ease-out 0.1s,
+    transform 0.6s var(--bc-out) 0.1s,
+    visibility 0s;
+}
+
+.blog-carousel .blog-carousel-eyebrow {
+  margin: 0;
+  color: rgb(255 255 255 / 60%);
+  font-family: var(--mono-font-family);
+  font-size: 11px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.blog-carousel .blog-carousel-title {
+  margin: 17px 0 0;
+  color: #fff;
+  font-family: var(--display-font-family);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.blog-carousel .blog-carousel-description {
+  margin-top: 20px;
+  color: rgb(255 255 255 / 80%);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.41;
+}
+
+.blog-carousel .blog-carousel-description p {
+  margin: 0;
+}
+
+.blog-carousel .blog-carousel-description p + p {
+  margin-top: 0.8em;
+}
+
+/* READ MORE bar along the card bottom, with the arrow button on the right */
+.blog-carousel .blog-carousel-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  margin: auto -13px 0;
+  padding: 0 7px 0 26px;
+  border-radius: 10px;
+  background-color: var(--bc-glass);
+  color: #fff;
+  font-family: var(--mono-font-family);
+  font-size: 12px;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: none; /* its opacity follows the scroll exactly */
+}
+
+.blog-carousel .blog-carousel-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.blog-carousel .blog-carousel-link-icon {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 7px;
+  background-color: rgb(0 0 0 / 55%);
+  transition: background-color 0.25s ease-out, color 0.25s ease-out;
+}
+
+.blog-carousel .blog-carousel-link-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.blog-carousel .blog-carousel-link:hover .blog-carousel-link-icon,
+.blog-carousel .blog-carousel-link:focus-visible .blog-carousel-link-icon {
+  background-color: #fff;
+  color: #000;
+}
+
+/* no scroll animation available (CDN blocked): show the final, dark look */
+.blog-carousel.is-static {
+  background-color: #000;
+}
+
+.blog-carousel.is-static .blog-carousel-backdrop {
+  opacity: 1;
+}
+
+@media (width >= 600px) {
+  .blog-carousel .blog-carousel-card {
+    min-height: min(592px, calc(100svh - 96px));
+  }
+
+  .blog-carousel .blog-carousel-head {
+    padding-inline: 25px;
+  }
+
+  .blog-carousel .blog-carousel-heading {
+    font-size: 19px;
+  }
+
+  .blog-carousel .blog-carousel-slide {
+    padding-top: 54px;
+  }
+
+  .blog-carousel .blog-carousel-eyebrow {
+    font-size: 11.4px;
+  }
+
+  .blog-carousel .blog-carousel-title {
+    font-size: 26.25px;
+  }
+
+  .blog-carousel .blog-carousel-description {
+    font-size: 14.7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-carousel .blog-carousel-slide,
+  .blog-carousel .blog-carousel-slide.is-active,
+  .blog-carousel .blog-carousel-slide.is-leaving {
+    transform: none;
+    transition-duration: 0s;
+    transition-delay: 0s;
+  }
+}

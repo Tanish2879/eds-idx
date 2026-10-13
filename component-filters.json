@@ -24,7 +24,14 @@
       "hero-interactive",
       "parallax-collage",
       "hero-video",
-      "engine-showcase"
+      "engine-showcase",
+      "blog-carousel"
+    ]
+  },
+  {
+    "id": "blog-carousel",
+    "components": [
+      "blog-carousel-item"
     ]
   },
   {

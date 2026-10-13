@@ -59,7 +59,8 @@
         "hero-interactive",
         "parallax-collage",
         "hero-video",
-        "engine-showcase"
+        "engine-showcase",
+        "blog-carousel"
       ]
     }
   ]

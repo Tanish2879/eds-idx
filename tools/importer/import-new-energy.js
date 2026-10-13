@@ -3,8 +3,9 @@
 
 /**
  * Importer for the /new-energy page (design source: drafts/new-energy/source.html).
- * Builds a hero-video block, an engine-showcase block and (merged from /sustainable-future) a
- * parallax-collage block, with xwalk field hints, + page metadata (JSW nav, no footer).
+ * Builds a hero-video block, an engine-showcase block, (merged from /sustainable-future) a
+ * parallax-collage block and a blog-carousel block, with xwalk field hints, + page metadata
+ * (JSW nav, no footer).
  * Writes ONLY /new-energy — no other page is created or modified.
  *
  * Block rows:
@@ -162,6 +163,38 @@ export default {
       main.append(document.createElement('hr'));
       main.append(WebImporter.Blocks.createBlock(document, { name: 'parallax-collage', cells: rowsC }));
     }
+
+    // section 4: blog-carousel (heading row, backdrop image row, then one row per blog:
+    // eyebrow | title | description | link)
+    const blogs = document.querySelector('.blog-carousel-source');
+    if (blogs) {
+      const cells = [];
+      const heading = clean(blogs.querySelector('h2')?.textContent);
+      if (heading) cells.push([hinted(document, 'heading', document.createTextNode(heading))]);
+      const backdrop = blogs.querySelector('img.backdrop');
+      if (backdrop) {
+        const img = document.createElement('img');
+        img.src = rootRelative(backdrop.getAttribute('src'));
+        img.alt = clean(backdrop.getAttribute('alt'));
+        cells.push([hinted(document, 'image', img)]);
+      }
+      blogs.querySelectorAll('article').forEach((art) => {
+        const desc = document.createElement('p');
+        desc.textContent = clean(art.querySelector('.description')?.textContent);
+        const a = art.querySelector('a');
+        const p = document.createElement('p');
+        if (a) p.append(link(document, a));
+        cells.push([
+          hinted(document, 'eyebrow', document.createTextNode(clean(art.querySelector('.eyebrow')?.textContent))),
+          hinted(document, 'title', document.createTextNode(clean(art.querySelector('h3')?.textContent))),
+          hinted(document, 'description', desc),
+          hinted(document, 'link', p),
+        ]);
+      });
+      main.append(document.createElement('hr'));
+      main.append(WebImporter.Blocks.createBlock(document, { name: 'blog-carousel', cells }));
+    }
+
     main.append(WebImporter.Blocks.getMetadataBlock(document, {
       Title: clean(document.title),
       Description: clean(document.querySelector('meta[name="description"]')?.getAttribute('content')),
@@ -175,7 +208,7 @@ export default {
     return [{
       element: document.body,
       path: '/new-energy',
-      report: { title: document.title, template: 'new-energy', blocks: ['hero-video', 'engine-showcase', 'parallax-collage'] },
+      report: { title: document.title, template: 'new-energy', blocks: ['hero-video', 'engine-showcase', 'parallax-collage', 'blog-carousel'] },
     }];
   },
 };

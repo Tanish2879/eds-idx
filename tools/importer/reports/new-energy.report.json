@@ -2,12 +2,13 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/new-energy/source.html",
   "path": "new-energy",
-  "timestamp": "2026-10-12T19:12:41.374Z",
+  "timestamp": "2026-10-13T04:39:05.091Z",
   "title": "New Energy | Built for Beyond",
   "template": "new-energy",
   "blocks": [
     "hero-video",
     "engine-showcase",
-    "parallax-collage"
+    "parallax-collage",
+    "blog-carousel"
   ]
 }

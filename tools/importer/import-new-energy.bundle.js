@@ -48,7 +48,7 @@ var CustomImportScript = (() => {
   }
   var import_new_energy_default = {
     transform: (payload) => {
-      var _a, _b, _c, _d;
+      var _a, _b, _c, _d, _e;
       const { document } = payload;
       const src = document.querySelector(".hero-video-source");
       const main = document.createElement("main");
@@ -160,19 +160,48 @@ var CustomImportScript = (() => {
         main.append(document.createElement("hr"));
         main.append(WebImporter.Blocks.createBlock(document, { name: "parallax-collage", cells: rowsC }));
       }
+      const blogs = document.querySelector(".blog-carousel-source");
+      if (blogs) {
+        const cells = [];
+        const heading2 = clean((_b = blogs.querySelector("h2")) == null ? void 0 : _b.textContent);
+        if (heading2) cells.push([hinted(document, "heading", document.createTextNode(heading2))]);
+        const backdrop = blogs.querySelector("img.backdrop");
+        if (backdrop) {
+          const img = document.createElement("img");
+          img.src = rootRelative(backdrop.getAttribute("src"));
+          img.alt = clean(backdrop.getAttribute("alt"));
+          cells.push([hinted(document, "image", img)]);
+        }
+        blogs.querySelectorAll("article").forEach((art) => {
+          var _a2, _b2, _c2;
+          const desc2 = document.createElement("p");
+          desc2.textContent = clean((_a2 = art.querySelector(".description")) == null ? void 0 : _a2.textContent);
+          const a = art.querySelector("a");
+          const p = document.createElement("p");
+          if (a) p.append(link(document, a));
+          cells.push([
+            hinted(document, "eyebrow", document.createTextNode(clean((_b2 = art.querySelector(".eyebrow")) == null ? void 0 : _b2.textContent))),
+            hinted(document, "title", document.createTextNode(clean((_c2 = art.querySelector("h3")) == null ? void 0 : _c2.textContent))),
+            hinted(document, "description", desc2),
+            hinted(document, "link", p)
+          ]);
+        });
+        main.append(document.createElement("hr"));
+        main.append(WebImporter.Blocks.createBlock(document, { name: "blog-carousel", cells }));
+      }
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
-        Description: clean((_b = document.querySelector('meta[name="description"]')) == null ? void 0 : _b.getAttribute("content")),
+        Description: clean((_c = document.querySelector('meta[name="description"]')) == null ? void 0 : _c.getAttribute("content")),
         // JSW Motors nav document (pill header); the design has no footer
-        nav: clean((_c = document.querySelector('meta[name="nav"]')) == null ? void 0 : _c.getAttribute("content")),
-        footer: clean((_d = document.querySelector('meta[name="footer"]')) == null ? void 0 : _d.getAttribute("content"))
+        nav: clean((_d = document.querySelector('meta[name="nav"]')) == null ? void 0 : _d.getAttribute("content")),
+        footer: clean((_e = document.querySelector('meta[name="footer"]')) == null ? void 0 : _e.getAttribute("content"))
       }));
       document.body.innerHTML = "";
       document.body.append(main);
       return [{
         element: document.body,
         path: "/new-energy",
-        report: { title: document.title, template: "new-energy", blocks: ["hero-video", "engine-showcase", "parallax-collage"] }
+        report: { title: document.title, template: "new-energy", blocks: ["hero-video", "engine-showcase", "parallax-collage", "blog-carousel"] }
       }];
     }
   };

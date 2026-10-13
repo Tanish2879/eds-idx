@@ -8,11 +8,14 @@ import { loadScript } from './aem.js';
  * name or a CSS "cubic-bezier(x1, y1, x2, y2)"); otherwise steps take 1.8s with power2.inOut.
  * With several offsets, give one value per offset (durations separated by spaces, eases by ";").
  * Touch, keyboard and scrollbar scrolling stay native; nothing happens with reduced motion.
- * GSAP (+ ScrollToPlugin) is loaded from the CDN only when this is first used.
+ * GSAP (+ ScrollToPlugin) is loaded from the CDN only when this is first used; blocks with
+ * scroll-linked animations can load ScrollTrigger with it (loadScrollTrigger).
  */
 
-const GSAP_SRC = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js';
-const SCROLL_TO_SRC = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js';
+const GSAP_CDN = 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist';
+const GSAP_SRC = `${GSAP_CDN}/gsap.min.js`;
+const SCROLL_TO_SRC = `${GSAP_CDN}/ScrollToPlugin.min.js`;
+const SCROLL_TRIGGER_SRC = `${GSAP_CDN}/ScrollTrigger.min.js`;
 const DEFAULT_GLIDE = { duration: 1.8, ease: 'power2.inOut' };
 const GESTURE_GAP = 150; // ms without wheel events that separates two gestures
 const TOLERANCE = 2; // px: a scroll position this close to a stop counts as "at" it
@@ -32,6 +35,26 @@ function loadGsap() {
     })();
   }
   return gsapReady;
+}
+
+let scrollTriggerReady;
+
+/**
+ * Loads GSAP with its ScrollTrigger plugin (same CDN version as the wheel scroller).
+ * @returns {Promise<{gsap: object, ScrollTrigger: object}>}
+ */
+export function loadScrollTrigger() {
+  if (!scrollTriggerReady) {
+    scrollTriggerReady = (async () => {
+      const gsap = await loadGsap();
+      await loadScript(SCROLL_TRIGGER_SRC);
+      const { ScrollTrigger } = window;
+      if (!ScrollTrigger) throw new Error('ScrollTrigger unavailable');
+      gsap.registerPlugin(ScrollTrigger);
+      return { gsap, ScrollTrigger };
+    })();
+  }
+  return scrollTriggerReady;
 }
 
 // a CSS cubic-bezier() as an easing function (progress → eased progress), for GSAP and blocks

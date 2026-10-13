@@ -156,6 +156,75 @@
     ]
   },
   {
+    "id": "blog-carousel",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "Shown at the top of the card, between the arrows (e.g. OUR BLOGS).",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background image",
+        "description": "Full-screen image behind the card; it fades in as the background turns dark. A soft, blurred image works best.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Background image alt text",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "blog-carousel-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "eyebrow",
+        "label": "Eyebrow",
+        "description": "Small line above the title, e.g. LEARN MORE / NEV & PHEV.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Link",
+        "description": "The blog post the READ MORE bar opens."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkText",
+        "label": "Link text",
+        "value": "Read more"
+      }
+    ]
+  },
+  {
     "id": "blog-list",
     "fields": [
       {
