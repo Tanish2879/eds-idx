@@ -8,7 +8,10 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  *   Hold phase: the 4 cards stay still while
  *     1. enter (--hold-enter svh of scroll): the hero starts scaled up on the right and slides /
  *        shrinks into its centre slot (--enter 0 → 1);
- *     2. fade (--hold-fade svh): the hero fades out, revealing the text (--fade 0 → 1).
+ *     2. fade (--hold-fade svh): the hero fades out, revealing the text (--fade 0 → 1);
+ *     3. optional swap (--hold-shift svh, default 0): the card layer moves up by --shift-by svh
+ *        (e.g. screen 1's cards out, screen 2's in), still pinned (--shift 0 → 1);
+ *     4. optional rest (--hold-rest svh, default 0): everything holds.
  *   Then the image layer scrolls 1:1 with the page; after a gap, screen 2 (4 cards) scrolls in
  *   and settles around the text, where the page ends.
  * Rows:
@@ -101,15 +104,27 @@ export default function decorate(block) {
     ticking = false;
     const style = getComputedStyle(block);
     const svh = textLayer.clientHeight / 100;
-    const enter = parseFloat(style.getPropertyValue('--hold-enter')) * svh;
-    const fade = parseFloat(style.getPropertyValue('--hold-fade')) * svh;
-    const hold = enter + fade;
-    if (!hold) return; // not laid out yet (CSS still loading): stay at the start
+    const len = (name) => (parseFloat(style.getPropertyValue(name)) || 0) * svh;
+    const enter = len('--hold-enter');
+    const fade = len('--hold-fade');
+    const shift = len('--hold-shift');
+    const shiftBy = len('--shift-by');
+    const hold = enter + fade + shift + len('--hold-rest');
+    if (enter + fade <= 0) return; // not laid out yet (CSS still loading): stay at the start
     const held = Math.min(hold, Math.max(0, -block.getBoundingClientRect().top));
-    imagesLayer.style.transform = `translate3d(0, ${held.toFixed(1)}px, 0)`;
-    block.style.setProperty('--enter', (enter ? Math.min(held / enter, 1) : 1).toFixed(4));
-    block.style.setProperty('--fade', (fade ? Math.max(held - enter, 0) / fade : 1).toFixed(4));
-    block.dataset.scrollStops = `${Math.round(enter)} ${Math.round(hold)}`;
+    const part = (from, length) => (length ? Math.min(Math.max(held - from, 0) / length, 1) : 1);
+    const shifted = shift ? part(enter + fade, shift) : 0;
+    // the layer is held against the scroll, less the swap's movement
+    imagesLayer.style.transform = `translate3d(0, ${(held - shiftBy * shifted).toFixed(1)}px, 0)`;
+    block.style.setProperty('--enter', part(0, enter).toFixed(4));
+    block.style.setProperty('--fade', part(enter, fade).toFixed(4));
+    block.style.setProperty('--shift', shifted.toFixed(4));
+    // wheel stops: the end of each phase, or where --pc-stops puts them (svh from the block top)
+    const custom = style.getPropertyValue('--pc-stops').trim().split(/\s+/).filter(Boolean)
+      .map(Number)
+      .filter(Number.isFinite);
+    block.dataset.scrollStops = (custom.length ? custom.map((v) => v * svh) : [enter, hold])
+      .map(Math.round).join(' ');
   };
   const onScroll = () => {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }

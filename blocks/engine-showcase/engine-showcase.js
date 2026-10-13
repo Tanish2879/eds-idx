@@ -32,14 +32,43 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 // hero → showcase glide, fitted to the walkthrough's card rise
 const SCROLL_GLIDE = { duration: '1.5', ease: 'cubic-bezier(0.25, 0.3, 0.15, 1)' };
-// hand-off to a following collage, as fractions of the collage's first hold phase, glided over
-// the walkthrough's 1.55s (12.95–14.5s): the text fades in the first 0.155s, the engine travels
-// from 0.56s to 1.36s, then the collage fades in around it; the next step (the engine flies up out
-// of the way, see CSS) glides in 1.1s
+// hand-off to a following collage, as fractions of the collage's first hold phase (100svh): the
+// text fades, the engine travels, the collage fades in around it (then Section 3's own steps
+// follow, see HANDOFF.glide and the CSS)
 const HANDOFF_MEDIA = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const MOTION = window.matchMedia('(prefers-reduced-motion: no-preference)');
+// a glide whose motion (power2.inOut) covers motionShare of the distance in timeShare of the time,
+// the rest being a still hold crossed quickly: after the motion (down) or before it (up), as a CSS
+// linear() easing for scripts/scroll-stops.js
+const inOut = (t) => (t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) ** 2);
+function holdGlide(motionShare, timeShare, up = false) {
+  const points = [];
+  for (let i = 0; i <= 10; i += 1) {
+    const k = i / 10;
+    points.push(up
+      ? [1 - timeShare + timeShare * k, 1 - motionShare + motionShare * inOut(k)]
+      : [timeShare * k, motionShare * inOut(k)]);
+  }
+  if (up) points.unshift([0, 0]);
+  else points.push([1, 1]);
+  return `linear(${points.map(([x, y]) => `${y.toFixed(4)} ${(x * 100).toFixed(2)}%`).join(', ')})`;
+}
 const HANDOFF = {
-  fadeEnd: 0.1, shrinkStart: 0.36, lockAt: 0.88, glide: { duration: '1.55 1.1', ease: 'none;power2.inOut' },
+  fadeEnd: 0.1,
+  shrinkStart: 0.36,
+  lockAt: 0.88,
+  // wheel glides to the collage's stops (135, 235, 345svh, see CSS): the hand-off (linear, 1.55s)
+  // then the 35svh hold; the fly-up (1.1s) then the part 1 hold; the card swap (1.2s, as in the
+  // walkthrough 16.55–17.75s) then the part 2 hold — each hold crossed in ~0.12s
+  glide: {
+    duration: '1.7 1.22 1.32',
+    ease: ['linear(0, 0.7407 91%, 1)', holdGlide(0.6, 0.9), holdGlide(0.6364, 0.909)].join(';'),
+  },
+  // leaving each stop upwards: across its hold first, then its motion played back
+  glideUp: {
+    duration: '1.7 1.22 1.32',
+    ease: ['linear(0, 0.2593 9%, 1)', holdGlide(0.6, 0.9, true), holdGlide(0.6364, 0.909, true)].join(';'),
+  },
 };
 const shrinkEase = cubicBezier(0.65, 0, 0.15, 0.9);
 const revealEase = (t) => 1 - (1 - t) ** 2;
@@ -395,6 +424,10 @@ export default function decorate(block) {
       restoreCard();
       section.classList.remove('is-handoff');
       collage.classList.remove('is-handoff', 'is-handed');
+      delete collage.dataset.scrollAuto;
+      delete collage.dataset.scrollSkipUp;
+      delete collage.dataset.scrollDurationUp;
+      delete collage.dataset.scrollEaseUp;
       [section, next, content, display, ...content.children].forEach(({ style }) => {
         ['top', 'marginTop', 'opacity', 'overflow', 'transform', 'transition', 'pointerEvents'].forEach((k) => { style[k] = ''; });
       });
@@ -454,6 +487,10 @@ export default function decorate(block) {
       collage.classList.add('is-handoff');
       collage.dataset.scrollDuration = HANDOFF.glide.duration;
       collage.dataset.scrollEase = HANDOFF.glide.ease;
+      collage.dataset.scrollDurationUp = HANDOFF.glideUp.duration;
+      collage.dataset.scrollEaseUp = HANDOFF.glideUp.ease;
+      // Section 3 is two scroll steps: the first lands the engine in its card (part 1) and holds
+      // there; the second flies it up to reveal the text (part 2) — both ways
       // the showcase pins at the top, or, when taller than the window (phones), by its bottom
       // edge so its lower part (thumbnails, engine) stays in view; the collage starts right under
       // the window
