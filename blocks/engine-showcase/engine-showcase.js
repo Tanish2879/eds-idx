@@ -33,10 +33,11 @@ const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const SCROLL_GLIDE = { duration: '1.5', ease: 'cubic-bezier(0.25, 0.3, 0.15, 1)' };
 // hand-off to a following collage, as fractions of the collage's first hold phase, glided over 2s
 // (walkthrough: the text fades in 0.15s, a 0.5s pause, the engine shrinks over 0.87s with this
-// curve); then the collage fades in around the landed engine
+// curve); then the collage fades in around the landed engine; the next step (the engine flies
+// up out of the way, see CSS) glides in 1.1s
 const HANDOFF_MEDIA = window.matchMedia('(width >= 768px) and (prefers-reduced-motion: no-preference)');
 const HANDOFF = {
-  fadeEnd: 0.075, shrinkStart: 0.325, lockAt: 0.76, glide: { duration: '2 1.8', ease: 'none;power2.inOut' },
+  fadeEnd: 0.075, shrinkStart: 0.325, lockAt: 0.76, glide: { duration: '2 1.1', ease: 'none;power2.inOut' },
 };
 const shrinkEase = cubicBezier(0.65, 0, 0.15, 0.9);
 const revealEase = (t) => 1 - (1 - t) ** 2;

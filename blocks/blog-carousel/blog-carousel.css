@@ -19,7 +19,7 @@ main > .section.parallax-collage-container:has(+ .section.blog-carousel-containe
 }
 
 main > .section.parallax-collage-container + .section.blog-carousel-container {
-  margin-top: -100svh;
+  margin-top: -107svh; /* + 7svh: the card peeks in that much sooner after the last collage cards, as in the walkthrough */
 }
 
 main > .section.blog-carousel-container > .blog-carousel-wrapper {
@@ -227,7 +227,7 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   font-size: 12px;
   text-decoration: none;
   text-transform: uppercase;
-  transition: none; /* its opacity follows the scroll exactly */
+  transition: none; /* no global link fade on the bar */
 }
 
 .blog-carousel .blog-carousel-link:focus-visible {

@@ -8,9 +8,9 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * at the bottom while the previous section's images scroll away, then rises over that section's
  * text, which stays pinned until the card covers it (see CSS). The stage then pins and, tied to the
  * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg on <body>) goes
- * from white to black, the blurred backdrop fades in after it, the card settles into the centre
- * and its content fades / slides up part by part. Each of those three steps is one eased wheel
- * stop (scripts/scroll-stops.js), with the walkthrough's glides.
+ * from white to black, the blurred backdrop fades in after it and the card settles into the
+ * centre. The card's content is in place throughout, as in the walkthrough. Each of those three
+ * steps is one eased wheel stop (scripts/scroll-stops.js), with the walkthrough's glides.
  * Rows:
  *   heading ("OUR BLOGS") | backdrop image (both optional, one row each)
  *   then one row per blog: eyebrow | title | description | link (its text is the bar label)
@@ -88,7 +88,7 @@ function buildSlide(row, index, total, uid) {
 
 /*
  * Scroll animation (GSAP + ScrollTrigger, loaded with the wheel scroller): the page colour, the
- * backdrop, the card position and the staggered card content are all scrubbed by the pinned scroll.
+ * backdrop and the card position are scrubbed by the pinned scroll.
  */
 async function animate(block, card, backdrop) {
   const { loadScrollTrigger } = await import('../../scripts/scroll-stops.js');
@@ -102,7 +102,6 @@ async function animate(block, card, backdrop) {
   }
   const pin = () => block.parentElement.offsetHeight - block.offsetHeight;
   const settle = () => parseFloat(getComputedStyle(block).getPropertyValue('--bc-settle')) || 0;
-  const lift = () => (MOTION.matches ? 24 : 0);
 
   // one scrubbed timeline over the pinned scroll (0 → 1), reversed when scrolling back up
   const tl = gsap.timeline({
@@ -122,28 +121,24 @@ async function animate(block, card, backdrop) {
   tl.fromTo(document.body, { '--page-bg': '#ffffff' }, { '--page-bg': '#000000', ease: (t) => t ** 1.2 }, 0)
     .fromTo(backdrop, { opacity: 0 }, { opacity: 1, ease: 'power1.in' }, 0)
     .fromTo(card, { y: () => (MOTION.matches ? -settle() : 0) }, { y: 0, ease: 'none' }, 0);
-  // the card content comes in with it, one part after another: heading row, eyebrow, title,
-  // description, READ MORE (the same part of every blog, so switching blogs later is unaffected)
-  const groups = [
-    [card.querySelector('.blog-carousel-head')],
-    ...['eyebrow', 'title', 'description', 'link'].map((part) => [...card.querySelectorAll(`.blog-carousel-${part}`)]),
-  ].filter((g) => g.length && g[0]);
-  groups.forEach((group, i) => {
-    tl.fromTo(group, { autoAlpha: 0, y: lift }, {
-      autoAlpha: 1, y: 0, duration: 0.3, ease: 'power2.out',
-    }, 0.12 + i * 0.08);
-  });
 
-  // the previous section's pinned text exits under the rising card: it fades while the card's top
-  // edge crosses it, so nothing of it shows through the glass
+  // the previous section's pinned text is covered by the rising card (walkthrough 19.2–19.5s): it
+  // stays crisp above the card's top edge and is cut off exactly at it, so none of it shows
+  // through the glass
   const prevText = block.closest('.section')?.previousElementSibling?.querySelector('.sticky-text-layer');
   if (prevText) {
-    gsap.fromTo(prevText, { opacity: 1 }, {
-      opacity: 0,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: card, start: 'top 62%', end: 'top 30%', scrub: true, invalidateOnRefresh: true,
-      },
+    const occlude = () => {
+      const edge = card.getBoundingClientRect().top - prevText.getBoundingClientRect().top;
+      prevText.style.clipPath = edge < prevText.offsetHeight ? `inset(0 0 calc(100% - ${Math.max(edge, 0).toFixed(1)}px) 0)` : '';
+    };
+    ScrollTrigger.create({
+      trigger: block.parentElement,
+      start: 'top bottom',
+      end: () => `+=${window.innerHeight + pin()}`,
+      onUpdate: occlude,
+      onRefresh: occlude,
+      onLeave: occlude,
+      onLeaveBack: () => { prevText.style.clipPath = ''; },
     });
   }
 
@@ -233,7 +228,8 @@ export default function decorate(block) {
   section.dataset.scrollDuration = GLIDE.duration;
   section.dataset.scrollEase = GLIDE.ease;
   setStops();
-  new ResizeObserver(setStops).observe(block);
+  const sizes = new ResizeObserver(setStops);
+  [block, card].forEach((node) => sizes.observe(node));
   window.addEventListener('resize', setStops, { passive: true });
 
   const start = () => {
