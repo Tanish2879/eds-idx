@@ -884,21 +884,16 @@ header .nav-pill-toggle:focus-visible {
   outline-offset: 2px;
 }
 
-/* dark states: on a dark video hero while at the top, and (phones) over the darkened blog: no grey
-   bar, logo + CTA straight on the dark, the menu button a dark square */
-body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-main {
-  background-color: transparent;
-}
-
-body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-toggle {
-  background-color: rgb(255 255 255 / 8%);
-}
-
+/* dark states: on a dark video hero while at the top, and over the darkened blog (the same look):
+   no grey bar, logo + links + CTA straight on the dark, the phone menu button a dark square */
+body.is-page-dark header .nav-pill:not([aria-expanded='true']),
+body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-main,
 body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']),
 body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-main {
   background-color: transparent;
 }
 
+body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-toggle,
 body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-toggle {
   background-color: rgb(255 255 255 / 8%);
 }
