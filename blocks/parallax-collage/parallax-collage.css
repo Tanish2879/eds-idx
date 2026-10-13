@@ -96,7 +96,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   position: relative;
   z-index: 5;
   margin-top: -100svh;
-  padding-bottom: calc((var(--hold-enter) + var(--hold-fade)) * 1svh + var(--pc-tail, 0px));
+  padding-bottom: calc((var(--hold-enter) + var(--hold-fade) + var(--hold-shift, 0) + var(--hold-rest, 0)) * 1svh + var(--pc-tail, 0px));
   pointer-events: none;
 }
 

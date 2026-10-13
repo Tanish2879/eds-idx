@@ -613,10 +613,25 @@ main > .section.engine-showcase-container.is-handoff {
   }
 }
 
-/* the hand-off runs over the collage's first hold phase: a full screen of scroll (instead of the
-   collage's own half screen), so it reads as a deliberate step on trackpads and touch */
+/* Section 3 is one pinned sequence over 345svh of scroll, as in the walkthrough (13.0–18.0s):
+     0–100svh    the hand-off: the engine lands in its card
+     100–135svh  the landing holds (nothing moves)
+     135–195svh  the engine flies up out of the way, the text shows
+     195–235svh  part 1 holds: the text with screen 1's cards
+     235–305svh  the card swap: screen 1's cards slide up and out, screen 2's in (the card layer
+                 moves up 130svh)
+     305–345svh  part 2 holds: the text with screen 2's cards; then the section unpins
+   The collage's fade phase is 100–235 (--fly is the fly-up within it), its swap 235–305 and its
+   rest 305–345. Wheel stops at the end of each hold (135, 235, 345): every gesture moves at once
+   and ends at rest */
 .parallax-collage.is-handoff {
   --hold-enter: 100;
+  --hold-fade: 135;
+  --hold-shift: 70;
+  --shift-by: 130;
+  --hold-rest: 40;
+  --fly: clamp(0, (var(--fade) - 0.2593) / 0.4444, 1);
+  --pc-stops: 135 235 345;
 }
 
 /* the collage's engine waits in its slot (no entry from the right) until the engine has landed;
@@ -631,8 +646,8 @@ main > .section.engine-showcase-container.is-handoff {
   opacity: 1;
   transform:
     translate(-50%, -50%)
-    translateY(calc(var(--fade) * var(--pc-exit-y)))
-    scale(calc(1 - var(--fade) * (1 - var(--pc-exit-scale))));
+    translateY(calc(var(--fly) * var(--pc-exit-y)))
+    scale(calc(1 - var(--fly) * (1 - var(--pc-exit-scale))));
 }
 
 @media (width >= 768px) {

@@ -533,3 +533,16 @@ main > .section.cards-timeline-container > .default-content-wrapper > p + h2 {
 html:has(main .parallax-collage) {
   --transition-fast: 0.2s var(--ease-power2-in-out);
 }
+
+/* JSW pages (pill nav): no visible page scrollbar; scrolling (wheel, trackpad, touch, keyboard)
+   works as normal */
+html:has(header .header.is-pill) {
+  scrollbar-width: none;
+}
+
+/* older WebKit / Blink without scrollbar-width */
+@supports not (scrollbar-width: none) {
+  html:has(header .header.is-pill)::-webkit-scrollbar {
+    display: none;
+  }
+}

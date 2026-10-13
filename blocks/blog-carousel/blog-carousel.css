@@ -12,14 +12,15 @@ main > .section.blog-carousel-container {
   z-index: 2; /* over the previous section while the card rises */
 }
 
-/* after a parallax collage, the collage text stays pinned while the card rises over it (as in the
-   walkthrough): the collage gets one more screen of pinned scroll, and this section overlaps it */
+/* after a parallax collage, this section overlaps the collage's end: the card waits just below the
+   screen while the collage holds its last part and rises over the (still pinned) collage text as
+   soon as it unpins; the collage ends with this section */
 main > .section.parallax-collage-container:has(+ .section.blog-carousel-container) {
-  --pc-tail: 100svh;
+  --pc-tail: 0px;
 }
 
 main > .section.parallax-collage-container + .section.blog-carousel-container {
-  margin-top: -128svh; /* + 28svh: the card peeks in while the last collage cards are still in full view */
+  margin-top: -144svh;
 }
 
 main > .section.blog-carousel-container > .blog-carousel-wrapper {

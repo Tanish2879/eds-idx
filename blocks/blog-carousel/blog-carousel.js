@@ -9,9 +9,9 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * text, which stays pinned until the card covers it (see CSS). The stage then pins and, tied to the
  * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg on <body>) goes
  * from white to black, the blurred backdrop fades in after it and the card settles into the
- * centre. The card's content is in place throughout, as in the walkthrough. Each of those steps is
- * one eased wheel stop (scripts/scroll-stops.js), with the walkthrough's glides; the darkening
- * plays by itself once the card has arrived.
+ * centre. The card's content is in place throughout, as in the walkthrough. One wheel gesture
+ * from the previous section brings the card all the way up (scripts/scroll-stops.js) and the
+ * darkening then plays by itself; one gesture back up returns to the previous section.
  * Rows:
  *   heading ("OUR BLOGS") | backdrop image (both optional, one row each)
  *   then one row per blog: eyebrow | title | description | link (its text is the bar label)
@@ -19,10 +19,9 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const MOTION = window.matchMedia('(prefers-reduced-motion: no-preference)');
-// the wheel stops, relative to the section top: card peeking in (the card top this far above the
-// viewport bottom), pinned, darkened; glides fitted to the walkthrough
-const PEEK = 110;
-const GLIDE = { duration: '1.8 1.05 2.3', ease: 'power2.inOut;power2.inOut;power2.inOut' };
+// the wheel stops, relative to the section top: pinned (the card has arrived; reached in one glide
+// from the previous section, then the darkening plays by itself), darkened
+const GLIDE = { duration: '2.2 2.3', ease: 'power2.inOut;power2.inOut' };
 const DARKEN_PHONE = 1.8; // s: the automatic darkening on phones
 let carouselId = 0;
 
@@ -126,7 +125,7 @@ async function animate(block, card, backdrop) {
   const current = { timeline: null, darken: 0 };
   const mm = gsap.matchMedia();
   mm.add({ desktop: '(width >= 768px)', phone: '(width < 768px)' }, (context) => {
-    current.darken = context.conditions.phone ? DARKEN_PHONE : Number(GLIDE.duration.split(' ')[2]);
+    current.darken = context.conditions.phone ? DARKEN_PHONE : Number(GLIDE.duration.split(' ')[1]);
     // the stage covers the previous section once the colour change has begun, and the card settles
     // from settleOf() above its resting place down to it (set directly from the progress, so a
     // re-measure at the very start of the pin can't leave it unset)
@@ -142,7 +141,8 @@ async function animate(block, card, backdrop) {
       scrollTrigger: {
         trigger: block.parentElement,
         start: 'top top',
-        end: () => `+=${pin()}`,
+        // (2px short of the pin: on the last section that is the page end, which can be 1px less)
+        end: () => `+=${Math.max(1, pin() - 2)}`,
         scrub: true,
         invalidateOnRefresh: true,
         onUpdate: apply,
@@ -308,18 +308,17 @@ export default function decorate(block) {
   });
   show(0);
 
-  // wheel stops on the section (the block itself is sticky): peek, pinned, darkened
+  // wheel stops on the section (the block itself is sticky): pinned, darkened. One gesture from the
+  // previous section brings the card all the way up (the darkening then plays by itself); the
+  // pinned stop is passed over on the way back up, so one gesture returns to the previous section
   const section = block.closest('.section') || block;
   const setStops = () => {
     const pinPx = block.parentElement.offsetHeight - block.offsetHeight;
-    const peek = card.offsetTop - settleOf(block, card) + PEEK - window.innerHeight;
-    section.dataset.scrollStops = `${Math.round(Math.min(peek, -1))} 0 ${Math.round(pinPx)}`;
+    section.dataset.scrollStops = `0 ${Math.round(pinPx)}`;
   };
   section.dataset.scrollDuration = GLIDE.duration;
   section.dataset.scrollEase = GLIDE.ease;
-  // the pinned-start stop only matters on the way down (the darkening then plays by itself):
-  // scrolling back up from the dark end goes straight to the peek
-  section.dataset.scrollSkipUp = '1';
+  section.dataset.scrollSkipUp = '0';
   setStops();
   const sizes = new ResizeObserver(setStops);
   [block, card].forEach((node) => sizes.observe(node));
