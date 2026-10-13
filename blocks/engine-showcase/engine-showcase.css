@@ -613,6 +613,12 @@ main > .section.engine-showcase-container.is-handoff {
   }
 }
 
+/* the hand-off runs over the collage's first hold phase: a full screen of scroll (instead of the
+   collage's own half screen), so it reads as a deliberate step on trackpads and touch */
+.parallax-collage.is-handoff {
+  --hold-enter: 100;
+}
+
 /* the collage's engine waits in its slot (no entry from the right) until the engine has landed;
    in the collage's fade phase it then flies up and shrinks out of the way instead of fading, with
    the text staying put (walkthrough 14.8–15.8s: centre to ≈19% of an 832px frame, half size) */

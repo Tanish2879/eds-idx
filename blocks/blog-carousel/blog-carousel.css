@@ -6,7 +6,7 @@ body:has(.blog-carousel) {
 }
 
 main > .section.blog-carousel-container {
-  --bc-pin: 70svh; /* scroll distance of the pinned colour change */
+  --bc-pin: 45svh; /* scroll distance of the pinned colour change (kept short: it also plays by itself) */
 
   position: relative;
   z-index: 2; /* over the previous section while the card rises */

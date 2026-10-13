@@ -317,6 +317,9 @@ export default function decorate(block) {
   };
   section.dataset.scrollDuration = GLIDE.duration;
   section.dataset.scrollEase = GLIDE.ease;
+  // the pinned-start stop only matters on the way down (the darkening then plays by itself):
+  // scrolling back up from the dark end goes straight to the peek
+  section.dataset.scrollSkipUp = '1';
   setStops();
   const sizes = new ResizeObserver(setStops);
   [block, card].forEach((node) => sizes.observe(node));
