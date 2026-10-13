@@ -34,6 +34,13 @@
 
   /* fonts */
   --display-font-family: sequel, sequel-fallback, arial, sans-serif;
+
+  /* the display face comes in one (heavy) weight: headings set in it are drawn lighter by tracing
+     their letters with a hairline in the colour behind them (-webkit-text-stroke, crisp at any
+     pixel density), which trims this much off every stroke — matched to the walkthrough */
+  --display-thin: 0.035em; /* mid-size headings */
+  --display-thin-large: 0.015em; /* large headlines on a plain background (they are bolder in the
+                                    walkthrough); the hero headline, over the video, keeps its weight */
   --heading-font-family: var(--display-font-family);
   --body-font-family: inter, inter-fallback, arial, sans-serif;
   --mono-font-family: roboto-mono, roboto-mono-fallback, 'Courier New', monospace;

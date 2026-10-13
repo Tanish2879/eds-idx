@@ -19,7 +19,7 @@ main > .section.parallax-collage-container:has(+ .section.blog-carousel-containe
 }
 
 main > .section.parallax-collage-container + .section.blog-carousel-container {
-  margin-top: -107svh; /* + 7svh: the card peeks in that much sooner after the last collage cards, as in the walkthrough */
+  margin-top: -128svh; /* + 28svh: the card peeks in while the last collage cards are still in full view */
 }
 
 main > .section.blog-carousel-container > .blog-carousel-wrapper {
@@ -29,22 +29,48 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
 }
 
 /* transparent while the card rises (the previous section shows around it); once pinned it takes
-   the page colour, covering what is behind */
+   the page colour, covering what is behind. The card rests below the fixed nav bar, splitting the
+   spare height 77 / 23 above / below it (design frame at 832px tall: card 187–779 under a nav
+   ending at 64), with at least 40px under the nav and 24px at the bottom */
 .blog-carousel {
-  --bc-settle: 73px; /* the card starts this far above centre and settles while it darkens */
+  --bc-settle: 73px; /* the card starts this far above its resting place and settles while it darkens */
   --bc-glass: rgb(0 0 0 / 30%);
+  --bc-glass-tone: color-mix(in srgb, var(--page-bg, #fff) 70%, #000); /* the glass as it looks on the page colour */
   --bc-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --bc-nav: 64px; /* bottom of the fixed nav bar */
+  --bc-gap-top: 40px;
+  --bc-gap-bottom: 24px;
+  --bc-room: calc(100svh - var(--bc-nav) - var(--bc-gap-top) - var(--bc-gap-bottom));
 
   position: sticky;
   top: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
   height: 100svh;
-  overflow: hidden;
+  padding: calc(var(--bc-nav) + var(--bc-gap-top)) 0 var(--bc-gap-bottom);
+
+  /* no clipping: on short windows the card (raised by --bc-settle) starts above the stage top, and
+     its rounded top edge must show as it peeks in */
+  overflow: visible;
 }
 
 .blog-carousel.is-pinned {
   background-color: var(--page-bg, #fff);
+}
+
+.blog-carousel::before,
+.blog-carousel::after {
+  content: '';
+}
+
+.blog-carousel::before {
+  flex: 77 1 0;
+}
+
+.blog-carousel::after {
+  flex: 23 1 0;
 }
 
 /* blurred backdrop, faded in by the scroll after the colour change */
@@ -71,8 +97,9 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   position: relative;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: min(459px, calc(100% - 32px));
-  min-height: min(560px, calc(100svh - 120px));
+  min-height: min(560px, var(--bc-room));
   overflow: hidden;
   border-radius: 18px;
   background-color: var(--bc-glass);
@@ -97,6 +124,7 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   line-height: 28px;
   text-align: center;
   text-transform: uppercase;
+  -webkit-text-stroke: var(--display-thin) var(--bc-glass-tone); /* lighter letters (see styles.css) */
 }
 
 .blog-carousel .blog-carousel-prev,
@@ -193,6 +221,7 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   font-weight: 400;
   line-height: 1;
   text-transform: uppercase;
+  -webkit-text-stroke: var(--display-thin) var(--bc-glass-tone); /* lighter letters (see styles.css) */
 }
 
 .blog-carousel .blog-carousel-description {
@@ -267,7 +296,7 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
 
 @media (width >= 600px) {
   .blog-carousel .blog-carousel-card {
-    min-height: min(592px, calc(100svh - 96px));
+    min-height: min(592px, var(--bc-room));
   }
 
   .blog-carousel .blog-carousel-head {

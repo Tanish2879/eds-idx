@@ -77,6 +77,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   letter-spacing: 0.01em;
   text-transform: uppercase;
   text-wrap: balance;
+  -webkit-text-stroke: var(--display-thin) var(--pc-bg); /* lighter letters (see styles.css) */
 }
 
 .parallax-collage .parallax-collage-subtitle {
@@ -196,11 +197,12 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
 @media (width >= 768px) {
   .parallax-collage {
     --u: min(1px, 0.1389svh, 0.0781vw);
-    --pc-heading-size: max(18px, calc(26 * var(--u)));
-    --pc-heading-lh: 1;
-    --pc-subtitle-size: max(12px, calc(15.5 * var(--u)));
-    --pc-subtitle-lh: 1.42;
-    --pc-text-gap: calc(24 * var(--u));
+    --u-text: min(1px, 0.0781vw); /* text keeps its design size on short windows (width-based only) */
+    --pc-heading-size: max(18px, calc(26 * var(--u-text)));
+    --pc-heading-lh: 1.05;
+    --pc-subtitle-size: max(12px, calc(15.5 * var(--u-text)));
+    --pc-subtitle-lh: 1.55;
+    --pc-text-gap: calc(30 * var(--u-text));
     --pc-card-w: calc(162 * var(--u));
     --pc-card-ratio: 113 / 146;
   }

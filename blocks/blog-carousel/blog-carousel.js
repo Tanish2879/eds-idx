@@ -9,8 +9,9 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * text, which stays pinned until the card covers it (see CSS). The stage then pins and, tied to the
  * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg on <body>) goes
  * from white to black, the blurred backdrop fades in after it and the card settles into the
- * centre. The card's content is in place throughout, as in the walkthrough. Each of those three
- * steps is one eased wheel stop (scripts/scroll-stops.js), with the walkthrough's glides.
+ * centre. The card's content is in place throughout, as in the walkthrough. Each of those steps is
+ * one eased wheel stop (scripts/scroll-stops.js), with the walkthrough's glides; the darkening
+ * plays by itself once the card has arrived.
  * Rows:
  *   heading ("OUR BLOGS") | backdrop image (both optional, one row each)
  *   then one row per blog: eyebrow | title | description | link (its text is the bar label)
@@ -57,6 +58,19 @@ function rowImage(row) {
   return { src: drafts > 0 ? pathname.slice(drafts) : link.href, alt: '', source: link };
 }
 
+/*
+ * How far above its resting place the card starts (it settles down while the page darkens):
+ * --bc-settle, but never so far that it would tuck under the fixed nav bar (16px clear) on short
+ * windows; none with reduced motion.
+ */
+function settleOf(block, card) {
+  if (!MOTION.matches) return 0;
+  const style = getComputedStyle(block);
+  const settle = parseFloat(style.getPropertyValue('--bc-settle')) || 0;
+  const nav = parseFloat(style.getPropertyValue('--bc-nav')) || 0;
+  return Math.max(0, Math.min(settle, card.offsetTop - nav - 16));
+}
+
 function buildSlide(row, index, total, uid) {
   const [eyebrow, title, description, linkCell] = [...row.children];
   const link = linkCell?.querySelector('a[href]');
@@ -91,7 +105,7 @@ function buildSlide(row, index, total, uid) {
  * backdrop and the card position are scrubbed by the pinned scroll.
  */
 async function animate(block, card, backdrop) {
-  const { loadScrollTrigger } = await import('../../scripts/scroll-stops.js');
+  const { loadScrollTrigger, glideTo } = await import('../../scripts/scroll-stops.js');
   let gsap;
   let ScrollTrigger;
   try {
@@ -101,8 +115,14 @@ async function animate(block, card, backdrop) {
     return;
   }
   const pin = () => block.parentElement.offsetHeight - block.offsetHeight;
-  const settle = () => parseFloat(getComputedStyle(block).getPropertyValue('--bc-settle')) || 0;
 
+  // the stage covers the previous section once the colour change has begun, and the card settles
+  // from settleOf() above its resting place down to it (set directly from the progress, so a
+  // re-measure at the very start of the pin can't leave it unset)
+  const apply = (self) => {
+    block.classList.toggle('is-pinned', self.progress > 0);
+    card.style.transform = `translateY(${(-settleOf(block, card) * (1 - self.progress)).toFixed(2)}px)`;
+  };
   // one scrubbed timeline over the pinned scroll (0 → 1), reversed when scrolling back up
   const tl = gsap.timeline({
     defaults: { duration: 1 },
@@ -112,15 +132,37 @@ async function animate(block, card, backdrop) {
       end: () => `+=${pin()}`,
       scrub: true,
       invalidateOnRefresh: true,
-      // the stage only covers the previous section once the colour change has begun
-      onUpdate: (self) => block.classList.toggle('is-pinned', self.progress > 0),
-      onRefresh: (self) => block.classList.toggle('is-pinned', self.progress > 0),
+      onUpdate: apply,
+      onRefresh: apply,
     },
   });
   // the page background (walkthrough 21.55–23.85s): the colour leads, the backdrop follows
   tl.fromTo(document.body, { '--page-bg': '#ffffff' }, { '--page-bg': '#000000', ease: (t) => t ** 1.2 }, 0)
-    .fromTo(backdrop, { opacity: 0 }, { opacity: 1, ease: 'power1.in' }, 0)
-    .fromTo(card, { y: () => (MOTION.matches ? -settle() : 0) }, { y: 0, ease: 'none' }, 0);
+    .fromTo(backdrop, { opacity: 0 }, { opacity: 1, ease: 'power1.in' }, 0);
+
+  // once the card has fully arrived (scrolled down onto the pinned stage and come to rest there),
+  // the colour change plays by itself: the page glides on through the pinned range with the
+  // darkening glide; scrolling back up still reverses it, and any scroll during the glide takes
+  // over
+  let lastY = window.scrollY;
+  let direction = 0;
+  let idle = 0;
+  let auto = false;
+  const darken = GLIDE.duration.split(' ').map(Number)[2];
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y !== lastY) direction = Math.sign(y - lastY);
+    lastY = y;
+    clearTimeout(idle);
+    idle = setTimeout(() => {
+      const { start, end } = tl.scrollTrigger;
+      if (auto || direction <= 0 || y < start - 2 || y > end - 2) return;
+      auto = true;
+      const left = (end - y) / Math.max(end - start, 1);
+      glideTo(end, { duration: Math.max(0.6, darken * left), ease: 'power2.inOut' })
+        .then(() => { auto = false; });
+    }, 120);
+  }, { passive: true });
 
   // the previous section's pinned text is covered by the rising card (walkthrough 19.2–19.5s): it
   // stays crisp above the card's top edge and is cut off exactly at it, so none of it shows
@@ -142,12 +184,14 @@ async function animate(block, card, backdrop) {
     });
   }
 
-  // sections above keep settling after load (images, the showcase hand-off): re-measure
+  // sections above keep settling after load (images, the showcase hand-off), and the card's own
+  // size (fonts) sets its resting place: re-measure on any of those changes
   let pending = 0;
-  new ResizeObserver(() => {
+  const remeasure = new ResizeObserver(() => {
     clearTimeout(pending);
     pending = setTimeout(() => ScrollTrigger.refresh(), 120);
-  }).observe(block.closest('main') || document.body);
+  });
+  [block.closest('main') || document.body, block, card].forEach((node) => remeasure.observe(node));
   block.classList.add('is-animated');
 }
 
@@ -221,8 +265,7 @@ export default function decorate(block) {
   const section = block.closest('.section') || block;
   const setStops = () => {
     const pinPx = block.parentElement.offsetHeight - block.offsetHeight;
-    const settle = MOTION.matches ? parseFloat(getComputedStyle(block).getPropertyValue('--bc-settle')) || 0 : 0;
-    const peek = card.offsetTop - settle + PEEK - window.innerHeight;
+    const peek = card.offsetTop - settleOf(block, card) + PEEK - window.innerHeight;
     section.dataset.scrollStops = `${Math.round(Math.min(peek, -1))} 0 ${Math.round(pinPx)}`;
   };
   section.dataset.scrollDuration = GLIDE.duration;
