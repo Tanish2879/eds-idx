@@ -418,11 +418,14 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
     flex-direction: column;
     grid-area: content;
     justify-content: flex-end;
-    padding: 96px 48px clamp(48px, 10.4svh, 100px);
+
+    /* vertical spacing gives a little on short windows, so the section always fits the viewport
+       (the hand-off to a following collage needs that); design values from 832px tall */
+    padding: clamp(72px, 11.5svh, 96px) 48px clamp(48px, 10.4svh, 100px);
   }
 
   .engine-showcase .engine-showcase-headline {
-    margin-bottom: 83px;
+    margin-bottom: clamp(48px, 10svh, 83px);
   }
 
   .engine-showcase .engine-showcase-details {
@@ -487,10 +490,20 @@ main > .section.engine-showcase-container.is-handoff {
   z-index: 2;
 }
 
-/* the collage's engine waits in its slot (no entry from the right) until the engine has landed */
+/* the collage's engine waits in its slot (no entry from the right) until the engine has landed;
+   in the collage's fade phase it then flies up and shrinks out of the way instead of fading, with
+   the text staying put (walkthrough 14.8–15.8s: centre to ≈19% of an 832px frame, half size) */
 .parallax-collage.is-handoff .engine {
   --pc-enter-x: 0px; /* a length: it is used inside translateX() */
   --pc-enter-scale: 1;
+  --pc-exit-y: -32.8svh;
+  --pc-exit-scale: 0.5;
+
+  opacity: 1;
+  transform:
+    translate(-50%, -50%)
+    translateY(calc(var(--fade) * var(--pc-exit-y)))
+    scale(calc(1 - var(--fade) * (1 - var(--pc-exit-scale))));
 }
 
 .parallax-collage.is-handoff:not(.is-handed) .engine {
@@ -500,4 +513,20 @@ main > .section.engine-showcase-container.is-handoff {
 /* the carried-over engine cut-out is shown whole on the card's black, as in the walkthrough */
 .parallax-collage.is-handoff .engine img {
   object-fit: contain;
+}
+
+/* the walkthrough shows the 1280 × 832 design frames through a shorter window, aligned to the
+   frame bottom: on windows under 832px tall the collage text sits correspondingly higher (its frame
+   position is y ≈ 316 of 832, so it moves up 62% of the missing height) and the flown-up engine
+   parks above it, as in the video while the blog card rises over them */
+@media (height < 832px) {
+  .parallax-collage.is-handoff .sticky-text-layer .content {
+    translate: 0 calc((100svh - 832px) * 0.62);
+  }
+
+  /* the engine's parking spot likewise: centre at frame y ≈ 161, i.e. 671px above the window
+     bottom (from its slot at 52.2%: 47.8svh − 671px; equals −32.8svh at 832px) */
+  .parallax-collage.is-handoff .engine {
+    --pc-exit-y: calc(47.8svh - 671px);
+  }
 }
