@@ -33,11 +33,11 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
    spare height 77 / 23 above / below it (design frame at 832px tall: card 187–779 under a nav
    ending at 64), with at least 40px under the nav and 24px at the bottom */
 .blog-carousel {
-  --bc-settle: 73px; /* the card starts this far above its resting place and settles while it darkens */
-  --bc-glass: rgb(0 0 0 / 30%);
-  --bc-glass-tone: color-mix(in srgb, var(--page-bg, #fff) 70%, #000); /* the glass as it looks on the page colour */
+  --bc-settle: 40px; /* the card starts this far above its resting place and settles while it darkens (73px from 768px) */
+  --bc-glass: rgb(128 128 128 / 30%); /* phones: a lighter frosted grey (mobile design); 30% black from 600px */
+  --bc-glass-tone: color-mix(in srgb, var(--page-bg, #fff) 70%, #808080); /* the glass as it looks on the page colour */
   --bc-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --bc-nav: 64px; /* bottom of the fixed nav bar */
+  --bc-nav: 78px; /* bottom of the fixed nav bar (64px from 768px) */
   --bc-gap-top: 40px;
   --bc-gap-bottom: 24px;
   --bc-room: calc(100svh - var(--bc-nav) - var(--bc-gap-top) - var(--bc-gap-bottom));
@@ -65,12 +65,13 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   content: '';
 }
 
+/* phones: the card sits a little above the middle of the space, the slide dashes below it */
 .blog-carousel::before {
-  flex: 77 1 0;
+  flex: 72 1 0;
 }
 
 .blog-carousel::after {
-  flex: 23 1 0;
+  flex: 28 1 0;
 }
 
 /* blurred backdrop, faded in by the scroll after the colour change */
@@ -98,38 +99,38 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: min(459px, calc(100% - 32px));
-  min-height: min(560px, var(--bc-room));
+  width: min(459px, calc(100% - 44px));
+  min-height: min(517px, var(--bc-room));
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 16px;
   background-color: var(--bc-glass);
   color: #fff;
   backdrop-filter: blur(30px);
 }
 
+/* phones (mobile design): "OUR BLOGS" small at the top left, no arrows (swipe or the dashes);
+   from 600px: arrows either side of a centred heading */
 .blog-carousel .blog-carousel-head {
-  display: grid;
-  grid-template-columns: 28px 1fr 28px;
-  align-items: center;
-  padding: 22px 18px 0;
+  display: block;
+  padding: 33px 22px 0;
 }
 
 .blog-carousel .blog-carousel-heading {
   grid-column: 2;
   margin: 0;
-  color: rgb(255 255 255 / 50%);
+  color: rgb(255 255 255 / 60%);
   font-family: var(--display-font-family);
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 28px;
-  text-align: center;
+  line-height: 1;
+  text-align: left;
   text-transform: uppercase;
   -webkit-text-stroke: var(--display-thin) var(--bc-glass-tone); /* lighter letters (see styles.css) */
 }
 
 .blog-carousel .blog-carousel-prev,
 .blog-carousel .blog-carousel-next {
-  display: grid;
+  display: none;
   place-items: center;
   width: 28px;
   height: 28px;
@@ -180,7 +181,7 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   display: flex;
   grid-area: 1 / 1;
   flex-direction: column;
-  padding: 44px 28px 15px;
+  padding: 23px 22px 24px;
   opacity: 0;
   visibility: hidden;
   transform: translateX(calc(var(--bc-dir, 1) * 28px));
@@ -205,6 +206,7 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
 }
 
 .blog-carousel .blog-carousel-eyebrow {
+  display: none; /* not in the mobile design; shown from 600px */
   margin: 0;
   color: rgb(255 255 255 / 60%);
   font-family: var(--mono-font-family);
@@ -214,23 +216,23 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
 }
 
 .blog-carousel .blog-carousel-title {
-  margin: 17px 0 0;
+  margin: 0;
   color: #fff;
   font-family: var(--display-font-family);
-  font-size: 22px;
+  font-size: 27px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 1.26;
   text-transform: uppercase;
   -webkit-text-stroke: var(--display-thin) var(--bc-glass-tone); /* lighter letters (see styles.css) */
 }
 
 .blog-carousel .blog-carousel-description {
-  margin-top: 20px;
-  color: rgb(255 255 255 / 80%);
+  margin-top: 30px;
+  color: rgb(255 255 255 / 72%);
   font-family: var(--body-font-family);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 300;
-  line-height: 1.41;
+  line-height: 25px;
 }
 
 .blog-carousel .blog-carousel-description p {
@@ -246,14 +248,14 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 48px;
-  margin: auto -13px 0;
-  padding: 0 7px 0 26px;
-  border-radius: 10px;
+  height: 63px;
+  margin: auto 0 0;
+  padding: 0 9px 0 19px;
+  border-radius: 8px;
   background-color: var(--bc-glass);
   color: #fff;
-  font-family: var(--mono-font-family);
-  font-size: 12px;
+  font-family: var(--body-font-family);
+  font-size: 15px;
   text-decoration: none;
   text-transform: uppercase;
   transition: none; /* no global link fade on the bar */
@@ -267,9 +269,9 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
 .blog-carousel .blog-carousel-link-icon {
   display: grid;
   place-items: center;
-  width: 35px;
-  height: 35px;
-  border-radius: 7px;
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
   background-color: rgb(0 0 0 / 55%);
   transition: background-color 0.25s ease-out, color 0.25s ease-out;
 }
@@ -285,6 +287,36 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
   color: #000;
 }
 
+/* phones: slide dashes under the card (the current one white) */
+.blog-carousel .blog-carousel-dots {
+  position: relative; /* above the backdrop */
+  display: flex;
+  flex-shrink: 0;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+.blog-carousel .blog-carousel-dot {
+  width: 60px;
+  height: 14px; /* tap area; the dash itself is 2px */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: linear-gradient(rgb(255 255 255 / 30%), rgb(255 255 255 / 30%)) center / 100% 2px no-repeat;
+  cursor: pointer;
+  transition: background-image 0.3s ease-out;
+}
+
+.blog-carousel .blog-carousel-dot[aria-current='true'] {
+  background-image: linear-gradient(#fff, #fff);
+}
+
+.blog-carousel .blog-carousel-dot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 /* no scroll animation available (CDN blocked): show the final, dark look */
 .blog-carousel.is-static {
   background-color: #000;
@@ -295,32 +327,90 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
 }
 
 @media (width >= 600px) {
+  .blog-carousel {
+    --bc-glass: rgb(0 0 0 / 30%);
+    --bc-glass-tone: color-mix(in srgb, var(--page-bg, #fff) 70%, #000);
+  }
+
+  .blog-carousel::before {
+    flex: 77 1 0;
+  }
+
+  .blog-carousel::after {
+    flex: 23 1 0;
+  }
+
   .blog-carousel .blog-carousel-card {
+    width: min(459px, calc(100% - 32px));
     min-height: min(592px, var(--bc-room));
+    border-radius: 18px;
   }
 
   .blog-carousel .blog-carousel-head {
-    padding-inline: 25px;
+    display: grid;
+    grid-template-columns: 28px 1fr 28px;
+    align-items: center;
+    padding: 22px 25px 0;
   }
 
   .blog-carousel .blog-carousel-heading {
+    color: rgb(255 255 255 / 50%);
     font-size: 19px;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  .blog-carousel .blog-carousel-prev,
+  .blog-carousel .blog-carousel-next {
+    display: grid;
   }
 
   .blog-carousel .blog-carousel-slide {
-    padding-top: 54px;
+    padding: 54px 28px 15px;
   }
 
   .blog-carousel .blog-carousel-eyebrow {
+    display: block;
     font-size: 11.4px;
   }
 
   .blog-carousel .blog-carousel-title {
+    margin-top: 17px;
     font-size: 26.25px;
+    line-height: 1;
   }
 
   .blog-carousel .blog-carousel-description {
+    margin-top: 20px;
+    color: rgb(255 255 255 / 80%);
     font-size: 14.7px;
+    line-height: 1.41;
+  }
+
+  .blog-carousel .blog-carousel-link {
+    height: 48px;
+    margin: auto -13px 0;
+    padding: 0 7px 0 26px;
+    border-radius: 10px;
+    font-family: var(--mono-font-family);
+    font-size: 12px;
+  }
+
+  .blog-carousel .blog-carousel-link-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 7px;
+  }
+
+  .blog-carousel .blog-carousel-dots {
+    display: none;
+  }
+}
+
+@media (width >= 768px) {
+  .blog-carousel {
+    --bc-settle: 73px;
+    --bc-nav: 64px;
   }
 }
 

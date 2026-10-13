@@ -36,7 +36,7 @@ const SCROLL_GLIDE = { duration: '1.5', ease: 'cubic-bezier(0.25, 0.3, 0.15, 1)'
 // the walkthrough's 1.55s (12.95–14.5s): the text fades in the first 0.155s, the engine travels
 // from 0.56s to 1.36s, then the collage fades in around it; the next step (the engine flies up out
 // of the way, see CSS) glides in 1.1s
-const HANDOFF_MEDIA = window.matchMedia('(width >= 768px) and (prefers-reduced-motion: no-preference)');
+const HANDOFF_MEDIA = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const MOTION = window.matchMedia('(prefers-reduced-motion: no-preference)');
 const HANDOFF = {
   fadeEnd: 0.1, shrinkStart: 0.36, lockAt: 0.88, glide: { duration: '1.55 1.1', ease: 'none;power2.inOut' },
@@ -355,8 +355,8 @@ export default function decorate(block) {
       restoreCard();
       section.classList.remove('is-handoff');
       collage.classList.remove('is-handoff', 'is-handed');
-      [section, next, content, display].forEach(({ style }) => {
-        ['marginTop', 'opacity', 'overflow', 'transform', 'transition', 'pointerEvents'].forEach((k) => { style[k] = ''; });
+      [section, next, content, display, ...content.children].forEach(({ style }) => {
+        ['top', 'marginTop', 'opacity', 'overflow', 'transform', 'transition', 'pointerEvents'].forEach((k) => { style[k] = ''; });
       });
       display.querySelectorAll('.engine-showcase-slide img').forEach((img) => { img.style.clipPath = ''; });
       section.inert = false;
@@ -364,7 +364,7 @@ export default function decorate(block) {
       display.style.removeProperty('--es-hotspots');
     };
     // the engine leaves its crop: the image is clipped to the display box at p = 0 and whole at 1
-    const travel = (p, slot, sec) => {
+    const travel = (p, slot) => {
       const slide = display.querySelector('.engine-showcase-slide.is-active');
       const img = slide?.querySelector('img');
       display.querySelectorAll('.engine-showcase-slide img').forEach((other) => {
@@ -390,7 +390,8 @@ export default function decorate(block) {
       display.style.overflow = 'visible';
       // the image box R travels to T, the whole image fitted in the card slot (contain, centred);
       // the display is scaled from its top-left
-      const D = { left: sec.left + display.offsetLeft, top: sec.top + display.offsetTop };
+      const B = block.getBoundingClientRect(); // the display is positioned within the block
+      const D = { left: B.left + display.offsetLeft, top: B.top + display.offsetTop };
       const R = { left: D.left + img.offsetLeft, top: D.top + img.offsetTop, w };
       const fit = Math.min(slot.width / img.naturalWidth, slot.height / img.naturalHeight);
       const T = { w: img.naturalWidth * fit, h: img.naturalHeight * fit };
@@ -405,8 +406,7 @@ export default function decorate(block) {
       display.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(5)})`;
     };
     const handoff = () => {
-      const fits = section.offsetHeight && section.offsetHeight <= window.innerHeight + 1;
-      if (!HANDOFF_MEDIA.matches || !fits) {
+      if (!HANDOFF_MEDIA.matches || !section.offsetHeight) {
         reset();
         return;
       }
@@ -414,11 +414,16 @@ export default function decorate(block) {
       collage.classList.add('is-handoff');
       collage.dataset.scrollDuration = HANDOFF.glide.duration;
       collage.dataset.scrollEase = HANDOFF.glide.ease;
-      next.style.marginTop = `-${section.offsetHeight}px`; // the collage starts right underneath
+      // the showcase pins at the top, or, when taller than the window (phones), by its bottom
+      // edge so its lower part (thumbnails, engine) stays in view; the collage starts right under
+      // the window
+      const pinTop = Math.min(0, window.innerHeight - section.offsetHeight);
+      section.style.top = `${pinTop}px`;
+      next.style.marginTop = `-${section.offsetHeight + pinTop}px`;
       const sec = section.getBoundingClientRect();
       // the collage shows only once the showcase has settled on top of it (opacity, not visibility:
       // descendants may set visibility: visible)
-      const waiting = sec.top > 0.5;
+      const waiting = sec.top > pinTop + 0.5;
       next.style.opacity = waiting ? '0' : '';
       next.inert = waiting;
       const layer = collage.querySelector('.sticky-text-layer');
@@ -431,7 +436,11 @@ export default function decorate(block) {
 
       // 1. the text, thumbnails and hotspots fade out: only the engine is left
       const fade = revealEase(clamp01(u / HANDOFF.fadeEnd));
-      content.style.opacity = u > 0 ? String(1 - fade) : '';
+      // (its parts, as on phones the column itself has no box)
+      [...content.children].forEach(({ style }) => {
+        style.opacity = u > 0 ? String(1 - fade) : '';
+        style.transition = u > 0 ? 'none' : ''; // follow the scroll (not the reveal transition)
+      });
       display.style.setProperty('--es-hotspots', String(1 - fade));
 
       // the active engine (whichever thumbnail is selected) becomes the collage card's image
@@ -458,7 +467,7 @@ export default function decorate(block) {
           bottom: r.bottom + dy,
         };
       }
-      travel(p, slot, sec);
+      travel(p, slot);
 
       // 3. landed: the collage's card (same image, same place) takes over underneath and the
       // showcase fades away, revealing the rest of the collage around the engine

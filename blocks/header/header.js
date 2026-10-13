@@ -324,7 +324,15 @@ function buildPill(sections, uid) {
   if (links.children.length) menu.append(links);
   if (tools.children.length) menu.append(tools);
 
-  nav.append(brand, button, menu);
+  // phones: the logo and a short CTA ("REGISTER") share the grey bar, with the menu button
+  // beside it (the full links + CTA stay in the dropdown); from 768px this wrapper is transparent
+  const main = el('div', { class: 'nav-pill-main' }, brand);
+  const cta = tools.querySelector('.nav-pill-cta');
+  if (cta) {
+    const short = cta.textContent.trim().split(/\s+/)[0];
+    main.append(el('a', { href: cta.getAttribute('href'), class: 'nav-pill-quick', 'aria-label': cta.textContent.trim() }, short));
+  }
+  nav.append(main, button, menu);
 
   button.addEventListener('click', () => togglePill(nav, button));
   window.addEventListener('keydown', (e) => {

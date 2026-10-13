@@ -699,24 +699,23 @@ header .header.is-pill {
 /* stays fixed at the top of the viewport while the page scrolls */
 header .nav-pill-wrapper {
   position: fixed;
-  inset: 16px 16px auto;
+  inset: 36px 22px auto;
   z-index: 10;
   display: flex;
   justify-content: center;
   pointer-events: none;
 }
 
+/* phones (mobile design): a grey bar with the logo + a short CTA, and the menu button as a separate
+   grey square beside it; the dropdown opens as a grey panel below. From 768px: one bar */
 header .nav-pill {
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  min-height: 48px;
-  padding: 6px 6px 6px 16px;
-  border-radius: 50px;
-  background-color: var(--pill-bg);
   color: var(--color-white);
   font-family: var(--body-font-family);
   pointer-events: auto;
@@ -725,14 +724,33 @@ header .nav-pill {
     background-color 0.25s var(--pill-ease);
 }
 
-/* over a dark video hero the bar has no background while the page is at the top: logo, links and
-   CTA sit straight on the video (walkthrough 0–1.5s); the grey bar appears once it scrolls */
-body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) {
-  background-color: transparent;
+header .nav-pill-main {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 10px;
+  background-color: var(--pill-bg);
+  transition: background-color 0.25s var(--pill-ease);
 }
 
-header .nav-pill[aria-expanded='true'] {
-  border-radius: 24px;
+header .nav-pill-quick:any-link {
+  display: inline-flex;
+  align-items: center;
+  height: 33px;
+  padding: 0 18px;
+  border-radius: 6px;
+  background-color: var(--color-white);
+  color: var(--pill-ink);
+  font-family: var(--mono-font-family);
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 header .nav-pill-brand {
@@ -750,19 +768,20 @@ header .nav-pill-brand img {
 
 header .nav-pill-toggle {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 42px;
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: transparent;
+  border-radius: 8px;
+  background-color: var(--pill-bg);
   cursor: pointer;
+  transition: background-color 0.25s var(--pill-ease);
 }
 
 header .nav-pill-toggle .nav-pill-bar {
   position: absolute;
-  left: 10px;
+  left: 11px;
   width: 16px;
   height: 1.5px;
   background-color: var(--color-white);
@@ -770,11 +789,11 @@ header .nav-pill-toggle .nav-pill-bar {
 }
 
 header .nav-pill-bar-top {
-  top: 14px;
+  top: 17px;
 }
 
 header .nav-pill-bar-bottom {
-  top: 21px;
+  top: 24px;
 }
 
 header .nav-pill[aria-expanded='true'] .nav-pill-bar-top {
@@ -790,7 +809,10 @@ header .nav-pill-menu {
   flex-basis: 100%;
   flex-direction: column;
   gap: 16px;
-  padding: 8px 10px 10px 0;
+  box-sizing: border-box;
+  padding: 8px 16px 16px;
+  border-radius: 12px;
+  background-color: var(--pill-bg);
 }
 
 header .nav-pill[aria-expanded='true'] .nav-pill-menu {
@@ -857,6 +879,25 @@ header .nav-pill-toggle:focus-visible {
   outline-offset: 2px;
 }
 
+/* dark states: on a dark video hero while at the top, and (phones) over the darkened blog: no grey
+   bar, logo + CTA straight on the dark, the menu button a dark square */
+body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-main {
+  background-color: transparent;
+}
+
+body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-toggle {
+  background-color: rgb(255 255 255 / 8%);
+}
+
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']),
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-main {
+  background-color: transparent;
+}
+
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-toggle {
+  background-color: rgb(255 255 255 / 8%);
+}
+
 @media (width >= 768px) {
   header .nav-pill-wrapper {
     inset: 24px 16px auto;
@@ -866,10 +907,20 @@ header .nav-pill-toggle:focus-visible {
   header .nav-pill,
   header .nav-pill[aria-expanded='true'] {
     flex-wrap: nowrap;
+    gap: 0;
     width: min(738px, 100%);
     min-height: 39px;
     padding: 6px 4px 6px 16px;
     border-radius: 8px;
+    background-color: var(--pill-bg);
+  }
+
+  header .nav-pill-main {
+    display: contents;
+  }
+
+  header .nav-pill-quick:any-link {
+    display: none;
   }
 
   header .nav-pill-brand {
@@ -893,6 +944,8 @@ header .nav-pill-toggle:focus-visible {
     gap: 34px;
     margin-left: auto;
     padding: 0;
+    border-radius: 0;
+    background: none;
   }
 
   header .nav-pill-links {
@@ -912,7 +965,7 @@ header .nav-pill-toggle:focus-visible {
   /* walkthrough: 138 × 27 white button with 6px corners, ≈10px mono */
   header .nav-pill-cta:any-link {
     min-height: 27px;
-    padding: 0 13px;
+    padding: 0 16px;
     border-radius: 6px;
     font-size: 10px;
   }
