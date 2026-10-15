@@ -649,11 +649,12 @@ export default function decorate(block) {
     handoff();
   }
 
-  // the section top is a wheel stop, reached with the walkthrough's glide
+  // the section top is a scroll stop, reached with the walkthrough's glide (wheel / trackpad, and
+  // touch swipes: on phones one swipe moves one stop too)
   block.dataset.scrollStops = '0';
   block.dataset.scrollDuration = SCROLL_GLIDE.duration;
   block.dataset.scrollEase = SCROLL_GLIDE.ease;
-  const startWheel = () => import('../../scripts/scroll-stops.js').then(({ default: init }) => init());
+  const startWheel = () => import('../../scripts/scroll-stops.js').then(({ default: init }) => init({ touch: true }));
   if (document.readyState === 'complete') startWheel();
   else window.addEventListener('load', startWheel, { once: true });
 }
