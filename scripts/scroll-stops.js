@@ -15,7 +15,11 @@ import { loadScript } from './aem.js';
  * rest on the stop reached, so a quick second scroll is never lost and every stop is seen to hold;
  * the rest of a gesture (e.g. trackpad momentum) still counts as the same gesture, and a gesture
  * only counts once it has moved MIN_GESTURE px (light touches are ignored).
- * Touch, keyboard and scrollbar scrolling stay native; nothing happens with reduced motion.
+ * Touch swipes work the same way on pages that ask for it (initScrollStops({ touch: true })): one
+ * vertical swipe = one step, the page doesn't scroll under the finger meanwhile; two-finger
+ * gestures (pinch zoom), a zoomed-in page and scrollable panels under the finger stay native.
+ * Elsewhere touch stays native; keyboard and scrollbar scrolling always do; nothing happens with
+ * reduced motion.
  * GSAP (+ ScrollToPlugin) is loaded from the CDN only when this is first used; blocks with
  * scroll-linked animations can load ScrollTrigger with it (loadScrollTrigger).
  */
@@ -30,8 +34,10 @@ const TOLERANCE = 2; // px: a scroll position this close to a stop counts as "at
 const REST = 450; // ms on a stop before a gesture made during the glide is played
 const MIN_GESTURE = 24; // px of wheel movement before a gesture counts (ignores light touches)
 const MERGE = 24; // px: stops closer than this count as one
+const MIN_SWIPE = 30; // px of vertical finger travel before a swipe counts (ignores taps / jitter)
 
-let started = false;
+let controller = null; // the shared stepper, once started: { gesture, ready, isNative }
+let touchOn = false;
 let gsapReady;
 
 function loadGsap() {
@@ -255,12 +261,10 @@ export async function glideTo(y, glide = DEFAULT_GLIDE) {
   });
 }
 
-export default function initScrollStops() {
-  if (started || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  started = true;
+// the stepper: plays one step per gesture, or queues it while a glide is running
+function createController() {
   // GSAP is fetched when the browser is idle where a mouse / trackpad is available, and otherwise
-  // only at the first wheel event: touch-only phones scroll natively and never load it for this.
-  // If the CDN is unavailable, wheel scrolling stays native
+  // at the first gesture. If the CDN is unavailable, scrolling stays native
   let native = false;
   const ready = () => loadGsap().catch(() => { native = true; });
   if (window.matchMedia('(any-pointer: fine)').matches) {
@@ -269,9 +273,6 @@ export default function initScrollStops() {
   }
 
   let tweening = false;
-  let lastWheel = -Infinity;
-  let travel = 0; // wheel movement in the current gesture, before it counts
-  let counted = false; // the current gesture has already made its step (or been queued)
   let queued = 0; // direction of a gesture made during a glide (one step), 0 = none
 
   const step = (direction) => {
@@ -311,8 +312,19 @@ export default function initScrollStops() {
     });
   };
 
+  const gesture = (direction) => {
+    if (tweening) queued = direction;
+    else step(direction);
+  };
+  return { gesture, ready, isNative: () => native };
+}
+
+function listenWheel({ gesture, ready, isNative }) {
+  let lastWheel = -Infinity;
+  let travel = 0; // wheel movement in the current gesture, before it counts
+  let counted = false; // the current gesture has already made its step (or been queued)
   window.addEventListener('wheel', (e) => {
-    if (native || e.ctrlKey) return; // (ctrl: pinch / ctrl+wheel zoom)
+    if (isNative() || e.ctrlKey) return; // (ctrl: pinch / ctrl+wheel zoom)
     ready();
     if (!e.deltaY || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // horizontal
     if (innerCanScroll(e.target, e.deltaY)) return;
@@ -332,11 +344,65 @@ export default function initScrollStops() {
     travel += e.deltaY * unit;
     if (Math.abs(travel) < MIN_GESTURE) return;
     counted = true;
-    const direction = Math.sign(travel);
-    if (tweening) {
-      queued = direction;
+    gesture(Math.sign(travel));
+  }, { passive: false });
+}
+
+// one vertical swipe = one step, counted as soon as the finger has travelled MIN_SWIPE px (finger
+// up = down the page); the page itself doesn't move under the finger. Taps, horizontal swipes
+// (e.g. a carousel) and the rest of a swipe make no step
+function listenTouch({ gesture, ready, isNative }) {
+  let swipe = null; // { x, y, target, counted, inner }
+  window.addEventListener('touchstart', (e) => {
+    const zoomed = (window.visualViewport?.scale || 1) > 1.01;
+    if (e.touches.length !== 1 || zoomed || isNative()) {
+      swipe = null; // pinch zoom / panning a zoomed-in page: native
       return;
     }
-    step(direction);
+    const [t] = e.touches;
+    swipe = {
+      x: t.clientX, y: t.clientY, target: e.target, counted: false, inner: null,
+    };
+    ready();
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (!swipe) return;
+    if (e.touches.length !== 1) {
+      swipe = null; // a second finger: pinch zoom
+      return;
+    }
+    const [t] = e.touches;
+    const dx = t.clientX - swipe.x;
+    const dy = swipe.y - t.clientY;
+    // a scrollable panel under the finger (that can scroll that way) scrolls natively
+    if (swipe.inner === null && Math.abs(dy) > 2) swipe.inner = innerCanScroll(swipe.target, dy);
+    if (swipe.inner) return;
+    if (e.cancelable) e.preventDefault();
+    if (swipe.counted || Math.abs(dy) < MIN_SWIPE || Math.abs(dy) < Math.abs(dx)) return;
+    swipe.counted = true;
+    gesture(Math.sign(dy));
   }, { passive: false });
+  const end = () => { swipe = null; };
+  window.addEventListener('touchend', end, { passive: true });
+  window.addEventListener('touchcancel', end, { passive: true });
+}
+
+/**
+ * Starts the eased stepping between the page's scroll stops (once per page; later calls can still
+ * turn on touch swipes).
+ * @param {{touch?: boolean}} [options] touch: step with vertical touch swipes too
+ */
+export default function initScrollStops({ touch = false } = {}) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!controller) {
+    controller = createController();
+    listenWheel(controller);
+  }
+  if (touch && !touchOn) {
+    touchOn = true;
+    listenTouch(controller);
+    // a touch screen steps at its first swipe: have GSAP ready once the page is idle
+    if (window.requestIdleCallback) window.requestIdleCallback(controller.ready, { timeout: 2000 });
+    else setTimeout(controller.ready, 500);
+  }
 }

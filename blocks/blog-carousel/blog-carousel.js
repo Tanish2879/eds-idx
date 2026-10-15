@@ -339,7 +339,7 @@ export default function decorate(block) {
       animate(block, card, backdrop);
     }, { rootMargin: '200% 0px' });
     near.observe(section);
-    import('../../scripts/scroll-stops.js').then(({ default: init }) => init());
+    import('../../scripts/scroll-stops.js').then(({ default: init }) => init({ touch: true }));
   };
   if (document.readyState === 'complete') start();
   else window.addEventListener('load', start, { once: true });
