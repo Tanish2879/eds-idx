@@ -289,6 +289,33 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
+ * Holds a picture back: its sources and image keep their URLs in data attributes, so nothing is
+ * fetched until loadHeldPicture() (e.g. images that are not shown yet).
+ * @param {Element} picture a <picture> (e.g. from createOptimizedPicture)
+ */
+export function holdPicture(picture) {
+  picture?.querySelectorAll('source[srcset], img[src]').forEach((node) => {
+    const attr = node.tagName === 'IMG' ? 'src' : 'srcset';
+    node.dataset[`held${attr}`] = node.getAttribute(attr);
+    node.removeAttribute(attr);
+  });
+}
+
+/**
+ * Lets a picture held back by holdPicture() load now (no-op otherwise). The image loads eagerly:
+ * it is released because it is wanted, and a lazy image whose URL is set late may never load.
+ * @param {Element} picture
+ */
+export function loadHeldPicture(picture) {
+  picture?.querySelectorAll('[data-heldsrc], [data-heldsrcset]').forEach((node) => {
+    const attr = node.dataset.heldsrc !== undefined ? 'src' : 'srcset';
+    if (node.tagName === 'IMG') node.loading = 'eager';
+    node.setAttribute(attr, node.dataset[`held${attr}`]);
+    delete node.dataset[`held${attr}`];
+  });
+}
+
+/**
  * Art direction: merges a mobile picture into a desktop picture so that viewports
  * narrower than `breakpoint` px load the mobile image instead.
  * The mobile picture's media-less <source> elements (its small / fallback renditions)

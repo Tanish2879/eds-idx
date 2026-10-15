@@ -100,7 +100,7 @@
           "valueType": "string",
           "name": "hotspots",
           "label": "Hotspots",
-          "description": "One paragraph per hotspot: position | TITLE | description, e.g. \"18% 24% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is left% top% on the engine image.",
+          "description": "Up to 4 hotspots (any more are ignored), one paragraph each: position | TITLE | description, e.g. \"18% 76% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is x y in % of the engine image, measured from its bottom-left corner (\"18 76\" works too).",
           "value": ""
         }
       ]

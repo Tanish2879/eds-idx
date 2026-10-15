@@ -8,6 +8,10 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * heading + paragraph | button link | scroll label.
  * The poster renders as a regular eager image (good LCP) and stays visible until the video plays,
  * if the video can't play, and when the user prefers reduced motion.
+ * The video (several MB) is fetched only once the page has loaded, so it doesn't compete with the
+ * first paint and the rest of the page; not at all with data saver on or on a 2G / 3G connection
+ * (the poster stays); and it plays only while the hero can be seen (paused once the next section
+ * covers it), which frees the CPU / GPU for scrolling on phones.
  */
 
 const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
@@ -16,6 +20,7 @@ const VIDEO_TYPES = {
   mp4: 'video/mp4', m4v: 'video/mp4', mov: 'video/quicktime', webm: 'video/webm',
 };
 const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)');
+const SLOW_NETWORK = ['slow-2g', '2g', '3g'];
 
 const pathOf = (href) => new URL(href, window.location).pathname;
 
@@ -36,18 +41,25 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
-function buildVideo(links, posterSrc) {
+// no video on a data saver or a slow connection (where the browser reports it)
+function videoWanted() {
+  const net = navigator.connection;
+  return !net || !(net.saveData || SLOW_NETWORK.includes(net.effectiveType));
+}
+
+// (no poster attribute: the poster <img> underneath shows until the video plays, and the attribute
+// would fetch the image a second time)
+function buildVideo(links) {
   const video = el('video', {
     muted: '',
     loop: '',
     playsinline: '',
-    preload: 'auto',
+    preload: 'none', // nothing is fetched until the video starts (see decorate)
     'aria-hidden': 'true',
     tabindex: '-1',
     disablepictureinpicture: '',
   });
   video.muted = true; // the attribute alone doesn't satisfy autoplay policies in every browser
-  if (posterSrc) video.poster = posterSrc;
   links.forEach((a) => {
     const src = mediaUrl(a.href);
     const ext = pathOf(src).split('.').pop().toLowerCase();
@@ -79,18 +91,16 @@ export default function decorate(block) {
 
   // background: poster image + video
   const media = el('div', { class: 'hero-video-media' });
-  let posterSrc;
   if (poster) {
     const picture = createOptimizedPicture(poster.src, poster.alt, true, [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]);
     const posterImg = picture.querySelector('img');
     posterImg.setAttribute('fetchpriority', 'high');
     moveInstrumentation(poster.source, posterImg);
-    posterSrc = posterImg.currentSrc || picture.querySelector('img').src;
     media.append(picture);
   }
   let video;
-  if (videoLinks.length) {
-    video = buildVideo(videoLinks, posterSrc);
+  if (videoLinks.length && videoWanted()) {
+    video = buildVideo(videoLinks);
     media.append(video);
   }
 
@@ -144,14 +154,42 @@ export default function decorate(block) {
   video.addEventListener('playing', () => block.classList.add('is-playing'));
   // the browser tries each <source> in turn: only the last one failing means no playable format
   video.lastElementChild?.addEventListener('error', () => video.remove());
+  let started = false; // fetching / playing allowed (once the page has loaded)
+  let inView = true; // the hero is on screen
+  let covered = false; // the next section has slid over it (the hero may be pinned underneath)
   const sync = () => {
+    if (!started) return;
     if (REDUCED_MOTION.matches) {
       video.pause();
       block.classList.remove('is-playing');
+    } else if (!inView || covered) {
+      video.pause(); // its last frame stays, so it carries on seamlessly when uncovered
     } else {
       video.play().catch(() => { /* autoplay blocked: the poster stays */ });
     }
   };
   REDUCED_MOTION.addEventListener('change', sync);
-  sync();
+  new IntersectionObserver(([entry]) => {
+    inView = entry.isIntersecting;
+    sync();
+  }).observe(block);
+  const next = (block.closest('.section') || block).nextElementSibling;
+  if (next) {
+    // covered: the next section's top has reached the top 1% of the screen, or it is past it
+    new IntersectionObserver(([entry]) => {
+      covered = entry.isIntersecting || entry.boundingClientRect.top < 0;
+      sync();
+    }, { rootMargin: '0px 0px -99% 0px' }).observe(next);
+  }
+  const start = () => {
+    started = true;
+    video.preload = 'auto';
+    sync();
+  };
+  const afterLoad = () => {
+    if (window.requestIdleCallback) window.requestIdleCallback(start, { timeout: 1500 });
+    else setTimeout(start, 200);
+  };
+  if (document.readyState === 'complete') afterLoad();
+  else window.addEventListener('load', afterLoad, { once: true });
 }

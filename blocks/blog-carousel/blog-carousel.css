@@ -1,6 +1,15 @@
-/* blog carousel: a full-screen stage that pins while the page background (--page-bg on <body>,
-   scrubbed by the block JS) goes from white to black behind one centred glass card; sizes follow
+/* blog carousel: a full-screen stage that pins while the page background (--page-bg on <body> and
+   the block, scrubbed by the block JS) goes from white to black behind one centred glass card; sizes follow
    the walkthrough / design at 1280px wide (card 459 × 592) */
+
+/* scrubbed on every frame: registered as not inherited (the block JS sets it on <body> and on the
+   block, the only two places that use it), so a change doesn't restyle the whole page */
+@property --page-bg {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #fff;
+}
+
 body:has(.blog-carousel) {
   background-color: var(--page-bg, #fff);
 }

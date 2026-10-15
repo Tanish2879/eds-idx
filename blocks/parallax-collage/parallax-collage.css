@@ -29,7 +29,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   --pc-card-ratio: 119 / 155;
 
   /* motion: scroll (in svh) during which the cards hold still: first the engine enters from the
-     right into its slot, then it fades out (--enter / --fade 0 → 1 are set by the block JS) */
+     right into its slot, then it fades out (--enter / --fade 0 → 1 are set on it by the block JS) */
   --hold-enter: 50;
   --hold-fade: 40;
   --enter: 0;
