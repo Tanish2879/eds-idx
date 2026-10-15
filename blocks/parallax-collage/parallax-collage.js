@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, holdPicture } from '../../scripts/scripts.js';
 
 /*
  * Parallax Collage: heading + paragraph pinned in the centre of the screen while two "screens"
@@ -87,7 +87,13 @@ export default function decorate(block) {
     screen.className = `screen-${n}`;
     return screen;
   });
-  if (hero) screens[0].append(buildItem(hero.row, hero.image, 'engine'));
+  if (hero) {
+    const item = buildItem(hero.row, hero.image, 'engine');
+    // a preceding engine showcase hands its own engine image over to this card (data-hero-carried):
+    // the authored image is then not fetched unless the showcase restores it
+    if (block.dataset.heroCarried !== undefined) holdPicture(item.querySelector('picture'));
+    screens[0].append(item);
+  }
   images.slice(0, CARDS_PER_SCREEN * 2).forEach(({ row, image }, i) => {
     const screen = screens[Math.floor(i / CARDS_PER_SCREEN)];
     screen.append(buildItem(row, image, CARD_CLASSES[i % CARDS_PER_SCREEN]));
@@ -98,33 +104,56 @@ export default function decorate(block) {
   imagesLayer.append(...screens);
   block.replaceChildren(textLayer, imagesLayer);
 
-  // hold phase: cancel the scroll on the image layer while the hero enters, then fades
-  let ticking = false;
-  const update = () => {
-    ticking = false;
+  // the phase lengths in px (CSS custom properties) and the wheel stops: read again only when the
+  // block's classes or the window size change, as reading them on every frame forces a restyle
+  let phases = { key: '' };
+  const measure = () => {
+    const key = `${block.className}|${window.innerWidth}x${window.innerHeight}`;
+    if (phases.key === key) return phases;
     const style = getComputedStyle(block);
     const svh = textLayer.clientHeight / 100;
     const len = (name) => (parseFloat(style.getPropertyValue(name)) || 0) * svh;
     const enter = len('--hold-enter');
     const fade = len('--hold-fade');
     const shift = len('--hold-shift');
-    const shiftBy = len('--shift-by');
     const hold = enter + fade + shift + len('--hold-rest');
-    if (enter + fade <= 0) return; // not laid out yet (CSS still loading): stay at the start
-    const held = Math.min(hold, Math.max(0, -block.getBoundingClientRect().top));
-    const part = (from, length) => (length ? Math.min(Math.max(held - from, 0) / length, 1) : 1);
-    const shifted = shift ? part(enter + fade, shift) : 0;
-    // the layer is held against the scroll, less the swap's movement
-    imagesLayer.style.transform = `translate3d(0, ${(held - shiftBy * shifted).toFixed(1)}px, 0)`;
-    block.style.setProperty('--enter', part(0, enter).toFixed(4));
-    block.style.setProperty('--fade', part(enter, fade).toFixed(4));
-    block.style.setProperty('--shift', shifted.toFixed(4));
     // wheel stops: the end of each phase, or where --pc-stops puts them (svh from the block top)
     const custom = style.getPropertyValue('--pc-stops').trim().split(/\s+/).filter(Boolean)
       .map(Number)
       .filter(Number.isFinite);
-    block.dataset.scrollStops = (custom.length ? custom.map((v) => v * svh) : [enter, hold])
+    const stops = (custom.length ? custom.map((v) => v * svh) : [enter, hold])
       .map(Math.round).join(' ');
+    const measured = {
+      key, enter, fade, shift, shiftBy: len('--shift-by'), hold, stops,
+    };
+    if (enter + fade > 0) phases = measured; // (not kept while the CSS is still loading)
+    return measured;
+  };
+
+  // hold phase: cancel the scroll on the image layer while the hero enters, then fades (frames
+  // that change nothing, before and after the hold, write nothing)
+  let ticking = false;
+  let applied = '';
+  const update = () => {
+    ticking = false;
+    const {
+      key, enter, fade, shift, shiftBy, hold, stops,
+    } = measure();
+    if (enter + fade <= 0) return; // not laid out yet (CSS still loading): stay at the start
+    const held = Math.min(hold, Math.max(0, -block.getBoundingClientRect().top));
+    const state = `${key}|${held.toFixed(1)}`;
+    if (state === applied) return;
+    applied = state;
+    const part = (from, length) => (length ? Math.min(Math.max(held - from, 0) / length, 1) : 1);
+    const shifted = shift ? part(enter + fade, shift) : 0;
+    // the layer is held against the scroll, less the swap's movement
+    imagesLayer.style.transform = `translate3d(0, ${(held - shiftBy * shifted).toFixed(1)}px, 0)`;
+    // the progress goes on the hero card, its only user (on the block it would restyle it all)
+    const heroCard = imagesLayer.querySelector('.engine') || block;
+    heroCard.style.setProperty('--enter', part(0, enter).toFixed(4));
+    heroCard.style.setProperty('--fade', part(enter, fade).toFixed(4));
+    heroCard.style.setProperty('--shift', shifted.toFixed(4));
+    if (block.dataset.scrollStops !== stops) block.dataset.scrollStops = stops;
   };
   const onScroll = () => {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }

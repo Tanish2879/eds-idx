@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, holdPicture, loadHeldPicture } from '../../scripts/scripts.js';
 import { cubicBezier } from '../../scripts/scroll-stops.js';
 
 /*
@@ -25,8 +25,9 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
  *       "zoom left% top% [flip]") | engine type | description | hotspots
  *       framing: zoom relative to showing the whole image, and where the image centre sits in the
  *       display (default "1 50% 50%"), so each engine can be cropped like the walkthrough
- *       hotspots: one paragraph each, "left% top% | TITLE | description", positioned on the
- *       engine image itself, so they stay on the same part at any size or framing
+ *       hotspots: up to 4, one paragraph each, "x y | TITLE | description": the '+' centre as
+ *       % of the engine image from its bottom-left corner ("40" and "40%" both work), so they
+ *       stay on the same part at any size or framing
  */
 
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
@@ -144,14 +145,25 @@ function frameSlide(slide, framing) {
   img.style.transform = framing.flip ? 'scaleX(-1)' : ''; // hotspots stay on the displayed image
 }
 
-// "18% 24% | TITLE | description" → { x, y, title, text }
+const MAX_HOTSPOTS = 4;
+
+// an authored coordinate ("40", "40%", " 40 % ") → 40, kept within the image (0–100); else NaN
+function percent(value) {
+  const text = String(value ?? '').replace(/%/g, '').trim();
+  const n = text ? Number(text) : NaN;
+  return Number.isFinite(n) ? Math.min(Math.max(n, 0), 100) : NaN;
+}
+
+// "18% 76% | TITLE | description" → { x, y, title, text }: x from the image's left edge, y from
+// its bottom edge; only the first MAX_HOTSPOTS entries are used
 function parseHotspots(cell) {
   if (!cell) return [];
-  const lines = [...cell.querySelectorAll('p, li')].map((n) => n.textContent);
-  if (!lines.length && cell.textContent.trim()) lines.push(...cell.textContent.split('\n'));
-  return lines.map((line) => {
+  let lines = [...cell.querySelectorAll('p, li')].map((n) => n.textContent);
+  if (!lines.length) lines = cell.textContent.split('\n');
+  return lines.filter((line) => line.trim()).slice(0, MAX_HOTSPOTS).map((line) => {
     const [pos = '', title = '', ...rest] = line.split('|').map((s) => s.trim());
-    const [x, y] = pos.split(/[\s,]+/).map((v) => parseFloat(v));
+    // "40% 60%", "40 60", "40%, 60%" and "40 % 60 %" all give [40, 60]
+    const [x, y] = pos.replace(/%/g, ' ').trim().split(/[\s,]+/).map(percent);
     if (!Number.isFinite(x) || !Number.isFinite(y) || !title) return null;
     return {
       x, y, title, text: rest.join(' | '),
@@ -173,7 +185,7 @@ function placeCard(hotspot, toggle, card) {
     top: '', left: '', right: '', bottom: '', width: '',
   });
   if (!PHONE.matches) return;
-  const layer = hotspot.offsetParent || hotspot.parentElement; // the card's containing block
+  const layer = card.offsetParent || hotspot; // the card's containing block (the '+' box)
   const display = hotspot.closest('.engine-showcase-display');
   if (!layer || !display) return;
   const L = layer.getBoundingClientRect();
@@ -197,8 +209,9 @@ function placeCard(hotspot, toggle, card) {
 function buildHotspot(spot, id, open) {
   const cardId = `${id}-card`;
   const hotspot = el('div', {
-    class: `engine-showcase-hotspot${spot.x >= 50 ? ' opens-left' : ''}${spot.y >= 60 ? ' opens-up' : ''}`,
-    style: `--x: ${spot.x}%; --y: ${spot.y}%`,
+    // the card opens towards the image centre (left on the right half, upwards near the bottom)
+    class: `engine-showcase-hotspot${spot.x >= 50 ? ' opens-left' : ''}${spot.y <= 40 ? ' opens-up' : ''}`,
+    style: `left: ${spot.x}%; bottom: ${spot.y}%`,
   });
   const toggle = el('button', {
     type: 'button', class: 'engine-showcase-hotspot-toggle', 'aria-expanded': 'false', 'aria-controls': cardId, 'aria-label': `Show: ${spot.title}`,
@@ -326,9 +339,28 @@ export default function decorate(block) {
   // frame each engine (on image load and whenever the display resizes)
   const fitAll = () => [...display.children].forEach((slide) => frameSlide(slide, slide.framing));
   display.querySelectorAll('.engine-showcase-slide img').forEach((img) => {
-    if (!img.complete) img.addEventListener('load', fitAll);
+    img.addEventListener('load', fitAll); // (also for the engines held back below)
   });
   new ResizeObserver(fitAll).observe(display);
+
+  // only the first engine's large image loads with the page; the others (several hundred KB each)
+  // are held back until the page has loaded and the showcase comes into view, or until their
+  // thumbnail is reached for (hover, focus, touch), whichever comes first
+  const wake = (index) => loadHeldPicture(display.children[index]?.querySelector('picture'));
+  [...display.children].slice(1).forEach((slide) => holdPicture(slide.querySelector('picture')));
+  [...thumbs.children].forEach((thumb, i) => {
+    ['pointerenter', 'focus', 'touchstart'].forEach((type) => thumb.addEventListener(type, () => wake(i), { once: true, passive: true }));
+  });
+  const wakeAll = () => [...display.children].forEach((_, i) => wake(i));
+  const inView = new IntersectionObserver((entries) => {
+    if (!entries.some((e) => e.isIntersecting)) return;
+    inView.disconnect();
+    if (window.requestIdleCallback) window.requestIdleCallback(wakeAll, { timeout: 1000 });
+    else setTimeout(wakeAll, 200);
+  });
+  const watch = () => inView.observe(display);
+  if (document.readyState === 'complete') watch();
+  else window.addEventListener('load', watch, { once: true });
 
   // selection: the engine images slide in the selection's direction (a thumbnail to the right of
   // the current one: the new engine rises in from below and the current one leaves upwards; to the
@@ -358,6 +390,7 @@ export default function decorate(block) {
   };
   const select = (index) => {
     if (index === current) return;
+    wake(index);
     if (current >= 0) slideEngines(current, index);
     [details.children, display.children, thumbs.children].forEach((list) => {
       [...list].forEach((node, i) => {
@@ -375,12 +408,15 @@ export default function decorate(block) {
   const section = block.closest('.section') || block;
   block.classList.add('is-armed');
   let ticking = false;
+  let lastRise = '';
   const update = () => {
     ticking = false;
     if (!section.offsetHeight) return; // section still hidden while the page loads
     const { top } = section.getBoundingClientRect();
-    const rise = Math.min(Math.max(1 - top / window.innerHeight, 0), 1);
-    section.style.setProperty('--es-rise', rise.toFixed(4));
+    const rise = Math.min(Math.max(1 - top / window.innerHeight, 0), 1).toFixed(4);
+    // (once risen it stays at 1: no style change, so no restyle, on the frames after)
+    if (rise !== lastRise) section.style.setProperty('--es-rise', rise);
+    lastRise = rise;
     if (top <= 2 && !block.classList.contains('is-revealed')) block.classList.add('is-revealed');
   };
   const onScroll = () => {
@@ -396,14 +432,17 @@ export default function decorate(block) {
   const collage = next?.querySelector('.parallax-collage');
   if (collage) {
     // the collage card shows the active engine: its picture is carried over (the authored hero is
-    // restored when the hand-off is off, e.g. on phones)
-    const authoredPicture = collage.querySelector('.engine picture');
+    // restored when the hand-off is off, e.g. with reduced motion). The authored hero image is
+    // held back by the collage (it is replaced before it would show), and loads only if restored
+    collage.dataset.heroCarried = '';
+    let authoredPicture = null;
     let carried = -1;
     const carry = (index) => {
       const card = collage.querySelector('.engine');
       const slide = display.children[index];
       const picture = slide?.querySelector('picture');
       if (!card || !picture || carried === index) return;
+      if (carried < 0) authoredPicture = card.querySelector('picture');
       const clone = picture.cloneNode(true);
       [clone, ...clone.querySelectorAll('*')].forEach((node) => {
         [...node.attributes].filter((a) => a.name.startsWith('data-aue')).forEach((a) => node.removeAttribute(a.name));
@@ -422,6 +461,7 @@ export default function decorate(block) {
     };
     const reset = () => {
       restoreCard();
+      loadHeldPicture(collage.querySelector('.engine picture'));
       section.classList.remove('is-handoff');
       collage.classList.remove('is-handoff', 'is-handed');
       delete collage.dataset.scrollAuto;
@@ -436,19 +476,23 @@ export default function decorate(block) {
       next.inert = false;
       display.style.removeProperty('--es-hotspots');
     };
-    // the engine leaves its crop: the image is clipped to the display box at p = 0 and whole at 1
-    const travel = (p, slot) => {
+    // the engine leaves its crop: the image is clipped to the display box at p = 0 and whole at 1,
+    // while its box R travels to T, the whole image fitted in the card slot (contain, centred).
+    // Measured first; the returned function applies it (so no layout is read after a style write)
+    const measureTravel = (p, slot) => {
       const slide = display.querySelector('.engine-showcase-slide.is-active');
       const img = slide?.querySelector('img');
-      display.querySelectorAll('.engine-showcase-slide img').forEach((other) => {
-        if (other !== img) other.style.clipPath = '';
+      const others = () => display.querySelectorAll('.engine-showcase-slide img').forEach((other) => {
+        if (other !== img && other.style.clipPath) other.style.clipPath = '';
       });
       if (!img?.naturalWidth || !slot || p <= 0) {
-        display.style.transform = '';
-        display.style.transition = '';
-        display.style.overflow = '';
-        if (img) img.style.clipPath = '';
-        return;
+        return () => {
+          others();
+          display.style.transform = '';
+          display.style.transition = '';
+          display.style.overflow = '';
+          if (img) img.style.clipPath = '';
+        };
       }
       const w = img.offsetWidth;
       const h = img.offsetHeight;
@@ -459,11 +503,8 @@ export default function decorate(block) {
         Math.max(0, -img.offsetLeft),
       ];
       if (slide.framing?.flip) [crop[1], crop[3]] = [crop[3], crop[1]]; // clip-path is pre-flip
-      img.style.clipPath = `inset(${crop.map((v) => `${(v * (1 - p)).toFixed(2)}px`).join(' ')})`;
-      display.style.overflow = 'visible';
-      // the image box R travels to T, the whole image fitted in the card slot (contain, centred);
-      // the display is scaled from its top-left
-      const B = block.getBoundingClientRect(); // the display is positioned within the block
+      // the display is scaled from its top-left; it is positioned within the block
+      const B = block.getBoundingClientRect();
       const D = { left: B.left + display.offsetLeft, top: B.top + display.offsetTop };
       const R = { left: D.left + img.offsetLeft, top: D.top + img.offsetTop, w };
       const fit = Math.min(slot.width / img.naturalWidth, slot.height / img.naturalHeight);
@@ -475,41 +516,103 @@ export default function decorate(block) {
       const top = R.top + (T.top - R.top) * p;
       const tx = left - (D.left + (R.left - D.left) * k);
       const ty = top - (D.top + (R.top - D.top) * k);
-      display.style.transition = 'none'; // follow the scroll exactly (no reveal transition)
-      display.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(5)})`;
+      return () => {
+        others();
+        img.style.clipPath = `inset(${crop.map((v) => `${(v * (1 - p)).toFixed(2)}px`).join(' ')})`;
+        display.style.overflow = 'visible';
+        display.style.transition = 'none'; // follow the scroll exactly (no reveal transition)
+        display.style.transform = `translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px) scale(${k.toFixed(5)})`;
+      };
     };
+    // the collage's hold lengths in px (its CSS custom properties): read again only when its
+    // classes or the window size change, as reading them on every frame forces a full restyle
+    let phases = { key: '' };
+    const collagePhases = () => {
+      const key = `${collage.className}|${window.innerWidth}x${window.innerHeight}`;
+      if (phases.key === key) return phases;
+      const layer = collage.querySelector('.sticky-text-layer');
+      const svh = (layer?.clientHeight || window.innerHeight) / 100;
+      const cs = getComputedStyle(collage);
+      const enter = parseFloat(cs.getPropertyValue('--hold-enter')) * svh;
+      const measured = { key, enter, hold: enter + parseFloat(cs.getPropertyValue('--hold-fade')) * svh };
+      if (enter > 0) phases = measured; // (not kept while the collage CSS is still loading)
+      return measured;
+    };
+    // the state last applied: frames that would change nothing (before the hand-off starts, or
+    // once it is over) are skipped
+    let applied = '';
+    let pinned = '';
     const handoff = () => {
       if (!HANDOFF_MEDIA.matches || !section.offsetHeight) {
-        reset();
+        // (reset again once the collage has been built, to let its own engine image load)
+        const off = `off|${Boolean(collage.querySelector('.engine'))}`;
+        if (applied !== off) reset();
+        applied = off;
+        pinned = '';
         return;
       }
-      section.classList.add('is-handoff');
-      collage.classList.add('is-handoff');
-      collage.dataset.scrollDuration = HANDOFF.glide.duration;
-      collage.dataset.scrollEase = HANDOFF.glide.ease;
-      collage.dataset.scrollDurationUp = HANDOFF.glideUp.duration;
-      collage.dataset.scrollEaseUp = HANDOFF.glideUp.ease;
+      if (!collage.classList.contains('is-handoff')) {
+        section.classList.add('is-handoff');
+        collage.classList.add('is-handoff');
+        collage.dataset.scrollDuration = HANDOFF.glide.duration;
+        collage.dataset.scrollEase = HANDOFF.glide.ease;
+        collage.dataset.scrollDurationUp = HANDOFF.glideUp.duration;
+        collage.dataset.scrollEaseUp = HANDOFF.glideUp.ease;
+      }
       // Section 3 is two scroll steps: the first lands the engine in its card (part 1) and holds
       // there; the second flies it up to reveal the text (part 2) — both ways
       // the showcase pins at the top, or, when taller than the window (phones), by its bottom
       // edge so its lower part (thumbnails, engine) stays in view; the collage starts right under
-      // the window
-      const pinTop = Math.min(0, window.innerHeight - section.offsetHeight);
-      section.style.top = `${pinTop}px`;
-      next.style.marginTop = `-${section.offsetHeight + pinTop}px`;
-      const sec = section.getBoundingClientRect();
-      // the collage shows only once the showcase has settled on top of it (opacity, not visibility:
-      // descendants may set visibility: visible)
-      const waiting = sec.top > pinTop + 0.5;
-      next.style.opacity = waiting ? '0' : '';
-      next.inert = waiting;
-      const layer = collage.querySelector('.sticky-text-layer');
-      const svh = (layer?.clientHeight || window.innerHeight) / 100;
-      const cs = getComputedStyle(collage);
-      const enterPx = parseFloat(cs.getPropertyValue('--hold-enter')) * svh;
-      const holdPx = enterPx + parseFloat(cs.getPropertyValue('--hold-fade')) * svh;
+      // the window (set again only when the sizes change)
+      const height = section.offsetHeight;
+      const pinTop = Math.min(0, window.innerHeight - height);
+      if (pinned !== `${pinTop}|${height}`) {
+        section.style.top = `${pinTop}px`;
+        next.style.marginTop = `-${height + pinTop}px`;
+        pinned = `${pinTop}|${height}`;
+      }
+
+      // measure
+      const { enter: enterPx, hold: holdPx } = collagePhases();
+      const secTop = section.getBoundingClientRect().top;
       const collageTop = collage.getBoundingClientRect().top;
       const u = enterPx ? clamp01(-collageTop / enterPx) : 0;
+      // the collage shows only once the showcase has settled on top of it
+      const waiting = secTop > pinTop + 0.5;
+      let phase = u;
+      if (u <= 0) phase = 'before';
+      else if (u >= 1) phase = 'after';
+      const state = [phase, waiting, current, window.innerWidth, window.innerHeight, height].join('|');
+      if (state === applied) return;
+      applied = state;
+
+      // 2. (measured now, applied below) the engine travels to the collage's central card slot,
+      // shrinking. The slot is where the collage's engine sits: its rendered box, corrected for the
+      // hold offset the collage applies this frame (its own scroll handler may not have run yet;
+      // its current offset is read from the inline style, which doesn't force a restyle)
+      const { shrinkStart, lockAt } = HANDOFF;
+      const p = shrinkEase(clamp01((u - shrinkStart) / (lockAt - shrinkStart)));
+      const engine = collage.querySelector('.engine');
+      const imagesLayer = collage.querySelector('.scrolling-images-layer');
+      let slot = null;
+      if (engine && imagesLayer && p > 0) {
+        const r = engine.getBoundingClientRect();
+        const shown = parseFloat(/translate3d\(0px?, (-?[\d.]+)px/.exec(imagesLayer.style.transform)?.[1]) || 0;
+        const dy = Math.min(holdPx, Math.max(0, -collageTop)) - shown;
+        slot = {
+          left: r.left,
+          right: r.right,
+          width: r.width,
+          height: r.height,
+          top: r.top + dy,
+          bottom: r.bottom + dy,
+        };
+      }
+      const moveEngine = measureTravel(p, slot);
+
+      // apply (opacity, not visibility, for the waiting collage: descendants may set visibility)
+      next.style.opacity = waiting ? '0' : '';
+      next.inert = waiting;
 
       // 1. the text, thumbnails and hotspots fade out: only the engine is left
       const fade = revealEase(clamp01(u / HANDOFF.fadeEnd));
@@ -522,29 +625,7 @@ export default function decorate(block) {
 
       // the active engine (whichever thumbnail is selected) becomes the collage card's image
       carry(current);
-
-      // 2. the engine travels to the collage's central card slot, shrinking
-      const { shrinkStart, lockAt } = HANDOFF;
-      const p = shrinkEase(clamp01((u - shrinkStart) / (lockAt - shrinkStart)));
-      // the slot where the collage's engine sits now: its rendered box, corrected for the collage
-      // hold offset it will apply this frame (its own scroll handler may not have run yet)
-      const engine = collage.querySelector('.engine');
-      const imagesLayer = collage.querySelector('.scrolling-images-layer');
-      let slot = null;
-      if (engine && imagesLayer) {
-        const r = engine.getBoundingClientRect();
-        const applied = new DOMMatrixReadOnly(getComputedStyle(imagesLayer).transform).m42;
-        const dy = Math.min(holdPx, Math.max(0, -collageTop)) - applied;
-        slot = {
-          left: r.left,
-          right: r.right,
-          width: r.width,
-          height: r.height,
-          top: r.top + dy,
-          bottom: r.bottom + dy,
-        };
-      }
-      travel(p, slot);
+      moveEngine();
 
       // 3. landed: the collage's card (same image, same place) takes over underneath and the
       // showcase fades away, revealing the rest of the collage around the engine

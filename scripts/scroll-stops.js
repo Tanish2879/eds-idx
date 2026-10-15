@@ -255,13 +255,17 @@ export async function glideTo(y, glide = DEFAULT_GLIDE) {
   });
 }
 
-export default async function initScrollStops() {
+export default function initScrollStops() {
   if (started || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   started = true;
-  try {
-    await loadGsap();
-  } catch (e) {
-    return; // CDN unavailable: wheel scrolling stays native
+  // GSAP is fetched when the browser is idle where a mouse / trackpad is available, and otherwise
+  // only at the first wheel event: touch-only phones scroll natively and never load it for this.
+  // If the CDN is unavailable, wheel scrolling stays native
+  let native = false;
+  const ready = () => loadGsap().catch(() => { native = true; });
+  if (window.matchMedia('(any-pointer: fine)').matches) {
+    if (window.requestIdleCallback) window.requestIdleCallback(ready, { timeout: 2000 });
+    else setTimeout(ready, 500);
   }
 
   let tweening = false;
@@ -308,7 +312,8 @@ export default async function initScrollStops() {
   };
 
   window.addEventListener('wheel', (e) => {
-    if (e.ctrlKey) return; // pinch / ctrl+wheel zoom
+    if (native || e.ctrlKey) return; // (ctrl: pinch / ctrl+wheel zoom)
+    ready();
     if (!e.deltaY || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return; // horizontal
     if (innerCanScroll(e.target, e.deltaY)) return;
     e.preventDefault();

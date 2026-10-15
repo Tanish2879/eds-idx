@@ -3,6 +3,14 @@
    (Figma frame 1280 wide; drafts/new-energy/jsw_walkthrough.mp4).
    Mobile-first: base = phones (stacked), >= 768px = two columns. */
 
+/* the rise is set on the section on every frame while it rises: registered as not inherited, so a
+   change restyles the section alone, not everything inside it */
+@property --es-rise {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
 /* entry: the hero above stays pinned while this section slides up over it as a rounded card,
    scaling from 0.945 to 1 as it rises (--es-rise 0 → 1, set by the block JS) */
 main > .section.hero-video-container:has(+ .section.engine-showcase-container) {
@@ -253,9 +261,18 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   opacity: var(--es-hotspots, 1); /* faded by the hand-off */
 }
 
-/* phones: the '+' sits on the image and its card opens as a panel along the image bottom */
+/* each hotspot is a box centred on its point, placed by the block JS with inline left / bottom
+   (% of the engine image from its bottom-left corner); the '+' fills it. Phones: 40px, and the card
+   is placed against the screen by the JS */
 .engine-showcase .engine-showcase-hotspot {
-  position: static;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, 50%);
+}
+
+.engine-showcase .engine-showcase-hotspot.is-open {
+  z-index: 2;
 }
 
 .engine-showcase .engine-showcase-hotspot-toggle,
@@ -271,15 +288,14 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
 .engine-showcase .engine-showcase-hotspot-toggle {
   position: absolute;
-  top: var(--y);
-  left: var(--x);
-  width: 40px;
-  height: 40px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border: 1px solid var(--es-glass-border);
   border-radius: 6px;
   background-color: var(--es-glass);
   backdrop-filter: blur(14px);
-  transform: translate(-50%, -50%);
   transition: background-color 0.3s ease-out, scale 0.3s ease-out, opacity 0.3s ease-out;
 }
 
@@ -502,24 +518,8 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
   /* hotspots: 46px glass squares; the card opens next to its '+' (towards the image centre) */
   .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot {
-    position: absolute;
-    top: var(--y);
-    left: var(--x);
     width: 46px;
     height: 46px;
-    transform: translate(-50%, -50%);
-  }
-
-  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot.is-open {
-    z-index: 2;
-  }
-
-  .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot .engine-showcase-hotspot-toggle {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform: none;
   }
 
   .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot .engine-showcase-hotspot-card {
@@ -630,7 +630,6 @@ main > .section.engine-showcase-container.is-handoff {
   --hold-shift: 70;
   --shift-by: 130;
   --hold-rest: 40;
-  --fly: clamp(0, (var(--fade) - 0.2593) / 0.4444, 1);
   --pc-stops: 135 235 345;
 }
 
@@ -638,6 +637,7 @@ main > .section.engine-showcase-container.is-handoff {
    in the collage's fade phase it then flies up and shrinks out of the way instead of fading, with
    the text staying put (walkthrough 14.8–15.8s: centre to ≈19% of an 832px frame, half size) */
 .parallax-collage.is-handoff .engine {
+  --fly: clamp(0, (var(--fade) - 0.2593) / 0.4444, 1);
   --pc-enter-x: 0px; /* a length: it is used inside translateX() */
   --pc-enter-scale: 1;
   --pc-exit-y: -45.4svh; /* phones (mobile design): parks at the top centre, a third of its size */

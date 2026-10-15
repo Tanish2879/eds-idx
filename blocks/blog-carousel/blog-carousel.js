@@ -7,7 +7,7 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
  * Scroll (walkthrough drafts/new-energy/jsw_walkthrough.mp4, 16.4–23.9s): the glass card peeks in
  * at the bottom while the previous section's images scroll away, then rises over that section's
  * text, which stays pinned until the card covers it (see CSS). The stage then pins and, tied to the
- * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg on <body>) goes
+ * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg, see CSS) goes
  * from white to black, the blurred backdrop fades in after it and the card settles into the
  * centre. The card's content is in place throughout, as in the walkthrough. One wheel gesture
  * from the previous section brings the card all the way up (scripts/scroll-stops.js) and the
@@ -128,12 +128,15 @@ async function animate(block, card, backdrop) {
     current.darken = context.conditions.phone ? DARKEN_PHONE : Number(GLIDE.duration.split(' ')[1]);
     // the stage covers the previous section once the colour change has begun, and the card settles
     // from settleOf() above its resting place down to it (set directly from the progress, so a
-    // re-measure at the very start of the pin can't leave it unset)
+    // re-measure at the very start of the pin can't leave it unset). The settle distance is
+    // measured on each ScrollTrigger refresh, not per frame: reading it right after the colour
+    // write would force a full restyle on every scrubbed frame
+    let settle = settleOf(block, card);
     const apply = (self) => {
       block.classList.toggle('is-pinned', self.progress > 0);
       // past halfway the page reads as dark (the phone nav drops its grey bar)
       document.body.classList.toggle('is-page-dark', self.progress > 0.5);
-      card.style.transform = `translateY(${(-settleOf(block, card) * (1 - self.progress)).toFixed(2)}px)`;
+      card.style.transform = `translateY(${(-settle * (1 - self.progress)).toFixed(2)}px)`;
     };
     // one scrubbed timeline over the pinned scroll (0 → 1), reversed when scrolling back up
     const timeline = gsap.timeline({
@@ -146,11 +149,14 @@ async function animate(block, card, backdrop) {
         scrub: true,
         invalidateOnRefresh: true,
         onUpdate: apply,
-        onRefresh: apply,
+        onRefresh: (self) => {
+          settle = settleOf(block, card); // (offsetTop: the card's own transform doesn't count)
+          apply(self);
+        },
       },
     });
     // the page background (walkthrough 21.55–23.85s): the colour leads, the backdrop follows
-    timeline.fromTo(document.body, { '--page-bg': '#ffffff' }, { '--page-bg': '#000000', ease: (t) => t ** 1.2 }, 0)
+    timeline.fromTo([document.body, block], { '--page-bg': '#ffffff' }, { '--page-bg': '#000000', ease: (t) => t ** 1.2 }, 0)
       .fromTo(backdrop, { opacity: 0 }, { opacity: 1, ease: 'power1.in' }, 0);
     current.timeline = timeline;
 
@@ -324,8 +330,15 @@ export default function decorate(block) {
   [block, card].forEach((node) => sizes.observe(node));
   window.addEventListener('resize', setStops, { passive: true });
 
+  // the scroll animation (GSAP + ScrollTrigger) is set up only once the page has loaded and the
+  // section is within two screens of the window, so it costs nothing on the first load (phones)
   const start = () => {
-    animate(block, card, backdrop);
+    const near = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      near.disconnect();
+      animate(block, card, backdrop);
+    }, { rootMargin: '200% 0px' });
+    near.observe(section);
     import('../../scripts/scroll-stops.js').then(({ default: init }) => init());
   };
   if (document.readyState === 'complete') start();
