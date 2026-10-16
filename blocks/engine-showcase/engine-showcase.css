@@ -254,7 +254,8 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   filter: none;
 }
 
-/* hotspots: glass '+' buttons that open a glass card */
+/* hotspots: glass '+' buttons that open a glass card beside them (absolutely positioned, out of
+   the button's layout: it never moves, covers or resizes the button) */
 .engine-showcase .engine-showcase-hotspots {
   position: absolute;
   inset: 0;
@@ -275,24 +276,19 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   z-index: 2;
 }
 
-.engine-showcase .engine-showcase-hotspot-toggle,
-.engine-showcase .engine-showcase-hotspot-close {
-  position: relative;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #fff;
-  cursor: pointer;
-}
-
+/* the toggle fills its hotspot box in both states (the box never changes: the card is positioned
+   outside it), so the '+' / '−' stays exactly on its point */
 .engine-showcase .engine-showcase-hotspot-toggle {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
   border: 1px solid var(--es-glass-border);
+  color: #fff;
+  cursor: pointer;
   border-radius: 6px;
   background-color: var(--es-glass);
   backdrop-filter: blur(14px);
@@ -309,16 +305,15 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   outline-offset: 3px;
 }
 
-.engine-showcase .engine-showcase-hotspot-toggle:focus-visible,
-.engine-showcase .engine-showcase-hotspot-close:focus-visible {
+.engine-showcase .engine-showcase-hotspot-toggle:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
-/* '+' / '—' drawn with strokes */
+/* '+' drawn with two strokes; open, the upright one turns flat onto the other: '−' (only the
+   graphic changes) */
 .engine-showcase .engine-showcase-hotspot-toggle::before,
-.engine-showcase .engine-showcase-hotspot-toggle::after,
-.engine-showcase .engine-showcase-hotspot-close::before {
+.engine-showcase .engine-showcase-hotspot-toggle::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -331,11 +326,15 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
 
 .engine-showcase .engine-showcase-hotspot-toggle::after {
   transform: translate(-50%, -50%) rotate(90deg);
+  transition: transform 0.3s ease-out;
 }
 
 .engine-showcase .engine-showcase-hotspot.is-open .engine-showcase-hotspot-toggle {
-  opacity: 0;
-  pointer-events: none;
+  background-color: rgb(20 20 20 / 70%);
+}
+
+.engine-showcase .engine-showcase-hotspot.is-open .engine-showcase-hotspot-toggle::after {
+  transform: translate(-50%, -50%) rotate(0deg);
 }
 
 .engine-showcase .engine-showcase-hotspot-card {
@@ -378,12 +377,6 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   line-height: 1.3;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-}
-
-.engine-showcase .engine-showcase-hotspot-head .engine-showcase-hotspot-close {
-  flex: none;
-  width: 24px;
-  height: 24px;
 }
 
 .engine-showcase .engine-showcase-hotspot-text {
@@ -516,19 +509,21 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
     border-radius: 0;
   }
 
-  /* hotspots: 46px glass squares; the card opens next to its '+' (towards the image centre) */
+  /* hotspots: 46px glass squares; the card opens beside its '+', 8px clear of it, towards the
+     image centre: to its right, top edges level (opens-left: to its left; opens-up: bottom edges
+     level) */
   .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot {
     width: 46px;
     height: 46px;
   }
 
   .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot .engine-showcase-hotspot-card {
-    inset: 0 auto auto 0;
+    inset: 0 auto auto calc(100% + 8px);
     width: 272px;
   }
 
   .engine-showcase .engine-showcase-hotspots .engine-showcase-hotspot.opens-left .engine-showcase-hotspot-card {
-    right: 0;
+    right: calc(100% + 8px);
     left: auto;
   }
 

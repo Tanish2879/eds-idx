@@ -176,38 +176,75 @@ function parseHotspots(cell) {
 }
 
 const PHONE = window.matchMedia('(width < 768px)');
-const EDGE = 16; // px kept clear of the screen edges by a phone hotspot card
+const EDGE = 16; // px kept clear of the screen edges by a hotspot card
+const GAP = 8; // px between a '+' and its card
 
 /*
- * Phones: the engine image box is larger than the screen (it bleeds off the edges), so a hotspot
- * card is placed against what is actually visible: as wide as the screen allows (up to 340px),
- * centred on its '+' but kept inside the screen, below the '+' (or above it when there is no room),
- * and always within the visible part of the display. From 768px the CSS places it.
+ * Places an open hotspot card beside its '+' (never over it: the '+' stays where it is and closes
+ * the card again), within what is actually visible: the display, inside the screen. The card is
+ * positioned absolutely against the '+' box, outside the button's own layout.
+ * Phones (the image bleeds off the screen edges): as wide as the screen allows (up to 340px),
+ * centred on its '+' as far as the screen allows, below it (or above it without room below).
+ * From 768px: 272px wide, to the side of the '+' facing the image centre (or the other side when
+ * that one has no room), top edges level (bottom edges for a '+' near the bottom), moved up or
+ * down only as far as needed to stay in view; with no room to either side (a narrow display),
+ * below or above it as on phones. Without JS layout (no room measured) the CSS places
+ * it the same way, by its preferred sides.
  */
 function placeCard(hotspot, toggle, card) {
   Object.assign(card.style, {
     top: '', left: '', right: '', bottom: '', width: '',
   });
-  if (!PHONE.matches) return;
   const layer = card.offsetParent || hotspot; // the card's containing block (the '+' box)
   const display = hotspot.closest('.engine-showcase-display');
   if (!layer || !display) return;
   const L = layer.getBoundingClientRect();
   const D = display.getBoundingClientRect();
   const t = toggle.getBoundingClientRect();
-  const width = Math.min(340, window.innerWidth - 2 * EDGE);
-  Object.assign(card.style, { width: `${width}px`, right: 'auto', bottom: 'auto' });
-  const height = card.offsetHeight;
-  const minX = Math.max(EDGE, D.left + 8);
-  const maxX = Math.min(window.innerWidth - EDGE, D.right - 8) - width;
-  const x = Math.min(Math.max(t.left + t.width / 2 - width / 2, minX), Math.max(minX, maxX));
-  const minY = Math.max(D.top + 8, 0);
-  const maxY = Math.min(D.bottom - 8, window.innerHeight - EDGE) - height;
-  const below = t.bottom + 8;
-  const above = t.top - 8 - height;
-  let y = below;
-  if (below > maxY) y = above >= minY ? above : Math.max(minY, maxY);
-  Object.assign(card.style, { left: `${(x - L.left).toFixed(1)}px`, top: `${(y - L.top).toFixed(1)}px` });
+  // the area the card stays in
+  const area = {
+    left: Math.max(EDGE, D.left + GAP),
+    right: Math.min(window.innerWidth - EDGE, D.right - GAP),
+    top: Math.max(D.top + GAP, 0),
+    bottom: Math.min(D.bottom - GAP, window.innerHeight - EDGE),
+  };
+  const clamp = (v, min, max) => Math.min(Math.max(v, min), Math.max(min, max));
+  // below the '+' (or above it without room below; with room for neither, the roomier side),
+  // centred on it as far as the area allows
+  const stack = (width, height) => {
+    const below = t.bottom + GAP;
+    const above = t.top - GAP - height;
+    let top = below;
+    if (below + height > area.bottom) {
+      top = above >= area.top || t.top - area.top > area.bottom - t.bottom ? above : below;
+    }
+    return [clamp(t.left + t.width / 2 - width / 2, area.left, area.right - width), top];
+  };
+  let x;
+  let y;
+  if (PHONE.matches) {
+    const width = Math.min(340, window.innerWidth - 2 * EDGE);
+    card.style.width = `${width}px`;
+    [x, y] = stack(width, card.offsetHeight);
+  } else {
+    const width = card.offsetWidth;
+    const height = card.offsetHeight;
+    const right = t.right + GAP;
+    const left = t.left - GAP - width;
+    const fitsRight = right + width <= area.right;
+    const fitsLeft = left >= area.left;
+    if (!fitsRight && !fitsLeft) {
+      [x, y] = stack(width, height); // a narrow display: no room to either side
+    } else {
+      if (hotspot.classList.contains('opens-left')) x = fitsLeft ? left : right;
+      else x = fitsRight ? right : left;
+      y = hotspot.classList.contains('opens-up') ? t.bottom - height : t.top;
+      y = clamp(y, area.top, area.bottom - height);
+    }
+  }
+  Object.assign(card.style, {
+    left: `${(x - L.left).toFixed(1)}px`, top: `${(y - L.top).toFixed(1)}px`, right: 'auto', bottom: 'auto',
+  });
 }
 
 function buildHotspot(spot, id, open) {
@@ -217,14 +254,15 @@ function buildHotspot(spot, id, open) {
     class: `engine-showcase-hotspot${spot.x >= 50 ? ' opens-left' : ''}${spot.y <= 40 ? ' opens-up' : ''}`,
     style: `left: ${spot.x}%; bottom: ${spot.y}%`,
   });
+  // the '+' toggle stays where it is in both states (it turns into a '−' when open) and is also
+  // what closes the card; the card is positioned beside it, outside its box (see placeCard / CSS)
   const toggle = el('button', {
     type: 'button', class: 'engine-showcase-hotspot-toggle', 'aria-expanded': 'false', 'aria-controls': cardId, 'aria-label': `Show: ${spot.title}`,
   });
-  const close = el('button', { type: 'button', class: 'engine-showcase-hotspot-close', 'aria-label': `Hide: ${spot.title}` });
   const card = el(
     'div',
     { class: 'engine-showcase-hotspot-card', id: cardId },
-    el('div', { class: 'engine-showcase-hotspot-head' }, el('p', { class: 'engine-showcase-hotspot-title' }, spot.title), close),
+    el('div', { class: 'engine-showcase-hotspot-head' }, el('p', { class: 'engine-showcase-hotspot-title' }, spot.title)),
     spot.text ? el('p', { class: 'engine-showcase-hotspot-text' }, spot.text) : null,
   );
   hotspot.append(toggle, card);
@@ -232,23 +270,23 @@ function buildHotspot(spot, id, open) {
     if (value) placeCard(hotspot, toggle, card);
     hotspot.classList.toggle('is-open', value);
     toggle.setAttribute('aria-expanded', value);
+    toggle.setAttribute('aria-label', `${value ? 'Hide' : 'Show'}: ${spot.title}`);
     card.inert = !value;
   };
-  // a phone card placed against the screen is closed when the screen changes size
+  // a card placed against the screen is closed when the screen changes size
   window.addEventListener('resize', () => {
-    if (PHONE.matches && hotspot.classList.contains('is-open')) setOpen(false);
+    if (hotspot.classList.contains('is-open')) setOpen(false);
   }, { passive: true });
   setOpen(open);
   toggle.addEventListener('click', () => {
+    if (hotspot.classList.contains('is-open')) {
+      setOpen(false);
+      return;
+    }
     // one open card per engine image
     hotspot.parentElement.querySelectorAll('.engine-showcase-hotspot.is-open')
       .forEach((h) => h.dispatchEvent(new Event('hotspot:close')));
     setOpen(true);
-    close.focus({ preventScroll: true }); // don't scroll the page (it would drive the hand-off)
-  });
-  close.addEventListener('click', () => {
-    setOpen(false);
-    toggle.focus({ preventScroll: true });
   });
   hotspot.addEventListener('hotspot:close', () => setOpen(false));
   hotspot.addEventListener('keydown', (e) => {
@@ -665,9 +703,17 @@ export default function decorate(block) {
     handoff();
   }
 
-  // the section top is a scroll stop, reached with the walkthrough's glide (wheel / trackpad, and
-  // touch swipes: on phones one swipe moves one stop too)
-  block.dataset.scrollStops = '0';
+  // a scroll stop, reached with the walkthrough's glide (wheel / trackpad, and touch swipes: on
+  // phones one swipe moves one stop too): the section top, or, when the section is taller than the
+  // window (phones), where its bottom meets the window bottom (as the hand-off pins it), so the
+  // engine with all its hotspots and the thumbnails are in view
+  const setStop = () => {
+    const below = section.offsetHeight - block.offsetTop - window.innerHeight;
+    block.dataset.scrollStops = String(Math.max(0, Math.round(below)));
+  };
+  setStop();
+  window.addEventListener('resize', setStop, { passive: true });
+  new ResizeObserver(setStop).observe(section);
   block.dataset.scrollDuration = SCROLL_GLIDE.duration;
   block.dataset.scrollEase = SCROLL_GLIDE.ease;
   const startWheel = () => import('../../scripts/scroll-stops.js').then(({ default: init }) => init({ touch: true }));
