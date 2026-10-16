@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation, holdPicture } from '../../scripts/scripts.js';
+import { moveInstrumentation, holdPicture, isAuthoring } from '../../scripts/scripts.js';
 
 /*
  * Parallax Collage: heading + paragraph pinned in the centre of the screen while two "screens"
@@ -91,7 +91,7 @@ export default function decorate(block) {
     const item = buildItem(hero.row, hero.image, 'engine');
     // a preceding engine showcase hands its own engine image over to this card (data-hero-carried):
     // the authored image is then not fetched unless the showcase restores it
-    if (block.dataset.heroCarried !== undefined) holdPicture(item.querySelector('picture'));
+    if (block.dataset.heroCarried !== undefined && !isAuthoring()) holdPicture(item.querySelector('picture'));
     screens[0].append(item);
   }
   images.slice(0, CARDS_PER_SCREEN * 2).forEach(({ row, image }, i) => {
@@ -103,6 +103,10 @@ export default function decorate(block) {
   imagesLayer.className = 'scrolling-images-layer';
   imagesLayer.append(...screens);
   block.replaceChildren(textLayer, imagesLayer);
+
+  // authoring (Universal Editor, see isAuthoring): static, text and both screens of cards one after
+  // the other (see CSS); no hold phases, no scroll stops
+  if (isAuthoring()) return;
 
   // the phase lengths in px (CSS custom properties) and the wheel stops: read again only when the
   // block's classes or the window size change, as reading them on every frame forces a restyle

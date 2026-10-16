@@ -105,7 +105,10 @@ export default {
         // media group: the high-res engine image + the thumbnail card image share one cell
         const media = document.createElement('div');
         const main = art.querySelector('img.main') || art.querySelector('img');
-        media.append(document.createComment(' field:media_image '), image(main));
+        // (no alt text: the block makes it from the engine type, the model has no alt field)
+        const mainImg = image(main);
+        mainImg.alt = '';
+        media.append(document.createComment(' field:media_image '), mainImg);
         const thumb = art.querySelector('img.thumb');
         if (thumb) media.append(document.createComment(' field:media_thumbnail '), image(thumb));
         const framing = clean(art.querySelector('.framing')?.textContent);

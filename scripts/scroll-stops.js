@@ -1,4 +1,5 @@
 import { loadScript } from './aem.js';
+import { isAuthoring } from './scripts.js';
 
 /*
  * Eased wheel scrolling between "stops": each mouse-wheel / trackpad gesture glides to the next
@@ -19,7 +20,7 @@ import { loadScript } from './aem.js';
  * vertical swipe = one step, the page doesn't scroll under the finger meanwhile; two-finger
  * gestures (pinch zoom), a zoomed-in page and scrollable panels under the finger stay native.
  * Elsewhere touch stays native; keyboard and scrollbar scrolling always do; nothing happens with
- * reduced motion.
+ * reduced motion or while authoring (Universal Editor: its own scrolling and selection).
  * GSAP (+ ScrollToPlugin) is loaded from the CDN only when this is first used; blocks with
  * scroll-linked animations can load ScrollTrigger with it (loadScrollTrigger).
  */
@@ -393,7 +394,7 @@ function listenTouch({ gesture, ready, isNative }) {
  * @param {{touch?: boolean}} [options] touch: step with vertical touch swipes too
  */
 export default function initScrollStops({ touch = false } = {}) {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || isAuthoring()) return;
   if (!controller) {
     controller = createController();
     listenWheel(controller);

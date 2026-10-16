@@ -665,3 +665,15 @@ main > .section.engine-showcase-container.is-handoff {
 .parallax-collage.is-handoff .engine img {
   object-fit: contain;
 }
+
+/* authoring (Universal Editor, see styles.css): static; the hero isn't pinned under this section,
+   which is a fixed "screen" tall, all its content shown (no rise, no hand-off: see the JS) */
+html.is-authoring main > .section.hero-video-container:has(+ .section.engine-showcase-container) {
+  position: relative;
+}
+
+@media (width >= 768px) {
+  html.is-authoring .engine-showcase {
+    grid-template: 'content display' minmax(var(--authoring-screen), auto) / minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
