@@ -433,3 +433,21 @@ main > .section.blog-carousel-container > .blog-carousel-wrapper {
     transition-delay: 0s;
   }
 }
+
+/* authoring (Universal Editor, see styles.css): the final, dark look (is-static, set by the JS) in
+   the normal flow: no overlap with the previous section, no pinned scroll distance */
+html.is-authoring main > .section.parallax-collage-container + .section.blog-carousel-container {
+  margin-top: 0;
+}
+
+html.is-authoring main > .section.blog-carousel-container > .blog-carousel-wrapper {
+  height: auto;
+}
+
+html.is-authoring .blog-carousel {
+  --bc-room: 600px;
+
+  position: relative;
+  height: auto;
+  min-height: var(--authoring-screen);
+}

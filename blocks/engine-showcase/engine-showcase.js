@@ -1,5 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation, holdPicture, loadHeldPicture } from '../../scripts/scripts.js';
+import {
+  moveInstrumentation, holdPicture, loadHeldPicture, isAuthoring,
+} from '../../scripts/scripts.js';
 import { cubicBezier } from '../../scripts/scroll-stops.js';
 
 /*
@@ -23,6 +25,8 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
  *   1.  headline
  *   2+. one engine per row: engine image (+ optional thumbnail image, + optional framing
  *       "zoom left% top% [flip]") | engine type | description | hotspots
+ *       the engine image's alt text is made from the engine type ("<type> engine"), so it is
+ *       never entered separately
  *       framing: zoom relative to showing the whole image, and where the image centre sits in the
  *       display (default "1 50% 50%"), so each engine can be cropped like the walkthrough
  *       hotspots: up to 4, one paragraph each, "x y | TITLE | description": the '+' centre as
@@ -274,13 +278,14 @@ export default function decorate(block) {
     if (!image) return null;
     const mediaCell = [...row.children].find((c) => c.contains(image.source));
     const cells = [...row.children].filter((c) => c !== mediaCell);
-    const [title, description, hotspots] = cells;
+    const [titleCell, description, hotspots] = cells;
+    const title = titleCell?.textContent.trim() || image.alt;
     return {
       row,
-      image,
+      image: { ...image, alt: title ? `${title} engine` : image.alt },
       thumbnail: thumbnail || image,
       framing: parseFraming(mediaCell),
-      title: title?.textContent.trim() || image.alt,
+      title,
       description,
       hotspots: parseHotspots(hotspots),
     };
@@ -345,22 +350,26 @@ export default function decorate(block) {
 
   // only the first engine's large image loads with the page; the others (several hundred KB each)
   // are held back until the page has loaded and the showcase comes into view, or until their
-  // thumbnail is reached for (hover, focus, touch), whichever comes first
+  // thumbnail is reached for (hover, focus, touch), whichever comes first (all at once while
+  // authoring)
+  const authoring = isAuthoring();
   const wake = (index) => loadHeldPicture(display.children[index]?.querySelector('picture'));
-  [...display.children].slice(1).forEach((slide) => holdPicture(slide.querySelector('picture')));
-  [...thumbs.children].forEach((thumb, i) => {
-    ['pointerenter', 'focus', 'touchstart'].forEach((type) => thumb.addEventListener(type, () => wake(i), { once: true, passive: true }));
-  });
-  const wakeAll = () => [...display.children].forEach((_, i) => wake(i));
-  const inView = new IntersectionObserver((entries) => {
-    if (!entries.some((e) => e.isIntersecting)) return;
-    inView.disconnect();
-    if (window.requestIdleCallback) window.requestIdleCallback(wakeAll, { timeout: 1000 });
-    else setTimeout(wakeAll, 200);
-  });
-  const watch = () => inView.observe(display);
-  if (document.readyState === 'complete') watch();
-  else window.addEventListener('load', watch, { once: true });
+  if (!authoring) {
+    [...display.children].slice(1).forEach((slide) => holdPicture(slide.querySelector('picture')));
+    [...thumbs.children].forEach((thumb, i) => {
+      ['pointerenter', 'focus', 'touchstart'].forEach((type) => thumb.addEventListener(type, () => wake(i), { once: true, passive: true }));
+    });
+    const wakeAll = () => [...display.children].forEach((_, i) => wake(i));
+    const inView = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      inView.disconnect();
+      if (window.requestIdleCallback) window.requestIdleCallback(wakeAll, { timeout: 1000 });
+      else setTimeout(wakeAll, 200);
+    });
+    const watch = () => inView.observe(display);
+    if (document.readyState === 'complete') watch();
+    else window.addEventListener('load', watch, { once: true });
+  }
 
   // selection: the engine images slide in the selection's direction (a thumbnail to the right of
   // the current one: the new engine rises in from below and the current one leaves upwards; to the
@@ -403,6 +412,13 @@ export default function decorate(block) {
   };
   [...thumbs.children].forEach((thumb, i) => thumb.addEventListener('click', () => select(i)));
   if (total) select(0);
+
+  // authoring (Universal Editor, see isAuthoring): static, everything shown at once; no rise, no
+  // hand-off to the collage and no scroll stops
+  if (authoring) {
+    block.classList.add('is-revealed');
+    return;
+  }
 
   // entry: scale with the rise; reveal the content once the section has settled at the top
   const section = block.closest('.section') || block;

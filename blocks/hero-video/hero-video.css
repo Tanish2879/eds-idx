@@ -281,3 +281,14 @@ main .section.hero-video-container > .hero-video-wrapper {
     display: inline-flex;
   }
 }
+
+/* authoring (Universal Editor, see styles.css): a fixed height instead of the screen height */
+html.is-authoring .hero-video {
+  min-height: var(--authoring-screen);
+}
+
+@media (width < 768px) {
+  html.is-authoring .hero-video {
+    --hv-pad-bottom: 68px;
+  }
+}

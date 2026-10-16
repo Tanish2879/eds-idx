@@ -105,7 +105,9 @@ var CustomImportScript = (() => {
           var _a2, _b2, _c2;
           const media2 = document.createElement("div");
           const main2 = art.querySelector("img.main") || art.querySelector("img");
-          media2.append(document.createComment(" field:media_image "), image(main2));
+          const mainImg = image(main2);
+          mainImg.alt = "";
+          media2.append(document.createComment(" field:media_image "), mainImg);
           const thumb = art.querySelector("img.thumb");
           if (thumb) media2.append(document.createComment(" field:media_thumbnail "), image(thumb));
           const framing = clean((_a2 = art.querySelector(".framing")) == null ? void 0 : _a2.textContent);

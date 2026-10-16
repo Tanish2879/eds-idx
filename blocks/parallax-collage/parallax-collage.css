@@ -265,3 +265,29 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
     right: 4.2%;
   }
 }
+
+/* authoring (Universal Editor, see styles.css): static, top to bottom: the text, then screen 1 (the
+   hero card in its slot among 4 cards) and screen 2, each a fixed "screen" tall; every card can be
+   selected */
+html.is-authoring .parallax-collage .sticky-text-layer {
+  position: relative;
+  height: auto;
+  padding: 96px 24px;
+}
+
+html.is-authoring .parallax-collage .scrolling-images-layer {
+  margin-top: 0;
+  padding-bottom: 0;
+  pointer-events: auto;
+}
+
+html.is-authoring .parallax-collage .screen-1,
+html.is-authoring .parallax-collage .screen-2 {
+  height: var(--authoring-screen);
+  margin-bottom: 0;
+}
+
+html.is-authoring .parallax-collage .engine {
+  --enter: 1;
+  --fade: 0;
+}

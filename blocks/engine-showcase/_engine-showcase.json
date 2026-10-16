@@ -54,15 +54,8 @@
           "valueType": "string",
           "name": "media_image",
           "label": "Engine image",
-          "description": "High-resolution image shown large on the right (hotspot positions are relative to it).",
+          "description": "High-resolution image shown large on the right (hotspot positions are relative to it). Its alt text is generated from the engine type, e.g. \"Battery Electric Vehicle engine\".",
           "multi": false
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "media_imageAlt",
-          "label": "Engine image alt text",
-          "value": ""
         },
         {
           "component": "reference",
@@ -85,7 +78,7 @@
           "valueType": "string",
           "name": "title",
           "label": "Engine type",
-          "description": "E.g. Battery Electric Vehicle.",
+          "description": "E.g. Battery Electric Vehicle. Also used for the engine image alt text and the thumbnail label.",
           "value": ""
         },
         {

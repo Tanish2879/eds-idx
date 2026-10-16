@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 
 /*
  * Blog Carousel: one centred glass card ("OUR BLOGS" with previous / next arrows) showing a blog
@@ -313,6 +313,13 @@ export default function decorate(block) {
     if (e.key === 'ArrowRight') show(current + 1, 1);
   });
   show(0);
+
+  // authoring (Universal Editor, see isAuthoring): the final, dark look, no scroll animation and no
+  // scroll stops
+  if (isAuthoring()) {
+    block.classList.add('is-static');
+    return;
+  }
 
   // wheel stops on the section (the block itself is sticky): pinned, darkened. One gesture from the
   // previous section brings the card all the way up (the darkening then plays by itself); the

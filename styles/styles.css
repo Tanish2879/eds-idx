@@ -546,3 +546,11 @@ html:has(header .header.is-pill) {
     display: none;
   }
 }
+
+/* authoring (Universal Editor; html.is-authoring, see isAuthoring in scripts.js): the editor sizes
+   its frame to the page height, so no height may follow the viewport there (it would grow without
+   end); blocks lay out statically and a fixed "screen" height stands in for 100svh */
+html.is-authoring {
+  --authoring-screen: 760px;
+  --section-min-height: var(--authoring-screen);
+}

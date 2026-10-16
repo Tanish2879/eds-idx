@@ -289,6 +289,23 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
+ * Whether the page is open for authoring: in the Universal Editor (edit or preview mode), or the
+ * author-side rendition it loads, which carries the editor's instrumentation (data-aue-*; the
+ * published page has none). Scroll-driven effects are then left out and every block renders
+ * statically: the editor sizes its frame to the page height, so heights tied to the viewport
+ * (100svh, pinned scroll distances) would grow without end, and wheel / touch capture, pins and
+ * hidden or inert sections get in the way of selecting and editing content.
+ * @returns {boolean}
+ */
+export function isAuthoring() {
+  const root = document.documentElement;
+  return root.classList.contains('is-authoring')
+    || root.classList.contains('adobe-ue-edit')
+    || root.classList.contains('adobe-ue-preview')
+    || !!document.querySelector('[data-aue-resource]');
+}
+
+/**
  * Holds a picture back: its sources and image keep their URLs in data attributes, so nothing is
  * fetched until loadHeldPicture() (e.g. images that are not shown yet).
  * @param {Element} picture a <picture> (e.g. from createOptimizedPicture)
@@ -431,6 +448,8 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  // before any block is decorated: the authoring styles (static layout) apply from the first paint
+  if (isAuthoring()) document.documentElement.classList.add('is-authoring');
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
