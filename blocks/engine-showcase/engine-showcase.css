@@ -1,3 +1,7 @@
+/* external platform styles (Teamskit / "New Science"): replace the placeholder with the link from
+   the lead. Must stay the first rule in this file (an @import after any other rule is ignored) */
+@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css');
+
 /* Engine Showcase: headline + switching text + thumbnails (left, bottom-anchored), large engine
    image with glass '+' hotspots filling the right half. Values from the reference walkthrough
    (Figma frame 1280 wide; drafts/new-energy/jsw_walkthrough.mp4).
@@ -671,4 +675,58 @@ html.is-authoring main > .section.hero-video-container:has(+ .section.engine-sho
   html.is-authoring .engine-showcase {
     grid-template: 'content display' minmax(var(--authoring-screen), auto) / minmax(0, 1fr) minmax(0, 1fr);
   }
+}
+
+/* authoring: the '+' can be dragged to a new place on the image (see the JS); the result of saving
+   it shows at the bottom of the image; engines over the limit are listed under the block */
+html.is-authoring .engine-showcase .engine-showcase-hotspot .engine-showcase-hotspot-toggle {
+  cursor: grab;
+  touch-action: none;
+}
+
+html.is-authoring .engine-showcase .engine-showcase-hotspot.is-dragging {
+  z-index: 3;
+}
+
+html.is-authoring .engine-showcase .engine-showcase-hotspot.is-dragging .engine-showcase-hotspot-toggle {
+  outline: 2px dashed #fff;
+  outline-offset: 3px;
+  cursor: grabbing;
+}
+
+html.is-authoring .engine-showcase .engine-showcase-authoring-status {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 4;
+  display: none;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgb(20 20 20 / 85%);
+  color: #fff;
+  font-family: var(--es-ui-font);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+html.is-authoring .engine-showcase .engine-showcase-authoring-status.is-shown {
+  display: block;
+}
+
+html.is-authoring .engine-showcase .engine-showcase-overflow {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 12px 24px;
+  border-top: 1px dashed #c00;
+  background-color: #fff4f4;
+  color: #900;
+  font-family: var(--es-ui-font);
+  font-size: 13px;
+}
+
+html.is-authoring .engine-showcase .engine-showcase-overflow p {
+  margin: 4px 0;
 }
