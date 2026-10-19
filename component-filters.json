@@ -86,6 +86,10 @@
     ]
   },
   {
+    "id": "engine-showcase-full",
+    "components": []
+  },
+  {
     "id": "hero-interactive",
     "components": [
       "hero-interactive-slide"

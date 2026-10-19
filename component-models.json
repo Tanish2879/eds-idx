@@ -466,10 +466,11 @@
         "value": ""
       },
       {
-        "component": "richtext",
+        "component": "textarea",
         "valueType": "string",
         "name": "description",
         "label": "Description",
+        "description": "Plain text shown under the engine type.",
         "value": ""
       },
       {
@@ -477,7 +478,7 @@
         "valueType": "string",
         "name": "hotspots",
         "label": "Hotspots",
-        "description": "Up to 4 hotspots (any more are ignored), one paragraph each: position | TITLE | description, e.g. \"18% 76% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is x y in % of the engine image, measured from its bottom-left corner (\"18 76\" works too).",
+        "description": "Up to 4 hotspots (any more are ignored), one paragraph each: position | TITLE | description, e.g. \"18% 76% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is x y in % of the engine image, measured from its bottom-left corner (\"18 76\" works too). In the editor you can also drag a + on the image to move it: its position is saved here.",
         "value": ""
       }
     ]

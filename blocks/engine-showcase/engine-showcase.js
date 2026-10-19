@@ -150,6 +150,7 @@ function frameSlide(slide, framing) {
 }
 
 const MAX_HOTSPOTS = 4;
+const MAX_ENGINES = 3;
 
 // an authored coordinate ("40", "40%", " 40 % ") → 40, kept within the image (0–100); else NaN
 function percent(value) {
@@ -158,21 +159,72 @@ function percent(value) {
   return Number.isFinite(n) ? Math.min(Math.max(n, 0), 100) : NaN;
 }
 
-// "18% 76% | TITLE | description" → { x, y, title, text }: x from the image's left edge, y from
-// its bottom edge; only the first MAX_HOTSPOTS entries are used
-function parseHotspots(cell) {
-  if (!cell) return [];
-  let lines = [...cell.querySelectorAll('p, li')].map((n) => n.textContent);
-  if (!lines.length) lines = cell.textContent.split('\n');
-  return lines.filter((line) => line.trim()).slice(0, MAX_HOTSPOTS).map((line) => {
+// the authored hotspot entries: the non-empty paragraphs / list items of the cell, as text, and
+// whether they were a list (kept as they are when a hotspot is dragged to a new place)
+function readHotspotLines(cell) {
+  if (!cell) return { lines: [], list: false };
+  const nodes = [...cell.querySelectorAll('p, li')];
+  const lines = (nodes.length ? nodes.map((n) => n.textContent) : cell.textContent.split('\n'))
+    .map((line) => line.trim()).filter(Boolean);
+  return { lines, list: Boolean(cell.querySelector('li')) };
+}
+
+// "18% 76% | TITLE | description" → { x, y, title, text, index }: x from the image's left edge, y
+// from its bottom edge, index: its entry in the authored lines; only the first MAX_HOTSPOTS
+// entries are used
+function parseHotspotLines(lines) {
+  return lines.slice(0, MAX_HOTSPOTS).map((line, index) => {
     const [pos = '', title = '', ...rest] = line.split('|').map((s) => s.trim());
     // "40% 60%", "40 60", "40%, 60%" and "40 % 60 %" all give [40, 60]
     const [x, y] = pos.replace(/%/g, ' ').trim().split(/[\s,]+/).map(percent);
     if (!Number.isFinite(x) || !Number.isFinite(y) || !title) return null;
     return {
-      x, y, title, text: rest.join(' | '),
+      x, y, title, text: rest.join(' | '), index,
     };
   }).filter(Boolean);
+}
+
+// an authored entry with a new position (the rest of it unchanged)
+function withPosition(line, x, y) {
+  const bar = line.indexOf('|');
+  return `${Number(x.toFixed(1))}% ${Number(y.toFixed(1))}% ${bar >= 0 ? line.slice(bar) : `| ${line}`}`;
+}
+
+// the hotspot lines as the Hotspots (rich text) field stores them
+function hotspotsValue(lines, list) {
+  const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  if (list) return `<ul>${lines.map((line) => `<li>${escape(line)}</li>`).join('')}</ul>`;
+  return lines.map((line) => `<p>${escape(line)}</p>`).join('');
+}
+
+/*
+ * The description (a plain-text field): its paragraphs as delivered. A value saved while the field
+ * was rich text may arrive as text with the old markup in it: that is shown as its text only.
+ */
+function descriptionNodes(cell) {
+  if (!cell) return [];
+  const raw = cell.textContent.trim();
+  if (!raw) return [];
+  if (/<\/?[a-z][^>]*>/i.test(raw)) {
+    const text = new DOMParser().parseFromString(raw, 'text/html').body.textContent.trim();
+    return text ? [el('p', {}, text)] : [];
+  }
+  return [...cell.childNodes];
+}
+
+// authoring: marks an element as an editable field for the Universal Editor (it inherits the
+// nearest component's resource unless one is given)
+function editable(node, {
+  resource, prop, type, label,
+}) {
+  if (!node) return;
+  if (resource) node.dataset.aueResource = resource;
+  Object.assign(node.dataset, { aueProp: prop, aueType: type, aueLabel: label });
+}
+
+function dropInstrumentation(node) {
+  [...node.attributes].filter(({ name }) => name.startsWith('data-aue-') || name.startsWith('data-richtext-'))
+    .forEach(({ name }) => node.removeAttribute(name));
 }
 
 const PHONE = window.matchMedia('(width < 768px)');
@@ -247,6 +299,79 @@ function placeCard(hotspot, toggle, card) {
   });
 }
 
+/*
+ * Authoring: saves one property of a component straight to its content in AEM author (the page
+ * in the editor is served by it, with the author's session): Sling POST with the CSRF token. The
+ * editor itself has no API for the page to write a field. Rejects when that isn't possible.
+ */
+async function saveProperty(resource, prop, value) {
+  const path = /^urn:aemconnection:(\/.+)$/.exec(resource || '')?.[1];
+  if (!path) throw new Error('not an AEM resource');
+  const csrf = await fetch(`${window.location.origin}/libs/granite/csrf/token.json`, { credentials: 'include' });
+  if (!csrf.ok || csrf.redirected) throw new Error(`CSRF token: ${csrf.status}`);
+  const { token } = await csrf.json();
+  const body = new FormData();
+  body.append(prop, value);
+  body.append(`${prop}@TypeHint`, 'String');
+  body.append('_charset_', 'utf-8');
+  const res = await fetch(`${window.location.origin}${path}`, {
+    method: 'POST', credentials: 'include', headers: { 'CSRF-Token': token, Accept: 'application/json' }, body,
+  });
+  // (a lost session answers with the login page)
+  if (!res.ok || res.redirected) throw new Error(`save: ${res.status}`);
+}
+
+const DRAG_START = 4; // px a '+' has to be moved before it is dragged (less: a click)
+
+/*
+ * Authoring: a '+' can be dragged over its engine image; dropped, onDrop gets its new place
+ * (x / y in % of the image from its bottom-left corner). A drag doesn't open the card.
+ */
+function makeDraggable(hotspot, toggle, onDrop) {
+  let start = null;
+  let dragged = false;
+  toggle.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    start = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    dragged = false;
+  });
+  toggle.addEventListener('pointermove', (e) => {
+    if (!start || e.pointerId !== start.id) return;
+    if (!dragged && Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_START) return;
+    if (!dragged) {
+      dragged = true;
+      toggle.setPointerCapture(e.pointerId);
+      hotspot.dispatchEvent(new Event('hotspot:close'));
+      hotspot.classList.add('is-dragging');
+    }
+    e.preventDefault();
+    const L = hotspot.parentElement.getBoundingClientRect(); // the hotspot layer: the image box
+    const x = clamp01((e.clientX - L.left) / L.width) * 100;
+    const y = clamp01((L.bottom - e.clientY) / L.height) * 100;
+    hotspot.style.left = `${x.toFixed(1)}%`;
+    hotspot.style.bottom = `${y.toFixed(1)}%`;
+  });
+  const end = (e) => {
+    if (!start || e.pointerId !== start.id) return;
+    start = null;
+    if (!dragged) return;
+    hotspot.classList.remove('is-dragging');
+    const x = parseFloat(hotspot.style.left);
+    const y = parseFloat(hotspot.style.bottom);
+    hotspot.classList.toggle('opens-left', x >= 50);
+    hotspot.classList.toggle('opens-up', y <= 40);
+    if (e.type === 'pointerup') onDrop(x, y);
+  };
+  toggle.addEventListener('pointerup', end);
+  toggle.addEventListener('pointercancel', end);
+  // the click that ends a drag doesn't open the card
+  toggle.addEventListener('click', (e) => {
+    if (!dragged) return;
+    dragged = false;
+    e.stopImmediatePropagation();
+  }, true);
+}
+
 function buildHotspot(spot, id, open) {
   const cardId = `${id}-card`;
   const hotspot = el('div', {
@@ -301,7 +426,14 @@ function buildHotspot(spot, id, open) {
 export default function decorate(block) {
   showcaseId += 1;
   const uid = `engine-showcase-${showcaseId}`;
+  const authoring = isAuthoring();
   const [headlineRow, ...rows] = [...block.children];
+
+  // at most MAX_ENGINES engines: once the block has that many, the editor offers no "add" (its
+  // filter is switched to one that allows nothing; the editor has no item limit setting)
+  if (block.dataset.aueFilter) {
+    block.dataset.aueFilter = rows.length >= MAX_ENGINES ? 'engine-showcase-full' : 'engine-showcase';
+  }
 
   // persistent headline (authored as a heading, or as plain text)
   let headline = headlineRow?.querySelector('h1, h2, h3, h4, h5, h6');
@@ -311,41 +443,78 @@ export default function decorate(block) {
     moveInstrumentation(headlineRow, headline);
   }
 
-  const engines = rows.map((row) => {
+  const parsed = rows.map((row) => {
     const [image, thumbnail] = rowImages(row);
     if (!image) return null;
     const mediaCell = [...row.children].find((c) => c.contains(image.source));
     const cells = [...row.children].filter((c) => c !== mediaCell);
-    const [titleCell, description, hotspots] = cells;
+    const [titleCell, description, hotspotsCell] = cells;
     const title = titleCell?.textContent.trim() || image.alt;
+    const { lines, list } = readHotspotLines(hotspotsCell);
     return {
       row,
+      resource: row.dataset.aueResource, // (authoring: the engine's content in AEM)
       image: { ...image, alt: title ? `${title} engine` : image.alt },
       thumbnail: thumbnail || image,
+      hasThumbnail: Boolean(thumbnail),
       framing: parseFraming(mediaCell),
       title,
       description,
-      hotspots: parseHotspots(hotspots),
+      hotspotLines: lines,
+      hotspotList: list,
+      hotspots: parseHotspotLines(lines),
     };
   }).filter(Boolean);
+  const engines = parsed.slice(0, MAX_ENGINES);
+  const extra = parsed.slice(MAX_ENGINES);
   const total = engines.length;
 
   const details = el('div', { class: 'engine-showcase-details', 'aria-live': 'polite' });
   const thumbs = el('div', { class: 'engine-showcase-thumbs', role: 'group', 'aria-label': 'Engine types' });
   const display = el('div', { class: 'engine-showcase-display' });
 
+  // authoring: a dragged '+' saves its new place in the engine's Hotspots field (only its own
+  // entry changes), then the page reloads so the editor shows the saved value. Without a way to
+  // save (see saveProperty), the new entry is copied for pasting into the field instead
+  const status = authoring ? el('p', { class: 'engine-showcase-authoring-status', role: 'status' }) : null;
+  const say = (text) => {
+    status.textContent = text;
+    status.classList.add('is-shown');
+  };
+  const moveHotspot = async (engine, spot, x, y) => {
+    const line = withPosition(engine.hotspotLines[spot.index], x, y);
+    engine.hotspotLines[spot.index] = line;
+    const position = `${Number(x.toFixed(1))}% ${Number(y.toFixed(1))}%`;
+    say(`${spot.title}: ${position}. Saving…`);
+    try {
+      await saveProperty(engine.resource, 'hotspots', hotspotsValue(engine.hotspotLines, engine.hotspotList));
+      say(`${spot.title}: saved at ${position}.`);
+      setTimeout(() => window.location.reload(), 1200);
+    } catch (e) {
+      let copied = false;
+      try {
+        await navigator.clipboard.writeText(line);
+        copied = true;
+      } catch (err) { /* no clipboard access in this frame */ }
+      say(`Couldn't save automatically. New entry${copied ? ' (copied)' : ''}, paste it into the Hotspots field: ${line}`);
+    }
+  };
+
   engines.forEach((engine, i) => {
     const panelId = `${uid}-panel-${i}`;
     // text panel (all panels share one grid cell, so switching never shifts the layout)
+    const title = el('h3', { class: 'engine-showcase-title' }, engine.title);
     const panel = el(
       'div',
       { class: 'engine-showcase-detail', id: panelId },
       el('p', { class: 'engine-showcase-counter' }, `${i + 1} / ${total}`),
-      el('h3', { class: 'engine-showcase-title' }, engine.title),
+      title,
     );
-    if (engine.description?.textContent.trim()) {
-      const desc = el('div', { class: 'engine-showcase-description' });
-      desc.append(...engine.description.childNodes);
+    const descNodes = descriptionNodes(engine.description);
+    let desc = null;
+    if (descNodes.length) {
+      desc = el('div', { class: 'engine-showcase-description' });
+      desc.append(...descNodes);
       panel.append(desc);
     }
     moveInstrumentation(engine.row, panel);
@@ -359,7 +528,14 @@ export default function decorate(block) {
     slide.append(picture);
     if (engine.hotspots.length) {
       const layer = el('div', { class: 'engine-showcase-hotspots' });
-      engine.hotspots.forEach((spot, s) => layer.append(buildHotspot(spot, `${uid}-${i}-${s}`, false)));
+      engine.hotspots.forEach((spot, s) => {
+        const hotspot = buildHotspot(spot, `${uid}-${i}-${s}`, false);
+        if (authoring) {
+          const toggle = hotspot.querySelector('.engine-showcase-hotspot-toggle');
+          makeDraggable(hotspot, toggle, (x, y) => moveHotspot(engine, spot, x, y));
+        }
+        layer.append(hotspot);
+      });
       slide.append(layer);
     }
     display.append(slide);
@@ -372,10 +548,33 @@ export default function decorate(block) {
       },
       createOptimizedPicture(engine.thumbnail.src, '', false, [{ width: '400' }]),
     );
-    if (engine.thumbnail !== engine.image) moveInstrumentation(engine.thumbnail.source, thumb.querySelector('img'));
+    if (engine.hasThumbnail) moveInstrumentation(engine.thumbnail.source, thumb.querySelector('img'));
     thumbs.append(thumb);
+
+    // authoring: every part of the engine is its own node in the editor's content tree. The
+    // engine's text panel is the component (its resource moved from the row); its fields there
+    // inherit the resource, the images (in the other column) name it themselves
+    if (authoring && engine.resource) {
+      const name = `Engine ${i + 1}${engine.title ? `: ${engine.title}` : ''}`;
+      panel.dataset.aueLabel = name;
+      [panel, slide, thumb].forEach((node) => { node.dataset.engineIndex = i; });
+      editable(title, { prop: 'title', type: 'text', label: 'Engine type' });
+      if (desc) {
+        desc.querySelectorAll('[data-aue-prop], [data-richtext-prop]').forEach(dropInstrumentation);
+        editable(desc, { prop: 'description', type: 'text', label: 'Description' });
+      }
+      editable(picture.querySelector('img'), {
+        resource: engine.resource, prop: 'media_image', type: 'media', label: `${name} · image`,
+      });
+      if (engine.hasThumbnail) {
+        editable(thumb.querySelector('img'), {
+          resource: engine.resource, prop: 'media_thumbnail', type: 'media', label: `${name} · thumbnail`,
+        });
+      }
+    }
   });
 
+  if (status) display.append(status); // (after the slides: they are counted by position)
   const content = el('div', { class: 'engine-showcase-content' }, headline, details, thumbs);
   block.replaceChildren(content, display);
 
@@ -390,7 +589,6 @@ export default function decorate(block) {
   // are held back until the page has loaded and the showcase comes into view, or until their
   // thumbnail is reached for (hover, focus, touch), whichever comes first (all at once while
   // authoring)
-  const authoring = isAuthoring();
   const wake = (index) => loadHeldPicture(display.children[index]?.querySelector('picture'));
   if (!authoring) {
     [...display.children].slice(1).forEach((slide) => holdPicture(slide.querySelector('picture')));
@@ -455,6 +653,23 @@ export default function decorate(block) {
   // hand-off to the collage and no scroll stops
   if (authoring) {
     block.classList.add('is-revealed');
+    // selecting an engine's node in the content tree (or on the page) shows that engine
+    block.addEventListener('aue:ui-select', (e) => {
+      if (e.detail?.selected === false) return;
+      const index = Number(e.target.closest?.('[data-engine-index]')?.dataset.engineIndex);
+      if (Number.isInteger(index)) select(index);
+    });
+    // engines beyond MAX_ENGINES (e.g. added before the limit) aren't shown on the site: listed
+    // here, still selectable, so they can be removed
+    if (extra.length) {
+      const note = el('div', { class: 'engine-showcase-overflow', role: 'note' }, el('p', {}, `Only ${MAX_ENGINES} engines are shown on the site. Not shown:`));
+      extra.forEach((engine, k) => {
+        const item = el('p', { class: 'engine-showcase-overflow-item' }, `Engine ${MAX_ENGINES + k + 1}${engine.title ? `: ${engine.title}` : ''}`);
+        moveInstrumentation(engine.row, item);
+        note.append(item);
+      });
+      block.append(note);
+    }
     return;
   }
 
