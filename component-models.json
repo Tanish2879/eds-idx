@@ -960,13 +960,20 @@
         "value": false
       },
       {
-        "component": "text",
-        "valueType": "string",
+        "component": "container",
         "name": "options",
-        "label": "Options",
-        "description": "The choices, one per entry (e.g. the cities): add, edit, reorder or remove them here.",
+        "label": "Cities",
+        "description": "The dropdown’s choices: add a city per entry, edit, reorder or remove them here.",
         "multi": true,
-        "value": ""
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "option",
+            "label": "City",
+            "value": ""
+          }
+        ]
       }
     ]
   }
