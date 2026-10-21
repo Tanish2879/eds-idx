@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/confirmation/source-variant-a.html",
+  "path": "confirmation",
+  "timestamp": "2026-10-21T09:21:15.186Z",
+  "title": "Reserved | JSW Motors",
+  "template": "confirmation",
+  "variant": "variant-a",
+  "blocks": [
+    "confirmation"
+  ]
+}

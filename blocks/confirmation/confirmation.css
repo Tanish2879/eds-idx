@@ -1,0 +1,305 @@
+/* external platform styles (Teamskit / "New Science", the designs' faces): the same placeholder as
+   in reservation-form.css; replace it with the link from the lead. Must stay the first rule */
+@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css');
+
+/* Confirmation, two layouts (the block's variant class, set by the author's Layout choice):
+   .variant-a "Reserved": spotlight background, the large word with the car in front, the text
+   centred below. .variant-b "All set": the photo on the left fading into black, the text beside.
+   Mobile first: phones and portrait tablets stack everything; from 900px both use the designs'
+   1280 × 720 composition on a stage measured in design pixels (--u: 1px at 1280 × 720, scaled to
+   fill the window as far as its other side allows).
+   Values measured from the design screenshots. */
+
+main > .section.confirmation-container > .confirmation-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.confirmation {
+  /* type: the designs' New Science faces (extended for headings) once the stylesheet above
+     loads; until then the site's Sequel / Inter, sized to the designs */
+  --cf-display-font: 'New Science Extended', new-science-extended, var(--display-font-family);
+  --cf-body-font: 'New Science', new-science, var(--body-font-family);
+
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background-color: #000;
+  color: #fff;
+}
+
+.confirmation .confirmation-stage {
+  position: relative;
+}
+
+.confirmation .confirmation-content {
+  position: relative;
+  z-index: 2;
+}
+
+.confirmation .confirmation-heading {
+  margin: 0;
+  font-family: var(--cf-display-font);
+  font-weight: 400;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.confirmation .confirmation-description {
+  margin: 0;
+  font-family: var(--cf-body-font);
+  white-space: pre-line;
+}
+
+.confirmation .confirmation-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 127px;
+  height: 47px;
+  margin-top: 28px;
+  padding: 0 32px;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #000;
+  font-family: var(--cf-body-font);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease-out;
+}
+
+.confirmation .confirmation-cta:hover {
+  background-color: #e6e6e6;
+}
+
+.confirmation .confirmation-cta:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.confirmation picture,
+.confirmation picture img {
+  display: block;
+}
+
+/* ---- Variant A: Reserved ---- */
+
+/* phones: the word, the car and the text centred in the screen */
+.confirmation.variant-a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 120px 24px 72px;
+  text-align: center;
+}
+
+/* the spotlight: fills the block, toned as in the design */
+.confirmation.variant-a .confirmation-background,
+.confirmation.variant-a .confirmation-background img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.confirmation.variant-a .confirmation-background img {
+  object-fit: cover;
+  object-position: 12% 50%; /* (narrow screens: keep the beam, top left, in view) */
+  filter: brightness(0.7) saturate(1.6);
+}
+
+/* the large word: lit by the spotlight on the left, fading to dim bronze on the right */
+.confirmation.variant-a .confirmation-word {
+  position: relative;
+  z-index: 0;
+  margin: 0;
+  background-image: linear-gradient(90deg, #f0b866 0%, #ebb263 11.4%, #d2a262 22.9%, #927345 34.3%, #6b532d 45.8%, #4c4026 57.2%, #322a17 68.7%, #251d12 89%);
+  background-clip: text;
+  color: transparent;
+  font-family: var(--cf-display-font);
+  font-size: 13.5vw;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* the car: cut out, a dark silhouette in front of the word */
+.confirmation.variant-a .confirmation-image {
+  position: relative;
+  z-index: 1;
+  margin: -5.5vw auto 0;
+}
+
+.confirmation.variant-a .confirmation-image img {
+  width: 100%;
+  height: auto;
+  filter: brightness(0.16) saturate(1.4);
+}
+
+.confirmation.variant-a .confirmation-content {
+  margin-top: 28px;
+}
+
+.confirmation.variant-a .confirmation-heading {
+  color: #f4f1ec;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+}
+
+.confirmation.variant-a .confirmation-description {
+  margin-top: 14px;
+  color: #797471;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.confirmation.variant-a .confirmation-description .confirmation-value {
+  color: #bab6b5;
+}
+
+/* ---- Variant B: All set ---- */
+
+/* the photo: greyscale, darkened with bright highlights, fading into black (top, right, bottom) */
+.confirmation.variant-b .confirmation-image {
+  aspect-ratio: 748 / 498;
+  overflow: hidden;
+  mask-image:
+    linear-gradient(to right, #000 69%, transparent 86.5%),
+    linear-gradient(to bottom, rgb(0 0 0 / 50%) 0%, #000 18%, #000 88%, rgb(0 0 0 / 45%) 97%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.confirmation.variant-b .confirmation-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) brightness(0.5) contrast(1.5);
+}
+
+.confirmation.variant-b .confirmation-content {
+  padding: 32px 24px 72px;
+}
+
+.confirmation.variant-b .confirmation-heading {
+  color: #f5f5f5;
+  font-size: 26px;
+}
+
+.confirmation.variant-b .confirmation-description {
+  max-width: 500px;
+  margin-top: 16px;
+  color: #727272;
+  font-size: 14.25px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.confirmation.variant-b .confirmation-description .confirmation-value {
+  color: #dadada;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* ---- from 900px: the designs' composition on a stage of 1280 × 720 design pixels ---- */
+@media (width >= 900px) {
+  .confirmation {
+    --u: min(0.0782vw, 0.1389svh);
+
+    display: grid;
+    place-items: center;
+  }
+
+  .confirmation.variant-a {
+    display: grid;
+    padding: 0;
+  }
+
+  .confirmation .confirmation-stage {
+    width: calc(1280 * var(--u));
+    height: calc(720 * var(--u));
+  }
+
+  .confirmation .confirmation-cta {
+    min-width: calc(127 * var(--u));
+    height: calc(47 * var(--u));
+    margin-top: calc(28 * var(--u));
+    padding: 0 calc(32 * var(--u));
+    border-radius: calc(8 * var(--u));
+    font-size: max(11px, calc(13 * var(--u)));
+  }
+
+  .confirmation.variant-a .confirmation-word {
+    position: absolute;
+    top: calc(52 * var(--u));
+    right: 0;
+    left: 0;
+    font-size: calc(160 * var(--u));
+  }
+
+  .confirmation.variant-a .confirmation-image {
+    position: absolute;
+    top: calc(193 * var(--u));
+    left: calc(158 * var(--u));
+    width: calc(970 * var(--u));
+    margin: 0;
+  }
+
+  .confirmation.variant-a .confirmation-content {
+    position: absolute;
+    top: calc(588 * var(--u));
+    right: 0;
+    left: 0;
+    margin: 0;
+  }
+
+  .confirmation.variant-a .confirmation-heading {
+    font-size: calc(24.5 * var(--u));
+  }
+
+  .confirmation.variant-a .confirmation-description {
+    margin-top: calc(14 * var(--u));
+    font-size: max(12px, calc(14 * var(--u)));
+    line-height: calc(21 * var(--u));
+  }
+
+  .confirmation.variant-b .confirmation-image {
+    position: absolute;
+    top: calc(126 * var(--u));
+    left: calc(-3 * var(--u));
+    width: calc(748 * var(--u));
+  }
+
+  .confirmation.variant-b .confirmation-content {
+    position: absolute;
+    top: calc(308 * var(--u));
+    left: calc(653 * var(--u));
+    width: calc(560 * var(--u));
+    padding: 0;
+  }
+
+  .confirmation.variant-b .confirmation-heading {
+    font-size: calc(34 * var(--u));
+    letter-spacing: 0.02em; /* (with the fallback face: the design's 529px line) */
+  }
+
+  .confirmation.variant-b .confirmation-description {
+    max-width: calc(500 * var(--u));
+    margin-top: calc(22 * var(--u));
+    font-size: max(12px, calc(14.25 * var(--u)));
+    line-height: calc(20 * var(--u));
+  }
+
+  /* authoring (Universal Editor, see styles.css): sized by the width only */
+  html.is-authoring .confirmation {
+    --u: min(1px, 0.0782vw);
+  }
+}
+
+/* authoring: a fixed height instead of the screen height */
+html.is-authoring .confirmation {
+  min-height: var(--authoring-screen);
+}
