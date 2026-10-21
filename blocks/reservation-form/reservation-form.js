@@ -10,15 +10,18 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  *   9. privacy notice link (+ its text)
  *   then the items, in order:
  *     Form Section (1 cell): its name; groups the fields after it, up to the next section
+ *     Form Field (3 cells): label | field name | required; its kind follows its name (see kindOf)
+ *     Dropdown Field (4 cells): label | field name | required | options (a multifield)
  *     (as imported, each item row starts with its component id, see below)
- *     Form Field (7 cells): label | field name | type (text, tel, email, select) | required |
- *       width (full, half) | fixed prefix (e.g. +91) | dropdown options (one per line)
  * The form posts its values as JSON ({ data: { … } }) to the send-to URL, then shows the
  * confirmation message in its place; without a URL it only shows the message.
  */
 
 const BLOCK_ROWS = 9;
-const ITEM_KINDS = { 'reservation-form-section': 'section', 'reservation-form-field': 'field' };
+const ITEM_KINDS = {
+  'reservation-form-section': 'section', 'reservation-form-field': 'field', 'reservation-form-dropdown': 'dropdown',
+};
+const PHONE_PREFIX = '+91'; // the box before a phone number field (Indian mobile numbers)
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const EMAIL = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/;
 const SEND_ERROR = 'Sorry, that didn’t go through. Please try again.';
@@ -76,23 +79,64 @@ function autocompleteOf(type, key) {
   return undefined;
 }
 
-// the parts of a Form Field row
-function parseField(row, index) {
-  const [
-    labelCell, nameCell, typeCell, requiredCell, widthCell, prefixCell, optionsCell,
-  ] = [...row.children];
+// a list value (the Options multifield): its entries, one per paragraph / list item / line, or
+// separated by commas when delivered as one line
+function entries(cell) {
+  const l = lines(cell);
+  return l.length === 1 ? l[0].split(',').map((o) => o.trim()).filter(Boolean) : l;
+}
+
+/*
+ * A Form Field's kind follows its name (or label): an email address, a mobile / phone number
+ * (with the PHONE_PREFIX box) or text; first and last name sit side by side (half width).
+ */
+function kindOf(key, label) {
+  const name = `${key} ${label}`;
+  if (/e-?mail/i.test(name)) return 'email';
+  if (/mobile|phone|\btel\b/i.test(name)) return 'tel';
+  return 'text';
+}
+const isNamePart = (key, label) => /^(first|last|given|family|sur)/i.test(key)
+  || /\b(first|last|given|family)\s*name\b|\bsurname\b/i.test(label);
+
+// the parts of a Form Field row (label | field name | required) or of a Dropdown Field row
+// (label | field name | required | options); rows of the earlier 7-property field model
+// (label | name | type | required | width | prefix | options) are still read
+function parseField(row, index, kind) {
+  const cells = [...row.children];
+  const legacy = kind !== 'dropdown' && cells.length >= 7;
+  const [labelCell, nameCell] = cells;
   const label = text(labelCell);
-  const type = ['tel', 'email', 'select'].includes(text(typeCell)) ? text(typeCell) : 'text';
+  const key = text(nameCell) || keyOf(label || `field ${index + 1}`);
+  if (legacy) {
+    const [, , typeCell, requiredCell, widthCell, prefixCell, optionsCell] = cells;
+    return {
+      row,
+      label,
+      key,
+      type: ['tel', 'email', 'select'].includes(text(typeCell)) ? text(typeCell) : 'text',
+      required: text(requiredCell) === 'true',
+      half: text(widthCell) === 'half',
+      prefix: text(prefixCell),
+      options: entries(optionsCell),
+    };
+  }
+  const required = text(cells[2]) === 'true';
+  if (kind === 'dropdown') {
+    return {
+      row, label, key, type: 'select', required, half: false, prefix: '', options: entries(cells[3]),
+    };
+  }
+  const type = kindOf(key, label);
   return {
     row,
     label,
-    key: text(nameCell) || keyOf(label || `field ${index + 1}`),
+    key,
     type,
-    required: text(requiredCell) === 'true',
-    half: text(widthCell) === 'half',
-    prefix: text(prefixCell),
-    // one per line, or (a single line) separated by commas
-    options: ((l) => (l.length === 1 ? l[0].split(',').map((o) => o.trim()).filter(Boolean) : l))(lines(optionsCell)),
+    required,
+    half: type === 'text' && isNamePart(key, label),
+    prefix: type === 'tel' ? PHONE_PREFIX : '',
+    options: [],
   };
 }
 
@@ -104,7 +148,7 @@ function editable(node, prop, type, label) {
 function buildField(field, id, authoring) {
   const wrap = el('div', { class: `reservation-form-field${field.half ? ' is-half' : ''}${field.prefix ? ' has-prefix' : ''}` });
   moveInstrumentation(field.row, wrap);
-  if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = `Field: ${field.label || field.key}`;
+  if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = `${field.type === 'select' ? 'Dropdown' : 'Field'}: ${field.label || field.key}`;
   const shown = `${field.label}${field.required ? '*' : ''}`;
   // the label is read out by screen readers; the design shows it inside the field
   wrap.append(el('label', { class: 'reservation-form-label', for: id }, field.label || field.key));
@@ -202,7 +246,8 @@ export default function decorate(block) {
     // item's model by it); AEM renders the items without it, told apart by their cell count
     let kind = ITEM_KINDS[text(row.firstElementChild)];
     if (kind) row.firstElementChild.remove();
-    else kind = row.children.length <= 1 ? 'section' : 'field';
+    else if (row.children.length <= 1) kind = 'section';
+    else kind = row.children.length === 4 ? 'dropdown' : 'field';
     if (kind === 'section') {
       // Form Section
       const title = text(row);
@@ -222,7 +267,7 @@ export default function decorate(block) {
       group = el('div', { class: 'reservation-form-section' });
       form.append(group);
     }
-    group.append(buildField(parseField(row, index), `${uid}-${index}`, authoring));
+    group.append(buildField(parseField(row, index, kind), `${uid}-${index}`, authoring));
     index += 1;
   });
   // the same field name twice would send one value only: later ones get a number
