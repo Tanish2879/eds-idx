@@ -58,7 +58,6 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   --es-reveal-delay: 0.95s; /* content waits for the card to settle */
   --es-reveal: 0.55s;
   --es-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --es-crossfade: 0.6s; /* text panel switch */
   --es-slide: 0.85s; /* engine image switch */
   --es-slide-ease: cubic-bezier(0.65, 0, 0.35, 1);
 
@@ -365,13 +364,6 @@ main .section.engine-showcase-container > .engine-showcase-wrapper {
   visibility: visible;
   transform: none;
   transition: opacity 0.35s ease-out, transform 0.35s ease-out, visibility 0s;
-}
-
-.engine-showcase .engine-showcase-hotspot-head {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .engine-showcase .engine-showcase-hotspot-title {

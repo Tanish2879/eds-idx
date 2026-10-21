@@ -1,5 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
+import {
+  moveInstrumentation, isAuthoring, takeRichtext, applyRichtext,
+} from '../../scripts/scripts.js';
 
 /*
  * Blog Carousel: one centred glass card ("OUR BLOGS" with previous / next arrows) showing a blog
@@ -82,7 +84,9 @@ function buildSlide(row, index, total, uid) {
   if (title?.textContent.trim()) slide.append(el('h3', { class: 'blog-carousel-title' }, title.textContent.trim()));
   if (description?.textContent.trim()) {
     const desc = el('div', { class: 'blog-carousel-description' });
+    const richtext = takeRichtext(description); // (authoring: the box is the editable rich text)
     desc.append(...description.childNodes);
+    applyRichtext(desc, richtext);
     slide.append(desc);
   }
   if (link) {
@@ -263,6 +267,7 @@ export default function decorate(block) {
   if (image) {
     const picture = createOptimizedPicture(image.src, image.alt, false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
     moveInstrumentation(image.source, picture.querySelector('img'));
+    picture.querySelector('img').decoding = 'async'; // (below the fold: decoded off the main thread)
     backdrop.append(picture);
   }
   // phones: one dash per blog under the card (the current one white), instead of the arrows
