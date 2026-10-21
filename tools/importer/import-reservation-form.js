@@ -12,10 +12,12 @@
  *   9. privacyLink (+ privacyLinkText)
  *   (the contact email is its own mailto: link property: in a text field md2jcr keeps a link's URL
  *   instead of the text, and markdown turns an email address in a sentence into a link)
- *   then the items, each row starting with its component id (the block allows two child types:
- *   md2jcr picks the item's model by that first cell, and would otherwise read every item with the
- *   first allowed one): reservation-form-section | title, or reservation-form-field | label | fieldName |
- *   control | required | width | prefix | options
+ *   then the items, each row starting with its component id (the block allows several child
+ *   types: md2jcr picks the item's model by that first cell, and would otherwise read every item
+ *   with the first allowed one): reservation-form-section | title,
+ *   reservation-form-field | label | fieldName | required, or
+ *   reservation-form-dropdown | label | fieldName | required | options (a multifield; left empty
+ *   for the authors to fill)
  */
 
 function clean(text) {
@@ -104,19 +106,17 @@ export default {
         cells.push([idCell(document, 'reservation-form-section'), textCell(document, 'title', clean(item.textContent))]);
         return;
       }
-      // (a textarea holds one value: the options as one comma-separated paragraph)
-      const options = [...item.querySelectorAll('li')].map((li) => clean(li.textContent)).join(', ');
       const label = clean([...item.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(' '));
-      cells.push([
-        idCell(document, 'reservation-form-field'),
+      const common = [
         textCell(document, 'label', label),
         textCell(document, 'fieldName', item.dataset.name || ''),
-        textCell(document, 'control', item.dataset.type || 'text'),
         textCell(document, 'required', item.dataset.required === 'true' ? 'true' : 'false'),
-        textCell(document, 'width', item.dataset.width || 'full'),
-        textCell(document, 'prefix', item.dataset.prefix || ''),
-        textCell(document, 'options', options),
-      ]);
+      ];
+      if (item.classList.contains('dropdown')) {
+        // options: any listed in the source (none: the authors add them in the editor)
+        const options = [...item.querySelectorAll('li')].map((li) => clean(li.textContent)).join(', ');
+        cells.push([idCell(document, 'reservation-form-dropdown'), ...common, textCell(document, 'options', options)]);
+      } else cells.push([idCell(document, 'reservation-form-field'), ...common]);
     });
     main.append(WebImporter.Blocks.createBlock(document, { name: 'reservation-form', cells }));
 

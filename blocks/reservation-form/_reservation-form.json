@@ -40,9 +40,22 @@
             "resourceType": "core/franklin/components/block/v1/block/item",
             "template": {
               "name": "Form Field",
-              "model": "reservation-form-field",
-              "control": "text",
-              "width": "full"
+              "model": "reservation-form-field"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Dropdown Field",
+      "id": "reservation-form-dropdown",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Dropdown Field",
+              "model": "reservation-form-dropdown"
             }
           }
         }
@@ -168,7 +181,7 @@
           "valueType": "string",
           "name": "label",
           "label": "Label",
-          "description": "Shown inside the field and read out by screen readers, e.g. First Name (required fields get a * added).",
+          "description": "Shown inside the field and read out by screen readers, e.g. First Name (required fields get a * added). The field’s kind follows its name: an email address, a mobile / phone number (with the +91 box) or text; first and last name sit side by side.",
           "value": ""
         },
         {
@@ -180,29 +193,32 @@
           "value": ""
         },
         {
-          "component": "select",
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "required",
+          "label": "Required",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "reservation-form-dropdown",
+      "fields": [
+        {
+          "component": "text",
           "valueType": "string",
-          "name": "control",
-          "label": "Field type",
-          "value": "text",
-          "options": [
-            {
-              "name": "Text",
-              "value": "text"
-            },
-            {
-              "name": "Phone number",
-              "value": "tel"
-            },
-            {
-              "name": "Email address",
-              "value": "email"
-            },
-            {
-              "name": "Dropdown",
-              "value": "select"
-            }
-          ]
+          "name": "label",
+          "label": "Label",
+          "description": "Shown in the dropdown until a choice is made, e.g. Select City (a required one gets a * added).",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "fieldName",
+          "label": "Field name",
+          "description": "Key of the choice in the sent data, e.g. city. Leave empty to make it from the label.",
+          "value": ""
         },
         {
           "component": "boolean",
@@ -212,37 +228,12 @@
           "value": false
         },
         {
-          "component": "select",
-          "valueType": "string",
-          "name": "width",
-          "label": "Width",
-          "description": "Two half-width fields in a row sit side by side (on phones too).",
-          "value": "full",
-          "options": [
-            {
-              "name": "Full width",
-              "value": "full"
-            },
-            {
-              "name": "Half width",
-              "value": "half"
-            }
-          ]
-        },
-        {
           "component": "text",
           "valueType": "string",
-          "name": "prefix",
-          "label": "Fixed prefix",
-          "description": "Shown in its own box before the field, e.g. +91 for a phone number.",
-          "value": ""
-        },
-        {
-          "component": "textarea",
-          "valueType": "string",
           "name": "options",
-          "label": "Dropdown options",
-          "description": "For a Dropdown: one option per line (or separated by commas).",
+          "label": "Options",
+          "description": "The choices, one per entry (e.g. the cities): add, edit, reorder or remove them here.",
+          "multi": true,
           "value": ""
         }
       ]
@@ -253,7 +244,8 @@
       "id": "reservation-form",
       "components": [
         "reservation-form-section",
-        "reservation-form-field"
+        "reservation-form-field",
+        "reservation-form-dropdown"
       ]
     }
   ]

@@ -97,18 +97,16 @@ var CustomImportScript = (() => {
           cells.push([idCell(document, "reservation-form-section"), textCell(document, "title", clean(item.textContent))]);
           return;
         }
-        const options = [...item.querySelectorAll("li")].map((li) => clean(li.textContent)).join(", ");
         const label = clean([...item.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" "));
-        cells.push([
-          idCell(document, "reservation-form-field"),
+        const common = [
           textCell(document, "label", label),
           textCell(document, "fieldName", item.dataset.name || ""),
-          textCell(document, "control", item.dataset.type || "text"),
-          textCell(document, "required", item.dataset.required === "true" ? "true" : "false"),
-          textCell(document, "width", item.dataset.width || "full"),
-          textCell(document, "prefix", item.dataset.prefix || ""),
-          textCell(document, "options", options)
-        ]);
+          textCell(document, "required", item.dataset.required === "true" ? "true" : "false")
+        ];
+        if (item.classList.contains("dropdown")) {
+          const options = [...item.querySelectorAll("li")].map((li) => clean(li.textContent)).join(", ");
+          cells.push([idCell(document, "reservation-form-dropdown"), ...common, textCell(document, "options", options)]);
+        } else cells.push([idCell(document, "reservation-form-field"), ...common]);
       });
       main.append(WebImporter.Blocks.createBlock(document, { name: "reservation-form", cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {

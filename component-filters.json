@@ -107,7 +107,8 @@
     "id": "reservation-form",
     "components": [
       "reservation-form-section",
-      "reservation-form-field"
+      "reservation-form-field",
+      "reservation-form-dropdown"
     ]
   }
 ]
