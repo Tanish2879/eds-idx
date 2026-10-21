@@ -25,7 +25,8 @@
       "parallax-collage",
       "hero-video",
       "engine-showcase",
-      "blog-carousel"
+      "blog-carousel",
+      "reservation-form"
     ]
   },
   {
@@ -99,6 +100,13 @@
     "id": "parallax-collage",
     "components": [
       "parallax-collage-image"
+    ]
+  },
+  {
+    "id": "reservation-form",
+    "components": [
+      "reservation-form-section",
+      "reservation-form-field"
     ]
   }
 ]

@@ -60,7 +60,8 @@
         "parallax-collage",
         "hero-video",
         "engine-showcase",
-        "blog-carousel"
+        "blog-carousel",
+        "reservation-form"
       ]
     }
   ]
