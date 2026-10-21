@@ -1,0 +1,2 @@
+http://localhost:3000/drafts/confirmation/source-variant-a.html
+http://localhost:3000/drafts/confirmation/source-variant-b.html

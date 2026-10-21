@@ -418,6 +418,90 @@
     ]
   },
   {
+    "id": "confirmation",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: the big word on a spotlight with the car in front, text centred below. Variant B: the image on the left, the text beside it.",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Reserved (spotlight, word and car)",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – All set (image beside the text)",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "displayWord",
+        "label": "Background word",
+        "description": "Variant A: the large word behind the car, e.g. RESERVED (not used by Variant B).",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Status heading",
+        "description": "E.g. YOU’RE IN, {firstName}. Values of the reservation (from the form, or the page address) fill {firstName}, {lastName}, {email}, {mobile}, {city}; {name|fallback} shows the fallback when there is none, otherwise the value and its comma are left out.",
+        "value": ""
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "description": "E.g. We’ll message you when allocation opens. Your receipt is on its way to {email|your inbox}. Variant A shows each sentence on its own line. Values as in the heading.",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "Variant A: the car, cut out on a transparent background, in front of the word. Variant B: the photo on the left.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "Variant A: fills the block behind the word and the car (decorative; not used by Variant B).",
+        "multi": false
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "Optional: a button under the description (none in the designs)."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLinkText",
+        "label": "Button text",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "engine-showcase",
     "fields": [
       {

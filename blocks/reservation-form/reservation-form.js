@@ -307,6 +307,10 @@ export default function decorate(block) {
         });
         if (!res.ok) throw new Error(`${res.status}`);
       }
+      // kept for this tab: a confirmation page fills its {firstName}, {email}, … from it
+      try {
+        sessionStorage.setItem('jsw-reservation', JSON.stringify(data));
+      } catch (err) { /* no storage (private mode) */ }
       // the confirmation takes the form's place
       const done = el('p', { class: 'reservation-form-success', tabindex: '-1', role: 'status' }, success || 'Thank you.');
       form.replaceWith(done);
