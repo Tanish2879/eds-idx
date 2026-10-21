@@ -9,6 +9,17 @@
   src: url('../fonts/sequel.woff2') format('woff2');
 }
 
+/* New Science Extended (Newlyn) — display face of the JSW reservation / confirmation designs:
+   headings and the large word (the designs' body copy is the normal-width New Science, not in the
+   repository yet: Inter stands in) */
+@font-face {
+  font-family: 'New Science Extended';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/new-science-extended.woff2') format('woff2'), url('../fonts/fonnts.com-New_Science_Regular_Extended.otf') format('opentype');
+}
+
 /* Inter — body copy (variable, latin subset) */
 @font-face {
   font-family: inter;
