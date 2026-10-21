@@ -1,7 +1,9 @@
 /* external platform styles (Teamskit / "New Science", the design's text face): replace the
    placeholder with the link from the lead (the same one as in engine-showcase.css). Must stay the
    first rule in this file (an @import after any other rule is ignored) */
-@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css');
+
+/* (off for now: New Science Extended is self-hosted, see styles/fonts.css)
+@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css'); */
 
 /* Reservation Form: the car image beside the form on black. Values from the design at 1280x720:
    image 599px (46.8%) wide, form column 511px centred in the black panel; fields 47px tall on
@@ -73,7 +75,9 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   margin: 0;
   color: var(--rf-text);
   font-family: var(--rf-display-font);
-  font-size: clamp(26px, 7.9vw, 31px);
+  position: relative;
+  top: 1px; /* (the face's caps sit 1px high in its line box, against the design) */
+  font-size: clamp(24px, 7.7vw, 30px);
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: 0.12em; /* the narrower fallback (Sequel) spaced out to the design's width */
@@ -289,7 +293,7 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   }
 
   .reservation-form .reservation-form-panel {
-    padding: 73px 43px 55px 37px; /* the design's column sits 3px left of and 9px below centre */
+    padding: 75px 43px 55px 37px; /* the design's column sits 3px left of and 10px below centre */
   }
 }
 

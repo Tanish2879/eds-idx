@@ -1,6 +1,8 @@
 /* external platform styles (Teamskit / "New Science", the designs' faces): the same placeholder as
    in reservation-form.css; replace it with the link from the lead. Must stay the first rule */
-@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css');
+
+/* (off for now: New Science Extended is self-hosted, see styles/fonts.css)
+@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css'); */
 
 /* Confirmation, two layouts (the block's variant class, set by the author's Layout choice):
    .variant-a "Reserved": spotlight background, the large word with the car in front, the text
@@ -41,6 +43,7 @@ main > .section.confirmation-container > .confirmation-wrapper {
   margin: 0;
   font-family: var(--cf-display-font);
   font-weight: 400;
+  letter-spacing: 0;
   line-height: 1.15;
   text-transform: uppercase;
 }
@@ -120,8 +123,9 @@ main > .section.confirmation-container > .confirmation-wrapper {
   background-clip: text;
   color: transparent;
   font-family: var(--cf-display-font);
-  font-size: 13.5vw;
+  font-size: 11.8vw;
   line-height: 1;
+  letter-spacing: 0;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -146,7 +150,6 @@ main > .section.confirmation-container > .confirmation-wrapper {
 .confirmation.variant-a .confirmation-heading {
   color: #f4f1ec;
   font-size: 22px;
-  letter-spacing: 0.04em;
 }
 
 .confirmation.variant-a .confirmation-description {
@@ -244,7 +247,7 @@ main > .section.confirmation-container > .confirmation-wrapper {
     top: calc(52 * var(--u));
     right: 0;
     left: 0;
-    font-size: calc(160 * var(--u));
+    font-size: calc(140 * var(--u));
   }
 
   .confirmation.variant-a .confirmation-image {
@@ -264,7 +267,7 @@ main > .section.confirmation-container > .confirmation-wrapper {
   }
 
   .confirmation.variant-a .confirmation-heading {
-    font-size: calc(24.5 * var(--u));
+    font-size: calc(23.7 * var(--u));
   }
 
   .confirmation.variant-a .confirmation-description {
@@ -289,8 +292,7 @@ main > .section.confirmation-container > .confirmation-wrapper {
   }
 
   .confirmation.variant-b .confirmation-heading {
-    font-size: calc(34 * var(--u));
-    letter-spacing: 0.02em; /* (with the fallback face: the design's 529px line) */
+    font-size: calc(31.8 * var(--u));
   }
 
   .confirmation.variant-b .confirmation-description {

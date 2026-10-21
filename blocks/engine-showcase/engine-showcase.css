@@ -1,6 +1,8 @@
 /* external platform styles (Teamskit / "New Science"): replace the placeholder with the link from
    the lead. Must stay the first rule in this file (an @import after any other rule is ignored) */
-@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css');
+
+/* (off for now: New Science Extended is self-hosted, see styles/fonts.css)
+@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css'); */
 
 /* Engine Showcase: headline + switching text + thumbnails (left, bottom-anchored), large engine
    image with glass '+' hotspots filling the right half. Values from the reference walkthrough
