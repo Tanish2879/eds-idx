@@ -1,6 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 import {
-  moveInstrumentation, holdPicture, loadHeldPicture, isAuthoring,
+  moveInstrumentation, holdPicture, loadHeldPicture, isAuthoring, takeRichtext, applyRichtext,
 } from '../../scripts/scripts.js';
 import { cubicBezier } from '../../scripts/scroll-stops.js';
 
@@ -227,6 +227,14 @@ function dropInstrumentation(node) {
     .forEach(({ name }) => node.removeAttribute(name));
 }
 
+// the window size for the per-frame scroll code, kept from resize events (reading innerWidth /
+// innerHeight there would force a layout after the frame's style writes)
+const view = { w: window.innerWidth, h: window.innerHeight };
+window.addEventListener('resize', () => {
+  view.w = window.innerWidth;
+  view.h = window.innerHeight;
+}, { passive: true });
+
 const PHONE = window.matchMedia('(width < 768px)');
 const EDGE = 16; // px kept clear of the screen edges by a hotspot card
 const GAP = 8; // px between a '+' and its card
@@ -387,7 +395,7 @@ function buildHotspot(spot, id, open) {
   const card = el(
     'div',
     { class: 'engine-showcase-hotspot-card', id: cardId },
-    el('div', { class: 'engine-showcase-hotspot-head' }, el('p', { class: 'engine-showcase-hotspot-title' }, spot.title)),
+    el('p', { class: 'engine-showcase-hotspot-title' }, spot.title),
     spot.text ? el('p', { class: 'engine-showcase-hotspot-text' }, spot.text) : null,
   );
   hotspot.append(toggle, card);
@@ -435,12 +443,15 @@ export default function decorate(block) {
     block.dataset.aueFilter = rows.length >= MAX_ENGINES ? 'engine-showcase-full' : 'engine-showcase';
   }
 
-  // persistent headline (authored as a heading, or as plain text)
+  // persistent headline (authored as a heading, or as plain text); authoring: the heading itself is
+  // the editable rich text (no editor wrapper inside the content grid)
+  const headlineText = takeRichtext(headlineRow);
   let headline = headlineRow?.querySelector('h1, h2, h3, h4, h5, h6');
   if (!headline && headlineRow?.textContent.trim()) headline = el('h2', {}, headlineRow.textContent.trim());
   if (headline) {
     headline.classList.add('engine-showcase-headline');
     moveInstrumentation(headlineRow, headline);
+    applyRichtext(headline, headlineText);
   }
 
   const parsed = rows.map((row) => {
@@ -449,6 +460,7 @@ export default function decorate(block) {
     const mediaCell = [...row.children].find((c) => c.contains(image.source));
     const cells = [...row.children].filter((c) => c !== mediaCell);
     const [titleCell, description, hotspotsCell] = cells;
+    takeRichtext(hotspotsCell); // (rebuilt as the '+' buttons: edited in the properties panel)
     const title = titleCell?.textContent.trim() || image.alt;
     const { lines, list } = readHotspotLines(hotspotsCell);
     return {
@@ -525,6 +537,10 @@ export default function decorate(block) {
     slide.framing = engine.framing;
     const picture = createOptimizedPicture(engine.image.src, engine.image.alt, false, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }]);
     moveInstrumentation(engine.image.source, picture.querySelector('img'));
+    // decoded ahead once loaded (off the main thread), so it is ready when it slides in or is
+    // handed over to the collage (async decoding could leave it blank for a frame mid-animation)
+    const slideImg = picture.querySelector('img');
+    slideImg.addEventListener('load', () => slideImg.decode().catch(() => {}), { once: true });
     slide.append(picture);
     if (engine.hotspots.length) {
       const layer = el('div', { class: 'engine-showcase-hotspots' });
@@ -682,7 +698,7 @@ export default function decorate(block) {
     ticking = false;
     if (!section.offsetHeight) return; // section still hidden while the page loads
     const { top } = section.getBoundingClientRect();
-    const rise = Math.min(Math.max(1 - top / window.innerHeight, 0), 1).toFixed(4);
+    const rise = Math.min(Math.max(1 - top / view.h, 0), 1).toFixed(4);
     // (once risen it stays at 1: no style change, so no restyle, on the frames after)
     if (rise !== lastRise) section.style.setProperty('--es-rise', rise);
     lastRise = rise;
@@ -797,10 +813,10 @@ export default function decorate(block) {
     // classes or the window size change, as reading them on every frame forces a full restyle
     let phases = { key: '' };
     const collagePhases = () => {
-      const key = `${collage.className}|${window.innerWidth}x${window.innerHeight}`;
+      const key = `${collage.className}|${view.w}x${view.h}`;
       if (phases.key === key) return phases;
       const layer = collage.querySelector('.sticky-text-layer');
-      const svh = (layer?.clientHeight || window.innerHeight) / 100;
+      const svh = (layer?.clientHeight || view.h) / 100;
       const cs = getComputedStyle(collage);
       const enter = parseFloat(cs.getPropertyValue('--hold-enter')) * svh;
       const measured = { key, enter, hold: enter + parseFloat(cs.getPropertyValue('--hold-fade')) * svh };
@@ -834,7 +850,7 @@ export default function decorate(block) {
       // edge so its lower part (thumbnails, engine) stays in view; the collage starts right under
       // the window (set again only when the sizes change)
       const height = section.offsetHeight;
-      const pinTop = Math.min(0, window.innerHeight - height);
+      const pinTop = Math.min(0, view.h - height);
       if (pinned !== `${pinTop}|${height}`) {
         section.style.top = `${pinTop}px`;
         next.style.marginTop = `-${height + pinTop}px`;
@@ -851,7 +867,7 @@ export default function decorate(block) {
       let phase = u;
       if (u <= 0) phase = 'before';
       else if (u >= 1) phase = 'after';
-      const state = [phase, waiting, current, window.innerWidth, window.innerHeight, height].join('|');
+      const state = [phase, waiting, current, view.w, view.h, height].join('|');
       if (state === applied) return;
       applied = state;
 

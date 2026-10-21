@@ -1,5 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, takeRichtext } from '../../scripts/scripts.js';
 
 /*
  * Hero Video: full-bleed muted, looping background video with the headline top left, the
@@ -107,6 +107,10 @@ export default function decorate(block) {
   // content overlay
   const content = el('div', { class: 'hero-video-content' });
   if (textRow) {
+    // (authoring: the heading and the paragraphs go to two places of the layout grid, with the
+    // button, a separate field, between them, so no element holds exactly this rich text: it is
+    // edited in the block's properties; the editor's wrapper is only removed)
+    takeRichtext(textRow);
     moveInstrumentation(textRow, content);
     heading.classList.add('hero-video-headline');
     content.append(heading);

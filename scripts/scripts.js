@@ -290,11 +290,13 @@ export function moveInstrumentation(from, to) {
 
 /**
  * Whether the page is open for authoring: in the Universal Editor (edit or preview mode), or the
- * author-side rendition it loads, which carries the editor's instrumentation (data-aue-*; the
- * published page has none). Scroll-driven effects are then left out and every block renders
- * statically: the editor sizes its frame to the page height, so heights tied to the viewport
- * (100svh, pinned scroll distances) would grow without end, and wheel / touch capture, pins and
- * hidden or inert sections get in the way of selecting and editing content.
+ * author-side rendition it loads, which carries the editor's connection meta tag
+ * (urn:adobe:aue:system:aemconnection) and instrumentation (data-aue-*; the published page has
+ * neither; window.adobe is no sign: analytics libraries on the live site define it too).
+ * Scroll-driven effects are then left out and every block renders statically: the editor sizes
+ * its frame to the page height, so heights tied to the viewport (100svh, pinned scroll distances)
+ * would grow without end, and wheel / touch capture, pins and hidden or inert sections get in the
+ * way of selecting and editing content.
  * @returns {boolean}
  */
 export function isAuthoring() {
@@ -302,7 +304,58 @@ export function isAuthoring() {
   return root.classList.contains('is-authoring')
     || root.classList.contains('adobe-ue-edit')
     || root.classList.contains('adobe-ue-preview')
+    // the editor's connection to AEM author (only in the author rendition, never published)
+    || !!document.querySelector('meta[name^="urn:adobe:aue:system:"]')
     || !!document.querySelector('[data-aue-resource]');
+}
+
+/**
+ * Authoring: takes the rich-text instrumentation out of an authored cell, so that a block can put
+ * it on the element that holds that rich text once decorated (applyRichtext), instead of leaving
+ * the editor support's wrapper inside the block layout (an extra div that breaks grid / flex
+ * layouts) or losing it when the block moves the text elsewhere. Unwraps the editor's group
+ * (data-aue-type="richtext"), or, before it ran, removes the raw data-richtext-* markers (so it
+ * won't group them later). No-op on the published page.
+ * @param {Element} container the authored cell (or row)
+ * @returns {Object<string, string>|null} the data-aue-* attributes of the rich text, or null
+ */
+export function takeRichtext(container) {
+  if (!container) return null;
+  let attrs = null;
+  const group = container.querySelector('[data-aue-type="richtext"]');
+  if (group) {
+    attrs = Object.fromEntries([...group.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-')).map(({ name, value }) => [name, value]));
+    group.replaceWith(...group.childNodes);
+  }
+  const marked = [...container.querySelectorAll('[data-richtext-prop]')];
+  if (marked.length && !attrs) {
+    const {
+      richtextResource, richtextProp, richtextLabel, richtextFilter,
+    } = marked[0].dataset;
+    attrs = { 'data-aue-type': 'richtext', 'data-aue-prop': richtextProp };
+    if (richtextResource) {
+      attrs['data-aue-resource'] = richtextResource;
+      attrs['data-aue-behavior'] = 'component';
+    }
+    if (richtextLabel) attrs['data-aue-label'] = richtextLabel;
+    if (richtextFilter) attrs['data-aue-filter'] = richtextFilter;
+  }
+  marked.forEach((node) => {
+    ['richtextResource', 'richtextProp', 'richtextLabel', 'richtextFilter'].forEach((k) => delete node.dataset[k]);
+  });
+  return attrs;
+}
+
+/**
+ * Authoring: puts rich-text instrumentation (from takeRichtext) on the element that holds exactly
+ * that rich text, which makes it the inline-editable rich text, without a wrapper.
+ * @param {Element} target
+ * @param {Object<string, string>|null} attrs
+ */
+export function applyRichtext(target, attrs) {
+  if (!target || !attrs) return;
+  Object.entries(attrs).forEach(([name, value]) => target.setAttribute(name, value));
 }
 
 /**

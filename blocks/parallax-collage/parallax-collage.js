@@ -1,5 +1,7 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation, holdPicture, isAuthoring } from '../../scripts/scripts.js';
+import {
+  moveInstrumentation, holdPicture, isAuthoring, takeRichtext, applyRichtext,
+} from '../../scripts/scripts.js';
 
 /*
  * Parallax Collage: heading + paragraph pinned in the centre of the screen while two "screens"
@@ -21,6 +23,14 @@ import { moveInstrumentation, holdPicture, isAuthoring } from '../../scripts/scr
  * Both phase ends are published as data-scroll-stops for the eased wheel scroller
  * (scripts/scroll-stops.js): one gesture lands the hero in its slot, the next fades it out.
  */
+
+// the window size for the per-frame scroll code, kept from resize events (reading innerWidth /
+// innerHeight there would force a layout after the frame's style writes)
+const view = { w: window.innerWidth, h: window.innerHeight };
+window.addEventListener('resize', () => {
+  view.w = window.innerWidth;
+  view.h = window.innerHeight;
+}, { passive: true });
 
 const CARDS_PER_SCREEN = 4;
 const CARD_CLASSES = ['card-a', 'card-b', 'card-c', 'card-d'];
@@ -52,6 +62,11 @@ function buildItem(row, image, className) {
   moveInstrumentation(row, item);
   const picture = createOptimizedPicture(image.src, image.alt, false, [{ width: '750' }]);
   moveInstrumentation(image.source, picture.querySelector('img'));
+  // below the fold: decoded off the main thread; the hero card is decoded ahead once loaded
+  // instead (it slides in / is handed over mid-animation, where a blank frame would show)
+  const img = picture.querySelector('img');
+  if (className === 'engine') img.addEventListener('load', () => img.decode().catch(() => {}), { once: true });
+  else img.decoding = 'async';
   item.append(picture);
   return item;
 }
@@ -65,7 +80,11 @@ export default function decorate(block) {
   if (textRow) {
     const cell = textRow.lastElementChild || textRow;
     moveInstrumentation(textRow, content);
+    // (authoring: the column itself is the editable rich text, no editor wrapper inside its flex
+    // layout)
+    const richtext = takeRichtext(cell);
     content.append(...cell.childNodes);
+    applyRichtext(content, richtext);
     content.querySelector('h1, h2, h3, h4, h5, h6')?.classList.add('parallax-collage-heading');
     content.querySelectorAll('p').forEach((p) => p.classList.add('parallax-collage-subtitle'));
   }
@@ -112,7 +131,7 @@ export default function decorate(block) {
   // block's classes or the window size change, as reading them on every frame forces a restyle
   let phases = { key: '' };
   const measure = () => {
-    const key = `${block.className}|${window.innerWidth}x${window.innerHeight}`;
+    const key = `${block.className}|${view.w}x${view.h}`;
     if (phases.key === key) return phases;
     const style = getComputedStyle(block);
     const svh = textLayer.clientHeight / 100;
