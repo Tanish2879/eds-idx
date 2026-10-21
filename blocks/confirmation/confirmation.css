@@ -223,6 +223,13 @@ main > .section.confirmation-container > .confirmation-wrapper {
     height: calc(720 * var(--u));
   }
 
+  /* Variant B spans the whole width whatever the window's shape (a centred stage would leave
+     side bands on windows wider than 16:9): the photo stays flush with the left edge, the text
+     starts at the design's 51% of the width; sizes still follow the stage */
+  .confirmation.variant-b .confirmation-stage {
+    width: 100%;
+  }
+
   .confirmation .confirmation-cta {
     min-width: calc(127 * var(--u));
     height: calc(47 * var(--u));
@@ -276,7 +283,7 @@ main > .section.confirmation-container > .confirmation-wrapper {
   .confirmation.variant-b .confirmation-content {
     position: absolute;
     top: calc(308 * var(--u));
-    left: calc(653 * var(--u));
+    left: 51.02%; /* 653 / 1280 */
     width: calc(560 * var(--u));
     padding: 0;
   }
