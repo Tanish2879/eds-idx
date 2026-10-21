@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/reservation-form/source.html",
+  "path": "reservation-form",
+  "timestamp": "2026-10-21T07:30:33.912Z",
+  "title": "Reserve Now | JSW Motors",
+  "template": "reservation-form",
+  "blocks": [
+    "reservation-form"
+  ]
+}

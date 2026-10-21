@@ -1,0 +1,260 @@
+{
+  "definitions": [
+    {
+      "title": "Reservation Form",
+      "id": "reservation-form",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Reservation Form",
+              "model": "reservation-form",
+              "filter": "reservation-form"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Form Section",
+      "id": "reservation-form-section",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Form Section",
+              "model": "reservation-form-section"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Form Field",
+      "id": "reservation-form-field",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Form Field",
+              "model": "reservation-form-field",
+              "control": "text",
+              "width": "full"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "reservation-form",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Car image",
+          "description": "Fills the left half of the block (on phones: a banner above the form).",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Car image alt text",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "heading",
+          "label": "Heading",
+          "description": "E.g. RESERVE NOW.",
+          "value": ""
+        },
+        {
+          "component": "textarea",
+          "valueType": "string",
+          "name": "description",
+          "label": "Description",
+          "description": "Shown under the heading.",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "submitLabel",
+          "label": "Button text",
+          "description": "E.g. PROCEED.",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "submitAction",
+          "label": "Send the form to (URL)",
+          "description": "The form data is posted there as JSON ({ data: { firstName, … } }). Leave empty to only show the confirmation message.",
+          "value": ""
+        },
+        {
+          "component": "textarea",
+          "valueType": "string",
+          "name": "successMessage",
+          "label": "Confirmation message",
+          "description": "Replaces the form once it has been sent.",
+          "value": ""
+        },
+        {
+          "component": "textarea",
+          "valueType": "string",
+          "name": "disclaimer",
+          "label": "Privacy disclaimer",
+          "description": "Small print under the button, e.g. “… or request erasure anytime at”. The contact email and the privacy notice link follow it, each with a full stop.",
+          "value": ""
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "privacyEmail",
+          "label": "Privacy contact email",
+          "description": "Shown as a link after the disclaimer: the address as mailto:…, e.g. mailto:privacy@jswmotors.com."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "privacyEmailText",
+          "label": "Privacy contact email text",
+          "description": "E.g. privacy@jswmotors.com.",
+          "value": ""
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "privacyLink",
+          "label": "Privacy notice link"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "privacyLinkText",
+          "label": "Privacy notice link text",
+          "description": "E.g. Full Privacy Notice.",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "reservation-form-section",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Section name",
+          "description": "E.g. User Details. Groups the fields that follow it (up to the next section); read out by screen readers as the group's name (not shown in the design).",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "reservation-form-field",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
+          "description": "Shown inside the field and read out by screen readers, e.g. First Name (required fields get a * added).",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "fieldName",
+          "label": "Field name",
+          "description": "Key of this value in the sent data, e.g. firstName. Leave empty to make it from the label.",
+          "value": ""
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "control",
+          "label": "Field type",
+          "value": "text",
+          "options": [
+            {
+              "name": "Text",
+              "value": "text"
+            },
+            {
+              "name": "Phone number",
+              "value": "tel"
+            },
+            {
+              "name": "Email address",
+              "value": "email"
+            },
+            {
+              "name": "Dropdown",
+              "value": "select"
+            }
+          ]
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "required",
+          "label": "Required",
+          "value": false
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "width",
+          "label": "Width",
+          "description": "Two half-width fields in a row sit side by side (on phones too).",
+          "value": "full",
+          "options": [
+            {
+              "name": "Full width",
+              "value": "full"
+            },
+            {
+              "name": "Half width",
+              "value": "half"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "prefix",
+          "label": "Fixed prefix",
+          "description": "Shown in its own box before the field, e.g. +91 for a phone number.",
+          "value": ""
+        },
+        {
+          "component": "textarea",
+          "valueType": "string",
+          "name": "options",
+          "label": "Dropdown options",
+          "description": "For a Dropdown: one option per line (or separated by commas).",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "reservation-form",
+      "components": [
+        "reservation-form-section",
+        "reservation-form-field"
+      ]
+    }
+  ]
+}

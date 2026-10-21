@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Reserve Now | JSW Motors</title>
+  <meta name="description" content="Reserve your JSW Motors car. Allocation opens December 2026; cars are assigned in the order reservations are placed.">
+  <!-- the design has no header and no footer -->
+  <meta name="nav" content="off">
+  <meta name="footer" content="off">
+</head>
+<body>
+  <!-- Reservation Form (reservation-form block), from the design screenshot
+       (migration-work/reservation-form/design-1280x720.jpg). The confirmation message and the
+       privacy notice link target are placeholders (not in the design). Items: a section groups the
+       fields after it; fields: label, data-name, data-type (text | tel | email | select),
+       data-required, data-width (full | half), data-prefix, options (<li>). -->
+  <section class="reservation-form-source">
+    <img class="image" src="/drafts/reservation-form/reservation-car.jpg" alt="Close-up of a car's glowing red light bar">
+    <h1>RESERVE NOW</h1>
+    <p class="description">Allocation opens December 2026. Cars are assigned in the order reservations are placed.</p>
+    <p class="submit">PROCEED</p>
+    <p class="action"></p>
+    <p class="success">Thank you. Your reservation request has been received; our team will contact you shortly.</p>
+    <p class="disclaimer">JSW Motors processes this data only for the purpose above, under the DPDP Act, 2023. Consent is optional and you can withdraw it or request erasure anytime at</p>
+    <a class="email" href="mailto:privacy@jswmotors.com">privacy@jswmotors.com</a>
+    <a class="privacy" href="/privacy-notice">Full Privacy Notice</a>
+
+    <div class="item section">User Details</div>
+    <div class="item field" data-name="firstName" data-type="text" data-required="true" data-width="half">First Name</div>
+    <div class="item field" data-name="lastName" data-type="text" data-required="true" data-width="half">Last Name</div>
+    <div class="item field" data-name="mobile" data-type="tel" data-required="true" data-width="full" data-prefix="+91">Mobile Number</div>
+    <div class="item field" data-name="email" data-type="email" data-required="false" data-width="full">Email Address</div>
+
+    <div class="item section">Location</div>
+    <div class="item field" data-name="city" data-type="select" data-required="false" data-width="full">Select City
+      <ul>
+        <li>Mumbai</li>
+        <li>Delhi NCR</li>
+        <li>Bengaluru</li>
+        <li>Chennai</li>
+        <li>Hyderabad</li>
+        <li>Pune</li>
+        <li>Kolkata</li>
+        <li>Ahmedabad</li>
+      </ul>
+    </div>
+  </section>
+</body>
+</html>

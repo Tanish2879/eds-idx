@@ -9,13 +9,15 @@
  *   last      — section with only a <ul> of links → floating sticky CTAs
  * A standard nav document without tabs (brand | sections <ul> | tools links) renders as a
  * floating pill bar instead. Pages pick their nav document with the "nav" metadata
- * (e.g. /jsw-nav); without it the site default /nav is used.
+ * (e.g. /jsw-nav), or have no header with "off" (designs without one); without it the site
+ * default /nav is used.
  */
 
 import { getPageMetadata } from '../../scripts/scripts.js';
 
 const DESKTOP = window.matchMedia('(width >= 900px)');
 const PILL_DESKTOP = window.matchMedia('(width >= 768px)');
+const NAV_OFF = ['off', 'none', 'hidden'];
 let headerId = 0;
 
 function navPath() {
@@ -380,6 +382,11 @@ function updateTheme(nav) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
+  if (NAV_OFF.includes(getPageMetadata('nav').toLowerCase())) {
+    block.closest('header')?.setAttribute('hidden', '');
+    block.textContent = '';
+    return;
+  }
   const fragment = await fetchNav();
   block.textContent = '';
   if (!fragment) return;
