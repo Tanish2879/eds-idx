@@ -102,7 +102,7 @@ function rowImages(row) {
     if (!IMAGE_FILE.test(pathname)) return null;
     const drafts = pathname.indexOf('/drafts/');
     return {
-      src: drafts > 0 ? pathname.slice(drafts) : node.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : node.href,
       alt: node.textContent.trim(),
       source: node,
     };

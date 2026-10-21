@@ -57,7 +57,7 @@ function rowImage(row) {
   if (!link) return null;
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  return { src: drafts > 0 ? pathname.slice(drafts) : link.href, alt: '', source: link };
+  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href, alt: '', source: link };
 }
 
 // "First Name" → "firstName"

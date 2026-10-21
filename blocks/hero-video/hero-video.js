@@ -29,7 +29,7 @@ const pathOf = (href) => new URL(href, window.location).pathname;
 function mediaUrl(href) {
   const path = pathOf(href);
   const drafts = path.indexOf('/drafts/');
-  return drafts > 0 ? path.slice(drafts) : href;
+  return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${path.slice(drafts)}` : href;
 }
 
 function el(tag, attrs = {}, ...children) {
