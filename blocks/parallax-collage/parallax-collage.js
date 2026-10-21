@@ -50,7 +50,7 @@ function rowImage(row) {
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
   return {
-    src: drafts > 0 ? pathname.slice(drafts) : link.href,
+    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
     alt: link.textContent.trim(),
     source: link,
   };

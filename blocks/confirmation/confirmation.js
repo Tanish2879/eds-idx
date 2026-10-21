@@ -35,8 +35,9 @@ const text = (cell) => (cell?.textContent || '').trim();
 
 /*
  * The image of a row: an <img>, or a link to an image file. AEM delivers an image reference it
- * can't resolve (an asset that isn't in AEM Assets yet) as a plain link; placeholder images under
- * a /drafts/ folder are then loaded from the copy in this repository.
+ * can't resolve (an asset that isn't in AEM Assets yet) as a plain link (its text: the alt text,
+ * or the path); placeholder images under a /drafts/ folder are then loaded from the copy in this
+ * repository, on the code host (in the Universal Editor the page itself comes from AEM author).
  */
 function rowImage(row) {
   const img = row?.querySelector('img');
@@ -46,7 +47,12 @@ function rowImage(row) {
   if (!link) return null;
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  return { src: drafts > 0 ? pathname.slice(drafts) : link.href, alt: '', source: link };
+  const label = link.textContent.trim();
+  return {
+    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+    alt: label && !label.includes('/') ? label : '',
+    source: link,
+  };
 }
 
 // the reservation's values: the page address first, then the form's data in this tab
