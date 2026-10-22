@@ -99,6 +99,73 @@ function kindOf(key, label) {
 const isNamePart = (key, label) => /^(first|last|given|family|sur)/i.test(key)
   || /\b(first|last|given|family)\s*name\b|\bsurname\b/i.test(label);
 
+/*
+ * Validation and sanitisation of the reservation fields before the data is sent. Each rule
+ * cleans the value first (that cleaned value is checked and sent), then returns an error message,
+ * or '' when the value is valid. The fields they apply to are always required.
+ *   name    first / last name: trimmed; 2–50 characters of letters, spaces, hyphens, apostrophes
+ *   mobile  spaces, dashes and parentheses removed; 10 digits, optionally after a + country code
+ *   email   lower-cased; name@domain.tld without any whitespace
+ */
+const NAME_CHARS = /^(?=.*\p{L})[\p{L}\p{M} '’-]+$/u; // letters (any script), space, - and ' (or ’)
+const MOBILE_NUMBER = /^(\+\d{1,3})?\d{10}$/;
+const EMAIL_ADDRESS = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MESSAGES = {
+  required: 'Please fill in this field.',
+  nameLength: 'Please enter between 2 and 50 characters.',
+  nameChars: 'Please use letters only (spaces, hyphens and apostrophes are allowed).',
+  mobile: 'Please enter a 10-digit mobile number (a leading + with the country code is allowed).',
+  email: 'Please enter a valid email address without spaces, e.g. name@example.com.',
+};
+const RULES = {
+  name: {
+    clean: (raw) => raw.trim(),
+    check: (value) => {
+      if (!value) return MESSAGES.required;
+      if (value.length < 2 || value.length > 50) return MESSAGES.nameLength;
+      return NAME_CHARS.test(value) ? '' : MESSAGES.nameChars;
+    },
+  },
+  mobile: {
+    clean: (raw) => raw.replace(/[\s()-]/g, ''),
+    check: (value) => {
+      if (!value) return MESSAGES.required;
+      return MOBILE_NUMBER.test(value) ? '' : MESSAGES.mobile;
+    },
+  },
+  email: {
+    clean: (raw) => raw.toLowerCase(),
+    check: (value) => {
+      if (!value) return MESSAGES.required;
+      return /\s/.test(value) || !EMAIL_ADDRESS.test(value) ? MESSAGES.email : '';
+    },
+  },
+};
+
+// a field's rule (by its kind), or null
+function ruleOf(type, key, label) {
+  if (type === 'email') return 'email';
+  if (type === 'tel') return 'mobile';
+  if (type === 'text' && isNamePart(key, label)) return 'name';
+  return null;
+}
+
+/*
+ * Checks a control against its rule: sets (or clears) its validation message, so the browser's
+ * validation shows it and screen readers announce it, and returns the cleaned value; fields
+ * without a rule are trimmed.
+ */
+function validate(control) {
+  const rule = RULES[control.dataset.rule];
+  if (!rule) return control.value.trim();
+  const value = rule.clean(control.value);
+  const message = rule.check(value);
+  control.setCustomValidity(message);
+  if (message) control.setAttribute('aria-invalid', 'true');
+  else control.removeAttribute('aria-invalid');
+  return value;
+}
+
 // the parts of a Form Field row (label | field name | required) or of a Dropdown Field row
 // (label | field name | required | options); rows of the earlier 7-property field model
 // (label | name | type | required | width | prefix | options) are still read
@@ -110,21 +177,23 @@ function parseField(row, index, kind) {
   const key = text(nameCell) || keyOf(label || `field ${index + 1}`);
   if (legacy) {
     const [, , typeCell, requiredCell, widthCell, prefixCell, optionsCell] = cells;
+    const type = ['tel', 'email', 'select'].includes(text(typeCell)) ? text(typeCell) : 'text';
     return {
       row,
       label,
       key,
-      type: ['tel', 'email', 'select'].includes(text(typeCell)) ? text(typeCell) : 'text',
+      type,
       required: text(requiredCell) === 'true',
       half: text(widthCell) === 'half',
       prefix: text(prefixCell),
       options: entries(optionsCell),
+      rule: ruleOf(type, key, label),
     };
   }
   const required = text(cells[2]) === 'true';
   if (kind === 'dropdown') {
     return {
-      row, label, key, type: 'select', required, half: false, prefix: '', options: entries(cells[3]),
+      row, label, key, type: 'select', required, half: false, prefix: '', options: entries(cells[3]), rule: null,
     };
   }
   const type = kindOf(key, label);
@@ -137,6 +206,7 @@ function parseField(row, index, kind) {
     half: type === 'text' && isNamePart(key, label),
     prefix: type === 'tel' ? PHONE_PREFIX : '',
     options: [],
+    rule: ruleOf(type, key, label),
   };
 }
 
@@ -149,14 +219,16 @@ function buildField(field, id, authoring) {
   const wrap = el('div', { class: `reservation-form-field${field.half ? ' is-half' : ''}${field.prefix ? ' has-prefix' : ''}` });
   moveInstrumentation(field.row, wrap);
   if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = `${field.type === 'select' ? 'Dropdown' : 'Field'}: ${field.label || field.key}`;
-  const shown = `${field.label}${field.required ? '*' : ''}`;
+  const required = field.required || Boolean(field.rule); // (the rules' fields are required)
+  const shown = `${field.label}${required ? '*' : ''}`;
   // the label is read out by screen readers; the design shows it inside the field
   wrap.append(el('label', { class: 'reservation-form-label', for: id }, field.label || field.key));
   if (field.prefix) wrap.append(el('span', { class: 'reservation-form-prefix', 'aria-hidden': 'true' }, field.prefix));
   const common = {
     id,
     name: field.key,
-    required: field.required,
+    required,
+    'data-rule': field.rule || undefined,
     autocomplete: autocompleteOf(field.type, field.key),
     'aria-describedby': field.prefix ? `${id}-prefix` : undefined,
   };
@@ -175,10 +247,16 @@ function buildField(field, id, authoring) {
       type: field.type,
       placeholder: shown,
       inputmode: field.type === 'tel' ? 'tel' : undefined,
-      pattern: field.type === 'tel' ? '[0-9 ]{6,15}' : undefined,
     });
   }
   wrap.append(control);
+  if (field.rule) {
+    // checked when the field is left; once flagged, re-checked as it is corrected
+    control.addEventListener('blur', () => validate(control));
+    control.addEventListener('input', () => {
+      if (control.hasAttribute('aria-invalid')) validate(control);
+    });
+  }
   if (field.prefix) wrap.append(el('span', { id: `${id}-prefix`, class: 'reservation-form-label' }, `Prefix ${field.prefix}`));
   return wrap;
 }
@@ -335,14 +413,17 @@ export default function decorate(block) {
     e.preventDefault();
     if (authoring) return; // nothing is sent from the editor
     status.textContent = '';
+    // every field cleaned and checked (see RULES): the first problem is shown, nothing is sent
+    const values = new Map([...form.querySelectorAll('[name]')].map((c) => [c, validate(c)]));
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
     }
+    // the cleaned values; a mobile number without its own + country code gets the prefix box's
     const data = {};
-    form.querySelectorAll('[name]').forEach((control) => {
+    values.forEach((value, control) => {
       const prefix = control.parentElement.querySelector('.reservation-form-prefix')?.textContent;
-      data[control.name] = prefix && control.value ? `${prefix} ${control.value.trim()}` : control.value.trim();
+      data[control.name] = prefix && value && !value.startsWith('+') ? `${prefix}${value}` : value;
     });
     submit.disabled = true;
     try {
