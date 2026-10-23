@@ -49,6 +49,11 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   background-color: #1a0a08;
 }
 
+/* (phones: a taller banner with the price card over it, so the car still shows above the card) */
+.reservation-form .reservation-form-media:has(.reservation-form-price) {
+  aspect-ratio: 1;
+}
+
 /* (out of the flow: the portrait image must not set the block's height) */
 .reservation-form .reservation-form-media picture {
   position: absolute;
@@ -61,6 +66,68 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   height: 100%;
   object-fit: cover;
   object-position: 50% 45%;
+}
+
+/* the price card over the bottom of the image (the design at 1280 × 720: 525 × 150px, 39px from
+   the image's left, 33px above the bottom): dark glass, the label and badge, the amount in the
+   extended face, the note */
+.reservation-form .reservation-form-price {
+  position: absolute;
+  inset: auto 12px 12px;
+  box-sizing: border-box;
+  padding: 14px 16px 16px;
+  border: 1px solid rgb(255 255 255 / 6%);
+  border-radius: 10px;
+  background-color: rgb(0 0 0 / 55%);
+  backdrop-filter: blur(14px);
+}
+
+.reservation-form .reservation-form-price-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reservation-form .reservation-form-price-label {
+  margin: 0;
+  color: #8c8c8c;
+  font-family: var(--rf-body-font);
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.reservation-form .reservation-form-price-badge {
+  flex: none;
+  box-sizing: border-box;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 6px;
+  color: var(--rf-text);
+  font-family: var(--rf-display-font);
+  font-size: 9px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+.reservation-form .reservation-form-price-amount {
+  margin: 2px 0 0;
+  color: var(--rf-text);
+  font-family: var(--rf-display-font);
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.reservation-form .reservation-form-price-note {
+  max-width: 420px;
+  margin: 8px 0 0;
+  color: #b3b3b3;
+  font-family: var(--rf-body-font);
+  font-size: 12px;
+  line-height: 18px;
 }
 
 /* the form column, centred in the black panel */
@@ -130,7 +197,7 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
 .reservation-form .reservation-form-field.has-prefix {
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr);
-  gap: var(--rf-gap);
+  gap: 0 var(--rf-gap);
 }
 
 /* screen-reader-only text: field labels (the design shows them inside the fields), section names */
@@ -184,8 +251,24 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   border-color: #5c5c5c;
 }
 
-.reservation-form .reservation-form-input:user-invalid {
+/* a field the block's checks flagged (see the JS: no browser validation): red outline, and its
+   message on the line below (only there while it applies, so a valid form keeps the design's
+   spacing) */
+.reservation-form .reservation-form-input[aria-invalid='true'] {
   border-color: var(--rf-error);
+}
+
+.reservation-form .reservation-form-error {
+  grid-column: 1 / -1;
+  margin: 6px 0 0;
+  color: var(--rf-error);
+  font-family: var(--rf-body-font);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.reservation-form .reservation-form-error:empty {
+  display: none;
 }
 
 /* dropdown: a thin chevron on the right; grey while nothing is chosen */
@@ -253,6 +336,11 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   display: none;
 }
 
+/* (a cancelled payment: not an error) */
+.reservation-form .reservation-form-status.is-info {
+  color: var(--rf-muted);
+}
+
 .reservation-form .reservation-form-success {
   margin: 23px 0 0;
   color: var(--rf-text);
@@ -288,12 +376,149 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
     min-height: 100svh;
   }
 
-  .reservation-form .reservation-form-media {
+  .reservation-form .reservation-form-media,
+  .reservation-form .reservation-form-media:has(.reservation-form-price) {
     aspect-ratio: auto;
   }
 
   .reservation-form .reservation-form-panel {
     padding: 75px 43px 55px 37px; /* the design's column sits 3px left of and 10px below centre */
+  }
+
+  .reservation-form .reservation-form-price {
+    inset: auto 35px 33px 39px;
+    padding: 16px 20px 18px 24px;
+  }
+
+  .reservation-form .reservation-form-price-label {
+    font-size: 11px;
+  }
+
+  .reservation-form .reservation-form-price-badge {
+    margin-top: 2px; /* (the design's badge sits a little below the label) */
+  }
+
+  .reservation-form .reservation-form-price-amount {
+    margin-top: 0;
+    font-size: 35px;
+  }
+
+  .reservation-form .reservation-form-price-note {
+    max-width: 440px;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 21px;
+  }
+}
+
+/* the "verifying your payment" window (see payment.js), in the style of Razorpay's checkout: its
+   white card over the dimmed page, the merchant's name on the header in the checkout's theme
+   colour, a spinner in Razorpay blue */
+html.rf-pay-open {
+  overflow: hidden;
+}
+
+.rf-pay-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background-color: rgb(0 0 0 / 60%);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  animation: rf-pay-fade 0.2s ease-out;
+}
+
+.rf-pay-overlay .rf-pay-card {
+  width: min(100%, 360px);
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #262626;
+  box-shadow: 0 6px 30px rgb(0 0 0 / 35%);
+  outline: none;
+}
+
+.rf-pay-overlay .rf-pay-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  background-color: #000;
+  color: #fff;
+}
+
+.rf-pay-overlay .rf-pay-merchant {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.rf-pay-overlay .rf-pay-amount {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.rf-pay-overlay .rf-pay-body {
+  display: grid;
+  justify-items: center;
+  padding: 36px 28px 30px;
+  text-align: center;
+}
+
+.rf-pay-overlay .rf-pay-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e3ebfb;
+  border-top-color: #3395ff;
+  border-radius: 50%;
+  animation: rf-pay-spin 0.8s linear infinite;
+}
+
+.rf-pay-overlay .rf-pay-title {
+  margin: 22px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.rf-pay-overlay .rf-pay-text {
+  margin: 8px 0 0;
+  color: #737373;
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.rf-pay-overlay .rf-pay-footer {
+  margin: 0;
+  padding: 12px 20px;
+  border-top: 1px solid #eee;
+  color: #8c8c8c;
+  font-size: 11px;
+  text-align: center;
+}
+
+.rf-pay-overlay .rf-pay-footer strong {
+  color: #072654;
+}
+
+@keyframes rf-pay-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rf-pay-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-pay-overlay,
+  .rf-pay-overlay .rf-pay-spinner {
+    animation-duration: 2.4s;
   }
 }
 

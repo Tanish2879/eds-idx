@@ -8,16 +8,25 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  *   1. image (+ alt)   2. heading   3. description   4. button text   5. send-to URL
  *   6. confirmation message   7. privacy disclaimer   8. contact email (mailto: link + its text)
  *   9. privacy notice link (+ its text)
+ *   price card (over the image): 10. amount label   11. amount (rupees)   12. badge   13. note
+ *   payment (Razorpay): 14. Key ID (public)   15. payment service URL   16. name in the payment
+ *   window   17. page after a successful payment   18. page after a failed payment
  *   then the items, in order:
  *     Form Section (1 cell): its name; groups the fields after it, up to the next section
  *     Form Field (3 cells): label | field name | required; its kind follows its name (see kindOf)
  *     Dropdown Field (4 cells): label | field name | required | options (a multifield)
  *     (as imported, each item row starts with its component id, see below)
- * The form posts its values as JSON ({ data: { … } }) to the send-to URL, then shows the
- * confirmation message in its place; without a URL it only shows the message.
+ * Without a Key ID the form posts its values as JSON ({ data: { … } }) to the send-to URL, then
+ * shows the confirmation message in its place (without a URL it only shows the message). With a
+ * Key ID it takes the reservation amount with Razorpay (see payment.js), then goes to the success
+ * page (the values, with the payment's, are posted to the send-to URL first) or the failure page;
+ * a cancelled payment stays on the form. The pages read the values from this tab's storage.
  */
 
-const BLOCK_ROWS = 9;
+const BLOCK_ROWS = 18;
+const SUCCESS_PAGE = '/confirmation';
+const FAILURE_PAGE = '/payment-failed';
+const STORED = 'jsw-reservation'; // the form's data for the next pages (sessionStorage)
 const ITEM_KINDS = {
   'reservation-form-section': 'section', 'reservation-form-field': 'field', 'reservation-form-dropdown': 'dropdown',
 };
@@ -25,6 +34,11 @@ const PHONE_PREFIX = '+91'; // the box before a phone number field (Indian mobil
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const EMAIL = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/;
 const SEND_ERROR = 'Sorry, that didn’t go through. Please try again.';
+const PAY_CANCELLED = 'The payment was cancelled. You can try again whenever you’re ready.';
+const PAY_UNAVAILABLE = 'Sorry, the payment couldn’t be started. Please check your connection and try again.';
+const INR = new Intl.NumberFormat('en-IN', {
+  style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0,
+});
 const DESIGN_FACE = /new[\s-]*science/i; // the design's typeface family (see the CSS)
 let formId = 0;
 
@@ -151,19 +165,20 @@ function ruleOf(type, key, label) {
 }
 
 /*
- * Checks a control against its rule: sets (or clears) its validation message, so the browser's
- * validation shows it and screen readers announce it, and returns the cleaned value; fields
- * without a rule are trimmed.
+ * Checks a control against its rule (or, without one, only whether a required field is filled):
+ * shows / clears the message in the field's error line (announced by screen readers, the field
+ * marked aria-invalid), and returns the cleaned value. No HTML / browser validation is used.
  */
 function validate(control) {
   const rule = RULES[control.dataset.rule];
-  if (!rule) return control.value.trim();
-  const value = rule.clean(control.value);
-  const message = rule.check(value);
-  control.setCustomValidity(message);
+  const value = rule ? rule.clean(control.value) : control.value.trim();
+  let message = rule ? rule.check(value) : '';
+  if (!rule && !value && control.dataset.required === 'true') message = MESSAGES.required;
+  const error = document.getElementById(`${control.id}-error`);
+  if (error) error.textContent = message;
   if (message) control.setAttribute('aria-invalid', 'true');
   else control.removeAttribute('aria-invalid');
-  return value;
+  return { value, message };
 }
 
 // the parts of a Form Field row (label | field name | required) or of a Dropdown Field row
@@ -210,6 +225,19 @@ function parseField(row, index, kind) {
   };
 }
 
+// an amount in rupees ("10000", "₹10,000"), or 0
+function rupees(value) {
+  const n = Number(value.replace(/[^\d.]/g, ''));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+// sessionStorage, where available (not in some private modes)
+function store(data) {
+  try {
+    sessionStorage.setItem(STORED, JSON.stringify(data));
+  } catch (err) { /* no storage */ }
+}
+
 // authoring: marks an element as an editable field of the block (resource inherited)
 function editable(node, prop, type, label) {
   if (node) Object.assign(node.dataset, { aueProp: prop, aueType: type, aueLabel: label });
@@ -224,13 +252,15 @@ function buildField(field, id, authoring) {
   // the label is read out by screen readers; the design shows it inside the field
   wrap.append(el('label', { class: 'reservation-form-label', for: id }, field.label || field.key));
   if (field.prefix) wrap.append(el('span', { class: 'reservation-form-prefix', 'aria-hidden': 'true' }, field.prefix));
+  // (no HTML validation attributes: the block checks the fields itself, see validate)
   const common = {
     id,
     name: field.key,
-    required,
     'data-rule': field.rule || undefined,
+    'data-required': required ? 'true' : undefined,
+    'aria-required': required ? 'true' : undefined,
     autocomplete: autocompleteOf(field.type, field.key),
-    'aria-describedby': field.prefix ? `${id}-prefix` : undefined,
+    'aria-describedby': [field.prefix ? `${id}-prefix` : '', `${id}-error`].filter(Boolean).join(' '),
   };
   let control;
   if (field.type === 'select') {
@@ -241,18 +271,26 @@ function buildField(field, id, authoring) {
       ...field.options.map((option) => el('option', { value: option }, option)),
     );
   } else {
+    // (an email field is a text input with the email keyboard: type=email would bring the
+    // browser's own checks and trimming)
+    const email = field.type === 'email';
     control = el('input', {
       ...common,
       class: 'reservation-form-input',
-      type: field.type,
+      type: email ? 'text' : field.type,
       placeholder: shown,
-      inputmode: field.type === 'tel' ? 'tel' : undefined,
+      inputmode: { tel: 'tel', email: 'email' }[field.type],
+      autocapitalize: email ? 'off' : undefined,
+      spellcheck: email ? 'false' : undefined,
     });
   }
   wrap.append(control);
-  if (field.rule) {
-    // checked when the field is left; once flagged, re-checked as it is corrected
-    control.addEventListener('blur', () => validate(control));
+  // the field's error line (empty while valid)
+  wrap.append(el('p', { class: 'reservation-form-error', id: `${id}-error`, 'aria-live': 'polite' }));
+  if (field.rule || required) {
+    // checked when the field is left (a dropdown: when changed); once flagged, re-checked as it
+    // is corrected
+    control.addEventListener(field.type === 'select' ? 'change' : 'blur', () => validate(control));
     control.addEventListener('input', () => {
       if (control.hasAttribute('aria-invalid')) validate(control);
     });
@@ -286,8 +324,13 @@ export default function decorate(block) {
   const authoring = isAuthoring();
   const rows = [...block.children];
   const [imageRow, headingRow, descriptionRow, submitRow, actionRow, successRow, disclaimerRow,
-    emailRow, privacyRow] = rows;
-  const items = rows.slice(BLOCK_ROWS);
+    emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, keyRow, serviceRow,
+    merchantRow, successPageRow, failurePageRow] = rows;
+  // (content imported before the price card and payment rows: its items start earlier, at the
+  // first row naming an item's component)
+  const first = rows.findIndex((row) => ITEM_KINDS[text(row.firstElementChild)]);
+  const items = rows.slice(first >= 0 && first < BLOCK_ROWS ? first : BLOCK_ROWS);
+  const prop = (row) => (items.includes(row) ? undefined : row);
 
   // image (the page's largest element: loaded first)
   const media = el('div', { class: 'reservation-form-media' });
@@ -299,6 +342,28 @@ export default function decorate(block) {
     moveInstrumentation(image.source, img);
     if (authoring) editable(img, 'image', 'media', 'Car image');
     media.append(picture);
+  }
+
+  // the price card over the image: label (and badge), the amount, the note
+  const amount = rupees(text(prop(amountRow)));
+  const amountLabel = text(prop(amountLabelRow));
+  const displayAmount = amount ? INR.format(amount) : '';
+  if (amount) {
+    const label = el('p', { class: 'reservation-form-price-label' }, amountLabel);
+    if (authoring) editable(label, 'amountLabel', 'text', 'Amount label');
+    const badge = text(prop(badgeRow))
+      ? el('span', { class: 'reservation-form-price-badge' }, text(badgeRow)) : null;
+    if (authoring) editable(badge, 'amountBadge', 'text', 'Amount badge');
+    const note = lines(prop(noteRow)).join(' ');
+    const noteEl = note ? el('p', { class: 'reservation-form-price-note' }, note) : null;
+    if (authoring) editable(noteEl, 'amountNote', 'text', 'Amount note');
+    media.append(el(
+      'div',
+      { class: 'reservation-form-price' },
+      el('div', { class: 'reservation-form-price-head' }, label, badge),
+      el('p', { class: 'reservation-form-price-amount' }, displayAmount),
+      noteEl,
+    ));
   }
 
   // heading, description
@@ -399,44 +464,117 @@ export default function decorate(block) {
   block.replaceChildren(media, panel);
 
   // the design's faces (New Science, from the platform stylesheet) replace the fallbacks once
-  // loaded; the heading's fallback spacing is then dropped
-  document.fonts.ready.then(() => {
+  // loaded; the heading's fallback spacing is then dropped (checked again whenever fonts finish
+  // loading: the faces only start loading once the block's text is laid out)
+  const detectFaces = () => {
     const loaded = [...document.fonts]
       .some((face) => DESIGN_FACE.test(face.family) && face.status === 'loaded');
     block.classList.toggle('has-design-faces', loaded);
-  });
+  };
+  document.fonts.ready.then(detectFaces);
+  document.fonts.addEventListener('loadingdone', detectFaces);
 
   // sending
   const action = text(actionRow);
   const success = lines(successRow).join('\n');
+  const send = (data) => fetch(action, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data }),
+    signal: AbortSignal.timeout?.(10000),
+  }).then((res) => {
+    if (!res.ok) throw new Error(`${res.status}`);
+  });
+  const pageOf = (row, fallback) => prop(row)?.querySelector('a[href]')?.getAttribute('href')
+    || text(prop(row)) || fallback;
+  const payment = {
+    keyId: text(prop(keyRow)),
+    service: text(prop(serviceRow)),
+    amount,
+    displayAmount,
+    merchant: text(prop(merchantRow)) || 'JSW Motors',
+    description: amountLabel || 'Reservation amount',
+    successPage: pageOf(successPageRow, SUCCESS_PAGE),
+    failurePage: pageOf(failurePageRow, FAILURE_PAGE),
+  };
+  const ready = () => {
+    submit.disabled = false;
+    submit.removeAttribute('aria-busy');
+  };
+  // back on the form from the next page (the browser's back button restores it as it was left)
+  window.addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    ready();
+    document.querySelector('.rf-pay-overlay')?.remove();
+    document.documentElement.classList.remove('rf-pay-open');
+  });
+
+  /*
+   * The payment, once the form is valid: Razorpay's window (see payment.js), then
+   *   paid       the success page (the values with the payment's sent to the send-to URL first)
+   *   failed     the failure page (declined, or the payment couldn't be verified)
+   *   cancelled  (the window closed) / unavailable (no connection): a message on the form
+   */
+  async function takePayment(data) {
+    submit.disabled = true;
+    submit.setAttribute('aria-busy', 'true');
+    store(data);
+    let result;
+    try {
+      const { default: pay } = await import('./payment.js');
+      result = await pay(payment, data);
+    } catch (err) {
+      result = { state: 'unavailable' };
+    }
+    const { paymentId = '', orderId = '' } = result;
+    if (result.state === 'paid') {
+      const paid = {
+        ...data, paymentId, orderId, paymentStatus: result.verified ? 'verified' : 'unverified',
+      };
+      store(paid);
+      // (the payment is taken: the success page follows even when sending the lead fails)
+      if (action) await send(paid).catch(() => {});
+      window.location.assign(payment.successPage);
+    } else if (result.state === 'failed') {
+      store({
+        ...data, paymentId, orderId, paymentStatus: 'failed', failureReason: result.reason, failureCode: result.code,
+      });
+      window.location.assign(payment.failurePage);
+    } else {
+      status.classList.toggle('is-info', result.state === 'cancelled');
+      status.textContent = result.state === 'cancelled' ? PAY_CANCELLED : PAY_UNAVAILABLE;
+      ready();
+    }
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (authoring) return; // nothing is sent from the editor
     status.textContent = '';
-    // every field cleaned and checked (see RULES): the first problem is shown, nothing is sent
-    const values = new Map([...form.querySelectorAll('[name]')].map((c) => [c, validate(c)]));
-    if (!form.checkValidity()) {
-      form.reportValidity();
+    status.classList.remove('is-info');
+    // every field cleaned and checked (see RULES): with any problem, each one is shown under its
+    // field, the first gets the focus, and nothing is sent
+    const results = new Map([...form.querySelectorAll('[name]')].map((c) => [c, validate(c)]));
+    const invalid = [...results].find(([, r]) => r.message);
+    if (invalid) {
+      invalid[0].focus();
       return;
     }
     // the cleaned values; a mobile number without its own + country code gets the prefix box's
     const data = {};
-    values.forEach((value, control) => {
+    results.forEach(({ value }, control) => {
       const prefix = control.parentElement.querySelector('.reservation-form-prefix')?.textContent;
       data[control.name] = prefix && value && !value.startsWith('+') ? `${prefix}${value}` : value;
     });
+    if (payment.keyId) {
+      takePayment(data);
+      return;
+    }
     submit.disabled = true;
     try {
-      if (action) {
-        const res = await fetch(action, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data }),
-        });
-        if (!res.ok) throw new Error(`${res.status}`);
-      }
+      if (action) await send(data);
       // kept for this tab: a confirmation page fills its {firstName}, {email}, … from it
-      try {
-        sessionStorage.setItem('jsw-reservation', JSON.stringify(data));
-      } catch (err) { /* no storage (private mode) */ }
+      store(data);
       // the confirmation takes the form's place
       const done = el('p', { class: 'reservation-form-success', tabindex: '-1', role: 'status' }, success || 'Thank you.');
       form.replaceWith(done);

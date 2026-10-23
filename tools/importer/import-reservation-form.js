@@ -9,7 +9,9 @@
  * Block rows (every property in its own cell):
  *   1. image (+ alt)   2. heading   3. description   4. submitLabel   5. submitAction
  *   6. successMessage   7. disclaimer   8. privacyEmail (+ privacyEmailText)
- *   9. privacyLink (+ privacyLinkText)
+ *   9. privacyLink (+ privacyLinkText)   10. amountLabel   11. amount   12. amountBadge
+ *   13. amountNote   14. razorpayKeyId (public; empty, for the authors)   15. paymentService
+ *   16. merchantName   17. successPage   18. failurePage
  *   (the contact email is its own mailto: link property: in a text field md2jcr keeps a link's URL
  *   instead of the text, and markdown turns an email address in a sentence into a link)
  *   then the items, each row starting with its component id (the block allows several child
@@ -99,6 +101,29 @@ export default {
       p.append(a);
       cells.push([hinted(document, 'privacyLink', p)]);
     } else cells.push([hinted(document, 'privacyLink')]);
+    // 10–13. the price card
+    cells.push([textCell(document, 'amountLabel', value('.amount-label'))]);
+    cells.push([textCell(document, 'amount', value('.amount'))]);
+    cells.push([textCell(document, 'amountBadge', value('.amount-badge'))]);
+    cells.push([textCell(document, 'amountNote', value('.amount-note'))]);
+    // 14–18. payment: Key ID (public), payment service URL, name in the payment window, the
+    // pages after a successful / failed payment (links)
+    cells.push([textCell(document, 'razorpayKeyId', value('.razorpay-key'))]);
+    cells.push([textCell(document, 'paymentService', value('.payment-service'))]);
+    cells.push([textCell(document, 'merchantName', value('.merchant'))]);
+    ['success', 'failure'].forEach((kind) => {
+      const page = src.querySelector(`a.${kind}-page`);
+      if (!page) {
+        cells.push([hinted(document, `${kind}Page`)]);
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = rootRelative(page.getAttribute('href'));
+      a.textContent = rootRelative(page.getAttribute('href'));
+      const p = document.createElement('p');
+      p.append(a);
+      cells.push([hinted(document, `${kind}Page`, p)]);
+    });
 
     // items, in order
     src.querySelectorAll('.item').forEach((item) => {
