@@ -26,6 +26,7 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 const BLOCK_ROWS = 18;
 const SUCCESS_PAGE = '/confirmation';
 const FAILURE_PAGE = '/payment-failed';
+const KEY_ID = /^rzp_(test|live)_[A-Za-z0-9]+$/; // Razorpay's public Key ID
 const STORED = 'jsw-reservation'; // the form's data for the next pages (sessionStorage)
 const ITEM_KINDS = {
   'reservation-form-section': 'section', 'reservation-form-field': 'field', 'reservation-form-dropdown': 'dropdown',
@@ -488,7 +489,8 @@ export default function decorate(block) {
   const pageOf = (row, fallback) => prop(row)?.querySelector('a[href]')?.getAttribute('href')
     || text(prop(row)) || fallback;
   const payment = {
-    keyId: text(prop(keyRow)),
+    // (a Razorpay Key ID only: anything else, e.g. a Key Secret entered by mistake, is not used)
+    keyId: KEY_ID.test(text(prop(keyRow))) ? text(prop(keyRow)) : '',
     service: text(prop(serviceRow)),
     amount,
     displayAmount,
