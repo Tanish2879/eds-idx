@@ -889,6 +889,85 @@
         "label": "Privacy notice link text",
         "description": "E.g. Full Privacy Notice.",
         "value": ""
+      },
+      {
+        "component": "tab",
+        "name": "pricingTab",
+        "label": "Pricing"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "amountLabel",
+        "label": "Amount label",
+        "description": "Shown on the price card over the image, e.g. RESERVATION AMOUNT. Leave the amount empty to hide the card.",
+        "value": ""
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "amount",
+        "label": "Reservation amount (₹)",
+        "description": "In rupees, e.g. 10000 (shown as ₹10,000). Also the amount charged when no payment service is set; with one, the service's amount is charged, so keep the two the same."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "amountBadge",
+        "label": "Amount badge",
+        "description": "The small outlined tag beside the label, e.g. REFUNDABLE. Optional.",
+        "value": ""
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "amountNote",
+        "label": "Amount note",
+        "description": "Under the amount, e.g. Total payable today. Refundable until you confirm your order.",
+        "value": ""
+      },
+      {
+        "component": "tab",
+        "name": "paymentTab",
+        "label": "Payment"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "razorpayKeyId",
+        "label": "Razorpay Key ID",
+        "description": "The PUBLIC key only (rzp_test_… or rzp_live_…). NEVER enter the Key Secret here: this page is public and anyone could read it. The secret belongs only in the payment service's settings. Leave empty to send the form without a payment.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "paymentService",
+        "label": "Payment service URL",
+        "description": "The address of the payment service that creates the orders and verifies the payments with the Key Secret, e.g. https://jsw-payments.example.workers.dev. Without it, payments are not verified (test mode only).",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "merchantName",
+        "label": "Name in the payment window",
+        "description": "E.g. JSW Motors. The amount label is shown under it.",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "successPage",
+        "label": "Page after a successful payment",
+        "description": "E.g. the Confirmation page (default: /confirmation)."
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "failurePage",
+        "label": "Page after a failed payment",
+        "description": "E.g. the Payment Failed page (default: /payment-failed)."
       }
     ]
   },

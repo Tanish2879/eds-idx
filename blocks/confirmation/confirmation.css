@@ -266,6 +266,10 @@ main > .section.confirmation-container > .confirmation-wrapper {
     margin: 0;
   }
 
+  .confirmation.variant-a .confirmation-cta {
+    margin-top: calc(22 * var(--u));
+  }
+
   .confirmation.variant-a .confirmation-heading {
     font-size: calc(23.7 * var(--u));
   }
@@ -300,6 +304,13 @@ main > .section.confirmation-container > .confirmation-wrapper {
     margin-top: calc(22 * var(--u));
     font-size: max(12px, calc(14.25 * var(--u)));
     line-height: calc(20 * var(--u));
+  }
+
+  /* Variant A with a button (e.g. the payment failure page's TRY AGAIN): the text kept inside
+     the stage, from its bottom */
+  .confirmation.variant-a .confirmation-content:has(.confirmation-cta) {
+    top: auto;
+    bottom: calc(34 * var(--u));
   }
 
   /* authoring (Universal Editor, see styles.css): sized by the width only */

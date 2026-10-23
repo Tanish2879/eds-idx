@@ -1,0 +1,9 @@
+# Cloudflare Worker settings for the reservation payment service (see README.md).
+# The secrets are NOT here: set them with `npx wrangler secret put …` (encrypted in Cloudflare).
+name = "jsw-payments"
+main = "razorpay-worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+RESERVATION_AMOUNT_PAISE = "1000000"
+ALLOWED_ORIGINS = "http://localhost:3000,https://*--eds-idx--tanish2879.aem.page,https://*--eds-idx--tanish2879.aem.live"

@@ -92,6 +92,26 @@ var CustomImportScript = (() => {
         p.append(a);
         cells.push([hinted(document, "privacyLink", p)]);
       } else cells.push([hinted(document, "privacyLink")]);
+      cells.push([textCell(document, "amountLabel", value(".amount-label"))]);
+      cells.push([textCell(document, "amount", value(".amount"))]);
+      cells.push([textCell(document, "amountBadge", value(".amount-badge"))]);
+      cells.push([textCell(document, "amountNote", value(".amount-note"))]);
+      cells.push([textCell(document, "razorpayKeyId", value(".razorpay-key"))]);
+      cells.push([textCell(document, "paymentService", value(".payment-service"))]);
+      cells.push([textCell(document, "merchantName", value(".merchant"))]);
+      ["success", "failure"].forEach((kind) => {
+        const page = src.querySelector(`a.${kind}-page`);
+        if (!page) {
+          cells.push([hinted(document, `${kind}Page`)]);
+          return;
+        }
+        const a = document.createElement("a");
+        a.href = rootRelative(page.getAttribute("href"));
+        a.textContent = rootRelative(page.getAttribute("href"));
+        const p = document.createElement("p");
+        p.append(a);
+        cells.push([hinted(document, `${kind}Page`, p)]);
+      });
       src.querySelectorAll(".item").forEach((item) => {
         if (item.classList.contains("section")) {
           cells.push([idCell(document, "reservation-form-section"), textCell(document, "title", clean(item.textContent))]);
