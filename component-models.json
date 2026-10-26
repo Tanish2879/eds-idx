@@ -757,6 +757,183 @@
     ]
   },
   {
+    "id": "job-board",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "gallery",
+        "label": "Gallery image",
+        "description": "The photo strip under the board, across the full width. Optional.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "galleryAlt",
+        "label": "Gallery image alt text",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "emptyMessage",
+        "label": "No results message",
+        "description": "Shown when no job matches the search and filters, e.g. No roles match your search.",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "job-board-search",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "The heading's first line, in grey, e.g. OPEN ROLES AT.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "headingEmphasis",
+        "label": "Heading (second line)",
+        "description": "The heading's second line, in black, e.g. JSW MOTORS.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "placeholder",
+        "label": "Search input placeholder",
+        "description": "Shown inside the empty search box, e.g. Search Roles.",
+        "value": ""
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "description": "Under the search box.",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "job-board-filters",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "filterLabel",
+        "label": "Filters label",
+        "description": "Above the dropdowns, e.g. Filter Roles.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "locationLabel",
+        "label": "Location dropdown label",
+        "description": "Shown in the dropdown while no location is chosen (it then lists every location), e.g. Locations.",
+        "value": ""
+      },
+      {
+        "component": "container",
+        "name": "locations",
+        "label": "Locations",
+        "description": "The location dropdown's choices: add, edit, reorder or remove them here, e.g. Bangalore, India. A choice shows the jobs whose Job location is the same (or starts with it: Mumbai also shows Mumbai, India). Left empty, the dropdown lists the jobs' own locations.",
+        "multi": true,
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "location",
+            "label": "Location",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "departmentLabel",
+        "label": "Department dropdown label",
+        "description": "Shown in the dropdown while no department is chosen (it then lists every department), e.g. Departments.",
+        "value": ""
+      },
+      {
+        "component": "container",
+        "name": "departments",
+        "label": "Departments",
+        "description": "The department dropdown's choices: add, edit, reorder or remove them here. A choice shows the jobs whose Department is the same. Left empty, the dropdown lists the jobs' own departments.",
+        "multi": true,
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "department",
+            "label": "Department",
+            "value": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "job-board-job",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Job title",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "department",
+        "label": "Department",
+        "description": "Shown under the title; one of the Filters' departments (written the same way), e.g. Hardware and Embedded Engineering.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "location",
+        "label": "Job location",
+        "description": "Shown with the pin; one of the Filters' locations, e.g. Bangalore, India. Several, separated by semicolons, for a job in more than one place: Mumbai, India; Pune, India.",
+        "value": ""
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Job description",
+        "description": "Optional: a short line under the department and location (the search also looks in it).",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "applyLink",
+        "label": "Apply button link",
+        "description": "Where the button leads: a page, a URL or a mailto: address."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "applyLabel",
+        "label": "Apply button label",
+        "description": "E.g. APPLY NOW.",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "parallax-collage",
     "fields": [
       {

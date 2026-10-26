@@ -27,7 +27,8 @@
       "engine-showcase",
       "blog-carousel",
       "reservation-form",
-      "confirmation"
+      "confirmation",
+      "job-board"
     ]
   },
   {
@@ -95,6 +96,14 @@
     "id": "hero-interactive",
     "components": [
       "hero-interactive-slide"
+    ]
+  },
+  {
+    "id": "job-board",
+    "components": [
+      "job-board-search",
+      "job-board-filters",
+      "job-board-job"
     ]
   },
   {

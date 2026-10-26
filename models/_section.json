@@ -62,7 +62,8 @@
         "engine-showcase",
         "blog-carousel",
         "reservation-form",
-        "confirmation"
+        "confirmation",
+        "job-board"
       ]
     }
   ]
