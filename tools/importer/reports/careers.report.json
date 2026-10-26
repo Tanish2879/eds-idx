@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/careers/source.html",
+  "path": "careers",
+  "timestamp": "2026-10-26T11:37:36.705Z",
+  "title": "Careers | JSW Motors",
+  "template": "careers",
+  "blocks": [
+    "job-board"
+  ]
+}
