@@ -1,5 +1,5 @@
 /* Careers Hero. Values from the design (migration-work/careers/design-hero.jpg, a 1280 frame):
-   the photo 519px tall across the full width, shown 1.37× closer than it fills the hero
+   the photo 519px tall across the full width, shown 1.33× closer than it fills the hero
    (centred on the group at the window) with a cool tone; the heading in New Science Extended
    46/60, two lines, its last baseline 84px above the bottom, on the Job Board's 60px margin
    (1160px content); the SCROLL button 34px tall at the right margin, centred on the heading's
@@ -31,8 +31,10 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
   color: #fff;
 }
 
-/* the photo: cropped to fill, softly out of focus, the design's cool tone over it (the warm
-   daylight multiplied towards blue, darker at the top, the shadows lifted to a deep blue) */
+/* the photo: cropped to fill, the design's cool tone over it (the warm daylight multiplied
+   towards blue, darker at the top, the shadows lifted to a deep blue);
+   matched to the design's sky (median, brightest tenth) and shadows, see
+   migration-work/scripts/careers-hero-tone.cjs */
 .careers-hero .careers-hero-media {
   position: absolute;
   inset: 0;
@@ -50,8 +52,7 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
 .careers-hero .careers-hero-media img {
   object-fit: cover;
   object-position: 64% 30%;
-  filter: blur(1.2px) saturate(1.15) brightness(1.06);
-  transform: scale(1.04); /* (the blur's soft edges outside the hero) */
+  filter: saturate(1.35) brightness(1.17);
 }
 
 .careers-hero .careers-hero-media::before,
@@ -65,14 +66,25 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
 
 .careers-hero .careers-hero-media::before {
   background:
-    linear-gradient(to bottom, rgb(0 0 0 / 35%), rgb(0 0 0 / 0%) 40%),
-    rgb(206 232 255);
+    linear-gradient(to bottom, rgb(0 0 0 / 45%), rgb(0 0 0 / 0%) 40%),
+    rgb(178 220 255);
   mix-blend-mode: multiply;
 }
 
 .careers-hero .careers-hero-media::after {
-  background-color: rgb(0 6 20);
+  background-color: rgb(0 3 14);
   mix-blend-mode: screen;
+}
+
+/* the design's shallow focus: the photo's upper half (the heads, the window frames' tops) softer,
+   sharpening towards the middle */
+.careers-hero .careers-hero-focus {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  backdrop-filter: blur(3px);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 55%);
+  pointer-events: none;
 }
 
 .careers-hero .careers-hero-content {
@@ -208,19 +220,20 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
   }
 }
 
-/* from 900px: the design's 519px at 1280 (the same proportion elsewhere), the photo 1.37× closer
+/* from 900px: the design's 519px at 1280 (the same proportion elsewhere), the photo 1.33× closer
    centred on the group, the button at the right, centred on the heading's last line */
 @media (width >= 900px) {
   .careers-hero {
     --ch-gutter: 40px;
 
-    min-height: clamp(440px, 40.55vw, 760px);
+    min-height: clamp(440px, 40.55vw, 820px);
   }
 
   .careers-hero .careers-hero-media img {
     object-position: 50% 20%;
-    transform: scale(1.372);
-    transform-origin: 27.3% 40.6%;
+    transform: scale(1.328); /* (fitted to the design: page = 0.85 × the 2000px asset − (112, 178),
+      see migration-work/scripts/hero-crop-fit.py) */
+    transform-origin: 26.7% 52.4%;
   }
 
   .careers-hero .careers-hero-content {
@@ -236,9 +249,26 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
   }
 }
 
+/* from 1240px: the design's proportions at any width (its 1280 frame scaled): the margins in % of
+   the hero, the heading and the bottom space in its width's units (cqw) */
 @media (width >= 1240px) {
   .careers-hero {
-    --ch-gutter: 60px;
+    --ch-gutter: 4.6875%; /* 60 / 1280 */
+
+    container-type: inline-size;
+  }
+
+  .careers-hero .careers-hero-content {
+    max-width: none;
+    padding-bottom: 5.86cqw; /* 75 / 1280 */
+  }
+
+  .careers-hero .careers-hero-heading {
+    font-size: 3.625cqw; /* 46.4 / 1280 */
+  }
+
+  .careers-hero .careers-hero-cta {
+    margin-bottom: max(0px, calc((4.6875cqw - 34px) / 2 - 5px)); /* (8px at 1280) */
   }
 }
 
