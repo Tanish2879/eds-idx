@@ -21,6 +21,11 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * (?q=…&location=…&location=…&department=…), so a filtered list can be shared.
  */
 
+// the most jobs a board shows (the first ones in the content tree; the editor marks the others)
+// and the longest text a field takes (the editor warns above it; longer texts are cut with "…")
+export const MAX_JOBS = 15;
+export const MAX_CHARS = 64;
+
 const BLOCK_ROWS = 2;
 const ITEM_KINDS = {
   'job-board-search': 'search', 'job-board-filters': 'filters', 'job-board-job': 'job',
@@ -47,6 +52,26 @@ function entries(cell) {
   const items = [...cell.querySelectorAll('li, p')].map((n) => n.textContent.trim()).filter(Boolean);
   const list = items.length ? items : [text(cell)];
   return (list.length === 1 ? list[0].split(';') : list).map((v) => v.trim()).filter(Boolean);
+}
+
+// a text cut to MAX_CHARS characters, ending with "…"
+const clip = (value) => (value.length > MAX_CHARS ? `${value.slice(0, MAX_CHARS - 1).trimEnd()}…` : value);
+
+// the published page: the texts longer than MAX_CHARS cut (their full text as a tooltip); in the
+// editor they stay whole (edited in place) and only the CSS shortens what doesn't fit
+const CLIPPED = ['.job-board-heading span', '.job-board-filters-label', '.job-board-option-label',
+  '.job-board-job-title', '.job-board-job-department', '.job-board-job-location',
+  '.job-board-job-description', '.job-board-apply', '.job-board-empty'];
+function clipTexts(root) {
+  root.querySelectorAll(CLIPPED.join(', ')).forEach((node) => {
+    const full = node.textContent.trim();
+    if (full.length <= MAX_CHARS || node.children.length) return;
+    node.textContent = clip(full);
+    node.title = full;
+  });
+  root.querySelectorAll('input[placeholder]').forEach((input) => {
+    input.placeholder = clip(input.placeholder);
+  });
 }
 
 // for matching: lower case, without accents
@@ -77,7 +102,11 @@ function editable(node, prop, type, label) {
   if (node) Object.assign(node.dataset, { aueProp: prop, aueType: type, aueLabel: label });
 }
 
-// the rows: the block's own properties, then its items by kind (in their order)
+/*
+ * The rows: the block's own properties, then its items sorted by kind, each kind in its authored
+ * order. The authors may place the items in any order (jobs before the search or the filters…):
+ * the board always renders the header (Search, then Filters) first, then the job list.
+ */
 function readRows(block) {
   const rows = [...block.children];
   const first = rows.findIndex((row) => ITEM_KINDS[text(row.firstElementChild)]);
@@ -362,27 +391,41 @@ export default function decorate(block) {
   const { props, items } = readRows(block);
   const [galleryRow, emptyRow] = props;
 
-  // the jobs, then the header with their values for any filter list left empty (only the first
-  // Search and Filters are used)
-  const jobs = items.job.map((row) => buildJob(row, authoring));
+  // the board's fixed structure, filled by kind whatever the authored order: the header (left
+  // column: Search, then Filters), the job list (right column), then the photo strip
+  const aside = el('div', { class: 'job-board-aside' });
+  const results = el('div', { class: 'job-board-results' });
+
+  // the jobs: the first MAX_JOBS; the editor shows the others too, dimmed, with a note (they
+  // aren't on the published page)
+  const jobs = items.job.slice(0, MAX_JOBS).map((row) => buildJob(row, authoring));
+  const extra = authoring ? items.job.slice(MAX_JOBS).map((row) => {
+    const job = buildJob(row, authoring);
+    job.item.classList.add('is-over-limit');
+    if (job.item.dataset.aueResource) job.item.dataset.aueLabel = `${job.item.dataset.aueLabel} (over the ${MAX_JOBS}-job limit: not shown)`;
+    return job;
+  }) : [];
+  // (the header with the jobs' values for any filter list left empty; only the first Search and
+  // Filters are used)
   const unique = (values) => [...new Map(values.map((v) => [fold(v), v])).values()];
   const search = buildSearch(items.search[0], id, authoring);
   const filters = buildFilters(items.filters[0], id, authoring, {
     locations: unique(jobs.flatMap((j) => j.values.locations)),
     departments: unique(jobs.map((j) => j.values.department).filter(Boolean)),
   });
-  const aside = el('div', { class: 'job-board-aside' }, search.wrap, filters.wrap);
+  aside.append(search.wrap, filters.wrap);
 
   // the list (its own scrolling area, reachable by keyboard), the number of jobs shown (read out
   // by screen readers), the no results message
-  const list = el('ul', { class: 'job-board-list', 'aria-label': 'Open roles', tabindex: '0' }, ...jobs.map((j) => j.item));
+  const list = el('ul', { class: 'job-board-list', 'aria-label': 'Open roles', tabindex: '0' }, ...jobs.map((j) => j.item), ...extra.map((j) => j.item));
   const count = el('p', { class: 'job-board-count', role: 'status', 'aria-live': 'polite' });
   const empty = el('p', { class: 'job-board-empty', hidden: true }, text(emptyRow) || 'No roles match your search.');
   if (authoring) {
     editable(empty, 'emptyMessage', 'text', 'No results message');
     empty.hidden = !!jobs.length; // (shown in the editor while there are no jobs)
   }
-  const results = el('div', { class: 'job-board-results' }, count, list, empty);
+  const limitNote = extra.length ? el('p', { class: 'job-board-limit-note', role: 'note' }, `This board shows up to ${MAX_JOBS} jobs: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
+  results.append(limitNote || '', count, list, empty);
   const board = el('section', { class: 'job-board-board', 'aria-labelledby': search.wrap.querySelector('h1') ? `${id}-heading` : undefined }, aside, results);
 
   // the photo strip under the board
@@ -398,6 +441,7 @@ export default function decorate(block) {
   }
 
   block.replaceChildren(...[board, gallery].filter(Boolean));
+  if (!authoring) clipTexts(block);
 
   // filtering: every typed word somewhere in the job; in one of the chosen locations (if any)
   // and of one of the chosen departments (if any)
@@ -487,8 +531,8 @@ export default function decorate(block) {
       {
         class: 'job-board-suggestion', id: `${id}-suggestion-${i}`, role: 'option', 'aria-selected': 'false',
       },
-      el('span', { class: 'job-board-suggestion-title' }, job.values.title),
-      el('span', { class: 'job-board-suggestion-meta' }, [job.values.department, job.values.locations.join('; ')].filter(Boolean).join(' · ')),
+      el('span', { class: 'job-board-suggestion-title' }, clip(job.values.title)),
+      el('span', { class: 'job-board-suggestion-meta' }, [job.values.department, job.values.locations.join('; ')].filter(Boolean).map(clip).join(' · ')),
     )));
     search.suggestions.hidden = !suggested.length;
     search.input.setAttribute('aria-expanded', String(!!suggested.length));

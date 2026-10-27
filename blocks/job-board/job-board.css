@@ -44,6 +44,7 @@ main > .section.job-board-container > .job-board-wrapper {
 
 .job-board .job-board-board {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* (never wider than the screen, whatever the texts) */
   gap: 48px;
   box-sizing: border-box;
   max-width: calc(var(--jb-width) + 2 * var(--jb-gutter));
@@ -77,7 +78,11 @@ main > .section.job-board-container > .job-board-wrapper {
 }
 
 .job-board .job-board-heading span {
-  display: block;
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .job-board .job-board-heading-muted {
@@ -121,6 +126,7 @@ main > .section.job-board-container > .job-board-wrapper {
   font-weight: 400;
   line-height: 1;
   transition: border-color 0.2s ease-out;
+  text-overflow: ellipsis;
   appearance: none;
 }
 
@@ -212,6 +218,7 @@ main > .section.job-board-container > .job-board-wrapper {
   display: grid;
   align-content: center;
   gap: 1px;
+  min-width: 0;
   min-height: 55px;
   box-sizing: border-box;
   padding: 8px 10px;
@@ -226,12 +233,18 @@ main > .section.job-board-container > .job-board-wrapper {
 
 .job-board .job-board-suggestion-title {
   color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 12px;
   line-height: 18px;
 }
 
 .job-board .job-board-suggestion-meta {
   color: #7a7a7a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 11px;
   line-height: 16px;
 }
@@ -241,12 +254,19 @@ main > .section.job-board-container > .job-board-wrapper {
   color: var(--jb-soft);
   font-size: 12px;
   line-height: 20px;
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 
 /* ---- the filters (the design's open filter, design-filter-open.jpg) ---- */
 
 .job-board .job-board-filters {
   display: grid;
+  grid-template-columns: minmax(0, 1fr); /* (the dropdowns never wider than the column: an
+    automatic column would grow to a long chosen value) */
   gap: 10px;
 }
 
@@ -259,7 +279,11 @@ main > .section.job-board-container > .job-board-wrapper {
 }
 
 .job-board .job-board-filters-label {
+  min-width: 0;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--jb-label);
   font-size: 13px;
   line-height: 20px;
@@ -268,6 +292,7 @@ main > .section.job-board-container > .job-board-wrapper {
 /* "Clear all ×", shown while a filter is chosen */
 .job-board .job-board-clear-all {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 12px;
   margin: 0;
@@ -304,12 +329,18 @@ main > .section.job-board-container > .job-board-wrapper {
 
 .job-board .job-board-dropdown {
   position: relative;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* the dropdown's button: outlined, the chosen values (or its label) 17px in, a chevron 24px from
    the right (pointing up while open) */
 .job-board .job-board-dropdown-trigger {
   display: flex;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   align-items: center;
   padding: 0 52px 0 17px;
   background: var(--jb-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23111' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 24px center / 12px 7px;
@@ -324,6 +355,7 @@ main > .section.job-board-container > .job-board-wrapper {
 }
 
 .job-board .job-board-dropdown-value {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -333,6 +365,7 @@ main > .section.job-board-container > .job-board-wrapper {
    number of roles it shows; checked rows grey */
 .job-board .job-board-options {
   top: 100%;
+  max-width: 100%;
   display: grid;
   gap: 5.5px;
   padding: 7px;
@@ -341,6 +374,7 @@ main > .section.job-board-container > .job-board-wrapper {
 .job-board .job-board-option {
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr) auto;
+  min-width: 0;
   align-items: center;
   gap: 11px;
   min-height: 35px;
@@ -433,7 +467,12 @@ main > .section.job-board-container > .job-board-wrapper {
 }
 
 .job-board .job-board-job-title {
+  display: -webkit-box;
   margin: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* (phones; one line from 600px) */
   color: var(--jb-text);
   font-family: var(--jb-body-font);
   font-size: 14px;
@@ -443,8 +482,8 @@ main > .section.job-board-container > .job-board-wrapper {
 
 .job-board .job-board-job-meta {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column; /* (phones: the department, then the location; one line from 600px) */
+  align-items: flex-start;
   gap: 4px 12px;
   margin: 6px 0 0;
   color: #868686;
@@ -452,10 +491,22 @@ main > .section.job-board-container > .job-board-wrapper {
   line-height: 20px;
 }
 
+/* the department and the location: each cut with "…" when too long */
+.job-board .job-board-job-department,
+.job-board .job-board-job-location {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* the dot and the location (after its pin), kept together; phones: the location on its own
    line, without the dot */
 .job-board .job-board-job-place {
   display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
   align-items: center;
   gap: 12px;
 }
@@ -466,13 +517,14 @@ main > .section.job-board-container > .job-board-wrapper {
 
 /* the location after its pin */
 .job-board .job-board-job-location {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
+  display: block;
 }
 
 .job-board .job-board-job-location::before {
   content: '';
+  display: inline-block;
+  margin-right: 9px;
+  vertical-align: -2px;
   flex: none;
   width: 11px;
   height: 13px;
@@ -482,16 +534,20 @@ main > .section.job-board-container > .job-board-wrapper {
 
 .job-board .job-board-job-description {
   max-width: 560px;
+  display: -webkit-box;
   margin: 8px 0 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   color: var(--jb-soft);
   font-size: 12px;
   line-height: 20px;
 }
 
 .job-board .job-board-apply {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
+  max-width: 200px;
   justify-self: start;
   box-sizing: border-box;
   min-width: 118px;
@@ -504,7 +560,10 @@ main > .section.job-board-container > .job-board-wrapper {
   font-size: 10px;
   letter-spacing: 0.02em;
   font-weight: 500;
-  line-height: 1;
+  line-height: 34px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
@@ -526,10 +585,27 @@ main > .section.job-board-container > .job-board-wrapper {
   color: var(--jb-soft);
   font-size: 12px;
   line-height: 20px;
+  overflow-wrap: anywhere;
 }
 
 .job-board .job-board-empty[hidden] {
   display: none;
+}
+
+/* editor: the note about the jobs over the limit, and those jobs dimmed */
+.job-board .job-board-limit-note {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid #f0c36d;
+  border-radius: 6px;
+  background-color: #fff8e6;
+  color: #6b4e00;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.job-board .job-board-job.is-over-limit {
+  opacity: 0.4;
 }
 
 /* ---- the photo strip, across the full width ---- */
@@ -549,6 +625,27 @@ main > .section.job-board-container > .job-board-wrapper {
 @media (width >= 600px) {
   .job-board .job-board-job-dot {
     display: inline;
+  }
+
+  .job-board .job-board-job-title {
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .job-board .job-board-job-meta {
+    flex-flow: row nowrap;
+    align-items: center;
+  }
+
+  .job-board .job-board-job-department {
+    flex: 0 1 auto;
+  }
+
+  /* (a long department is shortened first; the location keeps up to half the line) */
+  .job-board .job-board-job-place {
+    flex: 0 0 auto;
+    max-width: 50%;
   }
 
   .job-board .job-board-job {
