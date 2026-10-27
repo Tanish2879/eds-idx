@@ -26,6 +26,7 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 export const MAX_JOBS = 15;
 export const MAX_CHARS = 64;
 
+const ANCHOR = 'open-roles'; // the board's id (the careers hero's button links to #open-roles)
 const BLOCK_ROWS = 2;
 const ITEM_KINDS = {
   'job-board-search': 'search', 'job-board-filters': 'filters', 'job-board-job': 'job',
@@ -122,7 +123,7 @@ function readRows(block) {
 }
 
 // the board's Search item: the heading (grey line, black line), the search box, the description
-function buildSearch(row, id, authoring) {
+function buildSearch(row, id, authoring, level) {
   const [headingCell, emphasisCell, placeholderCell, descriptionCell] = row
     ? [...row.children] : [];
   const wrap = el('div', { class: 'job-board-search' });
@@ -134,7 +135,7 @@ function buildSearch(row, id, authoring) {
     if (authoring) editable(first, 'heading', 'text', 'Heading');
     const second = text(emphasisCell) ? el('span', { class: 'job-board-heading-strong' }, text(emphasisCell)) : null;
     if (authoring) editable(second, 'headingEmphasis', 'text', 'Heading (second line)');
-    heading = el('h1', { class: 'job-board-heading', id: `${id}-heading` }, first || '', second || '');
+    heading = el(`h${level}`, { class: 'job-board-heading', id: `${id}-heading` }, first || '', second || '');
   }
   // the search box: a combobox with the matching roles suggested under it, and a clear button
   const input = el('input', {
@@ -329,14 +330,14 @@ function buildFilters(row, id, authoring, fallback) {
   };
 }
 
-function buildJob(row, authoring) {
+function buildJob(row, authoring, level) {
   const [titleCell, departmentCell, locationCell, descriptionCell, linkCell, labelCell] = [
     ...row.children];
   const item = el('li', { class: 'job-board-job' });
   moveInstrumentation(row, item);
   const title = text(titleCell);
   if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Job: ${title || 'Untitled'}`;
-  const heading = el('h2', { class: 'job-board-job-title' }, title);
+  const heading = el(`h${level + 1}`, { class: 'job-board-job-title' }, title);
   if (authoring) editable(heading, 'title', 'text', 'Job title');
   const department = text(departmentCell);
   const locations = entries(locationCell);
@@ -390,6 +391,9 @@ export default function decorate(block) {
   const authoring = isAuthoring();
   const { props, items } = readRows(block);
   const [galleryRow, emptyRow] = props;
+  // the heading: the page's main heading (h1) unless the page has one already (e.g. the careers
+  // hero above the board); the job titles one level below it
+  const level = document.querySelector('main h1') ? 2 : 1;
 
   // the board's fixed structure, filled by kind whatever the authored order: the header (left
   // column: Search, then Filters), the job list (right column), then the photo strip
@@ -398,9 +402,9 @@ export default function decorate(block) {
 
   // the jobs: the first MAX_JOBS; the editor shows the others too, dimmed, with a note (they
   // aren't on the published page)
-  const jobs = items.job.slice(0, MAX_JOBS).map((row) => buildJob(row, authoring));
+  const jobs = items.job.slice(0, MAX_JOBS).map((row) => buildJob(row, authoring, level));
   const extra = authoring ? items.job.slice(MAX_JOBS).map((row) => {
-    const job = buildJob(row, authoring);
+    const job = buildJob(row, authoring, level);
     job.item.classList.add('is-over-limit');
     if (job.item.dataset.aueResource) job.item.dataset.aueLabel = `${job.item.dataset.aueLabel} (over the ${MAX_JOBS}-job limit: not shown)`;
     return job;
@@ -408,7 +412,7 @@ export default function decorate(block) {
   // (the header with the jobs' values for any filter list left empty; only the first Search and
   // Filters are used)
   const unique = (values) => [...new Map(values.map((v) => [fold(v), v])).values()];
-  const search = buildSearch(items.search[0], id, authoring);
+  const search = buildSearch(items.search[0], id, authoring, level);
   const filters = buildFilters(items.filters[0], id, authoring, {
     locations: unique(jobs.flatMap((j) => j.values.locations)),
     departments: unique(jobs.map((j) => j.values.department).filter(Boolean)),
@@ -426,7 +430,12 @@ export default function decorate(block) {
   }
   const limitNote = extra.length ? el('p', { class: 'job-board-limit-note', role: 'note' }, `This board shows up to ${MAX_JOBS} jobs: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
   results.append(limitNote || '', count, list, empty);
-  const board = el('section', { class: 'job-board-board', 'aria-labelledby': search.wrap.querySelector('h1') ? `${id}-heading` : undefined }, aside, results);
+  // (the id: the target of the careers hero's #open-roles button and of links to the job list)
+  const board = el('section', {
+    class: 'job-board-board',
+    id: document.getElementById(ANCHOR) ? undefined : ANCHOR,
+    'aria-labelledby': search.wrap.querySelector('.job-board-heading') ? `${id}-heading` : undefined,
+  }, aside, results);
 
   // the photo strip under the board
   const image = rowImage(galleryRow);
@@ -442,6 +451,11 @@ export default function decorate(block) {
 
   block.replaceChildren(...[board, gallery].filter(Boolean));
   if (!authoring) clipTexts(block);
+  // opened with the board's anchor (…/careers#open-roles): the browser couldn't jump there before
+  // the board was built
+  if (!authoring && board.id && window.location.hash === `#${board.id}`) {
+    requestAnimationFrame(() => board.scrollIntoView({ block: 'start' }));
+  }
 
   // filtering: every typed word somewhere in the job; in one of the chosen locations (if any)
   // and of one of the chosen departments (if any)

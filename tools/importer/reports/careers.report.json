@@ -2,10 +2,12 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/careers/source.html",
   "path": "careers",
-  "timestamp": "2026-10-27T06:00:59.573Z",
+  "timestamp": "2026-10-27T07:08:56.205Z",
   "title": "Careers | JSW Motors",
   "template": "careers",
   "blocks": [
-    "job-board"
+    "careers-hero",
+    "job-board",
+    "careers-perks"
   ]
 }

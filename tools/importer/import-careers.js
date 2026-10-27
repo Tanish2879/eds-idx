@@ -3,10 +3,15 @@
 
 /**
  * Importer for the /careers page (source: drafts/careers/source.html).
- * Builds one job-board block with xwalk field hints + page metadata (JSW nav, no footer).
+ * Builds three sections: the careers-hero block, the job-board block, the careers-perks block,
+ * with xwalk field hints + page metadata (JSW nav, no footer).
  * Writes ONLY /careers — no other page is created or modified.
  *
- * Block rows (every property in its own cell):
+ * careers-hero rows (every property in its own cell): 1. image (+ imageAlt)   2. heading
+ *   3. description   4. ctaLabel   5. ctaLink (plain text, e.g. #open-roles)
+ * careers-perks rows: 1. heading   2. intro (one line); then the perks:
+ *   careers-perk | icon (a name) | iconImage | title | description
+ * job-board rows (every property in its own cell):
  *   1. gallery (+ galleryAlt)   2. emptyMessage
  *   then the items, each row starting with its component id (the block allows several child
  *   types: md2jcr picks the item's model by that first cell):
@@ -77,6 +82,24 @@ export default {
     const main = document.createElement('main');
     const value = (root, sel) => clean(root.querySelector(sel)?.textContent);
 
+    // section 1: the careers hero
+    const hero = document.querySelector('.careers-hero-source');
+    if (hero) {
+      const cta = hero.querySelector('a.cta');
+      main.append(WebImporter.Blocks.createBlock(document, {
+        name: 'careers-hero',
+        cells: [
+          [imageCell(document, 'image', hero.querySelector('img.image'))],
+          [textCell(document, 'heading', value(hero, 'h1'))],
+          [textCell(document, 'description', value(hero, '.description'))],
+          [textCell(document, 'ctaLabel', clean(cta?.textContent))],
+          [textCell(document, 'ctaLink', clean(cta?.getAttribute('href')))],
+        ],
+      }));
+      main.append(document.createElement('hr'));
+    }
+
+    // section 2: the job board
     const cells = [];
     cells.push([imageCell(document, 'gallery', src.querySelector(':scope > img.gallery'))]);
     cells.push([textCell(document, 'emptyMessage', value(src, ':scope > .empty'))]);
@@ -114,6 +137,30 @@ export default {
     });
     main.append(WebImporter.Blocks.createBlock(document, { name: 'job-board', cells }));
 
+    // section 3: the careers perks (the intro as one line: the content upload drops a <br> and the
+    // space around it; the authors add the line break in the editor, which the block keeps)
+    const perks = document.querySelector('.careers-perks-source');
+    if (perks) {
+      main.append(document.createElement('hr'));
+      const intro = perks.querySelector('.intro');
+      const introP = document.createElement('p');
+      introP.textContent = clean([...(intro?.childNodes || [])].map((n) => (n.nodeName === 'BR' ? ' ' : n.textContent)).join(' '));
+      const perkCells = [
+        [textCell(document, 'heading', value(perks, 'h2'))],
+        [introP.textContent ? hinted(document, 'intro', introP) : hinted(document, 'intro')],
+      ];
+      perks.querySelectorAll('.perk').forEach((perk) => {
+        perkCells.push([
+          idCell(document, 'careers-perk'),
+          textCell(document, 'icon', clean(perk.dataset.icon)),
+          hinted(document, 'iconImage'),
+          textCell(document, 'title', value(perk, 'h3')),
+          textCell(document, 'description', value(perk, 'p')),
+        ]);
+      });
+      main.append(WebImporter.Blocks.createBlock(document, { name: 'careers-perks', cells: perkCells }));
+    }
+
     main.append(WebImporter.Blocks.getMetadataBlock(document, {
       Title: clean(document.title),
       Description: clean(document.querySelector('meta[name="description"]')?.getAttribute('content')),
@@ -126,7 +173,7 @@ export default {
     return [{
       element: document.body,
       path: '/careers',
-      report: { title: document.title, template: 'careers', blocks: ['job-board'] },
+      report: { title: document.title, template: 'careers', blocks: ['careers-hero', 'job-board', 'careers-perks'] },
     }];
   },
 };

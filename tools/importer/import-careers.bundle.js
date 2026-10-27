@@ -76,6 +76,21 @@ var CustomImportScript = (() => {
         var _a2;
         return clean((_a2 = root.querySelector(sel)) == null ? void 0 : _a2.textContent);
       };
+      const hero = document.querySelector(".careers-hero-source");
+      if (hero) {
+        const cta = hero.querySelector("a.cta");
+        main.append(WebImporter.Blocks.createBlock(document, {
+          name: "careers-hero",
+          cells: [
+            [imageCell(document, "image", hero.querySelector("img.image"))],
+            [textCell(document, "heading", value(hero, "h1"))],
+            [textCell(document, "description", value(hero, ".description"))],
+            [textCell(document, "ctaLabel", clean(cta == null ? void 0 : cta.textContent))],
+            [textCell(document, "ctaLink", clean(cta == null ? void 0 : cta.getAttribute("href")))]
+          ]
+        }));
+        main.append(document.createElement("hr"));
+      }
       const cells = [];
       cells.push([imageCell(document, "gallery", src.querySelector(":scope > img.gallery"))]);
       cells.push([textCell(document, "emptyMessage", value(src, ":scope > .empty"))]);
@@ -111,6 +126,27 @@ var CustomImportScript = (() => {
         }
       });
       main.append(WebImporter.Blocks.createBlock(document, { name: "job-board", cells }));
+      const perks = document.querySelector(".careers-perks-source");
+      if (perks) {
+        main.append(document.createElement("hr"));
+        const intro = perks.querySelector(".intro");
+        const introP = document.createElement("p");
+        introP.textContent = clean([...(intro == null ? void 0 : intro.childNodes) || []].map((n) => n.nodeName === "BR" ? " " : n.textContent).join(" "));
+        const perkCells = [
+          [textCell(document, "heading", value(perks, "h2"))],
+          [introP.textContent ? hinted(document, "intro", introP) : hinted(document, "intro")]
+        ];
+        perks.querySelectorAll(".perk").forEach((perk) => {
+          perkCells.push([
+            idCell(document, "careers-perk"),
+            textCell(document, "icon", clean(perk.dataset.icon)),
+            hinted(document, "iconImage"),
+            textCell(document, "title", value(perk, "h3")),
+            textCell(document, "description", value(perk, "p"))
+          ]);
+        });
+        main.append(WebImporter.Blocks.createBlock(document, { name: "careers-perks", cells: perkCells }));
+      }
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
         Description: clean((_a = document.querySelector('meta[name="description"]')) == null ? void 0 : _a.getAttribute("content")),
@@ -122,7 +158,7 @@ var CustomImportScript = (() => {
       return [{
         element: document.body,
         path: "/careers",
-        report: { title: document.title, template: "careers", blocks: ["job-board"] }
+        report: { title: document.title, template: "careers", blocks: ["careers-hero", "job-board", "careers-perks"] }
       }];
     }
   };

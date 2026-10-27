@@ -902,6 +902,15 @@ body:has(main > .section:first-child.confirmation-container) header .nav-pill-wr
   background-color: rgb(255 255 255 / 8%);
 }
 
+/* over the careers hero while at the top: the design's dark glass bar (the photo shows through) */
+body:has(main > .section:first-child.careers-hero-container) header .nav-pill-wrapper.is-at-top {
+  --pill-bg: rgb(12 16 22 / 45%);
+}
+
+body:has(main > .section:first-child.careers-hero-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-main {
+  backdrop-filter: blur(12px);
+}
+
 @media (width >= 768px) {
   header .nav-pill-wrapper {
     inset: 24px 16px auto;
