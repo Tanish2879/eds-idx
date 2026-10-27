@@ -716,8 +716,16 @@ main > .section.job-board-container:not(:last-child) .job-board .job-board-galle
 }
 
 @media (width >= 1240px) {
+  /* the design's proportions at any width (its 1280 frame scaled): the margins in % of the page,
+     the left column and the gap in % of the board */
   .job-board {
-    --jb-gutter: 60px;
+    --jb-gutter: 4.6875%; /* 60 / 1280 */
+  }
+
+  .job-board .job-board-board {
+    grid-template-columns: minmax(0, 31.9%) minmax(0, 1fr); /* 370 / 1160 */
+    column-gap: 10.52%; /* 122 / 1160 */
+    max-width: none;
   }
 }
 

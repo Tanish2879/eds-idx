@@ -83,7 +83,8 @@ export default function decorate(block) {
     img.setAttribute('fetchpriority', 'high');
     moveInstrumentation(image.source, img);
     if (authoring) editable(img, 'image', 'media', 'Background image');
-    media = el('div', { class: 'careers-hero-media' }, picture);
+    // (the design's shallow focus: the upper half softer, see the CSS)
+    media = el('div', { class: 'careers-hero-media' }, picture, el('span', { class: 'careers-hero-focus', 'aria-hidden': 'true' }));
   }
 
   // the heading, the description, the button

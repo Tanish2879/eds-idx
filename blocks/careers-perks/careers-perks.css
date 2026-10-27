@@ -172,7 +172,12 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
 }
 
 @media (width >= 1240px) {
+  /* the design's proportions at any width (its 1280 frame scaled): the margins in % of the page,
+     the columns' gap in % of the grid */
   .careers-perks {
-    --cp-gutter: 64px;
+    --cp-gutter: 5%; /* 64 / 1280 */
+    --cp-gap: 2.78%; /* 32 / 1152 */
+
+    max-width: none;
   }
 }
