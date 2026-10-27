@@ -52,6 +52,16 @@ main > .section.job-board-container > .job-board-wrapper {
   padding: 128px var(--jb-gutter) 64px;
 }
 
+/* (the board takes the focus when a link scrolls to it, e.g. the careers hero's SCROLL: no ring
+   around the whole board) */
+.job-board .job-board-board:focus {
+  outline: none;
+}
+
+main > .section:not(:first-child) .job-board .job-board-board {
+  padding-top: 56px;
+}
+
 /* ---- the left column: heading, search, description; the filters ---- */
 
 .job-board .job-board-aside {
@@ -621,6 +631,11 @@ main > .section.job-board-container > .job-board-wrapper {
   height: auto;
 }
 
+/* (followed by another section, e.g. the careers perks: that section's own spacing instead) */
+main > .section.job-board-container:not(:last-child) .job-board .job-board-gallery {
+  padding-bottom: 0;
+}
+
 /* the title and the button side by side from tablets */
 @media (width >= 600px) {
   .job-board .job-board-job-dot {
@@ -665,6 +680,12 @@ main > .section.job-board-container > .job-board-wrapper {
     grid-template-columns: minmax(0, 370px) minmax(0, 1fr);
     column-gap: clamp(48px, 9.5vw, 122px);
     padding: 105px var(--jb-gutter) 99px;
+  }
+
+  /* (under another section, e.g. the careers hero: the design's 78px above the board instead of
+     the room for the floating nav) */
+  main > .section:not(:first-child) .job-board .job-board-board {
+    padding-top: 78px;
   }
 
   .job-board .job-board-aside {

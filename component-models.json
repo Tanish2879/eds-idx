@@ -275,6 +275,189 @@
     ]
   },
   {
+    "id": "careers-hero",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background image",
+        "description": "Fills the hero behind the heading (cropped to fit; the design's cool tone is added over it).",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Background image alt text",
+        "description": "Describe the photo for screen readers, e.g. People in silhouette before a city skyline. Leave empty if it is only decorative.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "The page's main heading, e.g. THE WORLD NEEDS PIONEERS (it wraps onto two lines).",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Subheading / description",
+        "description": "Optional: a short paragraph under the heading.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLabel",
+        "label": "Button label",
+        "description": "E.g. SCROLL or VIEW OPENINGS. Leave empty for no button.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "#open-roles scrolls smoothly down to the Job Board on this page (any #anchor: to the element with that id, else to the job board); a page path or URL opens that page.",
+        "value": "",
+        "validation": {
+          "maxLength": 256
+        }
+      }
+    ]
+  },
+  {
+    "id": "careers-perks",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "Centred above the perks, e.g. OUR PERKS.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "intro",
+        "label": "Intro",
+        "description": "Under the heading, centred. Start a new line where the text should break (otherwise it wraps by itself).",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "careers-perk",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "icon",
+        "label": "Icon",
+        "description": "The line icon above the title.",
+        "value": "flag",
+        "options": [
+          {
+            "name": "Flag",
+            "value": "flag"
+          },
+          {
+            "name": "Sprout",
+            "value": "sprout"
+          },
+          {
+            "name": "Scales",
+            "value": "scale"
+          },
+          {
+            "name": "Heart (health)",
+            "value": "heart"
+          },
+          {
+            "name": "Sun",
+            "value": "sun"
+          },
+          {
+            "name": "Home",
+            "value": "home"
+          },
+          {
+            "name": "People",
+            "value": "users"
+          },
+          {
+            "name": "Globe",
+            "value": "globe"
+          },
+          {
+            "name": "Shield",
+            "value": "shield"
+          },
+          {
+            "name": "Clock",
+            "value": "clock"
+          },
+          {
+            "name": "Rocket",
+            "value": "rocket"
+          },
+          {
+            "name": "Star",
+            "value": "star"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "iconImage",
+        "label": "Custom icon image",
+        "description": "Optional: an image (ideally a square SVG with a 2px line) shown instead of the icon above, at 28 × 28.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "textarea",
+        "valueType": "string",
+        "name": "description",
+        "label": "Description",
+        "description": "Two or three short lines under the title.",
+        "value": "",
+        "required": true
+      }
+    ]
+  },
+  {
     "id": "carousel-dealer-item",
     "fields": [
       {

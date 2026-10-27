@@ -1,0 +1,250 @@
+/* Careers Hero. Values from the design (migration-work/careers/design-hero.jpg, a 1280 frame):
+   the photo 519px tall across the full width, shown 1.37× closer than it fills the hero
+   (centred on the group at the window) with a cool tone; the heading in New Science Extended
+   46/60, two lines, its last baseline 84px above the bottom, on the Job Board's 60px margin
+   (1160px content); the SCROLL button 34px tall at the right margin, centred on the heading's
+   last line. Mobile first: phones a taller crop, the heading smaller, the button under it; from
+   900px the design's layout. */
+
+main > .section.careers-hero-container > .careers-hero-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.careers-hero {
+  /* type (see styles/fonts.css; the button in the site's mono face) */
+  --ch-display-font: 'New Science Extended', new-science-extended, var(--display-font-family);
+  --ch-body-font: 'New Science Extended', new-science-extended, var(--body-font-family);
+  --ch-button-font: 'New Science Mono', new-science-mono, var(--mono-font-family);
+
+  /* layout (the Job Board's) */
+  --ch-width: 1160px;
+  --ch-gutter: 20px;
+
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(82svh, 680px);
+  overflow: hidden;
+  isolation: isolate;
+  background-color: #0b111c;
+  color: #fff;
+}
+
+/* the photo: cropped to fill, softly out of focus, the design's cool tone over it (the warm
+   daylight multiplied towards blue, darker at the top, the shadows lifted to a deep blue) */
+.careers-hero .careers-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.careers-hero .careers-hero-media picture,
+.careers-hero .careers-hero-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.careers-hero .careers-hero-media img {
+  object-fit: cover;
+  object-position: 64% 30%;
+  filter: blur(1.2px) saturate(1.15) brightness(1.06);
+  transform: scale(1.04); /* (the blur's soft edges outside the hero) */
+}
+
+.careers-hero .careers-hero-media::before,
+.careers-hero .careers-hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* (over the photo: its filter paints it on a layer of its own) */
+  pointer-events: none;
+}
+
+.careers-hero .careers-hero-media::before {
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 35%), rgb(0 0 0 / 0%) 40%),
+    rgb(206 232 255);
+  mix-blend-mode: multiply;
+}
+
+.careers-hero .careers-hero-media::after {
+  background-color: rgb(0 6 20);
+  mix-blend-mode: screen;
+}
+
+.careers-hero .careers-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--ch-width) + 2 * var(--ch-gutter));
+  margin: 0 auto;
+  padding: 140px var(--ch-gutter) 48px;
+}
+
+.careers-hero .careers-hero-text {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.careers-hero .careers-hero-heading {
+  max-width: 12.5em; /* (wraps as the design: THE WORLD / NEEDS PIONEERS) */
+  margin: 0;
+  color: #fff;
+  font-family: var(--ch-display-font);
+  font-size: clamp(24px, 7.4vw, 46.4px); /* (phones: NEEDS PIONEERS still on one line) */
+  font-weight: 400;
+  line-height: 1.293; /* 60px at 46.4px */
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.careers-hero .careers-hero-description {
+  max-width: 520px;
+  margin: 16px 0 0;
+  color: rgb(255 255 255 / 80%);
+  font-family: var(--ch-body-font);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+/* the button: a dark glass pill, a mouse icon (an anchor: scrolls down) or an arrow, the label */
+.careers-hero .careers-hero-cta {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 34px;
+  padding: 0 14px 0 13px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 8px;
+  background-color: rgb(255 255 255 / 6%);
+  color: #fff;
+  font-family: var(--ch-button-font);
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.careers-hero .careers-hero-cta:hover {
+  border-color: rgb(255 255 255 / 30%);
+  background-color: rgb(255 255 255 / 14%);
+}
+
+.careers-hero .careers-hero-cta:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.careers-hero .careers-hero-cta-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the icon: an arrow; for an anchor a mouse outline with its wheel moving down */
+.careers-hero .careers-hero-cta-icon {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 9L9 1M3 1h6v6' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.careers-hero .careers-hero-cta.is-anchor .careers-hero-cta-icon {
+  width: 9px;
+  height: 13px;
+  border: 1.2px solid #fff;
+  border-radius: 5px;
+  background: none;
+}
+
+.careers-hero .careers-hero-cta.is-anchor .careers-hero-cta-icon::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  width: 1.5px;
+  height: 3px;
+  border-radius: 1px;
+  background-color: #fff;
+  transform: translateX(-50%);
+  animation: careers-hero-wheel 1.8s ease-in-out infinite;
+}
+
+@keyframes careers-hero-wheel {
+  0%,
+  20% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  70% {
+    opacity: 0;
+    transform: translate(-50%, 4px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .careers-hero .careers-hero-cta.is-anchor .careers-hero-cta-icon::after {
+    animation: none;
+  }
+}
+
+/* from 900px: the design's 519px at 1280 (the same proportion elsewhere), the photo 1.37× closer
+   centred on the group, the button at the right, centred on the heading's last line */
+@media (width >= 900px) {
+  .careers-hero {
+    --ch-gutter: 40px;
+
+    min-height: clamp(440px, 40.55vw, 760px);
+  }
+
+  .careers-hero .careers-hero-media img {
+    object-position: 50% 20%;
+    transform: scale(1.372);
+    transform-origin: 27.3% 40.6%;
+  }
+
+  .careers-hero .careers-hero-content {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 120px var(--ch-gutter) 75px;
+  }
+
+  .careers-hero .careers-hero-cta {
+    margin-bottom: 8px; /* (on the heading's last line, as the design) */
+  }
+}
+
+@media (width >= 1240px) {
+  .careers-hero {
+    --ch-gutter: 60px;
+  }
+}
+
+/* authoring (Universal Editor, see styles.css): phones a fixed height instead of the screen's */
+@media (width < 900px) {
+  html.is-authoring .careers-hero {
+    min-height: min(var(--authoring-screen), 680px);
+  }
+}
