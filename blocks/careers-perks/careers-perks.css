@@ -72,30 +72,30 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
   list-style: none;
 }
 
-.careers-perks .careers-perk {
+.careers-perks .careers-perks-item {
   min-width: 0;
 }
 
-.careers-perks .careers-perk:nth-child(n + 2) {
+.careers-perks .careers-perks-item:nth-child(n + 2) {
   padding-top: 35px;
   border-top: 1px solid var(--cp-line);
 }
 
-.careers-perks .careers-perk-icon {
+.careers-perks .careers-perks-icon {
   display: block;
   width: 28px;
   height: 28px;
 }
 
-.careers-perks .careers-perk-icon img,
-.careers-perks .careers-perk-icon picture {
+.careers-perks .careers-perks-icon img,
+.careers-perks .careers-perks-icon picture {
   display: block;
   width: 28px;
   height: 28px;
   object-fit: contain;
 }
 
-.careers-perks .careers-perk-title {
+.careers-perks .careers-perks-title {
   margin: 31px 0 0;
   overflow: hidden;
   color: var(--cp-text);
@@ -107,7 +107,7 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
   white-space: nowrap;
 }
 
-.careers-perks .careers-perk-description {
+.careers-perks .careers-perks-description {
   margin: 8px 0 0;
   color: var(--cp-muted);
   font-size: 12.2px;
@@ -129,7 +129,7 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
   text-align: center;
 }
 
-.careers-perks .careers-perk.is-over-limit {
+.careers-perks .careers-perks-item.is-over-limit {
   opacity: 0.4;
 }
 
@@ -138,12 +138,12 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .careers-perks .careers-perk:nth-child(n + 2) {
+  .careers-perks .careers-perks-item:nth-child(n + 2) {
     padding-top: 0;
     border-top: 0;
   }
 
-  .careers-perks .careers-perk:nth-child(n + 3) {
+  .careers-perks .careers-perks-item:nth-child(n + 3) {
     padding-top: 35px;
     border-top: 1px solid var(--cp-line);
   }
@@ -160,12 +160,12 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .careers-perks .careers-perk:nth-child(n + 3) {
+  .careers-perks .careers-perks-item:nth-child(n + 3) {
     padding-top: 0;
     border-top: 0;
   }
 
-  .careers-perks .careers-perk:nth-child(n + 4) {
+  .careers-perks .careers-perks-item:nth-child(n + 4) {
     padding-top: 35px;
     border-top: 1px solid var(--cp-line);
   }

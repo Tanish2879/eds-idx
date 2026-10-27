@@ -72,11 +72,11 @@ function buildIcon(iconCell, imageCell, authoring) {
       : createOptimizedPicture(image.src, '', false, [{ width: '96' }]).querySelector('img');
     moveInstrumentation(image.source, img);
     if (authoring) editable(img, 'iconImage', 'media', 'Custom icon image');
-    return el('span', { class: 'careers-perk-icon is-custom' }, img.closest('picture') || img);
+    return el('span', { class: 'careers-perks-icon is-custom' }, img.closest('picture') || img);
   }
   const name = text(iconCell).toLowerCase();
   if (!ICON.test(name)) return null;
-  return el('span', { class: 'careers-perk-icon' }, el('img', {
+  return el('span', { class: 'careers-perks-icon' }, el('img', {
     src: `${window.hlx?.codeBasePath || ''}/icons/perk-${name}.svg`, alt: '', width: 28, height: 28, loading: 'lazy',
   }));
 }
@@ -84,14 +84,14 @@ function buildIcon(iconCell, imageCell, authoring) {
 function buildPerk(row, authoring) {
   if (text(row.firstElementChild) === ITEM) row.firstElementChild.remove();
   const [iconCell, imageCell, titleCell, descriptionCell] = [...row.children];
-  const item = el('li', { class: 'careers-perk' });
+  const item = el('li', { class: 'careers-perks-item' });
   moveInstrumentation(row, item);
   const title = text(titleCell);
   if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Perk: ${title || 'Untitled'}`;
-  const heading = title ? el('h3', { class: 'careers-perk-title' }, title) : null;
+  const heading = title ? el('h3', { class: 'careers-perks-title' }, title) : null;
   if (authoring) editable(heading, 'title', 'text', 'Title');
   const description = lines(descriptionCell).join(' ');
-  const body = description ? el('p', { class: 'careers-perk-description' }, description) : null;
+  const body = description ? el('p', { class: 'careers-perks-description' }, description) : null;
   if (authoring) editable(body, 'description', 'text', 'Description');
   item.append(buildIcon(iconCell, imageCell, authoring) || '', heading || '', body || '');
   return item;
