@@ -772,7 +772,10 @@
         "valueType": "string",
         "name": "galleryAlt",
         "label": "Gallery image alt text",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "text",
@@ -780,7 +783,10 @@
         "name": "emptyMessage",
         "label": "No results message",
         "description": "Shown when no job matches the search and filters, e.g. No roles match your search.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       }
     ]
   },
@@ -793,7 +799,10 @@
         "name": "heading",
         "label": "Heading",
         "description": "The heading's first line, in grey, e.g. OPEN ROLES AT.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "text",
@@ -801,7 +810,10 @@
         "name": "headingEmphasis",
         "label": "Heading (second line)",
         "description": "The heading's second line, in black, e.g. JSW MOTORS.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "text",
@@ -809,7 +821,10 @@
         "name": "placeholder",
         "label": "Search input placeholder",
         "description": "Shown inside the empty search box, e.g. Search Roles.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "textarea",
@@ -830,7 +845,10 @@
         "name": "filterLabel",
         "label": "Filters label",
         "description": "Above the dropdowns, e.g. Filter Roles.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "text",
@@ -838,7 +856,10 @@
         "name": "locationLabel",
         "label": "Location dropdown label",
         "description": "Shown in the dropdown while no location is chosen (it then lists every location), e.g. Locations.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "container",
@@ -852,7 +873,10 @@
             "valueType": "string",
             "name": "location",
             "label": "Location",
-            "value": ""
+            "value": "",
+            "validation": {
+              "maxLength": 64
+            }
           }
         ]
       },
@@ -862,7 +886,10 @@
         "name": "departmentLabel",
         "label": "Department dropdown label",
         "description": "Shown in the dropdown while no department is chosen (it then lists every department), e.g. Departments.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "container",
@@ -876,7 +903,10 @@
             "valueType": "string",
             "name": "department",
             "label": "Department",
-            "value": ""
+            "value": "",
+            "validation": {
+              "maxLength": 64
+            }
           }
         ]
       }
@@ -890,7 +920,12 @@
         "valueType": "string",
         "name": "title",
         "label": "Job title",
-        "value": ""
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        },
+        "description": "Up to 64 characters. The board shows up to 15 jobs (the first 15 in the content tree)."
       },
       {
         "component": "text",
@@ -898,7 +933,10 @@
         "name": "department",
         "label": "Department",
         "description": "Shown under the title; one of the Filters' departments (written the same way), e.g. Hardware and Embedded Engineering.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "text",
@@ -906,22 +944,32 @@
         "name": "location",
         "label": "Job location",
         "description": "Shown with the pin; one of the Filters' locations, e.g. Bangalore, India. Several, separated by semicolons, for a job in more than one place: Mumbai, India; Pune, India.",
-        "value": ""
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
         "name": "description",
         "label": "Job description",
-        "description": "Optional: a short line under the department and location (the search also looks in it).",
-        "value": ""
+        "description": "A short line under the department and location (up to 64 characters; the search also looks in it).",
+        "value": "",
+        "required": true,
+        "valueFormat": "string-multiline",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "applyLink",
         "label": "Apply button link",
-        "description": "Where the button leads: a page, a URL or a mailto: address."
+        "description": "Where the button leads: a page, a URL or a mailto: address.",
+        "required": true
       },
       {
         "component": "text",
@@ -929,7 +977,10 @@
         "name": "applyLabel",
         "label": "Apply button label",
         "description": "E.g. APPLY NOW.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       }
     ]
   },
