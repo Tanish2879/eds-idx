@@ -8,7 +8,11 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  *   1. heading   2. intro (its line breaks kept)
  *   then the perks (as imported, each row starts with its component id; AEM renders them without
  *   it): icon (a name: icons/perk-<name>.svg) | custom icon image | title | description
+ * Only the first MAX_PERKS perks are shown; the editor shows the others dimmed, with a note.
  */
+
+// the most perks the block shows (the first ones in the content tree; the editor marks the others)
+export const MAX_PERKS = 6;
 
 const BLOCK_ROWS = 2;
 const ITEM = 'careers-perk';
@@ -115,7 +119,17 @@ export default function decorate(block) {
     header.append(p);
   }
 
-  // the perks
-  const list = el('ul', { class: 'careers-perks-list' }, ...rows.slice(start).map((row) => buildPerk(row, authoring)));
-  block.replaceChildren(...[header.children.length ? header : null, list].filter(Boolean));
+  // the perks: the first MAX_PERKS; the editor shows the others too, dimmed, with a note (they
+  // aren't on the published page)
+  const perkRows = rows.slice(start);
+  const perks = perkRows.slice(0, MAX_PERKS).map((row) => buildPerk(row, authoring));
+  const extra = authoring ? perkRows.slice(MAX_PERKS).map((row) => {
+    const item = buildPerk(row, authoring);
+    item.classList.add('is-over-limit');
+    if (item.dataset.aueResource) item.dataset.aueLabel = `${item.dataset.aueLabel} (over the ${MAX_PERKS}-perk limit: not shown)`;
+    return item;
+  }) : [];
+  const list = el('ul', { class: 'careers-perks-list' }, ...perks, ...extra);
+  const note = extra.length ? el('p', { class: 'careers-perks-limit-note', role: 'note' }, `This block shows up to ${MAX_PERKS} perks: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
+  block.replaceChildren(...[header.children.length ? header : null, note, list].filter(Boolean));
 }

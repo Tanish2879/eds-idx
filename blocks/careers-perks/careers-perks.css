@@ -115,6 +115,24 @@ main > .section.careers-perks-container > .careers-perks-wrapper {
   overflow-wrap: anywhere;
 }
 
+/* editor: the note about the perks over the limit (MAX_PERKS in the JS), and those perks dimmed */
+.careers-perks .careers-perks-limit-note {
+  max-width: 640px;
+  margin: 32px auto 0;
+  padding: 10px 14px;
+  border: 1px solid #f0c36d;
+  border-radius: 6px;
+  background-color: #fff8e6;
+  color: #6b4e00;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.careers-perks .careers-perk.is-over-limit {
+  opacity: 0.4;
+}
+
 @media (width >= 600px) {
   .careers-perks .careers-perks-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));

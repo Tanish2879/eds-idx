@@ -440,6 +440,7 @@
         "valueType": "string",
         "name": "title",
         "label": "Title",
+        "description": "Up to 64 characters. The block shows up to 6 perks (the first 6 in the content tree).",
         "value": "",
         "required": true,
         "validation": {
