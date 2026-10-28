@@ -11,6 +11,8 @@
  * A footer document built from blocks (the JSW pages' /jsw-footer: a Jsw Footer block, its
  * columns and links its children) is rendered as such: its sections and blocks decorated and
  * loaded like a fragment's, instead of the flat layout above.
+ * In the editor the footer is edited in its own document: on the pages it is only shown (its
+ * editor instrumentation removed, so it is not part of the page's content tree).
  */
 
 import { getPageMetadata, decorateMain } from '../../scripts/scripts.js';
@@ -29,6 +31,15 @@ async function fetchFooter(meta) {
   const tmp = document.createElement('div');
   tmp.innerHTML = await resp.text();
   return tmp;
+}
+
+// the editor's instrumentation of the footer document (its resources, fields)
+function stripInstrumentation(root) {
+  root.querySelectorAll('*').forEach((node) => {
+    [...node.attributes].forEach(({ name }) => {
+      if (name.startsWith('data-aue-') || name.startsWith('data-richtext-')) node.removeAttribute(name);
+    });
+  });
 }
 
 function el(tag, attrs = {}, ...children) {
@@ -155,15 +166,18 @@ export default async function decorate(block) {
   const fragment = await fetchFooter(meta);
   block.textContent = '';
   if (!fragment) return;
+  stripInstrumentation(fragment);
   if (fragment.querySelector(':scope > div > .jsw-footer')) {
     const main = document.createElement('main');
     main.append(...fragment.childNodes);
     // (the footer document's own page metadata is not part of the footer)
     main.querySelectorAll('.metadata').forEach((table) => table.remove());
+    // (decorated in place, inside the footer: its blocks know they are a page's footer)
+    block.append(main);
     decorateMain(main);
     await loadSections(main);
     block.classList.add('is-blocks');
-    block.append(...main.children);
+    main.replaceWith(...main.children);
     return;
   }
   footerId += 1;
