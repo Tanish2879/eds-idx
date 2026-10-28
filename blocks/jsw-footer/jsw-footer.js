@@ -262,7 +262,8 @@ function buildColumns(items, authoring) {
 }
 
 export default function decorate(block) {
-  const authoring = isAuthoring();
+  // (editable in its own document only: on a page, as its footer, it is only shown)
+  const authoring = isAuthoring() && !block.closest('footer');
   // the layout (default: Variant A)
   const variant = VARIANTS.find((v) => block.classList.contains(v)) || VARIANTS[0];
   VARIANTS.forEach((v) => block.classList.toggle(v, v === variant));
