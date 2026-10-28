@@ -30,6 +30,36 @@
           }
         }
       }
+    },
+    {
+      "title": "Footer Link",
+      "id": "jsw-footer-link",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Footer Link",
+              "model": "jsw-footer-link"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Social Link",
+      "id": "jsw-footer-social-link",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Social Link",
+              "model": "jsw-footer-social-link"
+            }
+          }
+        }
+      }
     }
   ],
   "models": [
@@ -183,7 +213,23 @@
           "valueType": "string",
           "name": "title",
           "label": "Column title",
-          "description": "E.g. TECHNOLOGY. The column's heading (in Variant B a column of social icons keeps it for screen readers only).",
+          "description": "E.g. TECHNOLOGY. Starts a column: the Footer Links and Social Links after it (up to the next Footer Column) are inside it. A column shows up to 4 links and 4 social icons; the rest are not shown on the site.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          }
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-link",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
           "value": "",
           "required": true,
           "validation": {
@@ -191,81 +237,67 @@
           }
         },
         {
-          "component": "container",
-          "name": "links",
-          "label": "Links",
-          "description": "This column's links, in order. Up to 4 are shown: links after the fourth are not displayed.",
-          "multi": true,
-          "fields": [
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Link",
+          "description": "A page, a URL or a mailto: address.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-social-link",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "network",
+          "label": "Network",
+          "description": "Its icon (a square button), and the link's name for screen readers.",
+          "value": "facebook",
+          "required": true,
+          "options": [
             {
-              "component": "aem-content",
-              "valueType": "string",
-              "name": "link",
-              "label": "Link",
-              "description": "A page, a URL or a mailto: address.",
-              "required": true
+              "name": "Facebook",
+              "value": "facebook"
             },
             {
-              "component": "text",
-              "valueType": "string",
-              "name": "linkText",
-              "label": "Label",
-              "description": "E.g. NEVs.",
-              "value": "",
-              "required": true,
-              "validation": {
-                "maxLength": 64
-              }
+              "name": "Instagram",
+              "value": "instagram"
+            },
+            {
+              "name": "X",
+              "value": "x"
+            },
+            {
+              "name": "LinkedIn",
+              "value": "linkedin"
+            },
+            {
+              "name": "YouTube",
+              "value": "youtube"
             }
           ]
         },
         {
-          "component": "container",
-          "name": "social",
-          "label": "Social icons",
-          "description": "Square icon buttons shown under this column's links (usually in a column of their own, e.g. CONNECT). Up to 4 are shown: icons after the fourth are not displayed.",
-          "multi": true,
-          "fields": [
-            {
-              "component": "aem-content",
-              "valueType": "string",
-              "name": "profile",
-              "label": "Profile link",
-              "description": "The network's page, e.g. https://www.linkedin.com/company/…",
-              "required": true
-            },
-            {
-              "component": "select",
-              "valueType": "string",
-              "name": "profileText",
-              "label": "Network",
-              "description": "Its icon, and the link's name for screen readers (JSW Motors on <network>).",
-              "value": "facebook",
-              "required": true,
-              "options": [
-                {
-                  "name": "Facebook",
-                  "value": "facebook"
-                },
-                {
-                  "name": "Instagram",
-                  "value": "instagram"
-                },
-                {
-                  "name": "X",
-                  "value": "x"
-                },
-                {
-                  "name": "LinkedIn",
-                  "value": "linkedin"
-                },
-                {
-                  "name": "YouTube",
-                  "value": "youtube"
-                }
-              ]
-            }
-          ]
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Profile link",
+          "description": "The network's page, e.g. https://www.linkedin.com/company/…",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Accessible name",
+          "description": "Optional: what screen readers announce, e.g. JSW Motors on LinkedIn (default: JSW Motors on <network>).",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
         }
       ]
     }
@@ -274,7 +306,9 @@
     {
       "id": "jsw-footer",
       "components": [
-        "jsw-footer-column"
+        "jsw-footer-column",
+        "jsw-footer-link",
+        "jsw-footer-social-link"
       ]
     }
   ]

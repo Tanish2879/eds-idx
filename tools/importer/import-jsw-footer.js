@@ -10,9 +10,11 @@
  * jsw-footer rows (every property in its own cell): 1. logo (+ logoAlt)   2. logoLink
  *   3. copyright   4. location   5. ctaLabel   6. ctaLink   7. legalLink (+ legalLinkText)
  *   8. backgroundMedia (image / video)   9. background (image)   10. backgroundVideo
- * then the children, the columns, each row starting with its component id:
- *   jsw-footer-column | title | links (a list of links, label as the text) | social (a list of
- *   links, the network as the text)
+ * then the children, each row starting with its component id (the block allows several child
+ * types: the content upload picks the child's model by that first cell):
+ *   jsw-footer-column | title
+ *   jsw-footer-link | label | link
+ *   jsw-footer-social-link | network | link | label (accessible name, optional)
  */
 
 function clean(text) {
@@ -62,21 +64,6 @@ function linkCell(document, field, link, label) {
   return hinted(document, field, p);
 }
 
-// a multifield of links: a list, each entry one link (its text: the label / the network)
-function listCell(document, field, entries) {
-  if (!entries.length) return hinted(document, field);
-  const ul = document.createElement('ul');
-  entries.forEach(({ href, label }) => {
-    const a = document.createElement('a');
-    a.href = rootRelative(href);
-    a.textContent = label;
-    const li = document.createElement('li');
-    li.append(a);
-    ul.append(li);
-  });
-  return hinted(document, field, ul);
-}
-
 // the component id cell that starts a child row
 function idCell(document, id) {
   const cell = document.createElement('div');
@@ -109,19 +96,26 @@ export default {
       [imageCell(document, 'background', background)],
       [hinted(document, 'backgroundVideo')],
     ];
-    // the children: each column (its title, its links / its social icons)
+    // the children, in order: each column (its title), then its links / social links
     src.querySelectorAll(':scope > .column').forEach((column) => {
       const social = column.classList.contains('social');
-      const entries = [...column.querySelectorAll('a[href]')].map((a) => ({
-        href: a.getAttribute('href'),
-        label: clean(social ? a.dataset.network : a.textContent),
-      }));
-      cells.push([
-        idCell(document, 'jsw-footer-column'),
-        textCell(document, 'title', value(column, 'h2')),
-        listCell(document, 'links', social ? [] : entries),
-        listCell(document, 'social', social ? entries : []),
-      ]);
+      cells.push([idCell(document, 'jsw-footer-column'), textCell(document, 'title', value(column, 'h2'))]);
+      column.querySelectorAll('a[href]').forEach((a) => {
+        if (social) {
+          cells.push([
+            idCell(document, 'jsw-footer-social-link'),
+            textCell(document, 'network', clean(a.dataset.network)),
+            linkCell(document, 'link', a, clean(a.getAttribute('href'))),
+            textCell(document, 'label', ''),
+          ]);
+        } else {
+          cells.push([
+            idCell(document, 'jsw-footer-link'),
+            textCell(document, 'label', clean(a.textContent)),
+            linkCell(document, 'link', a, clean(a.getAttribute('href'))),
+          ]);
+        }
+      });
     });
     main.append(WebImporter.Blocks.createBlock(document, { name: 'jsw-footer', cells }));
 

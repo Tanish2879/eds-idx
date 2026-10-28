@@ -184,6 +184,11 @@ main > .section.jsw-footer-container > .jsw-footer-wrapper {
   line-height: 26px;
 }
 
+/* (editor only: links / social links over the column's limit, not shown on the site) */
+.jsw-footer .is-over-limit {
+  opacity: 0.35;
+}
+
 .jsw-footer .jsw-footer-link {
   display: block;
   overflow: hidden;
