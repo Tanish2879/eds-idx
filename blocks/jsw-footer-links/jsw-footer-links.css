@@ -1,0 +1,88 @@
+/* Jsw Footer Links: a column of the JSW footer (its section places it). Values from the
+   design (migration-work/jsw-footer/design-footer.jpg, a 1280 frame): the title 15px uppercase
+   white, the links 12px grey, 26px apart, the first 4px under the title. */
+
+/* in the JSW footer's section (a grid, see jsw-footer.css): from 900px in the first row, beside
+   the JSW Footer block, in the authored order (no effect in a section that isn't a grid) */
+@media (width >= 900px) {
+  .section.jsw-footer-links-container > .jsw-footer-links-wrapper {
+    grid-row: 1;
+  }
+}
+
+.jsw-footer-links {
+  --jfl-text: #fff;
+  --jfl-muted: #a0a0a0;
+
+  min-width: 0;
+  color: var(--jfl-text);
+  font-family: var(--body-font-family);
+}
+
+.jsw-footer-links .jsw-footer-links-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--jfl-text);
+  font-family: var(--body-font-family);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.jsw-footer-links .jsw-footer-links-list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jsw-footer-links .jsw-footer-links-item {
+  min-width: 0;
+  font-size: 12px;
+  line-height: 26px;
+}
+
+.jsw-footer-links .jsw-footer-links-link {
+  display: block;
+  overflow: hidden;
+  color: var(--jfl-muted);
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease-out;
+}
+
+.jsw-footer-links a.jsw-footer-links-link:hover {
+  color: var(--jfl-text);
+}
+
+.jsw-footer-links a.jsw-footer-links-link:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ==== in the JSW footer's Variant B (.jsw-footer-links.variant-b; design-footer-b.jpg) ==== */
+
+/* the title in the extended face, 16px; the links 11px on 21.75px lines */
+.jsw-footer-links.variant-b .jsw-footer-links-title {
+  font-family: 'New Science Extended', new-science-extended, var(--display-font-family);
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.jsw-footer-links.variant-b .jsw-footer-links-list {
+  margin-top: 10px;
+}
+
+.jsw-footer-links.variant-b .jsw-footer-links-item {
+  font-size: 11px;
+  line-height: 21.75px;
+}
+
+.jsw-footer-links.variant-b .jsw-footer-links-link {
+  color: #a9b4b6;
+}

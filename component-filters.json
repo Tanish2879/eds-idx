@@ -30,7 +30,10 @@
       "confirmation",
       "careers-hero",
       "job-board",
-      "careers-perks"
+      "careers-perks",
+      "jsw-footer",
+      "jsw-footer-links",
+      "jsw-footer-social"
     ]
   },
   {
@@ -112,6 +115,18 @@
       "job-board-search",
       "job-board-filters",
       "job-board-job"
+    ]
+  },
+  {
+    "id": "jsw-footer-links",
+    "components": [
+      "jsw-footer-link"
+    ]
+  },
+  {
+    "id": "jsw-footer-social",
+    "components": [
+      "jsw-footer-social-link"
     ]
   },
   {

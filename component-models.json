@@ -1169,6 +1169,224 @@
     ]
   },
   {
+    "id": "jsw-footer-links",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Column title",
+        "description": "E.g. TECHNOLOGY. The column's links are its children (+ adds one).",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer-link",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Link",
+        "description": "A page, a URL or a mailto: address.",
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkText",
+        "label": "Label",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer-social",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Column title",
+        "description": "E.g. CONNECT. The social links are its children (+ adds one).",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer-social-link",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "network",
+        "label": "Network",
+        "description": "Its icon, and the link's name for screen readers.",
+        "value": "facebook",
+        "required": true,
+        "options": [
+          {
+            "name": "Facebook",
+            "value": "facebook"
+          },
+          {
+            "name": "Instagram",
+            "value": "instagram"
+          },
+          {
+            "name": "X",
+            "value": "x"
+          },
+          {
+            "name": "LinkedIn",
+            "value": "linkedin"
+          },
+          {
+            "name": "YouTube",
+            "value": "youtube"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Profile link",
+        "description": "The network's page, e.g. https://www.linkedin.com/company/…",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: the brand, button and columns over the background image. Variant B: one row (brand, button, columns, social squares without their title) on a black-to-teal gradient (no background image).",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Standard",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – Alternate",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logo",
+        "label": "Logo",
+        "description": "The JSW MOTORS wordmark (white, on transparent).",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoAlt",
+        "label": "Logo alt text",
+        "description": "E.g. JSW Motors.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "logoLink",
+        "label": "Logo link",
+        "description": "Where the logo leads, e.g. the home page."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "copyright",
+        "label": "Copyright",
+        "description": "E.g. © 2026 JSW Motors.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "location",
+        "label": "Location",
+        "description": "Beside the copyright, e.g. Mumbai, India.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "The white button under the copyright, e.g. the reservation form."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLinkText",
+        "label": "Button label",
+        "description": "E.g. REGISTER INTEREST (a + follows it).",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "legalLink",
+        "label": "Legal link",
+        "description": "At the bottom left, e.g. the privacy policy."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "legalLinkText",
+        "label": "Legal link label",
+        "description": "E.g. PRIVACY POLICY.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "Variant A: fills the footer behind everything (dark at the top, where the texts sit). Not used by Variant B (its gradient).",
+        "multi": false
+      }
+    ]
+  },
+  {
     "id": "parallax-collage",
     "fields": [
       {

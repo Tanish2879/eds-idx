@@ -1,0 +1,96 @@
+/* Jsw Footer Social: the JSW footer's social column (its section places it). Values from the
+   design (migration-work/jsw-footer/design-footer.jpg, a 1280 frame): the title 15px uppercase
+   white; 15px under it the networks' 36px dark squares (8px corners), 5px apart, a white icon
+   in each. */
+
+/* in the JSW footer's section (a grid, see jsw-footer.css): from 900px in the first row, beside
+   the JSW Footer block, in the authored order (no effect in a section that isn't a grid) */
+@media (width >= 900px) {
+  .section.jsw-footer-social-container > .jsw-footer-social-wrapper {
+    grid-row: 1;
+  }
+}
+
+.jsw-footer-social {
+  --jfs-text: #fff;
+  --jfs-square: #181b1c;
+
+  min-width: 0;
+  color: var(--jfs-text);
+  font-family: var(--body-font-family);
+}
+
+.jsw-footer-social .jsw-footer-social-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--jfs-text);
+  font-family: var(--body-font-family);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.jsw-footer-social .jsw-footer-social-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 15px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jsw-footer-social .jsw-footer-social-link {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: var(--jfs-square);
+  transition: background-color 0.2s ease-out;
+}
+
+.jsw-footer-social a.jsw-footer-social-link:hover {
+  background-color: #2b3032;
+}
+
+.jsw-footer-social a.jsw-footer-social-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.jsw-footer-social .jsw-footer-social-link img {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+
+/* ==== in the JSW footer's Variant B (.jsw-footer-social.variant-b; design-footer-b.jpg) ==== */
+
+/* no visible title (still read out by screen readers); the 36px squares 6px apart, at the top */
+.jsw-footer-social.variant-b .jsw-footer-social-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.jsw-footer-social.variant-b .jsw-footer-social-list {
+  gap: 6px;
+  margin-top: 0;
+}
+
+.jsw-footer-social.variant-b .jsw-footer-social-link {
+  background-color: #191e1e;
+}
+
+.jsw-footer-social.variant-b .jsw-footer-social-link img {
+  width: 16px;
+  height: 16px;
+}
