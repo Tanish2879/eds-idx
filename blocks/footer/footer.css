@@ -18,20 +18,20 @@ footer .footer {
   --footer-minus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 10h14' fill='none' stroke='%23000' stroke-width='1'/%3E%3C/svg%3E");
 }
 
-footer .footer :where(p, ul, form) {
+footer .footer-inner :where(p, ul, form) {
   margin: 0;
 }
 
-footer .footer :where(ul) {
+footer .footer-inner :where(ul) {
   padding: 0;
   list-style: none;
 }
 
-footer .footer :where(li) {
+footer .footer-inner :where(li) {
   line-height: 20px;
 }
 
-footer .footer a:any-link {
+footer .footer-inner a:any-link {
   color: inherit;
   text-decoration: none;
 }

@@ -8,9 +8,13 @@
  *   social     — section with only a <ul> of links (label = network name)
  * Pages pick their footer document with the "footer" metadata (a path), or hide the footer
  * with "off" (e.g. designs that have no footer yet); without it the site default /footer is used.
+ * A footer document built from blocks (the JSW pages' /jsw-footer: a JSW Footer block with its
+ * Footer Links / Footer Social column blocks) is rendered as such: its sections and blocks
+ * decorated and loaded like a fragment's, instead of the flat layout above.
  */
 
-import { getPageMetadata } from '../../scripts/scripts.js';
+import { getPageMetadata, decorateMain } from '../../scripts/scripts.js';
+import { loadSections } from '../../scripts/aem.js';
 
 const DESKTOP = window.matchMedia('(width >= 900px)');
 const FOOTER_OFF = ['off', 'none', 'hidden'];
@@ -151,6 +155,17 @@ export default async function decorate(block) {
   const fragment = await fetchFooter(meta);
   block.textContent = '';
   if (!fragment) return;
+  if (fragment.querySelector(':scope > div > .jsw-footer')) {
+    const main = document.createElement('main');
+    main.append(...fragment.childNodes);
+    // (the footer document's own page metadata is not part of the footer)
+    main.querySelectorAll('.metadata').forEach((table) => table.remove());
+    decorateMain(main);
+    await loadSections(main);
+    block.classList.add('is-blocks');
+    block.append(...main.children);
+    return;
+  }
   footerId += 1;
   const uid = `footer-${footerId}`;
   const sections = [...fragment.children].filter((c) => c.tagName === 'DIV' && c.children.length);
