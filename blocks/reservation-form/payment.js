@@ -38,8 +38,6 @@ function loadCheckout() {
   return checkoutLoading;
 }
 
-/*hello 
-
 // a POST to the payment service, its JSON answer (an error for any non-2xx answer)
 async function call(service, path, body) {
   const res = await fetch(`${service.replace(/\/+$/, '')}${path}`, {
