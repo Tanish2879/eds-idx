@@ -8,9 +8,9 @@
  *   social     — section with only a <ul> of links (label = network name)
  * Pages pick their footer document with the "footer" metadata (a path), or hide the footer
  * with "off" (e.g. designs that have no footer yet); without it the site default /footer is used.
- * A footer document built from blocks (the JSW pages' /jsw-footer: a JSW Footer block with its
- * Footer Links / Footer Social column blocks) is rendered as such: its sections and blocks
- * decorated and loaded like a fragment's, instead of the flat layout above.
+ * A footer document built from blocks (the JSW pages' /jsw-footer: a Jsw Footer block, its
+ * columns and links its children) is rendered as such: its sections and blocks decorated and
+ * loaded like a fragment's, instead of the flat layout above.
  */
 
 import { getPageMetadata, decorateMain } from '../../scripts/scripts.js';

@@ -9,7 +9,53 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Jsw Footer",
-              "model": "jsw-footer"
+              "model": "jsw-footer",
+              "filter": "jsw-footer"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Footer Column",
+      "id": "jsw-footer-column",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Footer Column",
+              "model": "jsw-footer-column"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Footer Link",
+      "id": "jsw-footer-link",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Footer Link",
+              "model": "jsw-footer-link"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Social Link",
+      "id": "jsw-footer-social-link",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Social Link",
+              "model": "jsw-footer-social-link"
             }
           }
         }
@@ -25,7 +71,7 @@
           "valueType": "string",
           "name": "classes",
           "label": "Layout",
-          "description": "Variant A: the brand, button and columns over the background image. Variant B: one row (brand, button, columns, social squares without their title) on a black-to-teal gradient (no background image).",
+          "description": "Variant A: the brand and button at the left, the columns at the right, over the background. Variant B: one row (brand, button, columns; the social squares without their title) on a black-to-teal gradient (no background media).",
           "value": "variant-a",
           "options": [
             {
@@ -81,7 +127,18 @@
           "valueType": "string",
           "name": "location",
           "label": "Location",
-          "description": "Beside the copyright, e.g. Mumbai, India.",
+          "description": "E.g. Mumbai, India.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ctaLabel",
+          "label": "Button label",
+          "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it). Leave empty for no button.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -92,25 +149,14 @@
           "valueType": "string",
           "name": "ctaLink",
           "label": "Button link",
-          "description": "The white button under the copyright, e.g. the reservation form."
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "ctaLinkText",
-          "label": "Button label",
-          "description": "E.g. REGISTER INTEREST (a + follows it).",
-          "value": "",
-          "validation": {
-            "maxLength": 64
-          }
+          "description": "Where the button leads: a page, a URL or a mailto: address. Without a link the button is not shown."
         },
         {
           "component": "aem-content",
           "valueType": "string",
           "name": "legalLink",
           "label": "Legal link",
-          "description": "At the bottom left, e.g. the privacy policy."
+          "description": "E.g. the privacy policy."
         },
         {
           "component": "text",
@@ -124,15 +170,146 @@
           }
         },
         {
+          "component": "select",
+          "valueType": "string",
+          "name": "backgroundMedia",
+          "label": "Background media",
+          "description": "Variant A's background: the image, or the video (playing muted, looping; the image is its poster and stays for visitors who prefer less motion). Not used by Variant B.",
+          "value": "image",
+          "options": [
+            {
+              "name": "Image",
+              "value": "image"
+            },
+            {
+              "name": "Video",
+              "value": "video"
+            }
+          ]
+        },
+        {
           "component": "reference",
           "valueType": "string",
           "name": "background",
           "label": "Background image",
-          "description": "Variant A: fills the footer behind everything (dark at the top, where the texts sit). Not used by Variant B (its gradient).",
+          "description": "Fills the footer behind everything (dark at the top, where the texts sit). With a video: its poster.",
           "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "backgroundVideo",
+          "label": "Background video",
+          "description": "An MP4 (or WebM) video asset, used when the Background media is Video.",
+          "multi": false
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-column",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Column title",
+          "description": "E.g. TECHNOLOGY. Starts a column: the Footer Links and Social Links after it (up to the next column) are its links.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          }
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-link",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Link",
+          "description": "A page, a URL or a mailto: address.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-social-link",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "network",
+          "label": "Network",
+          "description": "Its icon (a square button), and the link's name for screen readers.",
+          "value": "facebook",
+          "required": true,
+          "options": [
+            {
+              "name": "Facebook",
+              "value": "facebook"
+            },
+            {
+              "name": "Instagram",
+              "value": "instagram"
+            },
+            {
+              "name": "X",
+              "value": "x"
+            },
+            {
+              "name": "LinkedIn",
+              "value": "linkedin"
+            },
+            {
+              "name": "YouTube",
+              "value": "youtube"
+            }
+          ]
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Profile link",
+          "description": "The network's page, e.g. https://www.linkedin.com/company/…",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Accessible name",
+          "description": "Optional: what screen readers announce, e.g. JSW Motors on LinkedIn (default: JSW Motors on <network>).",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "jsw-footer",
+      "components": [
+        "jsw-footer-column",
+        "jsw-footer-link",
+        "jsw-footer-social-link"
+      ]
+    }
+  ]
 }

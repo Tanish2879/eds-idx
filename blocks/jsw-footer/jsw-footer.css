@@ -1,54 +1,40 @@
-/* JSW Footer. Values from the design (migration-work/jsw-footer/design-footer.jpg, a 1280 frame):
-   490px tall on the dark background image (the car at the bottom, centred); 32px margins; at the
-   top left the wordmark (164px, its top 29.5px down), the copyright and location (13px, grey),
-   48px below them the white button (204 × 40, 8px corners, its label 13px uppercase and a +);
-   from x 675 three 175px columns 24px apart (Jsw Footer Links / Jsw Footer Social, their own
-   styles); the legal link at the bottom left (10px mono, underlined), 35px above the bottom. In
-   the header's faces (Inter, Roboto Mono).
-   The footer's section is the layout (no block moves into another, so the editor can re-render
-   each in place): a grid, this block at the left, the column blocks at the right in their
-   authored order; the background and the legal link placed against the section's edges.
-   Mobile first: phones stack this block over the columns (two side by side), the car showing
-   under them; from 900px the design's layout. */
+/* JSW Footer: one block, its children (columns, links, social links) inside it. In the header's
+   faces (Inter, Roboto Mono; the Variant B column titles in New Science Extended).
+   Variant A – Standard (the base rules; design-footer.jpg, a 1280 frame): 490px tall on the
+   background media (the car at the bottom, centred); 32px margins; at the top left the wordmark
+   (164px, its top 29.5px down), the copyright and location (13px, grey), 48px below them the
+   white button (204 × 40, 8px corners, its label 13px uppercase and a +); from x 675 the columns,
+   175px wide and 24px apart (the titles 15px uppercase white; the links 12px grey on 26px lines,
+   the first 4px under the title; the social squares 36px, 5px apart, 15px under the title); the
+   legal link at the bottom left (10px mono, underlined), 32px above the bottom.
+   Variant B – Alternate (.variant-b only, after the base rules; design-footer-b.jpg).
+   Mobile first: phones stack the brand over the columns (two side by side); from 900px the
+   designs' layouts. */
 
-.section.jsw-footer-container {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 40px 24px;
-  box-sizing: border-box;
-  min-height: 560px;
-  margin: 0;
-  padding: 32px 20px 240px; /* (phones: the car shows under the texts) */
-  overflow: hidden;
-  isolation: isolate;
-  background-color: #000;
-}
-
-/* (the section's blocks: no page width or padding of their own) */
-.section.jsw-footer-container > div {
-  min-width: 0;
+main > .section.jsw-footer-container > .jsw-footer-wrapper {
   max-width: none;
-  margin: 0;
   padding: 0;
-}
-
-.section.jsw-footer-container > .jsw-footer-wrapper {
-  grid-column: 1 / -1;
 }
 
 .jsw-footer {
   --jf-text: #fff;
   --jf-muted: #a0a0a0;
+  --jf-square: #181b1c;
   --jf-font: var(--body-font-family);
   --jf-mono: var(--mono-font-family);
 
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+  min-height: 560px;
+  padding: 32px 20px 240px; /* (phones: the car shows under the texts) */
+  background-color: #000;
   color: var(--jf-text);
   font-family: var(--jf-font);
 }
 
-/* the background: the image fills the whole footer section, anchored to its bottom (the car) */
+/* the background media: the image or the video fills the footer, anchored to its bottom */
 .jsw-footer .jsw-footer-background {
   position: absolute;
   inset: 0;
@@ -56,15 +42,30 @@
 }
 
 .jsw-footer .jsw-footer-background picture,
-.jsw-footer .jsw-footer-background img {
+.jsw-footer .jsw-footer-background img,
+.jsw-footer .jsw-footer-video {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.jsw-footer .jsw-footer-background img {
+.jsw-footer .jsw-footer-background img,
+.jsw-footer .jsw-footer-video {
   object-fit: cover;
   object-position: 50% 100%;
+}
+
+/* (editor: the video's poster, the background image field, stays editable behind the video) */
+.jsw-footer .jsw-footer-poster {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.jsw-footer .jsw-footer-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
 }
 
 /* the brand: the wordmark, the copyright and location, the button */
@@ -144,11 +145,107 @@
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M4 0v8M0 4h8' stroke='%23111' stroke-width='1.1'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-/* the legal link: at the section's bottom left */
+/* the columns: phones two side by side; each a title, its links, its social squares */
+.jsw-footer .jsw-footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 24px;
+  min-width: 0;
+}
+
+.jsw-footer .jsw-footer-column {
+  flex: 1 1 calc(50% - 12px);
+  min-width: 0;
+}
+
+.jsw-footer .jsw-footer-column-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--jf-text);
+  font-family: var(--jf-font);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.jsw-footer .jsw-footer-link-list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jsw-footer .jsw-footer-link-item {
+  min-width: 0;
+  font-size: 12px;
+  line-height: 26px;
+}
+
+.jsw-footer .jsw-footer-link {
+  display: block;
+  overflow: hidden;
+  color: var(--jf-muted);
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 0.2s ease-out;
+}
+
+.jsw-footer a.jsw-footer-link:hover {
+  color: var(--jf-text);
+}
+
+.jsw-footer a.jsw-footer-link:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.jsw-footer .jsw-footer-social-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 15px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jsw-footer .jsw-footer-social-link {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: var(--jf-square);
+  color: var(--jf-text);
+  font-size: 10px;
+  text-decoration: none;
+  transition: background-color 0.2s ease-out;
+}
+
+.jsw-footer a.jsw-footer-social-link:hover {
+  background-color: #2b3032;
+}
+
+.jsw-footer a.jsw-footer-social-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.jsw-footer .jsw-footer-social-link img {
+  display: block;
+  width: 13px;
+  height: 13px;
+}
+
+/* the legal link: at the bottom left */
 .jsw-footer .jsw-footer-legal {
   position: absolute;
   bottom: 24px;
-  left: 20px; /* (the section's margin) */
+  left: 20px;
   margin: 0;
   font-family: var(--jf-mono);
   font-size: 10px;
@@ -172,22 +269,31 @@
   outline-offset: 2px;
 }
 
-/* from 900px: the design's layout; this block at the left, the three columns from x 675 (175px
-   each, 24px apart) at the right, the legal link 32px above the bottom */
+/* from 900px: the design's layout; the brand at the left, the columns from x 675 (175px each,
+   24px apart) at the right, the legal link 32px above the bottom */
 @media (width >= 900px) {
-  .section.jsw-footer-container {
-    grid-template-columns: minmax(0, 1fr) repeat(3, 175px);
-    gap: 0 24px;
+  .jsw-footer {
     min-height: 490px;
     padding: 26px 32px 72px;
   }
 
-  /* this block in the first column; the column blocks (their own CSS puts them in this row) fill
-     the next ones, in their order */
-  .section.jsw-footer-container > .jsw-footer-wrapper {
-    grid-column: 1;
-    grid-row: 1;
+  .jsw-footer .jsw-footer-inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 0 24px;
+  }
+
+  .jsw-footer .jsw-footer-brand {
     padding-top: 3.5px; /* (the wordmark's top at 29.5px) */
+  }
+
+  .jsw-footer .jsw-footer-columns {
+    flex-wrap: nowrap;
+    gap: 24px;
+  }
+
+  .jsw-footer .jsw-footer-column {
+    flex: 0 0 175px;
   }
 
   .jsw-footer .jsw-footer-legal {
@@ -198,13 +304,13 @@
 
 /* ==== Variant B – Alternate (.jsw-footer.variant-b; design-footer-b.jpg, a 1280 frame) ==== */
 
-/* one row, 321px tall on a black-to-teal gradient (no image): from 36px down, the brand at x 36
+/* one row, 321px tall on a black-to-teal gradient (no media): from 36px down, the brand at x 36
    (the wordmark 145px, the copyright and location 11.5px on 22px lines, the legal link 12px
-   underlined), the white button (235 × 36) from x 507, the column blocks from x 909 (EXPLORE)
-   and x 1055 (the social squares, ending 64px from the right); the gaps in proportion to the
-   width. Phones stack the brand and the button over the columns. Everything below requires the
-   variant-b class (the footer section: the one holding a Variant B footer). */
-.section.jsw-footer-container:has(> .jsw-footer-wrapper > .jsw-footer.variant-b) {
+   underlined), the white button (235 × 36) from x 507, the columns from x 909 (146px each: the
+   title in the extended face 16px, the links 11px on 21.75px lines) and the social squares
+   (36px, 6px apart, no visible title) ending 64px from the right; the brand and button columns
+   in proportion to the width. Phones stack the brand and the button over the columns. */
+.jsw-footer.variant-b {
   min-height: 0;
   padding: 32px 20px 56px;
   background:
@@ -222,10 +328,7 @@
     );
 }
 
-.jsw-footer.variant-b {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.jsw-footer.variant-b .jsw-footer-inner {
   gap: 32px;
 }
 
@@ -275,29 +378,86 @@
   height: 9px;
 }
 
+.jsw-footer.variant-b .jsw-footer-column-title {
+  font-family: 'New Science Extended', new-science-extended, var(--display-font-family);
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.jsw-footer.variant-b .jsw-footer-link-list {
+  margin-top: 10px;
+}
+
+.jsw-footer.variant-b .jsw-footer-link-item {
+  font-size: 11px;
+  line-height: 21.75px;
+}
+
+.jsw-footer.variant-b .jsw-footer-link {
+  color: #a9b4b6;
+}
+
+/* the social column: its title only read out by screen readers, the squares at the top */
+.jsw-footer.variant-b .jsw-footer-column.is-social .jsw-footer-column-head {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.jsw-footer.variant-b .jsw-footer-social-list {
+  gap: 6px;
+  margin-top: 0;
+}
+
+.jsw-footer.variant-b .jsw-footer-social-link {
+  background-color: #191e1e;
+}
+
+.jsw-footer.variant-b .jsw-footer-social-link img {
+  width: 16px;
+  height: 16px;
+}
+
 @media (width >= 900px) {
-  .section.jsw-footer-container:has(> .jsw-footer-wrapper > .jsw-footer.variant-b) {
-    grid-template-columns: minmax(0, 471fr) minmax(0, 402fr) minmax(0, 146fr) auto;
-    gap: 0;
+  .jsw-footer.variant-b {
     min-height: 321px;
     padding: 36px 64px 32px 36px;
   }
 
-  /* the footer block across the first two columns (the brand, the button), the column blocks in
-     the next ones */
-  .section.jsw-footer-container > .jsw-footer-wrapper:has(> .jsw-footer.variant-b) {
-    grid-column: 1 / span 2;
-    padding-top: 0;
-  }
-
-  .jsw-footer.variant-b {
-    display: grid;
-    grid-template-columns: minmax(0, 471fr) minmax(0, 402fr);
-    align-items: start;
+  /* the brand, the button (from x 507 at 1280: their columns in proportion), the columns */
+  .jsw-footer.variant-b .jsw-footer-inner {
+    grid-template-columns: minmax(0, 471fr) minmax(0, 402fr) auto;
     gap: 0;
   }
 
   .jsw-footer.variant-b .jsw-footer-brand {
     padding-top: 2.5px; /* (the wordmark's top at 38.5px) */
+  }
+
+  .jsw-footer.variant-b .jsw-footer-columns {
+    gap: 0;
+  }
+
+  /* a column: as wide as its content and 24px, at least 146px (the design's EXPLORE: its title,
+     then the space before the social squares), so a longer title (TECHNOLOGY) is never cut */
+  .jsw-footer.variant-b .jsw-footer-column {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    min-width: 146px;
+    padding-right: 24px;
+  }
+
+  .jsw-footer.variant-b .jsw-footer-column-title {
+    overflow: visible;
+  }
+
+  .jsw-footer.variant-b .jsw-footer-column.is-social {
+    flex: none;
+    min-width: 0;
+    padding-right: 0;
   }
 }

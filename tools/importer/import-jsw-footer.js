@@ -3,15 +3,18 @@
 
 /**
  * Importer for the JSW pages' footer document /jsw-footer (source: drafts/jsw-footer/source.html).
- * One section: the jsw-footer block, then one jsw-footer-links block per link column and the
- * jsw-footer-social block (each a parent with its links as children), + page metadata (no header,
- * no footer). Writes ONLY /jsw-footer — no other page is created or modified.
+ * One block, jsw-footer, holding everything: its properties, then its children (columns and their
+ * links, social links), + page metadata (no header, no footer). Writes ONLY /jsw-footer — no
+ * other page is created or modified.
  *
  * jsw-footer rows (every property in its own cell): 1. logo (+ logoAlt)   2. logoLink
- *   3. copyright   4. location   5. ctaLink (+ ctaLinkText)   6. legalLink (+ legalLinkText)
- *   7. background
- * jsw-footer-links rows: 1. title; then per link: link (+ linkText)
- * jsw-footer-social rows: 1. title; then per network: network | link
+ *   3. copyright   4. location   5. ctaLabel   6. ctaLink   7. legalLink (+ legalLinkText)
+ *   8. backgroundMedia (image / video)   9. background (image)   10. backgroundVideo
+ * then the children, each row starting with its component id (the block allows several child
+ * types: the content upload picks the child's model by that first cell):
+ *   jsw-footer-column | title
+ *   jsw-footer-link | label | link
+ *   jsw-footer-social-link | network | link | label (accessible name, optional)
  */
 
 function clean(text) {
@@ -61,6 +64,13 @@ function linkCell(document, field, link, label) {
   return hinted(document, field, p);
 }
 
+// the component id cell that starts a child row
+function idCell(document, id) {
+  const cell = document.createElement('div');
+  cell.textContent = id;
+  return cell;
+}
+
 export default {
   transform: (payload) => {
     const { document } = payload;
@@ -71,32 +81,43 @@ export default {
     const logoLink = src.querySelector(':scope > a.logo-link');
     const cta = src.querySelector(':scope > a.cta');
     const legal = src.querySelector(':scope > a.legal');
-    main.append(WebImporter.Blocks.createBlock(document, {
-      name: 'jsw-footer',
-      cells: [
-        [imageCell(document, 'logo', src.querySelector(':scope > img.logo'))],
-        [linkCell(document, 'logoLink', logoLink, clean(logoLink?.getAttribute('href')))],
-        [textCell(document, 'copyright', value(src, ':scope > .copyright'))],
-        [textCell(document, 'location', value(src, ':scope > .location'))],
-        [linkCell(document, 'ctaLink', cta, clean(cta?.textContent))],
-        [linkCell(document, 'legalLink', legal, clean(legal?.textContent))],
-        [imageCell(document, 'background', src.querySelector(':scope > img.background'))],
-      ],
-    }));
-
+    const background = src.querySelector(':scope > img.background');
+    const cells = [
+      [imageCell(document, 'logo', src.querySelector(':scope > img.logo'))],
+      [linkCell(document, 'logoLink', logoLink, clean(logoLink?.getAttribute('href')))],
+      [textCell(document, 'copyright', value(src, ':scope > .copyright'))],
+      [textCell(document, 'location', value(src, ':scope > .location'))],
+      // the button: its label and its link, two properties
+      [textCell(document, 'ctaLabel', clean(cta?.textContent))],
+      [linkCell(document, 'ctaLink', cta, clean(cta?.getAttribute('href')))],
+      [linkCell(document, 'legalLink', legal, clean(legal?.textContent))],
+      // the background media: the image (the video field left for the authors)
+      [textCell(document, 'backgroundMedia', clean(background?.dataset.type) || 'image')],
+      [imageCell(document, 'background', background)],
+      [hinted(document, 'backgroundVideo')],
+    ];
+    // the children, in order: each column (its title), then its links / social links
     src.querySelectorAll(':scope > .column').forEach((column) => {
       const social = column.classList.contains('social');
-      const cells = [[textCell(document, 'title', value(column, 'h2'))]];
+      cells.push([idCell(document, 'jsw-footer-column'), textCell(document, 'title', value(column, 'h2'))]);
       column.querySelectorAll('a[href]').forEach((a) => {
         if (social) {
           cells.push([
+            idCell(document, 'jsw-footer-social-link'),
             textCell(document, 'network', clean(a.dataset.network)),
             linkCell(document, 'link', a, clean(a.getAttribute('href'))),
+            textCell(document, 'label', ''),
           ]);
-        } else cells.push([linkCell(document, 'link', a, clean(a.textContent))]);
+        } else {
+          cells.push([
+            idCell(document, 'jsw-footer-link'),
+            textCell(document, 'label', clean(a.textContent)),
+            linkCell(document, 'link', a, clean(a.getAttribute('href'))),
+          ]);
+        }
       });
-      main.append(WebImporter.Blocks.createBlock(document, { name: social ? 'jsw-footer-social' : 'jsw-footer-links', cells }));
     });
+    main.append(WebImporter.Blocks.createBlock(document, { name: 'jsw-footer', cells }));
 
     main.append(WebImporter.Blocks.getMetadataBlock(document, {
       Title: clean(document.title),
@@ -109,7 +130,7 @@ export default {
     return [{
       element: document.body,
       path: '/jsw-footer',
-      report: { title: document.title, template: 'jsw-footer', blocks: ['jsw-footer', 'jsw-footer-links', 'jsw-footer-social'] },
+      report: { title: document.title, template: 'jsw-footer', blocks: ['jsw-footer'] },
     }];
   },
 };
