@@ -3,29 +3,38 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 
 /*
  * JSW Footer: the JSW pages' footer (in the footer document, e.g. /jsw-footer, that pages pick
- * with their "footer" metadata). On its background image: at the top left the wordmark, the
- * copyright and location, the white button; at the top right the link columns; at the bottom left
- * the legal link. The columns are their own blocks in the same section (Jsw Footer Links: a title
- * and its links; Jsw Footer Social: a title and its networks), each a parent with its links as
- * children. The section lays them out (see the CSS: this block at the left, the columns at the
- * right in their order, the background and the legal link against the section's edges), so no
- * block is moved: the editor can re-render any of them in place.
- * Two layouts (the author's Layout choice, delivered as the block's class; default A):
- *   variant-a  Standard: the brand, copyright and location with the button under them, the columns
- *              at the right, the legal link at the bottom left, over the background image
- *   variant-b  Alternate: one row on a black-to-teal gradient: the brand with the copyright, the
- *              location and the legal link under it; the button; the columns (the social squares
- *              without their title). The background image isn't used.
- * The column blocks of the section follow this block's layout (they get the same class; each
- * also reads it when it is rendered on its own, e.g. by the editor).
+ * with their "footer" metadata). One block holds everything: its own properties, then its
+ * children (one level, each its own node in the editor's content tree):
+ *   Footer Column (1 cell): title; starts a column, the links after it (up to the next column)
+ *                           are its links
+ *   Footer Link (2 cells): label | link
+ *   Social Link (3 cells): network (facebook, instagram, x, linkedin, youtube: its icon,
+ *                          icons/jsw-social-<network>.svg) | link | accessible name (optional)
+ *   (as imported, each child row starts with its component id; AEM renders them without it, told
+ *   apart by their cell count)
+ * Two layouts (the author's Layout, delivered as the block's class; default A):
+ *   variant-a  Standard: the wordmark, copyright and location with the button under them at the
+ *              left, the columns at the right, the legal link at the bottom left, over the
+ *              background media (an image, or a video with the image as its poster)
+ *   variant-b  Alternate: one row on a black-to-teal gradient: the wordmark, copyright, location
+ *              and legal link; the button; the columns (a social column's title only read out)
  * Rows (every property in its own cell, read by position; the Layout is the block's class):
- *   1. logo (+ alt)   2. logo link   3. copyright   4. location   5. button link (+ label)
- *   6. legal link (+ label)   7. background image
+ *   1. logo (+ alt)   2. logo link   3. copyright   4. location   5. button label   6. button link
+ *   7. legal link (+ label)   8. background media (image / video)   9. background image
+ *   10. background video
  */
 
-const IMAGE_FILE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
+const BLOCK_ROWS = 10;
 const VARIANTS = ['variant-a', 'variant-b'];
-const COLUMN_BLOCKS = '.jsw-footer-links, .jsw-footer-social';
+const ITEM_KINDS = {
+  'jsw-footer-column': 'column', 'jsw-footer-link': 'link', 'jsw-footer-social-link': 'social',
+};
+const KIND_BY_CELLS = { 1: 'column', 2: 'link', 3: 'social' };
+const NETWORKS = {
+  facebook: 'Facebook', instagram: 'Instagram', x: 'X', linkedin: 'LinkedIn', youtube: 'YouTube',
+};
+const IMAGE_FILE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
+const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -38,96 +47,233 @@ function el(tag, attrs = {}, ...children) {
 
 const text = (cell) => (cell?.textContent || '').trim();
 
-/*
- * The image of a row: an <img>, or a link to an image file (AEM delivers an image it can't
- * resolve as a link; placeholders under /drafts/ then come from this repository).
- */
-function rowImage(row) {
-  const img = row?.querySelector('img');
-  if (img) return { src: img.src, alt: img.alt, source: img };
-  const link = [...(row?.querySelectorAll('a[href]') || [])]
-    .find((a) => IMAGE_FILE.test(new URL(a.href, window.location).pathname));
-  if (!link) return null;
-  const { pathname } = new URL(link.href, window.location);
+// an asset's address: placeholders under /drafts/ come from this repository (on the code host;
+// in the editor the page itself comes from AEM author)
+function assetSrc(href) {
+  const { pathname } = new URL(href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  const label = link.textContent.trim();
-  return {
-    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
-    alt: label && !label.includes('/') ? label : '',
-    source: link,
-  };
+  return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : href;
 }
 
-// a link row: its href and label (the label from the link's text, unless that is only the URL)
-function rowLink(row) {
-  const a = row?.querySelector('a[href]');
+/*
+ * The asset of a cell: an <img>, or a link to a file of that kind (AEM delivers an asset it
+ * can't resolve, or a video, as a plain link).
+ */
+function cellAsset(cell, kind = 'image') {
+  const img = kind === 'image' ? cell?.querySelector('img') : null;
+  if (img) return { src: img.src, alt: img.alt, source: img };
+  const pattern = kind === 'image' ? IMAGE_FILE : VIDEO_FILE;
+  const link = [...(cell?.querySelectorAll('a[href]') || [])]
+    .find((a) => pattern.test(new URL(a.href, window.location).pathname));
+  if (!link) return null;
+  const label = link.textContent.trim();
+  return { src: assetSrc(link.href), alt: label && !label.includes('/') ? label : '', source: link };
+}
+
+// a link cell: its href and label (the label from the link's text, unless that is only the URL)
+function cellLink(cell) {
+  const a = cell?.querySelector('a[href]');
   if (!a) return null;
   const href = a.getAttribute('href');
   const label = text(a);
   return { href, label: label && label !== href ? label : '', source: a };
 }
 
-// authoring: an editable field of the block (resource inherited)
+// authoring: an editable field of the block or of the child it sits in (resource inherited)
 function editable(node, prop, type, label) {
   if (node) Object.assign(node.dataset, { aueProp: prop, aueType: type, aueLabel: label });
 }
 
+// the rows: the block's own properties, then its children (by their kind)
+function readRows(block) {
+  const rows = [...block.children];
+  const first = rows.findIndex((row) => ITEM_KINDS[text(row.firstElementChild)]);
+  const start = first >= 0 && first < BLOCK_ROWS ? first : BLOCK_ROWS;
+  const items = rows.slice(start).map((row) => {
+    let kind = ITEM_KINDS[text(row.firstElementChild)];
+    if (kind) row.firstElementChild.remove();
+    else kind = KIND_BY_CELLS[row.children.length] || 'link';
+    return { kind, row };
+  });
+  return { props: rows.slice(0, start), items };
+}
+
+// the background: the image, or the video with the image as its poster
+function buildBackground(typeRow, imageRow, videoRow, authoring) {
+  const image = cellAsset(imageRow, 'image');
+  const video = text(typeRow).toLowerCase() === 'video' ? cellAsset(videoRow, 'video') : null;
+  if (!image && !video) return null;
+  const bg = el('div', { class: 'jsw-footer-background', 'aria-hidden': 'true' });
+  if (video) {
+    const type = /\.webm$/i.test(video.src) ? 'video/webm' : 'video/mp4';
+    const player = el('video', {
+      class: 'jsw-footer-video', muted: true, loop: true, playsinline: true, preload: 'metadata', poster: image?.src,
+    }, el('source', { src: video.src, type }));
+    player.muted = true;
+    moveInstrumentation(video.source, player);
+    if (authoring) editable(player, 'backgroundVideo', 'media', 'Background video');
+    // (playing by itself, unless the visitor prefers less motion: then the poster stays)
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      player.autoplay = true;
+      player.play?.()?.catch?.(() => {});
+    }
+    bg.append(player);
+    if (image && authoring) {
+      // (in the editor the poster stays editable: the background image field, hidden behind)
+      const poster = el('img', { class: 'jsw-footer-poster', src: image.src, alt: '' });
+      moveInstrumentation(image.source, poster);
+      editable(poster, 'background', 'media', 'Background image (the video\'s poster)');
+      bg.append(poster);
+    }
+    return bg;
+  }
+  const pic = createOptimizedPicture(image.src, '', false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
+  const img = pic.querySelector('img');
+  moveInstrumentation(image.source, img);
+  if (authoring) editable(img, 'background', 'media', 'Background image');
+  bg.append(pic);
+  return bg;
+}
+
+// a Social Link child: its square button (the network's icon)
+function buildSocial(row, item, authoring) {
+  const [networkCell, linkCell, labelCell] = [...row.children];
+  const network = text(networkCell).toLowerCase();
+  const name = NETWORKS[network] || network;
+  const link = cellLink(linkCell);
+  const href = link?.href || text(linkCell);
+  const external = /^https?:/i.test(href || '')
+    && new URL(href, window.location).origin !== window.location.origin;
+  const accessible = text(labelCell) || `JSW Motors on ${name}`;
+  if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Social: ${name}`;
+  const icon = NETWORKS[network]
+    ? el('img', {
+      src: `${window.hlx?.codeBasePath || ''}/icons/jsw-social-${network}.svg`, alt: '', width: 13, height: 13, loading: 'lazy',
+    })
+    : el('span', { class: 'jsw-footer-social-name' }, name);
+  const a = href
+    ? el('a', {
+      class: 'jsw-footer-social-link',
+      href,
+      'aria-label': external ? `${accessible} (opens in a new tab)` : accessible,
+      target: external ? '_blank' : undefined,
+      rel: external ? 'noopener' : undefined,
+    }, icon)
+    : el('span', { class: 'jsw-footer-social-link', 'aria-label': accessible }, icon);
+  if (link) moveInstrumentation(link.source, a);
+  return a;
+}
+
+// a Footer Link child: its label as the link's text
+function buildLink(row, item, authoring) {
+  const [labelCell, linkCell] = [...row.children];
+  const label = text(labelCell);
+  const link = cellLink(linkCell);
+  if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Link: ${label || 'Untitled'}`;
+  const a = link
+    ? el('a', { class: 'jsw-footer-link', href: link.href }, label || link.label || link.href)
+    : el('span', { class: 'jsw-footer-link' }, label);
+  if (link) moveInstrumentation(link.source, a);
+  if (authoring) editable(a, 'label', 'text', 'Label');
+  return a;
+}
+
+/*
+ * The children as columns, in their order: a Footer Column starts one (its head: the column's
+ * own node, the title), its Footer Links / Social Links follow it. In the page each child keeps
+ * its own node, side by side (a column's links are not inside its node), so the content tree shows
+ * them all directly under the footer, as they are stored.
+ */
+function buildColumns(items, authoring) {
+  const columns = [];
+  let current = null;
+  const open = () => {
+    if (!current) {
+      current = { node: el('div', { class: 'jsw-footer-column' }), links: null, social: null };
+      columns.push(current);
+    }
+    return current;
+  };
+  items.forEach(({ kind, row }) => {
+    if (kind === 'column') {
+      current = null;
+      const col = open();
+      const head = el('div', { class: 'jsw-footer-column-head' });
+      moveInstrumentation(row, head);
+      const title = text(row);
+      if (authoring && head.dataset.aueResource) head.dataset.aueLabel = `Column: ${title || 'Untitled'}`;
+      const heading = el('h2', { class: 'jsw-footer-column-title' }, title);
+      if (authoring) editable(heading, 'title', 'text', 'Column title');
+      head.append(heading);
+      col.node.append(head);
+      return;
+    }
+    const col = open();
+    const social = kind === 'social';
+    const item = el('li', { class: social ? 'jsw-footer-social-item' : 'jsw-footer-link-item' });
+    moveInstrumentation(row, item);
+    item.append(social ? buildSocial(row, item, authoring) : buildLink(row, item, authoring));
+    const listKey = social ? 'social' : 'links';
+    if (!col[listKey]) {
+      col[listKey] = el('ul', { class: social ? 'jsw-footer-social-list' : 'jsw-footer-link-list' });
+      col.node.append(col[listKey]);
+      if (social) col.node.classList.add('is-social');
+    }
+    col[listKey].append(item);
+  });
+  return columns.map((c) => c.node);
+}
+
 export default function decorate(block) {
   const authoring = isAuthoring();
-  // the layout (default: Variant A); the section's column blocks follow it
+  // the layout (default: Variant A)
   const variant = VARIANTS.find((v) => block.classList.contains(v)) || VARIANTS[0];
   VARIANTS.forEach((v) => block.classList.toggle(v, v === variant));
-  block.closest('.section')?.querySelectorAll(COLUMN_BLOCKS).forEach((column) => {
-    VARIANTS.forEach((v) => column.classList.toggle(v, v === variant));
-  });
   const alternate = variant === 'variant-b';
-  const [logoRow, logoLinkRow, copyrightRow, locationRow, ctaRow, legalRow, backgroundRow] = [
-    ...block.children];
+  const { props, items } = readRows(block);
+  const [logoRow, logoLinkRow, copyrightRow, locationRow, ctaLabelRow, ctaLinkRow, legalRow,
+    typeRow, imageRow, videoRow] = props;
 
-  // the background (decorative; Variant A only: B has its gradient)
-  const background = alternate ? null : rowImage(backgroundRow);
-  let bg = null;
-  if (background) {
-    const pic = createOptimizedPicture(background.src, '', false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
-    const img = pic.querySelector('img');
-    moveInstrumentation(background.source, img);
-    if (authoring) editable(img, 'background', 'media', 'Background image');
-    bg = el('div', { class: 'jsw-footer-background' }, pic);
-  }
+  // the background media (Variant A; B has its gradient)
+  const bg = alternate ? null : buildBackground(typeRow, imageRow, videoRow, authoring);
 
-  // the brand: the wordmark (a link), the copyright and location (A: the button under them)
+  // the brand: the wordmark (a link), the copyright and location
   const brand = el('div', { class: 'jsw-footer-brand' });
-  const logo = rowImage(logoRow);
+  const logo = cellAsset(logoRow, 'image');
   if (logo) {
-    const svgOrPng = /\.(svg|png)$/i.test(new URL(logo.src, window.location).pathname);
-    const img = svgOrPng
+    const vector = /\.(svg|png)$/i.test(new URL(logo.src, window.location).pathname);
+    const img = vector
       ? el('img', {
         src: logo.src, alt: logo.alt || text(logoRow) || 'JSW Motors', width: alternate ? 145 : 164, height: alternate ? 9 : 11, loading: 'lazy',
       })
       : createOptimizedPicture(logo.src, logo.alt || 'JSW Motors', false, [{ width: '400' }]).querySelector('img');
     moveInstrumentation(logo.source, img);
     if (authoring) editable(img, 'logo', 'media', 'Logo');
-    const home = rowLink(logoLinkRow);
+    const home = cellLink(logoLinkRow);
+    const media = img.closest('picture') || img;
     brand.append(home
-      ? el('a', { class: 'jsw-footer-logo', href: home.href }, img.closest('picture') || img)
-      : el('span', { class: 'jsw-footer-logo' }, img.closest('picture') || img));
+      ? el('a', { class: 'jsw-footer-logo', href: home.href }, media)
+      : el('span', { class: 'jsw-footer-logo' }, media));
   }
   const copyright = text(copyrightRow) ? el('span', { class: 'jsw-footer-copyright' }, text(copyrightRow)) : null;
   if (authoring) editable(copyright, 'copyright', 'text', 'Copyright');
   const location = text(locationRow) ? el('span', { class: 'jsw-footer-location' }, text(locationRow)) : null;
   if (authoring) editable(location, 'location', 'text', 'Location');
   if (copyright || location) brand.append(el('p', { class: 'jsw-footer-meta' }, copyright || '', location || ''));
-  const cta = rowLink(ctaRow);
+
+  // the button: its label and its link, two fields (shown with its link)
+  const ctaLabel = text(ctaLabelRow);
+  const ctaLink = cellLink(ctaLinkRow) || (text(ctaLinkRow) ? { href: text(ctaLinkRow) } : null);
   let button = null;
-  if (cta) {
-    const label = el('span', { class: 'jsw-footer-cta-label' }, cta.label || 'Register interest');
-    if (authoring) editable(label, 'ctaLinkText', 'text', 'Button label');
-    button = el('a', { class: 'jsw-footer-cta', href: cta.href }, label, el('span', { class: 'jsw-footer-cta-icon', 'aria-hidden': 'true' }));
-    moveInstrumentation(cta.source, button);
+  if (ctaLink) {
+    const label = el('span', { class: 'jsw-footer-cta-label' }, ctaLabel || ctaLink.label || 'Register interest');
+    if (authoring) editable(label, 'ctaLabel', 'text', 'Button label');
+    button = el('a', { class: 'jsw-footer-cta', href: ctaLink.href }, label, el('span', { class: 'jsw-footer-cta-icon', 'aria-hidden': 'true' }));
+    if (ctaLink.source) moveInstrumentation(ctaLink.source, button);
   }
 
   // the legal link
-  const legal = rowLink(legalRow);
+  const legal = cellLink(legalRow);
   let legalEl = null;
   if (legal) {
     const a = el('a', { class: 'jsw-footer-legal-link', href: legal.href }, legal.label || 'Privacy policy');
@@ -136,14 +282,18 @@ export default function decorate(block) {
     legalEl = el('p', { class: 'jsw-footer-legal' }, a);
   }
 
+  // the columns: the footer's children
+  const nav = el('nav', { class: 'jsw-footer-columns', 'aria-label': 'Footer' }, ...buildColumns(items, authoring));
+
+  let inner;
   if (alternate) {
-    // B: the brand with the legal link under it; the button in its own column
+    // B: the brand with the legal link under it; the button in its own column; the columns
     if (legalEl) brand.append(legalEl);
-    const action = el('div', { class: 'jsw-footer-action' }, button || '');
-    block.replaceChildren(brand, action);
+    inner = el('div', { class: 'jsw-footer-inner' }, brand, el('div', { class: 'jsw-footer-action' }, button || ''), nav);
   } else {
-    // A: the button under the brand; the legal link at the section's bottom left
+    // A: the button under the brand; the columns; the legal link at the bottom left
     if (button) brand.append(button);
-    block.replaceChildren(...[bg, brand, legalEl].filter(Boolean));
+    inner = el('div', { class: 'jsw-footer-inner' }, brand, nav, legalEl || '');
   }
+  block.replaceChildren(...[bg, inner].filter(Boolean));
 }

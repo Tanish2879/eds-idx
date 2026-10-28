@@ -63,6 +63,11 @@ var CustomImportScript = (() => {
     p.append(a);
     return hinted(document, field, p);
   }
+  function idCell(document, id) {
+    const cell = document.createElement("div");
+    cell.textContent = id;
+    return cell;
+  }
   var import_jsw_footer_default = {
     transform: (payload) => {
       var _a, _b;
@@ -76,31 +81,42 @@ var CustomImportScript = (() => {
       const logoLink = src.querySelector(":scope > a.logo-link");
       const cta = src.querySelector(":scope > a.cta");
       const legal = src.querySelector(":scope > a.legal");
-      main.append(WebImporter.Blocks.createBlock(document, {
-        name: "jsw-footer",
-        cells: [
-          [imageCell(document, "logo", src.querySelector(":scope > img.logo"))],
-          [linkCell(document, "logoLink", logoLink, clean(logoLink == null ? void 0 : logoLink.getAttribute("href")))],
-          [textCell(document, "copyright", value(src, ":scope > .copyright"))],
-          [textCell(document, "location", value(src, ":scope > .location"))],
-          [linkCell(document, "ctaLink", cta, clean(cta == null ? void 0 : cta.textContent))],
-          [linkCell(document, "legalLink", legal, clean(legal == null ? void 0 : legal.textContent))],
-          [imageCell(document, "background", src.querySelector(":scope > img.background"))]
-        ]
-      }));
+      const background = src.querySelector(":scope > img.background");
+      const cells = [
+        [imageCell(document, "logo", src.querySelector(":scope > img.logo"))],
+        [linkCell(document, "logoLink", logoLink, clean(logoLink == null ? void 0 : logoLink.getAttribute("href")))],
+        [textCell(document, "copyright", value(src, ":scope > .copyright"))],
+        [textCell(document, "location", value(src, ":scope > .location"))],
+        // the button: its label and its link, two properties
+        [textCell(document, "ctaLabel", clean(cta == null ? void 0 : cta.textContent))],
+        [linkCell(document, "ctaLink", cta, clean(cta == null ? void 0 : cta.getAttribute("href")))],
+        [linkCell(document, "legalLink", legal, clean(legal == null ? void 0 : legal.textContent))],
+        // the background media: the image (the video field left for the authors)
+        [textCell(document, "backgroundMedia", clean(background == null ? void 0 : background.dataset.type) || "image")],
+        [imageCell(document, "background", background)],
+        [hinted(document, "backgroundVideo")]
+      ];
       src.querySelectorAll(":scope > .column").forEach((column) => {
         const social = column.classList.contains("social");
-        const cells = [[textCell(document, "title", value(column, "h2"))]];
+        cells.push([idCell(document, "jsw-footer-column"), textCell(document, "title", value(column, "h2"))]);
         column.querySelectorAll("a[href]").forEach((a) => {
           if (social) {
             cells.push([
+              idCell(document, "jsw-footer-social-link"),
               textCell(document, "network", clean(a.dataset.network)),
+              linkCell(document, "link", a, clean(a.getAttribute("href"))),
+              textCell(document, "label", "")
+            ]);
+          } else {
+            cells.push([
+              idCell(document, "jsw-footer-link"),
+              textCell(document, "label", clean(a.textContent)),
               linkCell(document, "link", a, clean(a.getAttribute("href")))
             ]);
-          } else cells.push([linkCell(document, "link", a, clean(a.textContent))]);
+          }
         });
-        main.append(WebImporter.Blocks.createBlock(document, { name: social ? "jsw-footer-social" : "jsw-footer-links", cells }));
       });
+      main.append(WebImporter.Blocks.createBlock(document, { name: "jsw-footer", cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
         nav: clean((_a = document.querySelector('meta[name="nav"]')) == null ? void 0 : _a.getAttribute("content")),
@@ -111,7 +127,7 @@ var CustomImportScript = (() => {
       return [{
         element: document.body,
         path: "/jsw-footer",
-        report: { title: document.title, template: "jsw-footer", blocks: ["jsw-footer", "jsw-footer-links", "jsw-footer-social"] }
+        report: { title: document.title, template: "jsw-footer", blocks: ["jsw-footer"] }
       }];
     }
   };

@@ -31,9 +31,7 @@
       "careers-hero",
       "job-board",
       "careers-perks",
-      "jsw-footer",
-      "jsw-footer-links",
-      "jsw-footer-social"
+      "jsw-footer"
     ]
   },
   {
@@ -118,14 +116,10 @@
     ]
   },
   {
-    "id": "jsw-footer-links",
+    "id": "jsw-footer",
     "components": [
-      "jsw-footer-link"
-    ]
-  },
-  {
-    "id": "jsw-footer-social",
-    "components": [
+      "jsw-footer-column",
+      "jsw-footer-link",
       "jsw-footer-social-link"
     ]
   },
