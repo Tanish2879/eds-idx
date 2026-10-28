@@ -4,14 +4,15 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 /*
  * JSW Footer: the JSW pages' footer (in the footer document, e.g. /jsw-footer, that pages pick
  * with their "footer" metadata). One block holds everything: its own properties, then its
- * children (one level, each its own node in the editor's content tree):
- *   Footer Column (1 cell): title; starts a column, the links after it (up to the next column)
- *                           are its links
- *   Footer Link (2 cells): label | link
- *   Social Link (3 cells): network (facebook, instagram, x, linkedin, youtube: its icon,
- *                          icons/jsw-social-<network>.svg) | link | accessible name (optional)
- *   (as imported, each child row starts with its component id; AEM renders them without it, told
- *   apart by their cell count)
+ * children, the Footer Columns (one level, each its own node in the editor's content tree, with
+ * everything it shows inside it):
+ *   Footer Column (3 cells): title | links (a multifield: link + label each, delivered as a list
+ *                            of links) | social icons (a multifield: profile link + network each;
+ *                            the network, the link's text, picks the icon
+ *                            icons/jsw-social-<network>.svg)
+ *   (as imported, each child row starts with its component id; AEM renders them without it)
+ * A column shows its first MAX_ITEMS links and its first MAX_ITEMS social icons (the rest are
+ * not rendered).
  * Two layouts (the author's Layout, delivered as the block's class; default A):
  *   variant-a  Standard: the wordmark, copyright and location with the button under them at the
  *              left, the columns at the right, the legal link at the bottom left, over the
@@ -25,13 +26,21 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  */
 
 const BLOCK_ROWS = 10;
+const MAX_ITEMS = 4;
 const VARIANTS = ['variant-a', 'variant-b'];
-const ITEM_KINDS = {
-  'jsw-footer-column': 'column', 'jsw-footer-link': 'link', 'jsw-footer-social-link': 'social',
-};
-const KIND_BY_CELLS = { 1: 'column', 2: 'link', 3: 'social' };
+const COLUMN_ID = 'jsw-footer-column';
 const NETWORKS = {
   facebook: 'Facebook', instagram: 'Instagram', x: 'X', linkedin: 'LinkedIn', youtube: 'YouTube',
+};
+// (a social icon without a known network: told by its link's site)
+const NETWORK_HOSTS = {
+  'facebook.com': 'facebook',
+  'instagram.com': 'instagram',
+  'x.com': 'x',
+  'twitter.com': 'x',
+  'linkedin.com': 'linkedin',
+  'youtube.com': 'youtube',
+  'youtu.be': 'youtube',
 };
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
 const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
@@ -84,18 +93,25 @@ function editable(node, prop, type, label) {
   if (node) Object.assign(node.dataset, { aueProp: prop, aueType: type, aueLabel: label });
 }
 
-// the rows: the block's own properties, then its children (by their kind)
+// the rows: the block's own properties, then its children (the columns)
 function readRows(block) {
   const rows = [...block.children];
-  const first = rows.findIndex((row) => ITEM_KINDS[text(row.firstElementChild)]);
+  const first = rows.findIndex((row) => text(row.firstElementChild) === COLUMN_ID);
   const start = first >= 0 && first < BLOCK_ROWS ? first : BLOCK_ROWS;
-  const items = rows.slice(start).map((row) => {
-    let kind = ITEM_KINDS[text(row.firstElementChild)];
-    if (kind) row.firstElementChild.remove();
-    else kind = KIND_BY_CELLS[row.children.length] || 'link';
-    return { kind, row };
+  const columns = rows.slice(start);
+  columns.forEach((row) => {
+    if (text(row.firstElementChild) === COLUMN_ID) row.firstElementChild.remove();
   });
-  return { props: rows.slice(0, start), items };
+  return { props: rows.slice(0, start), columns };
+}
+
+// a multifield cell's entries (its links, in order)
+function cellEntries(cell) {
+  return [...(cell?.querySelectorAll('a[href]') || [])].map((a) => {
+    const href = a.getAttribute('href');
+    const label = text(a);
+    return { href, label: label && label !== href ? label : '', source: a };
+  });
 }
 
 // the background: the image, or the video with the image as its poster
@@ -135,93 +151,71 @@ function buildBackground(typeRow, imageRow, videoRow, authoring) {
   return bg;
 }
 
-// a Social Link child: its square button (the network's icon)
-function buildSocial(row, item, authoring) {
-  const [networkCell, linkCell, labelCell] = [...row.children];
-  const network = text(networkCell).toLowerCase();
-  const name = NETWORKS[network] || network;
-  const link = cellLink(linkCell);
-  const href = link?.href || text(linkCell);
-  const external = /^https?:/i.test(href || '')
-    && new URL(href, window.location).origin !== window.location.origin;
-  const accessible = text(labelCell) || `JSW Motors on ${name}`;
-  if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Social: ${name}`;
+// the network of a social icon: its chosen network, else its link's site
+function networkOf({ href, label }) {
+  const chosen = label.toLowerCase();
+  if (NETWORKS[chosen]) return chosen;
+  try {
+    const host = new URL(href, window.location).hostname.replace(/^www\./, '');
+    const site = Object.keys(NETWORK_HOSTS).find((h) => host === h || host.endsWith(`.${h}`));
+    if (site) return NETWORK_HOSTS[site];
+  } catch (e) {
+    // (not a URL: no network)
+  }
+  return chosen;
+}
+
+// a social icon: its square button (the network's icon)
+function buildSocial(entry) {
+  const network = networkOf(entry);
+  const name = NETWORKS[network] || network || 'Social';
+  const external = /^https?:/i.test(entry.href)
+    && new URL(entry.href, window.location).origin !== window.location.origin;
+  const accessible = `JSW Motors on ${name}`;
   const icon = NETWORKS[network]
     ? el('img', {
       src: `${window.hlx?.codeBasePath || ''}/icons/jsw-social-${network}.svg`, alt: '', width: 13, height: 13, loading: 'lazy',
     })
     : el('span', { class: 'jsw-footer-social-name' }, name);
-  const a = href
-    ? el('a', {
-      class: 'jsw-footer-social-link',
-      href,
-      'aria-label': external ? `${accessible} (opens in a new tab)` : accessible,
-      target: external ? '_blank' : undefined,
-      rel: external ? 'noopener' : undefined,
-    }, icon)
-    : el('span', { class: 'jsw-footer-social-link', 'aria-label': accessible }, icon);
-  if (link) moveInstrumentation(link.source, a);
-  return a;
+  const a = el('a', {
+    class: 'jsw-footer-social-link',
+    href: entry.href,
+    'aria-label': external ? `${accessible} (opens in a new tab)` : accessible,
+    target: external ? '_blank' : undefined,
+    rel: external ? 'noopener' : undefined,
+  }, icon);
+  moveInstrumentation(entry.source, a);
+  return el('li', { class: 'jsw-footer-social-item' }, a);
 }
 
-// a Footer Link child: its label as the link's text
-function buildLink(row, item, authoring) {
-  const [labelCell, linkCell] = [...row.children];
-  const label = text(labelCell);
-  const link = cellLink(linkCell);
-  if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Link: ${label || 'Untitled'}`;
-  const a = link
-    ? el('a', { class: 'jsw-footer-link', href: link.href }, label || link.label || link.href)
-    : el('span', { class: 'jsw-footer-link' }, label);
-  if (link) moveInstrumentation(link.source, a);
-  if (authoring) editable(a, 'label', 'text', 'Label');
-  return a;
+// a link of a column: its label as the link's text
+function buildLink(entry) {
+  const a = el('a', { class: 'jsw-footer-link', href: entry.href }, entry.label || entry.href);
+  moveInstrumentation(entry.source, a);
+  return el('li', { class: 'jsw-footer-link-item' }, a);
 }
 
 /*
- * The children as columns, in their order: a Footer Column starts one (its head: the column's
- * own node, the title), its Footer Links / Social Links follow it. In the page each child keeps
- * its own node, side by side (a column's links are not inside its node), so the content tree shows
- * them all directly under the footer, as they are stored.
+ * A Footer Column: its node (the column's own, in the editor: selecting anything in it selects
+ * the column) holds its title, its links and its social icons, the first MAX_ITEMS of each
  */
-function buildColumns(items, authoring) {
-  const columns = [];
-  let current = null;
-  const open = () => {
-    if (!current) {
-      current = { node: el('div', { class: 'jsw-footer-column' }), links: null, social: null };
-      columns.push(current);
-    }
-    return current;
-  };
-  items.forEach(({ kind, row }) => {
-    if (kind === 'column') {
-      current = null;
-      const col = open();
-      const head = el('div', { class: 'jsw-footer-column-head' });
-      moveInstrumentation(row, head);
-      const title = text(row);
-      if (authoring && head.dataset.aueResource) head.dataset.aueLabel = `Column: ${title || 'Untitled'}`;
-      const heading = el('h2', { class: 'jsw-footer-column-title' }, title);
-      if (authoring) editable(heading, 'title', 'text', 'Column title');
-      head.append(heading);
-      col.node.append(head);
-      return;
-    }
-    const col = open();
-    const social = kind === 'social';
-    const item = el('li', { class: social ? 'jsw-footer-social-item' : 'jsw-footer-link-item' });
-    moveInstrumentation(row, item);
-    item.append(social ? buildSocial(row, item, authoring) : buildLink(row, item, authoring));
-    const listKey = social ? 'social' : 'links';
-    if (!col[listKey]) {
-      col[listKey] = el('ul', { class: social ? 'jsw-footer-social-list' : 'jsw-footer-link-list' });
-      col.node.append(col[listKey]);
-      if (social) col.node.classList.add('is-social');
-    }
-    col[listKey].append(item);
-  });
-  return columns.map((c) => c.node);
+function buildColumn(row, authoring) {
+  const [titleCell, linksCell, socialCell] = [...row.children];
+  const title = text(titleCell);
+  const links = cellEntries(linksCell).slice(0, MAX_ITEMS);
+  const social = cellEntries(socialCell).slice(0, MAX_ITEMS);
+  const column = el('div', { class: 'jsw-footer-column' });
+  moveInstrumentation(row, column);
+  if (authoring && column.dataset.aueResource) column.dataset.aueLabel = `Column: ${title || 'Untitled'}`;
+  const heading = el('h2', { class: 'jsw-footer-column-title' }, title);
+  if (authoring) editable(heading, 'title', 'text', 'Column title');
+  column.append(el('div', { class: 'jsw-footer-column-head' }, heading));
+  if (links.length) column.append(el('ul', { class: 'jsw-footer-link-list' }, ...links.map(buildLink)));
+  if (social.length) {
+    column.classList.add('is-social');
+    column.append(el('ul', { class: 'jsw-footer-social-list' }, ...social.map(buildSocial)));
+  }
+  return column;
 }
 
 export default function decorate(block) {
@@ -230,7 +224,7 @@ export default function decorate(block) {
   const variant = VARIANTS.find((v) => block.classList.contains(v)) || VARIANTS[0];
   VARIANTS.forEach((v) => block.classList.toggle(v, v === variant));
   const alternate = variant === 'variant-b';
-  const { props, items } = readRows(block);
+  const { props, columns } = readRows(block);
   const [logoRow, logoLinkRow, copyrightRow, locationRow, ctaLabelRow, ctaLinkRow, legalRow,
     typeRow, imageRow, videoRow] = props;
 
@@ -283,7 +277,7 @@ export default function decorate(block) {
   }
 
   // the columns: the footer's children
-  const nav = el('nav', { class: 'jsw-footer-columns', 'aria-label': 'Footer' }, ...buildColumns(items, authoring));
+  const nav = el('nav', { class: 'jsw-footer-columns', 'aria-label': 'Footer' }, ...columns.map((row) => buildColumn(row, authoring)));
 
   let inner;
   if (alternate) {

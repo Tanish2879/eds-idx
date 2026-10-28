@@ -63,6 +63,19 @@ var CustomImportScript = (() => {
     p.append(a);
     return hinted(document, field, p);
   }
+  function listCell(document, field, entries) {
+    if (!entries.length) return hinted(document, field);
+    const ul = document.createElement("ul");
+    entries.forEach(({ href, label }) => {
+      const a = document.createElement("a");
+      a.href = rootRelative(href);
+      a.textContent = label;
+      const li = document.createElement("li");
+      li.append(a);
+      ul.append(li);
+    });
+    return hinted(document, field, ul);
+  }
   function idCell(document, id) {
     const cell = document.createElement("div");
     cell.textContent = id;
@@ -98,23 +111,16 @@ var CustomImportScript = (() => {
       ];
       src.querySelectorAll(":scope > .column").forEach((column) => {
         const social = column.classList.contains("social");
-        cells.push([idCell(document, "jsw-footer-column"), textCell(document, "title", value(column, "h2"))]);
-        column.querySelectorAll("a[href]").forEach((a) => {
-          if (social) {
-            cells.push([
-              idCell(document, "jsw-footer-social-link"),
-              textCell(document, "network", clean(a.dataset.network)),
-              linkCell(document, "link", a, clean(a.getAttribute("href"))),
-              textCell(document, "label", "")
-            ]);
-          } else {
-            cells.push([
-              idCell(document, "jsw-footer-link"),
-              textCell(document, "label", clean(a.textContent)),
-              linkCell(document, "link", a, clean(a.getAttribute("href")))
-            ]);
-          }
-        });
+        const entries = [...column.querySelectorAll("a[href]")].map((a) => ({
+          href: a.getAttribute("href"),
+          label: clean(social ? a.dataset.network : a.textContent)
+        }));
+        cells.push([
+          idCell(document, "jsw-footer-column"),
+          textCell(document, "title", value(column, "h2")),
+          listCell(document, "links", social ? [] : entries),
+          listCell(document, "social", social ? entries : [])
+        ]);
       });
       main.append(WebImporter.Blocks.createBlock(document, { name: "jsw-footer", cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
