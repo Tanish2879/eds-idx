@@ -118,7 +118,9 @@
   {
     "id": "jsw-footer",
     "components": [
-      "jsw-footer-column"
+      "jsw-footer-column",
+      "jsw-footer-link",
+      "jsw-footer-social-link"
     ]
   },
   {
