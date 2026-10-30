@@ -203,13 +203,11 @@ function buildColumn(row, authoring) {
   if (authoring) editable(heading, 'title', 'text', 'Column title');
   column.append(el('div', { class: 'jsw-footer-column-head' }, heading));
   const links = linkCells.slice(0, COLUMN_LINKS).map((cell, i) => {
+    // (a link needs both its text and its URL: with only one of them it is not rendered)
     const link = cellLink(cell);
-    const label = link ? link.label || link.href : text(cell);
-    if (!label) return null;
+    if (!(link?.label && link.href)) return null;
     const n = i + 1;
-    const a = link
-      ? el('a', { class: 'jsw-footer-link', href: link.href }, label)
-      : el('span', { class: 'jsw-footer-link' }, label);
+    const a = el('a', { class: 'jsw-footer-link', href: link.href }, link.label);
     if (authoring) editable(a, `link${n}Text`, 'text', `Link ${n} text`);
     return el('li', { class: 'jsw-footer-link-item' }, a);
   }).filter(Boolean);
@@ -217,9 +215,15 @@ function buildColumn(row, authoring) {
   return column;
 }
 
+// a Social Link is complete with both its network and its link (URL)
+function isCompleteSocial(row) {
+  const [networkCell, linkCell] = [...row.children];
+  return Boolean(text(networkCell) && (cellLink(linkCell)?.href || text(linkCell)));
+}
+
 /*
  * The social column: the block's Social heading and the Social Link children (each its own
- * node, a direct child of the footer in the content tree), the first MAX_ITEMS
+ * node, a direct child of the footer in the content tree): the first MAX_ITEMS complete ones
  */
 function buildSocialColumn(headingRow, rows, authoring) {
   const title = text(headingRow);
@@ -228,27 +232,23 @@ function buildSocialColumn(headingRow, rows, authoring) {
   const heading = el('h2', { class: 'jsw-footer-column-title' }, title);
   if (authoring) editable(heading, 'socialHeading', 'text', 'Social heading');
   column.append(el('div', { class: 'jsw-footer-column-head' }, heading));
-  const shown = rows.slice(0, MAX_ITEMS);
-  // (in the editor the ones over the limit stay, dimmed; on the site they are not rendered)
-  const hidden = authoring ? rows.slice(MAX_ITEMS) : [];
-  const item = (row, overLimit) => {
+  // (an icon without its network or its link is not rendered; nor the ones over the limit)
+  const shown = rows.filter(isCompleteSocial).slice(0, MAX_ITEMS);
+  // (in the editor the others stay, dimmed, so the authors can complete or remove them)
+  const hidden = authoring ? rows.filter((row) => !shown.includes(row)) : [];
+  const item = (row) => {
     const li = el('li', { class: 'jsw-footer-social-item' });
     moveInstrumentation(row, li);
     li.append(buildSocial(row, li, authoring));
-    if (overLimit) {
+    if (!shown.includes(row)) {
       li.classList.add('is-over-limit');
-      if (li.dataset.aueLabel) li.dataset.aueLabel += ` (not shown: over the limit of ${MAX_ITEMS})`;
+      const reason = isCompleteSocial(row) ? `over the limit of ${MAX_ITEMS}` : 'needs both a network and a link';
+      if (li.dataset.aueLabel) li.dataset.aueLabel += ` (not shown: ${reason})`;
     }
     return li;
   };
-  if (rows.length) {
-    column.append(el(
-      'ul',
-      { class: 'jsw-footer-social-list' },
-      ...shown.map((row) => item(row, false)),
-      ...hidden.map((row) => item(row, true)),
-    ));
-  }
+  const listed = rows.filter((row) => shown.includes(row) || hidden.includes(row));
+  if (listed.length) column.append(el('ul', { class: 'jsw-footer-social-list' }, ...listed.map(item)));
   return column;
 }
 
@@ -263,7 +263,8 @@ export default function decorate(block) {
   const [logoRow, logoLinkRow, copyrightRow, locationRow, ctaLabelRow, ctaLinkRow, legalRow,
     typeRow, imageRow, videoRow, socialHeadingRow] = props;
 
-  // the background media (Variant A; B has its gradient)
+  // the background media: Variant A only (B has its gradient: its background media fields are
+  // ignored, no image or video built)
   const bg = alternate ? null : buildBackground(typeRow, imageRow, videoRow, authoring);
 
   // the brand: the wordmark (a link), the copyright and location
