@@ -1279,7 +1279,7 @@
         "valueType": "string",
         "name": "backgroundMedia",
         "label": "Background media",
-        "description": "Variant A's background: the image, or the video (playing muted, looping; the image is its poster and stays for visitors who prefer less motion). Not used by Variant B.",
+        "description": "Variant A's background: the image, or the video (playing muted, looping; the image is its poster and stays for visitors who prefer less motion). Note: Background media is only used in Variant A. This field is ignored if Variant B is selected.",
         "value": "image",
         "options": [
           {
@@ -1297,7 +1297,7 @@
         "valueType": "string",
         "name": "background",
         "label": "Background image",
-        "description": "Fills the footer behind everything (dark at the top, where the texts sit). With a video: its poster.",
+        "description": "Fills the footer behind everything (dark at the top, where the texts sit). With a video: its poster. Note: Background media is only used in Variant A. This field is ignored if Variant B is selected.",
         "multi": false
       },
       {
@@ -1305,7 +1305,7 @@
         "valueType": "string",
         "name": "backgroundVideo",
         "label": "Background video",
-        "description": "An MP4 (or WebM) video asset, used when the Background media is Video.",
+        "description": "An MP4 (or WebM) video asset, used when the Background media is Video. Note: Background media is only used in Variant A. This field is ignored if Variant B is selected.",
         "multi": false
       },
       {
@@ -1341,7 +1341,7 @@
         "valueType": "string",
         "name": "link1",
         "label": "Link 1",
-        "description": "A page, a URL or a mailto: address. A column has up to 4 links (Link 1 to Link 4); leave a link empty to not show it.",
+        "description": "A page, a URL or a mailto: address. A column has up to 4 links (Link 1 to Link 4); leave a link empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page.",
         "required": true
       },
       {
@@ -1349,7 +1349,7 @@
         "valueType": "string",
         "name": "link1Text",
         "label": "Link 1 text",
-        "description": "E.g. NEVs.",
+        "description": "E.g. NEVs. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1361,7 +1361,7 @@
         "valueType": "string",
         "name": "link2",
         "label": "Link 2",
-        "description": "A page, a URL or a mailto: address. Leave empty to not show it."
+        "description": "A page, a URL or a mailto: address. Leave empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
       },
       {
         "component": "text",
@@ -1371,14 +1371,15 @@
         "value": "",
         "validation": {
           "maxLength": 64
-        }
+        },
+        "description": "Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "link3",
         "label": "Link 3",
-        "description": "A page, a URL or a mailto: address. Leave empty to not show it."
+        "description": "A page, a URL or a mailto: address. Leave empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
       },
       {
         "component": "text",
@@ -1388,14 +1389,15 @@
         "value": "",
         "validation": {
           "maxLength": 64
-        }
+        },
+        "description": "Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "link4",
         "label": "Link 4",
-        "description": "A page, a URL or a mailto: address. Leave empty to not show it."
+        "description": "A page, a URL or a mailto: address. Leave empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
       },
       {
         "component": "text",
@@ -1405,7 +1407,8 @@
         "value": "",
         "validation": {
           "maxLength": 64
-        }
+        },
+        "description": "Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
       }
     ]
   },
@@ -1417,7 +1420,7 @@
         "valueType": "string",
         "name": "network",
         "label": "Network",
-        "description": "Its icon (a square button), and the link's name for screen readers.",
+        "description": "Its icon (a square button), and the link's name for screen readers. Warning: Both the network and the profile link must be provided. If one is missing, the icon will not be displayed on the page.",
         "value": "facebook",
         "required": true,
         "options": [
@@ -1448,7 +1451,7 @@
         "valueType": "string",
         "name": "link",
         "label": "Profile link",
-        "description": "The network's page, e.g. https://www.linkedin.com/company/…",
+        "description": "The network's page, e.g. https://www.linkedin.com/company/… Warning: Both the network and the profile link must be provided. If one is missing, the icon will not be displayed on the page.",
         "required": true
       },
       {
