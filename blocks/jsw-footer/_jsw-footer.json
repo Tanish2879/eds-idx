@@ -32,21 +32,6 @@
       }
     },
     {
-      "title": "Footer Link",
-      "id": "jsw-footer-link",
-      "plugins": {
-        "xwalk": {
-          "page": {
-            "resourceType": "core/franklin/components/block/v1/block/item",
-            "template": {
-              "name": "Footer Link",
-              "model": "jsw-footer-link"
-            }
-          }
-        }
-      }
-    },
-    {
       "title": "Social Link",
       "id": "jsw-footer-social-link",
       "plugins": {
@@ -202,6 +187,17 @@
           "label": "Background video",
           "description": "An MP4 (or WebM) video asset, used when the Background media is Video.",
           "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "socialHeading",
+          "label": "Social heading",
+          "description": "The social icons' heading, e.g. CONNECT (in Variant B read out by screen readers only). The icons are the footer's Social Link children (up to 4 are shown).",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
         }
       ]
     },
@@ -213,23 +209,7 @@
           "valueType": "string",
           "name": "title",
           "label": "Column title",
-          "description": "E.g. TECHNOLOGY. Starts a column: the Footer Links and Social Links after it (up to the next Footer Column) are inside it. A column shows up to 4 links and 4 social icons; the rest are not shown on the site.",
-          "value": "",
-          "required": true,
-          "validation": {
-            "maxLength": 64
-          }
-        }
-      ]
-    },
-    {
-      "id": "jsw-footer-link",
-      "fields": [
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "label",
-          "label": "Label",
+          "description": "E.g. TECHNOLOGY.",
           "value": "",
           "required": true,
           "validation": {
@@ -239,10 +219,73 @@
         {
           "component": "aem-content",
           "valueType": "string",
-          "name": "link",
-          "label": "Link",
-          "description": "A page, a URL or a mailto: address.",
+          "name": "link1",
+          "label": "Link 1",
+          "description": "A page, a URL or a mailto: address. A column has up to 4 links (Link 1 to Link 4); leave a link empty to not show it.",
           "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link1Text",
+          "label": "Link 1 text",
+          "description": "E.g. NEVs.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          },
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link2",
+          "label": "Link 2",
+          "description": "A page, a URL or a mailto: address. Leave empty to not show it."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link2Text",
+          "label": "Link 2 text",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link3",
+          "label": "Link 3",
+          "description": "A page, a URL or a mailto: address. Leave empty to not show it."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link3Text",
+          "label": "Link 3 text",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link4",
+          "label": "Link 4",
+          "description": "A page, a URL or a mailto: address. Leave empty to not show it."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link4Text",
+          "label": "Link 4 text",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
         }
       ]
     },
@@ -307,7 +350,6 @@
       "id": "jsw-footer",
       "components": [
         "jsw-footer-column",
-        "jsw-footer-link",
         "jsw-footer-social-link"
       ]
     }

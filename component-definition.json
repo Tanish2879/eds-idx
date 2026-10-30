@@ -587,21 +587,6 @@
           }
         },
         {
-          "title": "Footer Link",
-          "id": "jsw-footer-link",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Footer Link",
-                  "model": "jsw-footer-link"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Social Link",
           "id": "jsw-footer-social-link",
           "plugins": {

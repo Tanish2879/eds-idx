@@ -10,10 +10,10 @@
  * jsw-footer rows (every property in its own cell): 1. logo (+ logoAlt)   2. logoLink
  *   3. copyright   4. location   5. ctaLabel   6. ctaLink   7. legalLink (+ legalLinkText)
  *   8. backgroundMedia (image / video)   9. background (image)   10. backgroundVideo
+ *   11. socialHeading (the social column's heading)
  * then the children, each row starting with its component id (the block allows several child
  * types: the content upload picks the child's model by that first cell):
- *   jsw-footer-column | title
- *   jsw-footer-link | label | link
+ *   jsw-footer-column | title | link1 … link4 (each a link, its text the Link N text)
  *   jsw-footer-social-link | network | link | label (accessible name, optional)
  */
 
@@ -95,27 +95,24 @@ export default {
       [textCell(document, 'backgroundMedia', clean(background?.dataset.type) || 'image')],
       [imageCell(document, 'background', background)],
       [hinted(document, 'backgroundVideo')],
+      [textCell(document, 'socialHeading', value(src, ':scope > .column.social h2'))],
     ];
-    // the children, in order: each column (its title), then its links / social links
-    src.querySelectorAll(':scope > .column').forEach((column) => {
-      const social = column.classList.contains('social');
-      cells.push([idCell(document, 'jsw-footer-column'), textCell(document, 'title', value(column, 'h2'))]);
-      column.querySelectorAll('a[href]').forEach((a) => {
-        if (social) {
-          cells.push([
-            idCell(document, 'jsw-footer-social-link'),
-            textCell(document, 'network', clean(a.dataset.network)),
-            linkCell(document, 'link', a, clean(a.getAttribute('href'))),
-            textCell(document, 'label', ''),
-          ]);
-        } else {
-          cells.push([
-            idCell(document, 'jsw-footer-link'),
-            textCell(document, 'label', clean(a.textContent)),
-            linkCell(document, 'link', a, clean(a.getAttribute('href'))),
-          ]);
-        }
-      });
+    // the children: each column (its title, its links: Link 1 … Link 4), then the social links
+    src.querySelectorAll(':scope > .column:not(.social)').forEach((column) => {
+      const links = [...column.querySelectorAll('a[href]')].slice(0, 4);
+      cells.push([
+        idCell(document, 'jsw-footer-column'),
+        textCell(document, 'title', value(column, 'h2')),
+        ...[0, 1, 2, 3].map((i) => linkCell(document, `link${i + 1}`, links[i], clean(links[i]?.textContent))),
+      ]);
+    });
+    src.querySelectorAll(':scope > .column.social a[href]').forEach((a) => {
+      cells.push([
+        idCell(document, 'jsw-footer-social-link'),
+        textCell(document, 'network', clean(a.dataset.network)),
+        linkCell(document, 'link', a, clean(a.getAttribute('href'))),
+        textCell(document, 'label', ''),
+      ]);
     });
     main.append(WebImporter.Blocks.createBlock(document, { name: 'jsw-footer', cells }));
 
