@@ -106,9 +106,14 @@ main > .section > .careers-hero-wrapper > .block {
     max-width: 100%;
   }
 
+  /* (the texts' guardrails: the heading at most 4 lines, the description 6, cut with "…") */
   .heading {
+    display: -webkit-box;
     max-width: 12.5em; /* (wraps as the design: THE WORLD / NEEDS PIONEERS) */
     margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     color: #fff;
     font-family: var(--ch-display-font);
     font-size: clamp(24px, 7.4vw, 46.4px); /* (phones: NEEDS PIONEERS still on one line) */
@@ -120,8 +125,13 @@ main > .section > .careers-hero-wrapper > .block {
   }
 
   .description {
+    display: -webkit-box;
     max-width: 520px;
     margin: 16px 0 0;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
     color: rgb(255 255 255 / 80%);
     font-family: var(--ch-body-font);
     font-size: 14px;

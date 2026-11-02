@@ -92,7 +92,7 @@
           "description": "Shown when no job matches the search and filters, e.g. No roles match your search.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 150
           }
         }
       ]
@@ -134,12 +134,16 @@
           }
         },
         {
-          "component": "textarea",
+          "component": "text",
           "valueType": "string",
+          "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
           "description": "Under the search box.",
-          "value": ""
+          "value": "",
+          "validation": {
+            "maxLength": 150
+          }
         }
       ]
     },
@@ -165,7 +169,7 @@
           "description": "Shown in the dropdown while no location is chosen (it then lists every location), e.g. Locations.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           }
         },
         {
@@ -195,7 +199,7 @@
           "description": "Shown in the dropdown while no department is chosen (it then lists every department), e.g. Departments.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           }
         },
         {
@@ -267,7 +271,7 @@
           "required": true,
           "valueFormat": "string-multiline",
           "validation": {
-            "maxLength": 64
+            "maxLength": 150
           }
         },
         {
@@ -286,7 +290,7 @@
           "description": "E.g. APPLY NOW.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           }
         }
       ]

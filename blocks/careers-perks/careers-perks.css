@@ -42,8 +42,14 @@ main > .section > .careers-perks-wrapper > .block {
     text-align: center;
   }
 
+  /* (the texts' guardrails: the heading at most 3 lines, the intro 6, a description 5, cut with
+     "…") */
   .heading {
+    display: -webkit-box;
     margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     color: var(--cp-text);
     font-family: var(--cp-font);
     font-size: clamp(24px, 7.7vw, 30px);
@@ -55,7 +61,12 @@ main > .section > .careers-perks-wrapper > .block {
   }
 
   .intro {
+    display: -webkit-box;
     margin: 13px 0 0;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
     color: var(--cp-muted);
     font-size: 13px;
     line-height: 24.5px;
@@ -109,7 +120,11 @@ main > .section > .careers-perks-wrapper > .block {
   }
 
   .perk-description {
+    display: -webkit-box;
     margin: 8px 0 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
     color: var(--cp-muted);
     font-size: 12.2px;
     line-height: 21.6px;

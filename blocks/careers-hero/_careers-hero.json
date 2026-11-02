@@ -49,16 +49,20 @@
           "value": "",
           "required": true,
           "validation": {
-            "maxLength": 64
+            "maxLength": 40
           }
         },
         {
-          "component": "textarea",
+          "component": "text",
           "valueType": "string",
+          "valueFormat": "string-multiline",
           "name": "description",
           "label": "Subheading / description",
           "description": "Optional: a short paragraph under the heading.",
-          "value": ""
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
         },
         {
           "component": "text",
@@ -68,7 +72,7 @@
           "description": "E.g. SCROLL or VIEW OPENINGS. Leave empty for no button.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           }
         },
         {

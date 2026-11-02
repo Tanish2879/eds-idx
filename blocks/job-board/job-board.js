@@ -22,9 +22,13 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  */
 
 // the most jobs a board shows (the first ones in the content tree; the editor marks the others)
-// and the longest text a field takes (the editor warns above it; longer texts are cut with "…")
+// and the longest text a field takes, by kind (the editor warns above it, its fields' maxLength;
+// longer texts are cut with "…"): headings, titles and other short texts; button labels;
+// descriptions and messages
 export const MAX_JOBS = 15;
 export const MAX_CHARS = 64;
+export const MAX_LABEL_CHARS = 30;
+export const MAX_DESCRIPTION_CHARS = 150;
 
 const ANCHOR = 'open-roles'; // the board's id (the careers hero's button links to #open-roles)
 const BLOCK_ROWS = 2;
@@ -55,20 +59,33 @@ function entries(cell) {
   return (list.length === 1 ? list[0].split(';') : list).map((v) => v.trim()).filter(Boolean);
 }
 
-// a text cut to MAX_CHARS characters, ending with "…"
-const clip = (value) => (value.length > MAX_CHARS ? `${value.slice(0, MAX_CHARS - 1).trimEnd()}…` : value);
+// a text cut to a number of characters (default MAX_CHARS), ending with "…"
+const clip = (value, max = MAX_CHARS) => (value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value);
 
-// the published page: the texts longer than MAX_CHARS cut (their full text as a tooltip); in the
-// editor they stay whole (edited in place) and only the CSS shortens what doesn't fit
-const CLIPPED = ['.heading span', '.filters-label', '.option-label',
-  '.job-title', '.job-department', '.job-location',
-  '.job-description', '.apply', '.empty'];
+// the published page: the texts longer than their field's limit cut (their full text as a
+// tooltip); in the editor they stay whole (edited in place) and only the CSS shortens what
+// doesn't fit
+const CLIPPED = {
+  '.heading span': MAX_CHARS,
+  '.filters-label': MAX_CHARS,
+  '.option-label': MAX_CHARS,
+  '.dropdown-value': MAX_LABEL_CHARS,
+  '.job-title': MAX_CHARS,
+  '.job-department': MAX_CHARS,
+  '.job-location': MAX_CHARS,
+  '.job-description': MAX_DESCRIPTION_CHARS,
+  '.description': MAX_DESCRIPTION_CHARS,
+  '.apply': MAX_LABEL_CHARS,
+  '.empty': MAX_DESCRIPTION_CHARS,
+};
 function clipTexts(root) {
-  root.querySelectorAll(CLIPPED.join(', ')).forEach((node) => {
-    const full = node.textContent.trim();
-    if (full.length <= MAX_CHARS || node.children.length) return;
-    node.textContent = clip(full);
-    node.title = full;
+  Object.entries(CLIPPED).forEach(([selector, max]) => {
+    root.querySelectorAll(selector).forEach((node) => {
+      const full = node.textContent.trim();
+      if (full.length <= max || node.children.length) return;
+      node.textContent = clip(full, max);
+      node.title = full;
+    });
   });
   root.querySelectorAll('input[placeholder]').forEach((input) => {
     input.placeholder = clip(input.placeholder);
