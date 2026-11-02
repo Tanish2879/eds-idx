@@ -41,7 +41,7 @@
           "valueType": "string",
           "name": "heading",
           "label": "Heading",
-          "description": "Centred above the perks, e.g. OUR PERKS.",
+          "description": "E.g. OUR PERKS.",
           "value": "",
           "required": true,
           "validation": {
@@ -54,7 +54,7 @@
           "valueFormat": "string-multiline",
           "name": "intro",
           "label": "Intro",
-          "description": "Under the heading, centred. Start a new line where the text should break (otherwise it wraps by itself).",
+          "description": "Under the heading; new lines are kept.",
           "value": "",
           "validation": {
             "maxLength": 200
@@ -92,7 +92,7 @@
           "valueType": "string",
           "name": "iconImage",
           "label": "Custom icon image",
-          "description": "Optional: an image (ideally a square SVG with a 2px line) shown instead of the icon above, at 28 × 28.",
+          "description": "Optional: replaces the icon (square, ideally SVG). JPG, PNG, WebP or SVG; other files are not shown.",
           "multi": false
         },
         {
@@ -100,7 +100,7 @@
           "valueType": "string",
           "name": "title",
           "label": "Title",
-          "description": "Up to 64 characters. The block shows up to 6 perks (the first 6 in the content tree).",
+          "description": "E.g. Flexible hours. Up to 6 perks are shown.",
           "value": "",
           "required": true,
           "validation": {
@@ -113,7 +113,7 @@
           "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
-          "description": "Two or three short lines under the title.",
+          "description": "Two or three short lines.",
           "value": "",
           "required": true,
           "validation": {

@@ -42,7 +42,7 @@
           "valueType": "string",
           "name": "classes",
           "label": "Layout",
-          "description": "Variant A: the big word on a spotlight with the car in front, text centred below. Variant B: the image on the left, the text beside it.",
+          "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
           "value": "variant-a",
           "options": [
             { "name": "Variant A – Reserved (spotlight, word and car)", "value": "variant-a" },
@@ -54,31 +54,41 @@
           "valueType": "string",
           "name": "displayWord",
           "label": "Background word",
-          "description": "Variant A: the large word behind the car, e.g. RESERVED (not used by Variant B).",
-          "value": ""
+          "description": "Variant A only: the large word behind the car, e.g. RESERVED.",
+          "value": "",
+          "validation": {
+            "maxLength": 12
+          }
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "heading",
           "label": "Status heading",
-          "description": "E.g. YOU’RE IN, {firstName}. Values of the reservation (from the form, or the page address) fill {firstName}, {lastName}, {email}, {mobile}, {city}; {name|fallback} shows the fallback when there is none, otherwise the value and its comma are left out.",
-          "value": ""
+          "description": "E.g. YOU’RE IN, {firstName}. Tokens: {firstName}, {lastName}, {email}, {mobile}, {city}; {token|fallback} when empty.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
         },
         {
-          "component": "textarea",
+          "component": "text",
           "valueType": "string",
+          "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
-          "description": "E.g. We’ll message you when allocation opens. Your receipt is on its way to {email|your inbox}. Variant A shows each sentence on its own line. Values as in the heading.",
-          "value": ""
+          "description": "E.g. Your receipt is on its way to {email|your inbox}. Variant A: one line per sentence.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
         },
         {
           "component": "reference",
           "valueType": "string",
           "name": "image",
           "label": "Image",
-          "description": "Variant A: the car, cut out on a transparent background, in front of the word. Variant B: the photo on the left.",
+          "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
           "multi": false
         },
         {
@@ -86,14 +96,18 @@
           "valueType": "string",
           "name": "imageAlt",
           "label": "Image alt text",
-          "value": ""
+          "description": "Describes the image for screen readers.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
         },
         {
           "component": "reference",
           "valueType": "string",
           "name": "background",
           "label": "Background image",
-          "description": "Variant A: fills the block behind the word and the car (decorative; not used by Variant B).",
+          "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
           "multi": false
         },
         {
@@ -101,14 +115,18 @@
           "valueType": "string",
           "name": "ctaLink",
           "label": "Button link",
-          "description": "Optional: a button under the description (none in the designs)."
+          "description": "Optional: a button under the description."
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "ctaLinkText",
           "label": "Button text",
-          "value": ""
+          "description": "The button text, e.g. TRY AGAIN.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
         }
       ]
     }

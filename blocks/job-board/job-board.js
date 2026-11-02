@@ -36,7 +36,6 @@ const ITEM_KINDS = {
   'job-board-search': 'search', 'job-board-filters': 'filters', 'job-board-job': 'job',
 };
 const KIND_BY_CELLS = { 4: 'search', 5: 'filters', 6: 'job' };
-const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const PARAMS = { search: 'q', location: 'location', department: 'department' };
 let boardId = 0;
 
@@ -95,24 +94,49 @@ function clipTexts(root) {
 // for matching: lower case, without accents
 const fold = (value) => value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim();
 
+// the accepted image formats (a file of another format, e.g. a PDF, is not shown: a warning is
+// logged)
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+
+// a file's extension (from its address's path, without the query), lower case
+function extensionOf(src) {
+  try {
+    const file = new URL(src, window.location).pathname.split('/').pop();
+    return file.includes('.') ? file.split('.').pop().toLowerCase() : '';
+  } catch (e) {
+    return '';
+  }
+}
+
 /*
- * The image of a row: an <img>, or a link to an image file (AEM delivers an image it can't
- * resolve as a link; placeholders under /drafts/ then come from this repository).
+ * The image of a row: an <img>, or a link (AEM delivers an image it can't resolve as a link;
+ * placeholders under /drafts/ then come from this repository); only in an accepted format
+ * (IMAGE_EXTENSIONS: another is not shown, with a warning)
  */
-function rowImage(row) {
+function rowImage(row, field) {
   const img = row?.querySelector('img');
-  if (img) return { src: img.src, alt: img.alt, source: img };
-  const link = [...(row?.querySelectorAll('a[href]') || [])]
-    .find((a) => IMAGE_FILE.test(new URL(a.href, window.location).pathname));
-  if (!link) return null;
-  const { pathname } = new URL(link.href, window.location);
-  const drafts = pathname.indexOf('/drafts/');
-  const label = link.textContent.trim();
-  return {
-    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
-    alt: label && !label.includes('/') ? label : '',
-    source: link,
-  };
+  const link = img ? null : row?.querySelector('a[href]');
+  if (!img && !link) return null;
+  let image;
+  if (img) {
+    image = { src: img.src, alt: img.alt, source: img };
+  } else {
+    const { pathname } = new URL(link.href, window.location);
+    const drafts = pathname.indexOf('/drafts/');
+    const label = link.textContent.trim();
+    image = {
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      alt: label && !label.includes('/') ? label : '',
+      source: link,
+    };
+  }
+  const extension = extensionOf(image.src);
+  if (!IMAGE_EXTENSIONS.includes(extension)) {
+    // eslint-disable-next-line no-console
+    console.warn(`job-board: the ${field} "${image.src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't an accepted image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
+    return null;
+  }
+  return image;
 }
 
 // authoring: an editable field of the block or of the item it sits in (resource inherited)
@@ -455,10 +479,13 @@ export default function decorate(block) {
   }, aside, results);
 
   // the photo strip under the board
-  const image = rowImage(galleryRow);
+  const image = rowImage(galleryRow, 'gallery image');
   let gallery = null;
   if (image) {
-    const pic = createOptimizedPicture(image.src, image.alt, false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
+    // (an SVG as it is: no resized renditions)
+    const pic = extensionOf(image.src) === 'svg'
+      ? el('picture', {}, el('img', { src: image.src, alt: image.alt, loading: 'lazy' }))
+      : createOptimizedPicture(image.src, image.alt, false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
     pic.className = 'gallery-image';
     const img = pic.querySelector('img');
     moveInstrumentation(image.source, img);
