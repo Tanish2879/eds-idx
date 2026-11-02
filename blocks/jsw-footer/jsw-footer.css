@@ -100,7 +100,9 @@ main > .section > .jsw-footer-wrapper {
     line-height: 18px;
   }
 
+  /* (each at most the line's width: a longer one cut with "…") */
   .meta span {
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -440,27 +442,29 @@ main > .section > .jsw-footer-wrapper {
         padding-top: 2.5px; /* (the wordmark's top at 38.5px) */
       }
 
+      /* (the guardrail: the columns at most the width the brand and the button leave; more
+         columns, or longer ones, wrap to a second row instead of running past the edge) */
       .link-columns {
-        gap: 0;
+        flex-wrap: wrap;
+        gap: 24px 0;
+        max-width: calc(100vw - 400px);
       }
 
       /* a column: as wide as its content and 24px, at least 146px (the design's EXPLORE: its
-         title, then the space before the social squares), so a longer title (TECHNOLOGY) is
-         never cut */
+         title, then the space before the social squares), so a longer title (TECHNOLOGY) is not
+         cut; at most 200px (a longer title or link cut with "…") */
       .column {
         flex: 0 0 auto;
         box-sizing: border-box;
         min-width: 146px;
+        max-width: 200px;
         padding-right: 24px;
-      }
-
-      .column-title {
-        overflow: visible;
       }
 
       .column.is-social {
         flex: none;
         min-width: 0;
+        max-width: none; /* (its icons: their own limit, MAX_ITEMS) */
         padding-right: 0;
       }
     }

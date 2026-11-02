@@ -719,6 +719,11 @@ main > .section > .job-board-wrapper > .block {
        the left column and the gap in % of the board */
     --jb-gutter: 4.6875%; /* 60 / 1280 */
 
+    /* (a description at its 150-character limit: 3 lines at these widths) */
+    .job-description {
+      -webkit-line-clamp: 3;
+    }
+
     .board {
       grid-template-columns: minmax(0, 31.9%) minmax(0, 1fr); /* 370 / 1160 */
       column-gap: 10.52%; /* 122 / 1160 */

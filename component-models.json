@@ -306,16 +306,20 @@
         "value": "",
         "required": true,
         "validation": {
-          "maxLength": 64
+          "maxLength": 40
         }
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
+        "valueFormat": "string-multiline",
         "name": "description",
         "label": "Subheading / description",
         "description": "Optional: a short paragraph under the heading.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
       },
       {
         "component": "text",
@@ -325,7 +329,7 @@
         "description": "E.g. SCROLL or VIEW OPENINGS. Leave empty for no button.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         }
       },
       {
@@ -353,16 +357,20 @@
         "value": "",
         "required": true,
         "validation": {
-          "maxLength": 64
+          "maxLength": 40
         }
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
+        "valueFormat": "string-multiline",
         "name": "intro",
         "label": "Intro",
         "description": "Under the heading, centred. Start a new line where the text should break (otherwise it wraps by itself).",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
       }
     ]
   },
@@ -448,13 +456,17 @@
         }
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
+        "valueFormat": "string-multiline",
         "name": "description",
         "label": "Description",
         "description": "Two or three short lines under the title.",
         "value": "",
-        "required": true
+        "required": true,
+        "validation": {
+          "maxLength": 150
+        }
       }
     ]
   },
@@ -969,7 +981,7 @@
         "description": "Shown when no job matches the search and filters, e.g. No roles match your search.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 150
         }
       }
     ]
@@ -1011,12 +1023,16 @@
         }
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
+        "valueFormat": "string-multiline",
         "name": "description",
         "label": "Description",
         "description": "Under the search box.",
-        "value": ""
+        "value": "",
+        "validation": {
+          "maxLength": 150
+        }
       }
     ]
   },
@@ -1042,7 +1058,7 @@
         "description": "Shown in the dropdown while no location is chosen (it then lists every location), e.g. Locations.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         }
       },
       {
@@ -1072,7 +1088,7 @@
         "description": "Shown in the dropdown while no department is chosen (it then lists every department), e.g. Departments.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         }
       },
       {
@@ -1144,7 +1160,7 @@
         "required": true,
         "valueFormat": "string-multiline",
         "validation": {
-          "maxLength": 64
+          "maxLength": 150
         }
       },
       {
@@ -1163,7 +1179,7 @@
         "description": "E.g. APPLY NOW.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         }
       }
     ]
@@ -1246,7 +1262,7 @@
         "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it).",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         }
       },
       {
@@ -1271,7 +1287,7 @@
         "description": "E.g. PRIVACY POLICY.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         }
       },
       {
@@ -1352,7 +1368,7 @@
         "description": "E.g. NEVs; without Link 1 the link is not shown.",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         },
         "required": true
       },
@@ -1370,7 +1386,7 @@
         "label": "Link 2 text",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         },
         "description": "Without Link 2 the link is not shown."
       },
@@ -1388,7 +1404,7 @@
         "label": "Link 3 text",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         },
         "description": "Without Link 3 the link is not shown."
       },
@@ -1406,7 +1422,7 @@
         "label": "Link 4 text",
         "value": "",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30
         },
         "description": "Without Link 4 the link is not shown."
       }

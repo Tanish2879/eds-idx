@@ -45,16 +45,20 @@
           "value": "",
           "required": true,
           "validation": {
-            "maxLength": 64
+            "maxLength": 40
           }
         },
         {
-          "component": "textarea",
+          "component": "text",
           "valueType": "string",
+          "valueFormat": "string-multiline",
           "name": "intro",
           "label": "Intro",
           "description": "Under the heading, centred. Start a new line where the text should break (otherwise it wraps by itself).",
-          "value": ""
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
         }
       ]
     },
@@ -104,13 +108,17 @@
           }
         },
         {
-          "component": "textarea",
+          "component": "text",
           "valueType": "string",
+          "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
           "description": "Two or three short lines under the title.",
           "value": "",
-          "required": true
+          "required": true,
+          "validation": {
+            "maxLength": 150
+          }
         }
       ]
     }

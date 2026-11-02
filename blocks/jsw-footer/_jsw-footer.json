@@ -126,7 +126,7 @@
           "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it).",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           }
         },
         {
@@ -151,7 +151,7 @@
           "description": "E.g. PRIVACY POLICY.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           }
         },
         {
@@ -232,7 +232,7 @@
           "description": "E.g. NEVs; without Link 1 the link is not shown.",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           },
           "required": true
         },
@@ -250,7 +250,7 @@
           "label": "Link 2 text",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           },
           "description": "Without Link 2 the link is not shown."
         },
@@ -268,7 +268,7 @@
           "label": "Link 3 text",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           },
           "description": "Without Link 3 the link is not shown."
         },
@@ -286,7 +286,7 @@
           "label": "Link 4 text",
           "value": "",
           "validation": {
-            "maxLength": 64
+            "maxLength": 30
           },
           "description": "Without Link 4 the link is not shown."
         }
