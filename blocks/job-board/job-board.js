@@ -60,9 +60,9 @@ const clip = (value) => (value.length > MAX_CHARS ? `${value.slice(0, MAX_CHARS 
 
 // the published page: the texts longer than MAX_CHARS cut (their full text as a tooltip); in the
 // editor they stay whole (edited in place) and only the CSS shortens what doesn't fit
-const CLIPPED = ['.job-board-heading span', '.job-board-filters-label', '.job-board-option-label',
-  '.job-board-job-title', '.job-board-job-department', '.job-board-job-location',
-  '.job-board-job-description', '.job-board-apply', '.job-board-empty'];
+const CLIPPED = ['.heading span', '.filters-label', '.option-label',
+  '.job-title', '.job-department', '.job-location',
+  '.job-description', '.apply', '.empty'];
 function clipTexts(root) {
   root.querySelectorAll(CLIPPED.join(', ')).forEach((node) => {
     const full = node.textContent.trim();
@@ -126,20 +126,20 @@ function readRows(block) {
 function buildSearch(row, id, authoring, level) {
   const [headingCell, emphasisCell, placeholderCell, descriptionCell] = row
     ? [...row.children] : [];
-  const wrap = el('div', { class: 'job-board-search' });
+  const wrap = el('div', { class: 'search' });
   if (row) moveInstrumentation(row, wrap);
   if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = 'Search';
   let heading = null;
   if (text(headingCell) || text(emphasisCell)) {
-    const first = text(headingCell) ? el('span', { class: 'job-board-heading-muted' }, text(headingCell)) : null;
+    const first = text(headingCell) ? el('span', { class: 'heading-muted' }, text(headingCell)) : null;
     if (authoring) editable(first, 'heading', 'text', 'Heading');
-    const second = text(emphasisCell) ? el('span', { class: 'job-board-heading-strong' }, text(emphasisCell)) : null;
+    const second = text(emphasisCell) ? el('span', { class: 'heading-strong' }, text(emphasisCell)) : null;
     if (authoring) editable(second, 'headingEmphasis', 'text', 'Heading (second line)');
-    heading = el(`h${level}`, { class: 'job-board-heading', id: `${id}-heading` }, first || '', second || '');
+    heading = el(`h${level}`, { class: 'heading', id: `${id}-heading` }, first || '', second || '');
   }
   // the search box: a combobox with the matching roles suggested under it, and a clear button
   const input = el('input', {
-    class: 'job-board-input job-board-search-input',
+    class: 'input search-input',
     id: `${id}-search`,
     type: 'search',
     name: 'q',
@@ -153,20 +153,20 @@ function buildSearch(row, id, authoring, level) {
     'aria-describedby': text(descriptionCell) ? `${id}-search-description` : undefined,
   });
   const clear = el('button', {
-    type: 'button', class: 'job-board-clear', 'aria-label': 'Clear search', hidden: true,
+    type: 'button', class: 'clear', 'aria-label': 'Clear search', hidden: true,
   });
   const suggestions = el('ul', {
-    class: 'job-board-suggestions', id: `${id}-suggestions`, role: 'listbox', 'aria-label': 'Suggested roles', hidden: true,
+    class: 'suggestions', id: `${id}-suggestions`, role: 'listbox', 'aria-label': 'Suggested roles', hidden: true,
   });
   const description = text(descriptionCell)
-    ? el('p', { class: 'job-board-description', id: `${id}-search-description` }, text(descriptionCell)) : null;
+    ? el('p', { class: 'description', id: `${id}-search-description` }, text(descriptionCell)) : null;
   if (authoring) editable(description, 'description', 'text', 'Description');
   wrap.append(
     heading || '',
     el(
       'div',
-      { class: 'job-board-field job-board-search-field' },
-      el('label', { class: 'job-board-label', for: input.id }, text(placeholderCell) || 'Search roles'),
+      { class: 'field search-field' },
+      el('label', { class: 'label', for: input.id }, text(placeholderCell) || 'Search roles'),
       input,
       clear,
       suggestions,
@@ -185,27 +185,27 @@ function buildSearch(row, id, authoring, level) {
  * Escape closes (the listbox pattern, with aria-activedescendant).
  */
 function createDropdown(id, label, values) {
-  const valueEl = el('span', { class: 'job-board-dropdown-value' }, label);
+  const valueEl = el('span', { class: 'dropdown-value' }, label);
   const trigger = el('button', {
     type: 'button',
-    class: 'job-board-input job-board-dropdown-trigger',
+    class: 'input dropdown-trigger',
     id: `${id}-trigger`,
     'aria-haspopup': 'listbox',
     'aria-expanded': 'false',
     'aria-controls': `${id}-list`,
   }, valueEl);
   const list = el('ul', {
-    class: 'job-board-options', id: `${id}-list`, role: 'listbox', 'aria-multiselectable': 'true', 'aria-label': label, tabindex: '-1', hidden: true,
+    class: 'options', id: `${id}-list`, role: 'listbox', 'aria-multiselectable': 'true', 'aria-label': label, tabindex: '-1', hidden: true,
   });
   const options = values.map((value, i) => {
-    const count = el('span', { class: 'job-board-option-count' });
+    const count = el('span', { class: 'option-count' });
     const node = el(
       'li',
       {
-        class: 'job-board-option', id: `${id}-option-${i}`, role: 'option', 'aria-selected': 'false',
+        class: 'option', id: `${id}-option-${i}`, role: 'option', 'aria-selected': 'false',
       },
-      el('span', { class: 'job-board-checkbox', 'aria-hidden': 'true' }),
-      el('span', { class: 'job-board-option-label' }, value),
+      el('span', { class: 'checkbox', 'aria-hidden': 'true' }),
+      el('span', { class: 'option-label' }, value),
       count,
     );
     list.append(node);
@@ -213,7 +213,7 @@ function createDropdown(id, label, values) {
       value, key: fold(value), node, count,
     };
   });
-  const root = el('div', { class: 'job-board-dropdown' }, trigger, list);
+  const root = el('div', { class: 'dropdown' }, trigger, list);
   const dropdown = {
     root, trigger, options, selected: new Set(), onChange: () => {}, onOpen: () => {},
   };
@@ -309,19 +309,19 @@ function createDropdown(id, label, values) {
 function buildFilters(row, id, authoring, fallback) {
   const [labelCell, locationLabelCell, locationsCell, departmentLabelCell, departmentsCell] = row
     ? [...row.children] : [];
-  const wrap = el('div', { class: 'job-board-filters', role: 'group' });
+  const wrap = el('div', { class: 'filters', role: 'group' });
   if (row) moveInstrumentation(row, wrap);
   if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = 'Filters';
-  const label = el('p', { class: 'job-board-filters-label', id: `${id}-filters` }, text(labelCell));
+  const label = el('p', { class: 'filters-label', id: `${id}-filters` }, text(labelCell));
   wrap.setAttribute('aria-labelledby', label.id);
   if (authoring) editable(label, 'filterLabel', 'text', 'Filters label');
-  const clear = el('button', { type: 'button', class: 'job-board-clear-all', hidden: true }, 'Clear all');
+  const clear = el('button', { type: 'button', class: 'clear-all', hidden: true }, 'Clear all');
   const locations = entries(locationsCell);
   const departments = entries(departmentsCell);
   const location = createDropdown(`${id}-location`, text(locationLabelCell) || 'Locations', locations.length ? locations : fallback.locations);
   const department = createDropdown(`${id}-department`, text(departmentLabelCell) || 'Departments', departments.length ? departments : fallback.departments);
   wrap.append(
-    el('div', { class: 'job-board-filters-head' }, label, clear),
+    el('div', { class: 'filters-head' }, label, clear),
     location.root,
     department.root,
   );
@@ -333,34 +333,34 @@ function buildFilters(row, id, authoring, fallback) {
 function buildJob(row, authoring, level) {
   const [titleCell, departmentCell, locationCell, descriptionCell, linkCell, labelCell] = [
     ...row.children];
-  const item = el('li', { class: 'job-board-job' });
+  const item = el('li', { class: 'job' });
   moveInstrumentation(row, item);
   const title = text(titleCell);
   if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Job: ${title || 'Untitled'}`;
-  const heading = el(`h${level + 1}`, { class: 'job-board-job-title' }, title);
+  const heading = el(`h${level + 1}`, { class: 'job-title' }, title);
   if (authoring) editable(heading, 'title', 'text', 'Job title');
   const department = text(departmentCell);
   const locations = entries(locationCell);
-  const departmentEl = department ? el('span', { class: 'job-board-job-department' }, department) : null;
+  const departmentEl = department ? el('span', { class: 'job-department' }, department) : null;
   if (authoring) editable(departmentEl, 'department', 'text', 'Department');
   const locationEl = locations.length
-    ? el('span', { class: 'job-board-job-location' }, locations.join('; ')) : null;
+    ? el('span', { class: 'job-location' }, locations.join('; ')) : null;
   if (authoring) editable(locationEl, 'location', 'text', 'Job location');
   const meta = departmentEl || locationEl
     ? el(
       'p',
-      { class: 'job-board-job-meta' },
+      { class: 'job-meta' },
       departmentEl || '',
       // (the dot wraps with the location, never left at the end of a line)
       locationEl ? el(
         'span',
-        { class: 'job-board-job-place' },
-        departmentEl ? el('span', { class: 'job-board-job-dot', 'aria-hidden': 'true' }, '•') : '',
+        { class: 'job-place' },
+        departmentEl ? el('span', { class: 'job-dot', 'aria-hidden': 'true' }, '•') : '',
         locationEl,
       ) : '',
     ) : null;
   const description = text(descriptionCell)
-    ? el('p', { class: 'job-board-job-description' }, text(descriptionCell)) : null;
+    ? el('p', { class: 'job-description' }, text(descriptionCell)) : null;
   if (authoring) editable(description, 'description', 'text', 'Job description');
   const link = linkCell?.querySelector('a[href]');
   const href = link?.getAttribute('href') || text(linkCell);
@@ -368,14 +368,14 @@ function buildJob(row, authoring, level) {
   if (href) {
     const label = text(labelCell) || 'Apply now';
     apply = el('a', {
-      class: 'job-board-apply',
+      class: 'apply',
       href,
       'aria-label': title ? `${label}: ${title}` : undefined,
     }, label);
     if (link) moveInstrumentation(link, apply);
     if (authoring) editable(apply, 'applyLabel', 'text', 'Apply button label');
   }
-  item.append(el('div', { class: 'job-board-job-main' }, heading, meta || '', description || ''), apply || '');
+  item.append(el('div', { class: 'job-main' }, heading, meta || '', description || ''), apply || '');
   return {
     item,
     values: { title, department, locations },
@@ -397,8 +397,8 @@ export default function decorate(block) {
 
   // the board's fixed structure, filled by kind whatever the authored order: the header (left
   // column: Search, then Filters), the job list (right column), then the photo strip
-  const aside = el('div', { class: 'job-board-aside' });
-  const results = el('div', { class: 'job-board-results' });
+  const aside = el('div', { class: 'aside' });
+  const results = el('div', { class: 'results' });
 
   // the jobs: the first MAX_JOBS; the editor shows the others too, dimmed, with a note (they
   // aren't on the published page)
@@ -421,20 +421,20 @@ export default function decorate(block) {
 
   // the list (its own scrolling area, reachable by keyboard), the number of jobs shown (read out
   // by screen readers), the no results message
-  const list = el('ul', { class: 'job-board-list', 'aria-label': 'Open roles', tabindex: '0' }, ...jobs.map((j) => j.item), ...extra.map((j) => j.item));
-  const count = el('p', { class: 'job-board-count', role: 'status', 'aria-live': 'polite' });
-  const empty = el('p', { class: 'job-board-empty', hidden: true }, text(emptyRow) || 'No roles match your search.');
+  const list = el('ul', { class: 'job-list', 'aria-label': 'Open roles', tabindex: '0' }, ...jobs.map((j) => j.item), ...extra.map((j) => j.item));
+  const count = el('p', { class: 'count', role: 'status', 'aria-live': 'polite' });
+  const empty = el('p', { class: 'empty', hidden: true }, text(emptyRow) || 'No roles match your search.');
   if (authoring) {
     editable(empty, 'emptyMessage', 'text', 'No results message');
     empty.hidden = !!jobs.length; // (shown in the editor while there are no jobs)
   }
-  const limitNote = extra.length ? el('p', { class: 'job-board-limit-note', role: 'note' }, `This board shows up to ${MAX_JOBS} jobs: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
+  const limitNote = extra.length ? el('p', { class: 'limit-note', role: 'note' }, `This board shows up to ${MAX_JOBS} jobs: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
   results.append(limitNote || '', count, list, empty);
   // (the id: the target of the careers hero's #open-roles button and of links to the job list)
   const board = el('section', {
-    class: 'job-board-board',
+    class: 'board',
     id: document.getElementById(ANCHOR) ? undefined : ANCHOR,
-    'aria-labelledby': search.wrap.querySelector('.job-board-heading') ? `${id}-heading` : undefined,
+    'aria-labelledby': search.wrap.querySelector('.heading') ? `${id}-heading` : undefined,
   }, aside, results);
 
   // the photo strip under the board
@@ -442,11 +442,11 @@ export default function decorate(block) {
   let gallery = null;
   if (image) {
     const pic = createOptimizedPicture(image.src, image.alt, false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
-    pic.className = 'job-board-gallery-image';
+    pic.className = 'gallery-image';
     const img = pic.querySelector('img');
     moveInstrumentation(image.source, img);
     if (authoring) editable(img, 'gallery', 'media', 'Gallery image');
-    gallery = el('div', { class: 'job-board-gallery' }, pic);
+    gallery = el('div', { class: 'gallery' }, pic);
   }
 
   block.replaceChildren(...[board, gallery].filter(Boolean));
@@ -543,10 +543,10 @@ export default function decorate(block) {
     search.suggestions.replaceChildren(...suggested.map((job, i) => el(
       'li',
       {
-        class: 'job-board-suggestion', id: `${id}-suggestion-${i}`, role: 'option', 'aria-selected': 'false',
+        class: 'suggestion', id: `${id}-suggestion-${i}`, role: 'option', 'aria-selected': 'false',
       },
-      el('span', { class: 'job-board-suggestion-title' }, clip(job.values.title)),
-      el('span', { class: 'job-board-suggestion-meta' }, [job.values.department, job.values.locations.join('; ')].filter(Boolean).map(clip).join(' · ')),
+      el('span', { class: 'suggestion-title' }, clip(job.values.title)),
+      el('span', { class: 'suggestion-meta' }, [job.values.department, job.values.locations.join('; ')].filter(Boolean).map(clip).join(' · ')),
     )));
     search.suggestions.hidden = !suggested.length;
     search.input.setAttribute('aria-expanded', String(!!suggested.length));
@@ -584,7 +584,7 @@ export default function decorate(block) {
   // (pressing a suggestion keeps the focus in the search box)
   search.suggestions.addEventListener('mousedown', (e) => e.preventDefault());
   search.suggestions.addEventListener('click', (e) => {
-    const node = e.target.closest('.job-board-suggestion');
+    const node = e.target.closest('.suggestion');
     if (node) choose([...search.suggestions.children].indexOf(node));
   });
   search.clear.addEventListener('click', () => {

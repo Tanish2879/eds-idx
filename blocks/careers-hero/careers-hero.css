@@ -4,14 +4,17 @@
    46/60, two lines, its last baseline 84px above the bottom, on the Job Board's 60px margin
    (1160px content); the SCROLL button 34px tall at the right margin, centred on the heading's
    last line. Mobile first: phones a taller crop, the heading smaller, the button under it; from
-   900px the design's layout. */
+   900px the design's layout.
+   Every rule is nested in one root, the block in its section's wrapper (only the button's
+   keyframes, which can't be nested, stay outside it). */
 
-main > .section.careers-hero-container > .careers-hero-wrapper {
+main > .section > .careers-hero-wrapper {
   max-width: none;
   padding: 0;
+  margin: 0;
 }
 
-.careers-hero {
+main > .section > .careers-hero-wrapper > .block {
   /* type (see styles/fonts.css; the button in the site's mono face) */
   --ch-display-font: 'New Science Extended', new-science-extended, var(--display-font-family);
   --ch-body-font: 'New Science Extended', new-science-extended, var(--body-font-family);
@@ -29,173 +32,237 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
   isolation: isolate;
   background-color: #0b111c;
   color: #fff;
+
+  /* the photo: cropped to fill, the design's cool tone over it (the warm daylight multiplied
+     towards blue, darker at the top, the shadows lifted to a deep blue);
+     matched to the design's sky (median, brightest tenth) and shadows, see
+     migration-work/scripts/careers-hero-tone.cjs */
+  .media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .media picture,
+  .media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .media img {
+    object-fit: cover;
+    object-position: 64% 30%;
+    filter: saturate(1.35) brightness(1.17);
+  }
+
+  .media::before,
+  .media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1; /* (over the photo: its filter paints it on a layer of its own) */
+    pointer-events: none;
+  }
+
+  .media::before {
+    background:
+      linear-gradient(to bottom, rgb(0 0 0 / 45%), rgb(0 0 0 / 0%) 40%),
+      rgb(178 220 255);
+    mix-blend-mode: multiply;
+  }
+
+  .media::after {
+    background-color: rgb(0 3 14);
+    mix-blend-mode: screen;
+  }
+
+  /* the design's shallow focus: the photo's upper half (the heads, the window frames' tops)
+     softer, sharpening towards the middle */
+  .focus {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    backdrop-filter: blur(3px);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: calc(var(--ch-width) + 2 * var(--ch-gutter));
+    margin: 0 auto;
+    padding: 140px var(--ch-gutter) 48px;
+  }
+
+  .text {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .heading {
+    max-width: 12.5em; /* (wraps as the design: THE WORLD / NEEDS PIONEERS) */
+    margin: 0;
+    color: #fff;
+    font-family: var(--ch-display-font);
+    font-size: clamp(24px, 7.4vw, 46.4px); /* (phones: NEEDS PIONEERS still on one line) */
+    font-weight: 400;
+    line-height: 1.293; /* 60px at 46.4px */
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+    text-transform: uppercase;
+  }
+
+  .description {
+    max-width: 520px;
+    margin: 16px 0 0;
+    color: rgb(255 255 255 / 80%);
+    font-family: var(--ch-body-font);
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  /* the button: a dark glass pill, a mouse icon (an anchor: scrolls down) or an arrow, the
+     label */
+  .cta {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    max-width: 100%;
+    height: 34px;
+    padding: 0 14px 0 13px;
+    border: 1px solid rgb(255 255 255 / 12%);
+    border-radius: 8px;
+    background-color: rgb(255 255 255 / 6%);
+    color: #fff;
+    font-family: var(--ch-button-font);
+    font-size: 12px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+    transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+  }
+
+  .cta:hover {
+    border-color: rgb(255 255 255 / 30%);
+    background-color: rgb(255 255 255 / 14%);
+  }
+
+  .cta:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .cta-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* the icon: an arrow; for an anchor a mouse outline with its wheel moving down */
+  .cta-icon {
+    position: relative;
+    flex: none;
+    box-sizing: border-box;
+    width: 10px;
+    height: 10px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 9L9 1M3 1h6v6' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .cta.is-anchor .cta-icon {
+    width: 9px;
+    height: 13px;
+    border: 1.2px solid #fff;
+    border-radius: 5px;
+    background: none;
+  }
+
+  .cta.is-anchor .cta-icon::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    width: 1.5px;
+    height: 3px;
+    border-radius: 1px;
+    background-color: #fff;
+    transform: translateX(-50%);
+    animation: careers-hero-wheel 1.8s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta.is-anchor .cta-icon::after {
+      animation: none;
+    }
+  }
+
+  /* from 900px: the design's 519px at 1280 (the same proportion elsewhere), the photo 1.33×
+     closer centred on the group, the button at the right, centred on the heading's last line */
+  @media (width >= 900px) {
+    --ch-gutter: 40px;
+
+    min-height: clamp(440px, 40.55vw, 820px);
+
+    .media img {
+      object-position: 50% 20%;
+      transform: scale(1.328); /* (fitted to the design: page = 0.85 × the 2000px asset − (112, 178),
+        see migration-work/scripts/hero-crop-fit.py) */
+      transform-origin: 26.7% 52.4%;
+    }
+
+    .content {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 120px var(--ch-gutter) 75px;
+    }
+
+    .cta {
+      margin-bottom: 8px; /* (on the heading's last line, as the design) */
+    }
+  }
+
+  /* from 1240px: the design's proportions at any width (its 1280 frame scaled): the margins in %
+     of the hero, the heading and the bottom space in its width's units (cqw) */
+  @media (width >= 1240px) {
+    --ch-gutter: 4.6875%; /* 60 / 1280 */
+
+    container-type: inline-size;
+
+    .content {
+      max-width: none;
+      padding-bottom: 5.86cqw; /* 75 / 1280 */
+    }
+
+    .heading {
+      font-size: 3.625cqw; /* 46.4 / 1280 */
+    }
+
+    .cta {
+      margin-bottom: max(0px, calc((4.6875cqw - 34px) / 2 - 5px)); /* (8px at 1280) */
+    }
+  }
+
+  /* authoring (Universal Editor, see styles.css): phones a fixed height instead of the
+     screen's */
+  @media (width < 900px) {
+    html.is-authoring & {
+      min-height: min(var(--authoring-screen), 680px);
+    }
+  }
 }
 
-/* the photo: cropped to fill, the design's cool tone over it (the warm daylight multiplied
-   towards blue, darker at the top, the shadows lifted to a deep blue);
-   matched to the design's sky (median, brightest tenth) and shadows, see
-   migration-work/scripts/careers-hero-tone.cjs */
-.careers-hero .careers-hero-media {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-}
-
-.careers-hero .careers-hero-media picture,
-.careers-hero .careers-hero-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.careers-hero .careers-hero-media img {
-  object-fit: cover;
-  object-position: 64% 30%;
-  filter: saturate(1.35) brightness(1.17);
-}
-
-.careers-hero .careers-hero-media::before,
-.careers-hero .careers-hero-media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1; /* (over the photo: its filter paints it on a layer of its own) */
-  pointer-events: none;
-}
-
-.careers-hero .careers-hero-media::before {
-  background:
-    linear-gradient(to bottom, rgb(0 0 0 / 45%), rgb(0 0 0 / 0%) 40%),
-    rgb(178 220 255);
-  mix-blend-mode: multiply;
-}
-
-.careers-hero .careers-hero-media::after {
-  background-color: rgb(0 3 14);
-  mix-blend-mode: screen;
-}
-
-/* the design's shallow focus: the photo's upper half (the heads, the window frames' tops) softer,
-   sharpening towards the middle */
-.careers-hero .careers-hero-focus {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  backdrop-filter: blur(3px);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 22%, transparent 55%);
-  pointer-events: none;
-}
-
-.careers-hero .careers-hero-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  box-sizing: border-box;
-  width: 100%;
-  max-width: calc(var(--ch-width) + 2 * var(--ch-gutter));
-  margin: 0 auto;
-  padding: 140px var(--ch-gutter) 48px;
-}
-
-.careers-hero .careers-hero-text {
-  min-width: 0;
-  max-width: 100%;
-}
-
-.careers-hero .careers-hero-heading {
-  max-width: 12.5em; /* (wraps as the design: THE WORLD / NEEDS PIONEERS) */
-  margin: 0;
-  color: #fff;
-  font-family: var(--ch-display-font);
-  font-size: clamp(24px, 7.4vw, 46.4px); /* (phones: NEEDS PIONEERS still on one line) */
-  font-weight: 400;
-  line-height: 1.293; /* 60px at 46.4px */
-  letter-spacing: 0;
-  overflow-wrap: anywhere;
-  text-transform: uppercase;
-}
-
-.careers-hero .careers-hero-description {
-  max-width: 520px;
-  margin: 16px 0 0;
-  color: rgb(255 255 255 / 80%);
-  font-family: var(--ch-body-font);
-  font-size: 14px;
-  line-height: 22px;
-}
-
-/* the button: a dark glass pill, a mouse icon (an anchor: scrolls down) or an arrow, the label */
-.careers-hero .careers-hero-cta {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 12px;
-  box-sizing: border-box;
-  max-width: 100%;
-  height: 34px;
-  padding: 0 14px 0 13px;
-  border: 1px solid rgb(255 255 255 / 12%);
-  border-radius: 8px;
-  background-color: rgb(255 255 255 / 6%);
-  color: #fff;
-  font-family: var(--ch-button-font);
-  font-size: 12px;
-  line-height: 1;
-  text-decoration: none;
-  text-transform: uppercase;
-  backdrop-filter: blur(8px);
-  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
-}
-
-.careers-hero .careers-hero-cta:hover {
-  border-color: rgb(255 255 255 / 30%);
-  background-color: rgb(255 255 255 / 14%);
-}
-
-.careers-hero .careers-hero-cta:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
-}
-
-.careers-hero .careers-hero-cta-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* the icon: an arrow; for an anchor a mouse outline with its wheel moving down */
-.careers-hero .careers-hero-cta-icon {
-  position: relative;
-  flex: none;
-  box-sizing: border-box;
-  width: 10px;
-  height: 10px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 9L9 1M3 1h6v6' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-
-.careers-hero .careers-hero-cta.is-anchor .careers-hero-cta-icon {
-  width: 9px;
-  height: 13px;
-  border: 1.2px solid #fff;
-  border-radius: 5px;
-  background: none;
-}
-
-.careers-hero .careers-hero-cta.is-anchor .careers-hero-cta-icon::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  width: 1.5px;
-  height: 3px;
-  border-radius: 1px;
-  background-color: #fff;
-  transform: translateX(-50%);
-  animation: careers-hero-wheel 1.8s ease-in-out infinite;
-}
-
+/* (keyframes can't be nested in a rule: the button's wheel, used above) */
 @keyframes careers-hero-wheel {
   0%,
   20% {
@@ -211,70 +278,5 @@ main > .section.careers-hero-container > .careers-hero-wrapper {
   100% {
     opacity: 0;
     transform: translate(-50%, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .careers-hero .careers-hero-cta.is-anchor .careers-hero-cta-icon::after {
-    animation: none;
-  }
-}
-
-/* from 900px: the design's 519px at 1280 (the same proportion elsewhere), the photo 1.33× closer
-   centred on the group, the button at the right, centred on the heading's last line */
-@media (width >= 900px) {
-  .careers-hero {
-    --ch-gutter: 40px;
-
-    min-height: clamp(440px, 40.55vw, 820px);
-  }
-
-  .careers-hero .careers-hero-media img {
-    object-position: 50% 20%;
-    transform: scale(1.328); /* (fitted to the design: page = 0.85 × the 2000px asset − (112, 178),
-      see migration-work/scripts/hero-crop-fit.py) */
-    transform-origin: 26.7% 52.4%;
-  }
-
-  .careers-hero .careers-hero-content {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 32px;
-    padding: 120px var(--ch-gutter) 75px;
-  }
-
-  .careers-hero .careers-hero-cta {
-    margin-bottom: 8px; /* (on the heading's last line, as the design) */
-  }
-}
-
-/* from 1240px: the design's proportions at any width (its 1280 frame scaled): the margins in % of
-   the hero, the heading and the bottom space in its width's units (cqw) */
-@media (width >= 1240px) {
-  .careers-hero {
-    --ch-gutter: 4.6875%; /* 60 / 1280 */
-
-    container-type: inline-size;
-  }
-
-  .careers-hero .careers-hero-content {
-    max-width: none;
-    padding-bottom: 5.86cqw; /* 75 / 1280 */
-  }
-
-  .careers-hero .careers-hero-heading {
-    font-size: 3.625cqw; /* 46.4 / 1280 */
-  }
-
-  .careers-hero .careers-hero-cta {
-    margin-bottom: max(0px, calc((4.6875cqw - 34px) / 2 - 5px)); /* (8px at 1280) */
-  }
-}
-
-/* authoring (Universal Editor, see styles.css): phones a fixed height instead of the screen's */
-@media (width < 900px) {
-  html.is-authoring .careers-hero {
-    min-height: min(var(--authoring-screen), 680px);
   }
 }

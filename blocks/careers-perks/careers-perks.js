@@ -72,11 +72,11 @@ function buildIcon(iconCell, imageCell, authoring) {
       : createOptimizedPicture(image.src, '', false, [{ width: '96' }]).querySelector('img');
     moveInstrumentation(image.source, img);
     if (authoring) editable(img, 'iconImage', 'media', 'Custom icon image');
-    return el('span', { class: 'careers-perks-icon is-custom' }, img.closest('picture') || img);
+    return el('span', { class: 'perk-icon is-custom' }, img.closest('picture') || img);
   }
   const name = text(iconCell).toLowerCase();
   if (!ICON.test(name)) return null;
-  return el('span', { class: 'careers-perks-icon' }, el('img', {
+  return el('span', { class: 'perk-icon' }, el('img', {
     src: `${window.hlx?.codeBasePath || ''}/icons/perk-${name}.svg`, alt: '', width: 28, height: 28, loading: 'lazy',
   }));
 }
@@ -84,14 +84,14 @@ function buildIcon(iconCell, imageCell, authoring) {
 function buildPerk(row, authoring) {
   if (text(row.firstElementChild) === ITEM) row.firstElementChild.remove();
   const [iconCell, imageCell, titleCell, descriptionCell] = [...row.children];
-  const item = el('li', { class: 'careers-perks-item' });
+  const item = el('li', { class: 'perk' });
   moveInstrumentation(row, item);
   const title = text(titleCell);
   if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Perk: ${title || 'Untitled'}`;
-  const heading = title ? el('h3', { class: 'careers-perks-title' }, title) : null;
+  const heading = title ? el('h3', { class: 'perk-title' }, title) : null;
   if (authoring) editable(heading, 'title', 'text', 'Title');
   const description = lines(descriptionCell).join(' ');
-  const body = description ? el('p', { class: 'careers-perks-description' }, description) : null;
+  const body = description ? el('p', { class: 'perk-description' }, description) : null;
   if (authoring) editable(body, 'description', 'text', 'Description');
   item.append(buildIcon(iconCell, imageCell, authoring) || '', heading || '', body || '');
   return item;
@@ -106,15 +106,15 @@ export default function decorate(block) {
   const [headingRow, introRow] = rows.slice(0, start);
 
   // the header: the heading, the intro (its lines as authored)
-  const header = el('div', { class: 'careers-perks-header' });
+  const header = el('div', { class: 'heading-group' });
   if (text(headingRow)) {
-    const heading = el('h2', { class: 'careers-perks-heading' }, text(headingRow));
+    const heading = el('h2', { class: 'heading' }, text(headingRow));
     if (authoring) editable(heading, 'heading', 'text', 'Heading');
     header.append(heading);
   }
   const intro = lines(introRow);
   if (intro.length) {
-    const p = el('p', { class: 'careers-perks-intro' }, intro.join('\n'));
+    const p = el('p', { class: 'intro' }, intro.join('\n'));
     if (authoring) editable(p, 'intro', 'text', 'Intro');
     header.append(p);
   }
@@ -129,7 +129,7 @@ export default function decorate(block) {
     if (item.dataset.aueResource) item.dataset.aueLabel = `${item.dataset.aueLabel} (over the ${MAX_PERKS}-perk limit: not shown)`;
     return item;
   }) : [];
-  const list = el('ul', { class: 'careers-perks-list' }, ...perks, ...extra);
-  const note = extra.length ? el('p', { class: 'careers-perks-limit-note', role: 'note' }, `This block shows up to ${MAX_PERKS} perks: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
+  const list = el('ul', { class: 'perk-list' }, ...perks, ...extra);
+  const note = extra.length ? el('p', { class: 'limit-note', role: 'note' }, `This block shows up to ${MAX_PERKS} perks: the last ${extra.length === 1 ? 'one (dimmed) isn’t' : `${extra.length} (dimmed) aren’t`} shown on the published page.`) : null;
   block.replaceChildren(...[header.children.length ? header : null, note, list].filter(Boolean));
 }

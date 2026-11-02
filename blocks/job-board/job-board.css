@@ -5,14 +5,16 @@
    scrolling within, a 5px scrollbar): rows of title 18/24 and department · location 13.5/20,
    32px above and below a 1px line, the 118 × 34 black APPLY NOW at the right; 99px below, the
    photo strip across the full width. Mobile first: phones stack the columns (the list without its
-   own scrolling); from 900px the two columns. */
+   own scrolling); from 900px the two columns.
+   Every rule is nested in one root, the block in its section's wrapper. */
 
-main > .section.job-board-container > .job-board-wrapper {
+main > .section > .job-board-wrapper {
   max-width: none;
   padding: 0;
+  margin: 0;
 }
 
-.job-board {
+main > .section > .job-board-wrapper > .block {
   /* colors */
   --jb-bg: #fff;
   --jb-text: #000;
@@ -40,717 +42,713 @@ main > .section.job-board-container > .job-board-wrapper {
   background-color: var(--jb-bg);
   color: var(--jb-text);
   font-family: var(--jb-body-font);
-}
 
-.job-board .job-board-board {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr); /* (never wider than the screen, whatever the texts) */
-  gap: 48px;
-  box-sizing: border-box;
-  max-width: calc(var(--jb-width) + 2 * var(--jb-gutter));
-  margin: 0 auto;
-  padding: 128px var(--jb-gutter) 64px;
-}
-
-/* (the board takes the focus when a link scrolls to it, e.g. the careers hero's SCROLL: no ring
-   around the whole board) */
-.job-board .job-board-board:focus {
-  outline: none;
-}
-
-main > .section:not(:first-child) .job-board .job-board-board {
-  padding-top: 56px;
-}
-
-/* ---- the left column: heading, search, description; the filters ---- */
-
-.job-board .job-board-aside {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 48px;
-  min-width: 0;
-}
-
-.job-board .job-board-search,
-.job-board .job-board-filters {
-  min-width: 0;
-}
-
-.job-board .job-board-heading {
-  margin: 0 0 26px;
-  font-family: var(--jb-display-font);
-  font-size: 30px;
-  font-weight: 400;
-  line-height: 36px;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-.job-board .job-board-heading span {
-  display: -webkit-box;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.job-board .job-board-heading-muted {
-  color: var(--jb-muted);
-}
-
-.job-board .job-board-heading-strong {
-  color: var(--jb-text);
-}
-
-.job-board .job-board-field {
-  position: relative;
-  min-width: 0;
-}
-
-/* screen-reader-only text: the fields' labels (shown inside them), the number of jobs shown */
-.job-board .job-board-label,
-.job-board .job-board-count {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  border: 0;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.job-board .job-board-input {
-  box-sizing: border-box;
-  width: 100%;
-  height: var(--jb-field-height);
-  margin: 0;
-  border: 1px solid var(--jb-border);
-  border-radius: var(--jb-radius);
-  outline: none;
-  background-color: var(--jb-bg);
-  color: var(--jb-text);
-  font-family: var(--jb-body-font);
-  font-weight: 400;
-  line-height: 1;
-  transition: border-color 0.2s ease-out;
-  text-overflow: ellipsis;
-  appearance: none;
-}
-
-.job-board .job-board-input:hover {
-  border-color: #9c9c9c;
-}
-
-.job-board .job-board-input:focus-visible {
-  border-color: #6f6f6f;
-}
-
-/* the search box (the design's open search, design-search-open.jpg): white, outlined, the text
-   17px in; a clear (×) button 23px from the right while there is text */
-.job-board .job-board-search-input {
-  padding: 0 52px 0 17px;
-  font-size: 13px;
-}
-
-/* (empty: the magnifier where the clear button shows while typing) */
-.job-board .job-board-search-input:placeholder-shown {
-  background: var(--jb-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='6' cy='6' r='4.6' fill='none' stroke='%23a6a6a6' stroke-width='1.1'/%3E%3Cpath d='M9.4 9.4l3.4 3.4' stroke='%23a6a6a6' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 22px center / 14px 14px;
-}
-
-.job-board .job-board-search-input::placeholder {
-  color: #555;
-  opacity: 1;
-}
-
-.job-board .job-board-search-input::-webkit-search-cancel-button {
-  appearance: none;
-}
-
-.job-board .job-board-clear {
-  position: absolute;
-  top: 0;
-  right: 13px;
-  width: 28px;
-  height: var(--jb-field-height);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M.6.6l6.8 6.8M7.4.6L.6 7.4' stroke='%23555' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / 8px 8px;
-  cursor: pointer;
-}
-
-.job-board .job-board-clear[hidden] {
-  display: none;
-}
-
-.job-board .job-board-clear:focus-visible {
-  border-radius: 4px;
-  outline: 2px solid #000;
-  outline-offset: -6px;
-}
-
-/* the panels under the search box and the dropdowns: white, outlined, a soft shadow */
-.job-board .job-board-suggestions,
-.job-board .job-board-options {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  left: 0;
-  z-index: 20;
-  box-sizing: border-box;
-  max-height: 340px;
-  margin: 0;
-  overflow-y: auto;
-  border: 1px solid #e3e3e3;
-  border-radius: var(--jb-radius);
-  outline: none;
-  background-color: var(--jb-bg);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
-  list-style: none;
-}
-
-.job-board .job-board-suggestions[hidden],
-.job-board .job-board-options[hidden] {
-  display: none;
-}
-
-/* suggestions: 55px rows 6.5px apart, the title 14px over its department · location 12px */
-.job-board .job-board-suggestions {
-  display: grid;
-  gap: 6.5px;
-  padding: 6px 8px;
-}
-
-.job-board .job-board-suggestion {
-  display: grid;
-  align-content: center;
-  gap: 1px;
-  min-width: 0;
-  min-height: 55px;
-  box-sizing: border-box;
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.job-board .job-board-suggestion.is-active,
-.job-board .job-board-suggestion:hover {
-  background-color: #f2f2f2;
-}
-
-.job-board .job-board-suggestion-title {
-  color: #111;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12px;
-  line-height: 18px;
-}
-
-.job-board .job-board-suggestion-meta {
-  color: #7a7a7a;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 11px;
-  line-height: 16px;
-}
-
-.job-board .job-board-description {
-  margin: 10px 0 0;
-  color: var(--jb-soft);
-  font-size: 12px;
-  line-height: 20px;
-  display: -webkit-box;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-}
-
-/* ---- the filters (the design's open filter, design-filter-open.jpg) ---- */
-
-.job-board .job-board-filters {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr); /* (the dropdowns never wider than the column: an
-    automatic column would grow to a long chosen value) */
-  gap: 10px;
-}
-
-.job-board .job-board-filters-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 0 0 9px;
-}
-
-.job-board .job-board-filters-label {
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--jb-label);
-  font-size: 13px;
-  line-height: 20px;
-}
-
-/* "Clear all ×", shown while a filter is chosen */
-.job-board .job-board-clear-all {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: #111;
-  font-family: var(--jb-body-font);
-  font-size: 12px;
-  line-height: 20px;
-  cursor: pointer;
-}
-
-.job-board .job-board-clear-all::after {
-  content: '';
-  width: 9px;
-  height: 9px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M.6.6l7.8 7.8M8.4.6L.6 8.4' stroke='%23111' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain;
-}
-
-.job-board .job-board-clear-all[hidden] {
-  display: none;
-}
-
-.job-board .job-board-clear-all:hover {
-  text-decoration: underline;
-}
-
-.job-board .job-board-clear-all:focus-visible {
-  border-radius: 2px;
-  outline: 2px solid #000;
-  outline-offset: 3px;
-}
-
-.job-board .job-board-dropdown {
-  position: relative;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-}
-
-/* the dropdown's button: outlined, the chosen values (or its label) 17px in, a chevron 24px from
-   the right (pointing up while open) */
-.job-board .job-board-dropdown-trigger {
-  display: flex;
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-  align-items: center;
-  padding: 0 52px 0 17px;
-  background: var(--jb-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23111' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 24px center / 12px 7px;
-  border-color: #b4b4b4;
-  font-size: 12px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.job-board .job-board-dropdown.is-open .job-board-dropdown-trigger {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3E%3Cpath d='M1 6l5-5 5 5' fill='none' stroke='%23111' stroke-width='1.2'/%3E%3C/svg%3E");
-}
-
-.job-board .job-board-dropdown-value {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* the options: directly under the button, 35px rows 5.5px apart, a checkbox, the value and the
-   number of roles it shows; checked rows grey */
-.job-board .job-board-options {
-  top: 100%;
-  max-width: 100%;
-  display: grid;
-  gap: 5.5px;
-  padding: 7px;
-}
-
-.job-board .job-board-option {
-  display: grid;
-  grid-template-columns: 16px minmax(0, 1fr) auto;
-  min-width: 0;
-  align-items: center;
-  gap: 11px;
-  min-height: 35px;
-  box-sizing: border-box;
-  padding: 0 10px;
-  border-radius: 6px;
-  color: #111;
-  font-size: 12px;
-  line-height: 20px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.job-board .job-board-option[aria-selected='true'],
-.job-board .job-board-option:hover {
-  background-color: #f4f4f4;
-}
-
-/* (the keyboard's current option) */
-.job-board .job-board-options:focus-visible .job-board-option.is-active {
-  outline: 2px solid #000;
-  outline-offset: -2px;
-}
-
-.job-board .job-board-checkbox {
-  box-sizing: border-box;
-  width: 16px;
-  height: 16px;
-  border: 1px solid #d2d2d2;
-  border-radius: 3px;
-  background-color: var(--jb-bg);
-}
-
-.job-board .job-board-option[aria-selected='true'] .job-board-checkbox {
-  border-color: #000;
-  background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 8'%3E%3Cpath d='M1 4.2l2.6 2.5L9 1.3' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / 10px 8px;
-}
-
-.job-board .job-board-option-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.job-board .job-board-option-count {
-  color: #9a9a9a;
-}
-
-/* (an option no role would show with the other choices) */
-.job-board .job-board-option.is-empty:not([aria-selected='true']) .job-board-option-label {
-  color: #9a9a9a;
-}
-
-/* ---- the job list ---- */
-
-.job-board .job-board-results {
-  min-width: 0;
-}
-
-.job-board .job-board-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.job-board .job-board-list:focus-visible {
-  outline: 2px solid #000;
-  outline-offset: 4px;
-}
-
-.job-board .job-board-list[hidden],
-.job-board .job-board-job[hidden] {
-  display: none;
-}
-
-.job-board .job-board-job {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--jb-line);
-}
-
-.job-board .job-board-job:first-child {
-  padding-top: 0;
-}
-
-.job-board .job-board-job-main {
-  min-width: 0;
-}
-
-.job-board .job-board-job-title {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; /* (phones; one line from 600px) */
-  color: var(--jb-text);
-  font-family: var(--jb-body-font);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 24px;
-}
-
-.job-board .job-board-job-meta {
-  display: flex;
-  flex-direction: column; /* (phones: the department, then the location; one line from 600px) */
-  align-items: flex-start;
-  gap: 4px 12px;
-  margin: 6px 0 0;
-  color: #868686;
-  font-size: 12px;
-  line-height: 20px;
-}
-
-/* the department and the location: each cut with "…" when too long */
-.job-board .job-board-job-department,
-.job-board .job-board-job-location {
-  min-width: 0;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* the dot and the location (after its pin), kept together; phones: the location on its own
-   line, without the dot */
-.job-board .job-board-job-place {
-  display: inline-flex;
-  min-width: 0;
-  max-width: 100%;
-  align-items: center;
-  gap: 12px;
-}
-
-.job-board .job-board-job-dot {
-  display: none;
-}
-
-/* the location after its pin */
-.job-board .job-board-job-location {
-  display: block;
-}
-
-.job-board .job-board-job-location::before {
-  content: '';
-  display: inline-block;
-  margin-right: 9px;
-  vertical-align: -2px;
-  flex: none;
-  width: 11px;
-  height: 13px;
-  background-color: currentcolor;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 13'%3E%3Cpath d='M5.5 12.3S1 8.2 1 5.1a4.5 4.5 0 0 1 9 0c0 3.1-4.5 7.2-4.5 7.2z' fill='none' stroke='%23000' stroke-width='1.1'/%3E%3Ccircle cx='5.5' cy='5' r='1.6' fill='none' stroke='%23000' stroke-width='1.1'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-
-.job-board .job-board-job-description {
-  max-width: 560px;
-  display: -webkit-box;
-  margin: 8px 0 0;
-  overflow: hidden;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  color: var(--jb-soft);
-  font-size: 12px;
-  line-height: 20px;
-}
-
-.job-board .job-board-apply {
-  display: inline-block;
-  max-width: 200px;
-  justify-self: start;
-  box-sizing: border-box;
-  min-width: 118px;
-  height: 34px;
-  padding: 0 16px;
-  border-radius: 6px;
-  background-color: #000;
-  color: #fff;
-  font-family: var(--jb-button-font);
-  font-size: 10px;
-  letter-spacing: 0.02em;
-  font-weight: 500;
-  line-height: 34px;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-decoration: none;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: background-color 0.2s ease-out;
-}
-
-.job-board .job-board-apply:hover {
-  background-color: #333;
-}
-
-.job-board .job-board-apply:focus-visible {
-  outline: 2px solid #000;
-  outline-offset: 3px;
-}
-
-.job-board .job-board-empty {
-  margin: 0;
-  padding: 8px 0 32px;
-  color: var(--jb-soft);
-  font-size: 12px;
-  line-height: 20px;
-  overflow-wrap: anywhere;
-}
-
-.job-board .job-board-empty[hidden] {
-  display: none;
-}
-
-/* editor: the note about the jobs over the limit, and those jobs dimmed */
-.job-board .job-board-limit-note {
-  margin: 0 0 16px;
-  padding: 10px 14px;
-  border: 1px solid #f0c36d;
-  border-radius: 6px;
-  background-color: #fff8e6;
-  color: #6b4e00;
-  font-size: 12px;
-  line-height: 18px;
-}
-
-.job-board .job-board-job.is-over-limit {
-  opacity: 0.4;
-}
-
-/* ---- the photo strip, across the full width ---- */
-
-.job-board .job-board-gallery {
-  padding-bottom: 72px;
-}
-
-.job-board .job-board-gallery-image,
-.job-board .job-board-gallery-image img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* (followed by another section, e.g. the careers perks: that section's own spacing instead) */
-main > .section.job-board-container:not(:last-child) .job-board .job-board-gallery {
-  padding-bottom: 0;
-}
-
-/* the title and the button side by side from tablets */
-@media (width >= 600px) {
-  .job-board .job-board-job-dot {
-    display: inline;
+  .board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr); /* (never wider than the screen, whatever the texts) */
+    gap: 48px;
+    box-sizing: border-box;
+    max-width: calc(var(--jb-width) + 2 * var(--jb-gutter));
+    margin: 0 auto;
+    padding: 128px var(--jb-gutter) 64px;
   }
 
-  .job-board .job-board-job-title {
-    display: block;
+  /* (the board takes the focus when a link scrolls to it, e.g. the careers hero's SCROLL: no ring
+     around the whole board) */
+  .board:focus {
+    outline: none;
+  }
+
+  .section:not(:first-child) > .job-board-wrapper > & .board {
+    padding-top: 56px;
+  }
+
+  /* ---- the left column: heading, search, description; the filters ---- */
+
+  .aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 48px;
+    min-width: 0;
+  }
+
+  .search,
+  .filters {
+    min-width: 0;
+  }
+
+  .heading {
+    margin: 0 0 26px;
+    font-family: var(--jb-display-font);
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .heading span {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .heading-muted {
+    color: var(--jb-muted);
+  }
+
+  .heading-strong {
+    color: var(--jb-text);
+  }
+
+  .field {
+    position: relative;
+    min-width: 0;
+  }
+
+  /* screen-reader-only text: the fields' labels (shown inside them), the number of jobs shown */
+  .label,
+  .count {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .input {
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--jb-field-height);
+    margin: 0;
+    border: 1px solid var(--jb-border);
+    border-radius: var(--jb-radius);
+    outline: none;
+    background-color: var(--jb-bg);
+    color: var(--jb-text);
+    font-family: var(--jb-body-font);
+    font-weight: 400;
+    line-height: 1;
+    transition: border-color 0.2s ease-out;
+    text-overflow: ellipsis;
+    appearance: none;
+  }
+
+  .input:hover {
+    border-color: #9c9c9c;
+  }
+
+  .input:focus-visible {
+    border-color: #6f6f6f;
+  }
+
+  /* the search box (the design's open search, design-search-open.jpg): white, outlined, the text
+     17px in; a clear (×) button 23px from the right while there is text */
+  .search-input {
+    padding: 0 52px 0 17px;
+    font-size: 13px;
+  }
+
+  /* (empty: the magnifier where the clear button shows while typing) */
+  .search-input:placeholder-shown {
+    background: var(--jb-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='6' cy='6' r='4.6' fill='none' stroke='%23a6a6a6' stroke-width='1.1'/%3E%3Cpath d='M9.4 9.4l3.4 3.4' stroke='%23a6a6a6' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 22px center / 14px 14px;
+  }
+
+  .search-input::placeholder {
+    color: #555;
+    opacity: 1;
+  }
+
+  .search-input::-webkit-search-cancel-button {
+    appearance: none;
+  }
+
+  .clear {
+    position: absolute;
+    top: 0;
+    right: 13px;
+    width: 28px;
+    height: var(--jb-field-height);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M.6.6l6.8 6.8M7.4.6L.6 7.4' stroke='%23555' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / 8px 8px;
+    cursor: pointer;
+  }
+
+  .clear[hidden] {
+    display: none;
+  }
+
+  .clear:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid #000;
+    outline-offset: -6px;
+  }
+
+  /* the panels under the search box and the dropdowns: white, outlined, a soft shadow */
+  .suggestions,
+  .options {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    left: 0;
+    z-index: 20;
+    box-sizing: border-box;
+    max-height: 340px;
+    margin: 0;
+    overflow-y: auto;
+    border: 1px solid #e3e3e3;
+    border-radius: var(--jb-radius);
+    outline: none;
+    background-color: var(--jb-bg);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 8%);
+    list-style: none;
+  }
+
+  .suggestions[hidden],
+  .options[hidden] {
+    display: none;
+  }
+
+  /* suggestions: 55px rows 6.5px apart, the title 14px over its department · location 12px */
+  .suggestions {
+    display: grid;
+    gap: 6.5px;
+    padding: 6px 8px;
+  }
+
+  .suggestion {
+    display: grid;
+    align-content: center;
+    gap: 1px;
+    min-width: 0;
+    min-height: 55px;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .suggestion.is-active,
+  .suggestion:hover {
+    background-color: #f2f2f2;
+  }
+
+  .suggestion-title {
+    color: #111;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .suggestion-meta {
+    color: #7a7a7a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .description {
+    margin: 10px 0 0;
+    color: var(--jb-soft);
+    font-size: 12px;
+    line-height: 20px;
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  /* ---- the filters (the design's open filter, design-filter-open.jpg) ---- */
+
+  .filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr); /* (the dropdowns never wider than the column: an
+      automatic column would grow to a long chosen value) */
+    gap: 10px;
+  }
+
+  .filters-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 9px;
+  }
+
+  .filters-label {
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--jb-label);
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  /* "Clear all ×", shown while a filter is chosen */
+  .clear-all {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #111;
+    font-family: var(--jb-body-font);
+    font-size: 12px;
+    line-height: 20px;
+    cursor: pointer;
+  }
+
+  .clear-all::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 9'%3E%3Cpath d='M.6.6l7.8 7.8M8.4.6L.6 8.4' stroke='%23111' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+
+  .clear-all[hidden] {
+    display: none;
+  }
+
+  .clear-all:hover {
+    text-decoration: underline;
+  }
+
+  .clear-all:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid #000;
+    outline-offset: 3px;
+  }
+
+  .dropdown {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* the dropdown's button: outlined, the chosen values (or its label) 17px in, a chevron 24px from
+     the right (pointing up while open) */
+  .dropdown-trigger {
+    display: flex;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    align-items: center;
+    padding: 0 52px 0 17px;
+    background: var(--jb-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23111' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat right 24px center / 12px 7px;
+    border-color: #b4b4b4;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .dropdown.is-open .dropdown-trigger {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 7'%3E%3Cpath d='M1 6l5-5 5 5' fill='none' stroke='%23111' stroke-width='1.2'/%3E%3C/svg%3E");
+  }
+
+  .dropdown-value {
+    min-width: 0;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .job-board .job-board-job-meta {
-    flex-flow: row nowrap;
+  /* the options: directly under the button, 35px rows 5.5px apart, a checkbox, the value and the
+     number of roles it shows; checked rows grey */
+  .options {
+    top: 100%;
+    max-width: 100%;
+    display: grid;
+    gap: 5.5px;
+    padding: 7px;
+  }
+
+  .option {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+    min-width: 0;
     align-items: center;
+    gap: 11px;
+    min-height: 35px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    border-radius: 6px;
+    color: #111;
+    font-size: 12px;
+    line-height: 20px;
+    cursor: pointer;
+    user-select: none;
   }
 
-  .job-board .job-board-job-department {
-    flex: 0 1 auto;
+  .option[aria-selected='true'],
+  .option:hover {
+    background-color: #f4f4f4;
   }
 
-  /* (a long department is shortened first; the location keeps up to half the line) */
-  .job-board .job-board-job-place {
-    flex: 0 0 auto;
-    max-width: 50%;
+  /* (the keyboard's current option) */
+  .options:focus-visible .option.is-active {
+    outline: 2px solid #000;
+    outline-offset: -2px;
   }
 
-  .job-board .job-board-job {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    gap: 24px;
-  }
-}
-
-/* ---- from 900px: the two columns ---- */
-@media (width >= 900px) {
-  .job-board {
-    --jb-gutter: 40px;
+  .checkbox {
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #d2d2d2;
+    border-radius: 3px;
+    background-color: var(--jb-bg);
   }
 
-  .job-board .job-board-board {
-    grid-template-columns: minmax(0, 370px) minmax(0, 1fr);
-    column-gap: clamp(48px, 9.5vw, 122px);
-    padding: 105px var(--jb-gutter) 99px;
+  .option[aria-selected='true'] .checkbox {
+    border-color: #000;
+    background: #000 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 8'%3E%3Cpath d='M1 4.2l2.6 2.5L9 1.3' fill='none' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / 10px 8px;
   }
 
-  /* (under another section, e.g. the careers hero: the design's 78px above the board instead of
-     the room for the floating nav) */
-  main > .section:not(:first-child) .job-board .job-board-board {
-    padding-top: 78px;
+  .option-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .job-board .job-board-aside {
-    gap: 40px;
+  .option-count {
+    color: #9a9a9a;
   }
 
-  /* the list scrolls within the design's height, its thin scrollbar 33px right of the buttons */
-  .job-board .job-board-list {
-    max-height: 521px;
-    padding-right: 28px;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-color: #8a8a8a #f0f0f0;
-    scrollbar-width: thin;
+  /* (an option no role would show with the other choices) */
+  .option.is-empty:not([aria-selected='true']) .option-label {
+    color: #9a9a9a;
   }
 
-  .job-board .job-board-job {
-    padding: 32px 0;
+  /* ---- the job list ---- */
+
+  .results {
+    min-width: 0;
   }
 
-  .job-board .job-board-job-title {
-    font-size: 15px;
+  .job-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .job-board .job-board-gallery {
-    padding-bottom: 120px;
-  }
-}
-
-@media (width >= 1240px) {
-  /* the design's proportions at any width (its 1280 frame scaled): the margins in % of the page,
-     the left column and the gap in % of the board */
-  .job-board {
-    --jb-gutter: 4.6875%; /* 60 / 1280 */
+  .job-list:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 4px;
   }
 
-  .job-board .job-board-board {
-    grid-template-columns: minmax(0, 31.9%) minmax(0, 1fr); /* 370 / 1160 */
-    column-gap: 10.52%; /* 122 / 1160 */
-    max-width: none;
+  .job-list[hidden],
+  .job[hidden] {
+    display: none;
   }
-}
 
-/* (Chrome / Safari: the design's 5px scrollbar; the standard properties above set a thin one in
-   the other browsers) */
-@supports selector(::-webkit-scrollbar) {
+  .job {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--jb-line);
+  }
+
+  .job:first-child {
+    padding-top: 0;
+  }
+
+  .job-main {
+    min-width: 0;
+  }
+
+  .job-title {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* (phones; one line from 600px) */
+    color: var(--jb-text);
+    font-family: var(--jb-body-font);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  .job-meta {
+    display: flex;
+    flex-direction: column; /* (phones: the department, then the location; one line from 600px) */
+    align-items: flex-start;
+    gap: 4px 12px;
+    margin: 6px 0 0;
+    color: #868686;
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  /* the department and the location: each cut with "…" when too long */
+  .job-department,
+  .job-location {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* the dot and the location (after its pin), kept together; phones: the location on its own
+     line, without the dot */
+  .job-place {
+    display: inline-flex;
+    min-width: 0;
+    max-width: 100%;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .job-dot {
+    display: none;
+  }
+
+  /* the location after its pin */
+  .job-location {
+    display: block;
+  }
+
+  .job-location::before {
+    content: '';
+    display: inline-block;
+    margin-right: 9px;
+    vertical-align: -2px;
+    flex: none;
+    width: 11px;
+    height: 13px;
+    background-color: currentcolor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 13'%3E%3Cpath d='M5.5 12.3S1 8.2 1 5.1a4.5 4.5 0 0 1 9 0c0 3.1-4.5 7.2-4.5 7.2z' fill='none' stroke='%23000' stroke-width='1.1'/%3E%3Ccircle cx='5.5' cy='5' r='1.6' fill='none' stroke='%23000' stroke-width='1.1'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .job-description {
+    max-width: 560px;
+    display: -webkit-box;
+    margin: 8px 0 0;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--jb-soft);
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .apply {
+    display: inline-block;
+    max-width: 200px;
+    justify-self: start;
+    box-sizing: border-box;
+    min-width: 118px;
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 6px;
+    background-color: #000;
+    color: #fff;
+    font-family: var(--jb-button-font);
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    font-weight: 500;
+    line-height: 34px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color 0.2s ease-out;
+  }
+
+  .apply:hover {
+    background-color: #333;
+  }
+
+  .apply:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 3px;
+  }
+
+  .empty {
+    margin: 0;
+    padding: 8px 0 32px;
+    color: var(--jb-soft);
+    font-size: 12px;
+    line-height: 20px;
+    overflow-wrap: anywhere;
+  }
+
+  .empty[hidden] {
+    display: none;
+  }
+
+  /* editor: the note about the jobs over the limit, and those jobs dimmed */
+  .limit-note {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    border: 1px solid #f0c36d;
+    border-radius: 6px;
+    background-color: #fff8e6;
+    color: #6b4e00;
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  .job.is-over-limit {
+    opacity: 0.4;
+  }
+
+  /* ---- the photo strip, across the full width ---- */
+
+  .gallery {
+    padding-bottom: 72px;
+  }
+
+  .gallery-image,
+  .gallery-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* (followed by another section, e.g. the careers perks: that section's own spacing instead) */
+  .section:not(:last-child) > .job-board-wrapper > & .gallery {
+    padding-bottom: 0;
+  }
+
+  /* the title and the button side by side from tablets */
+  @media (width >= 600px) {
+    .job-dot {
+      display: inline;
+    }
+
+    .job-title {
+      display: block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .job-meta {
+      flex-flow: row nowrap;
+      align-items: center;
+    }
+
+    .job-department {
+      flex: 0 1 auto;
+    }
+
+    /* (a long department is shortened first; the location keeps up to half the line) */
+    .job-place {
+      flex: 0 0 auto;
+      max-width: 50%;
+    }
+
+    .job {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+      gap: 24px;
+    }
+  }
+
+  /* ---- from 900px: the two columns ---- */
   @media (width >= 900px) {
-    .job-board .job-board-list {
-      padding-right: 33px;
-      scrollbar-color: auto;
-      scrollbar-width: auto;
+    --jb-gutter: 40px;
+
+    .board {
+      grid-template-columns: minmax(0, 370px) minmax(0, 1fr);
+      column-gap: clamp(48px, 9.5vw, 122px);
+      padding: 105px var(--jb-gutter) 99px;
     }
 
-    .job-board .job-board-list::-webkit-scrollbar {
-      width: 5px;
+    /* (under another section, e.g. the careers hero: the design's 78px above the board instead of
+       the room for the floating nav) */
+    .section:not(:first-child) > .job-board-wrapper > & .board {
+      padding-top: 78px;
     }
 
-    .job-board .job-board-list::-webkit-scrollbar-track {
-      border-radius: 3px;
-      background-color: #f0f0f0;
+    .aside {
+      gap: 40px;
     }
 
-    .job-board .job-board-list::-webkit-scrollbar-thumb {
-      border-radius: 3px;
-      background-color: #8a8a8a;
+    /* the list scrolls within the design's height, its thin scrollbar 33px right of the buttons */
+    .job-list {
+      max-height: 521px;
+      padding-right: 28px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-color: #8a8a8a #f0f0f0;
+      scrollbar-width: thin;
+    }
+
+    .job {
+      padding: 32px 0;
+    }
+
+    .job-title {
+      font-size: 15px;
+    }
+
+    .gallery {
+      padding-bottom: 120px;
+    }
+  }
+
+  @media (width >= 1240px) {
+    /* the design's proportions at any width (its 1280 frame scaled): the margins in % of the page,
+       the left column and the gap in % of the board */
+    --jb-gutter: 4.6875%; /* 60 / 1280 */
+
+    .board {
+      grid-template-columns: minmax(0, 31.9%) minmax(0, 1fr); /* 370 / 1160 */
+      column-gap: 10.52%; /* 122 / 1160 */
+      max-width: none;
+    }
+  }
+
+  /* (Chrome / Safari: the design's 5px scrollbar; the standard properties above set a thin one in
+     the other browsers) */
+  @supports selector(::-webkit-scrollbar) {
+    @media (width >= 900px) {
+      .job-list {
+        padding-right: 33px;
+        scrollbar-color: auto;
+        scrollbar-width: auto;
+      }
+
+      .job-list::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .job-list::-webkit-scrollbar-track {
+        border-radius: 3px;
+        background-color: #f0f0f0;
+      }
+
+      .job-list::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: #8a8a8a;
+      }
     }
   }
 }
