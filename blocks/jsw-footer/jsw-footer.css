@@ -7,16 +7,19 @@
    175px wide and 24px apart (the titles 15px uppercase white; the links 12px grey on 26px lines,
    the first 4px under the title; the social squares 36px, 5px apart, 15px under the title); the
    legal link at the bottom left (10px mono, underlined), 32px above the bottom.
-   Variant B – Alternate (.variant-b only, after the base rules; design-footer-b.jpg).
+   Variant B – Alternate (&.variant-b, after the base rules; design-footer-b.jpg).
    Mobile first: phones stack the brand over the columns (two side by side); from 900px the
-   designs' layouts. */
+   designs' layouts.
+   Every rule is nested in one root: the block in its wrapper, in a section of the page (main) or
+   of a page's footer (.footer, where pages show the footer document). */
 
-main > .section.jsw-footer-container > .jsw-footer-wrapper {
+main > .section > .jsw-footer-wrapper {
   max-width: none;
   padding: 0;
+  margin: 0;
 }
 
-.jsw-footer {
+:is(main, .footer) > .section > .jsw-footer-wrapper > .block {
   --jf-text: #fff;
   --jf-muted: #a0a0a0;
   --jf-square: #181b1c;
@@ -32,437 +35,434 @@ main > .section.jsw-footer-container > .jsw-footer-wrapper {
   background-color: #000;
   color: var(--jf-text);
   font-family: var(--jf-font);
-}
 
-/* the background media: the image or the video fills the footer, anchored to its bottom */
-.jsw-footer .jsw-footer-background {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
+  /* the background media: the image or the video fills the footer, anchored to its bottom */
+  .background {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
 
-.jsw-footer .jsw-footer-background picture,
-.jsw-footer .jsw-footer-background img,
-.jsw-footer .jsw-footer-video {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
+  .background picture,
+  .background img,
+  .video {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
 
-.jsw-footer .jsw-footer-background img,
-.jsw-footer .jsw-footer-video {
-  object-fit: cover;
-  object-position: 50% 100%;
-}
+  .background img,
+  .video {
+    object-fit: cover;
+    object-position: 50% 100%;
+  }
 
-/* (editor: the video's poster, the background image field, stays editable behind the video) */
-.jsw-footer .jsw-footer-poster {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
+  /* (editor: the video's poster, the background image field, stays editable behind the video) */
+  .poster {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
 
-.jsw-footer .jsw-footer-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 40px;
-}
+  .inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
 
-/* the brand: the wordmark, the copyright and location, the button */
-.jsw-footer .jsw-footer-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-}
+  /* the brand: the wordmark, the copyright and location, the button */
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+  }
 
-.jsw-footer .jsw-footer-logo {
-  display: block;
-  line-height: 0;
-}
+  .logo {
+    display: block;
+    line-height: 0;
+  }
 
-.jsw-footer .jsw-footer-logo img {
-  display: block;
-  width: 164px;
-  height: auto;
-}
+  .logo img {
+    display: block;
+    width: 164px;
+    height: auto;
+  }
 
-.jsw-footer .jsw-footer-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 8px;
-  max-width: 100%;
-  margin: 4px 0 0;
-  color: var(--jf-muted);
-  font-size: 13px;
-  line-height: 18px;
-}
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 8px;
+    max-width: 100%;
+    margin: 4px 0 0;
+    color: var(--jf-muted);
+    font-size: 13px;
+    line-height: 18px;
+  }
 
-.jsw-footer .jsw-footer-meta span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .meta span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-.jsw-footer .jsw-footer-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  box-sizing: border-box;
-  max-width: 100%;
-  height: 40px;
-  margin-top: 48px;
-  padding: 0 26px 0 24px;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #111;
-  font-size: 13px;
-  line-height: 1;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background-color 0.2s ease-out;
-}
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    box-sizing: border-box;
+    max-width: 100%;
+    height: 40px;
+    margin-top: 48px;
+    padding: 0 26px 0 24px;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #111;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease-out;
+  }
 
-.jsw-footer .jsw-footer-cta:hover {
-  background-color: #e6e6e6;
-}
+  .cta:hover {
+    background-color: #e6e6e6;
+  }
 
-.jsw-footer .jsw-footer-cta:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
-}
+  .cta:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
 
-.jsw-footer .jsw-footer-cta-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .cta-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-.jsw-footer .jsw-footer-cta-icon {
-  flex: none;
-  width: 8px;
-  height: 8px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M4 0v8M0 4h8' stroke='%23111' stroke-width='1.1'/%3E%3C/svg%3E") center / contain no-repeat;
-}
+  .cta-icon {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M4 0v8M0 4h8' stroke='%23111' stroke-width='1.1'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
 
-/* the columns: phones two side by side; each a title, its links, its social squares */
-.jsw-footer .jsw-footer-columns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 32px 24px;
-  min-width: 0;
-}
+  /* the columns: phones two side by side; each a title, its links, its social squares */
+  .link-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 24px;
+    min-width: 0;
+  }
 
-.jsw-footer .jsw-footer-column {
-  flex: 1 1 calc(50% - 12px);
-  min-width: 0;
-}
+  .column {
+    flex: 1 1 calc(50% - 12px);
+    min-width: 0;
+  }
 
-.jsw-footer .jsw-footer-column-title {
-  margin: 0;
-  overflow: hidden;
-  color: var(--jf-text);
-  font-family: var(--jf-font);
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 20px;
-  letter-spacing: 0;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
+  .column-title {
+    margin: 0;
+    overflow: hidden;
+    color: var(--jf-text);
+    font-family: var(--jf-font);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
 
-.jsw-footer .jsw-footer-link-list {
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
-}
+  .link-list {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
 
-.jsw-footer .jsw-footer-link-item {
-  min-width: 0;
-  font-size: 12px;
-  line-height: 26px;
-}
+  .link-item {
+    min-width: 0;
+    font-size: 12px;
+    line-height: 26px;
+  }
 
-/* (editor only: links / social links over the column's limit, not shown on the site) */
-.jsw-footer .is-over-limit {
-  opacity: 0.35;
-}
+  /* (editor only: social links over the limit or incomplete, not shown on the site) */
+  .is-over-limit {
+    opacity: 0.35;
+  }
 
-.jsw-footer .jsw-footer-link {
-  display: block;
-  overflow: hidden;
-  color: var(--jf-muted);
-  text-decoration: none;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: color 0.2s ease-out;
-}
+  .link {
+    display: block;
+    overflow: hidden;
+    color: var(--jf-muted);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.2s ease-out;
+  }
 
-.jsw-footer a.jsw-footer-link:hover {
-  color: var(--jf-text);
-}
+  & a.link:hover {
+    color: var(--jf-text);
+  }
 
-.jsw-footer a.jsw-footer-link:focus-visible {
-  border-radius: 2px;
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
+  & a.link:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
 
-.jsw-footer .jsw-footer-social-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin: 15px 0 0;
-  padding: 0;
-  list-style: none;
-}
+  .social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 15px 0 0;
+    padding: 0;
+    list-style: none;
+  }
 
-.jsw-footer .jsw-footer-social-link {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background-color: var(--jf-square);
-  color: var(--jf-text);
-  font-size: 10px;
-  text-decoration: none;
-  transition: background-color 0.2s ease-out;
-}
+  .social-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: var(--jf-square);
+    color: var(--jf-text);
+    font-size: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-out;
+  }
 
-.jsw-footer a.jsw-footer-social-link:hover {
-  background-color: #2b3032;
-}
+  & a.social-icon:hover {
+    background-color: #2b3032;
+  }
 
-.jsw-footer a.jsw-footer-social-link:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
+  & a.social-icon:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
 
-.jsw-footer .jsw-footer-social-link img {
-  display: block;
-  width: 13px;
-  height: 13px;
-}
+  .social-icon img {
+    display: block;
+    width: 13px;
+    height: 13px;
+  }
 
-/* the legal link: at the bottom left */
-.jsw-footer .jsw-footer-legal {
-  position: absolute;
-  bottom: 24px;
-  left: 20px;
-  margin: 0;
-  font-family: var(--jf-mono);
-  font-size: 10px;
-  line-height: 14px;
-  text-transform: uppercase;
-}
+  /* the legal link: at the bottom left */
+  .legal {
+    position: absolute;
+    bottom: 24px;
+    left: 20px;
+    margin: 0;
+    font-family: var(--jf-mono);
+    font-size: 10px;
+    line-height: 14px;
+    text-transform: uppercase;
+  }
 
-.jsw-footer .jsw-footer-legal-link:any-link {
-  color: var(--jf-muted);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-}
+  .legal-link:any-link {
+    color: var(--jf-muted);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
 
-.jsw-footer .jsw-footer-legal-link:hover {
-  color: var(--jf-text);
-}
+  .legal-link:hover {
+    color: var(--jf-text);
+  }
 
-.jsw-footer .jsw-footer-legal-link:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
+  .legal-link:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
 
-/* from 900px: the design's layout; the brand at the left, the columns from x 675 (175px each,
-   24px apart) at the right, the legal link 32px above the bottom */
-@media (width >= 900px) {
-  .jsw-footer {
+  /* from 900px: the design's layout; the brand at the left, the columns from x 675 (175px each,
+     24px apart) at the right, the legal link 32px above the bottom */
+  @media (width >= 900px) {
     min-height: 490px;
     padding: 26px 32px 72px;
+
+    .inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 0 24px;
+    }
+
+    .brand {
+      padding-top: 3.5px; /* (the wordmark's top at 29.5px) */
+    }
+
+    .link-columns {
+      flex-wrap: nowrap;
+      gap: 24px;
+    }
+
+    .column {
+      flex: 0 0 175px;
+    }
+
+    .legal {
+      bottom: 32px;
+      left: 32px;
+    }
   }
 
-  .jsw-footer .jsw-footer-inner {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 0 24px;
-  }
+  /* ==== Variant B – Alternate (&.variant-b; design-footer-b.jpg, a 1280 frame) ==== */
 
-  .jsw-footer .jsw-footer-brand {
-    padding-top: 3.5px; /* (the wordmark's top at 29.5px) */
-  }
+  /* one row, 321px tall on a black-to-teal gradient (no media): from 36px down, the brand at x 36
+     (the wordmark 145px, the copyright and location 11.5px on 22px lines, the legal link 12px
+     underlined), the white button (235 × 36) from x 507, the columns from x 909 (146px each: the
+     title in the extended face 16px, the links 11px on 21.75px lines) and the social squares
+     (36px, 6px apart, no visible title) ending 64px from the right; the brand and button columns
+     in proportion to the width. Phones stack the brand and the button over the columns. */
+  &.variant-b {
+    min-height: 0;
+    padding: 32px 20px 56px;
+    background:
+      linear-gradient(
+        to bottom,
+        #000 0%,
+        rgb(2 16 18) 25%,
+        rgb(3 31 36) 37.4%,
+        rgb(4 53 61) 49.8%,
+        rgb(6 80 91) 62.3%,
+        rgb(17 104 117) 71.7%,
+        rgb(50 124 135) 81%,
+        rgb(82 145 154) 90.3%,
+        rgb(114 165 172) 100%
+      );
 
-  .jsw-footer .jsw-footer-columns {
-    flex-wrap: nowrap;
-    gap: 24px;
-  }
+    .inner {
+      gap: 32px;
+    }
 
-  .jsw-footer .jsw-footer-column {
-    flex: 0 0 175px;
-  }
+    .logo img {
+      width: 145px;
+    }
 
-  .jsw-footer .jsw-footer-legal {
-    bottom: 32px;
-    left: 32px;
-  }
-}
+    .meta {
+      flex-direction: column;
+      margin-top: 6px;
+      color: #b4b4b4;
+      font-size: 11.5px;
+      line-height: 22px;
+    }
 
-/* ==== Variant B – Alternate (.jsw-footer.variant-b; design-footer-b.jpg, a 1280 frame) ==== */
+    .legal {
+      position: static;
+      margin-top: 18px;
+      font-family: var(--jf-font);
+      font-size: 12px;
+      line-height: 16px;
+    }
 
-/* one row, 321px tall on a black-to-teal gradient (no media): from 36px down, the brand at x 36
-   (the wordmark 145px, the copyright and location 11.5px on 22px lines, the legal link 12px
-   underlined), the white button (235 × 36) from x 507, the columns from x 909 (146px each: the
-   title in the extended face 16px, the links 11px on 21.75px lines) and the social squares
-   (36px, 6px apart, no visible title) ending 64px from the right; the brand and button columns
-   in proportion to the width. Phones stack the brand and the button over the columns. */
-.jsw-footer.variant-b {
-  min-height: 0;
-  padding: 32px 20px 56px;
-  background:
-    linear-gradient(
-      to bottom,
-      #000 0%,
-      rgb(2 16 18) 25%,
-      rgb(3 31 36) 37.4%,
-      rgb(4 53 61) 49.8%,
-      rgb(6 80 91) 62.3%,
-      rgb(17 104 117) 71.7%,
-      rgb(50 124 135) 81%,
-      rgb(82 145 154) 90.3%,
-      rgb(114 165 172) 100%
-    );
-}
+    .legal-link:any-link {
+      color: #a3b6b9;
+      text-underline-offset: 3px;
+    }
 
-.jsw-footer.variant-b .jsw-footer-inner {
-  gap: 32px;
-}
+    .action {
+      min-width: 0;
+      max-width: 100%;
+    }
 
-.jsw-footer.variant-b .jsw-footer-logo img {
-  width: 145px;
-}
+    /* the button: 235 × 36, its label at the left, the + at the right */
+    .cta {
+      justify-content: space-between;
+      gap: 12px;
+      width: 235px;
+      height: 36px;
+      margin: 0;
+      padding: 0 14px 0 9px;
+      font-size: 14.5px;
+    }
 
-.jsw-footer.variant-b .jsw-footer-meta {
-  flex-direction: column;
-  margin-top: 6px;
-  color: #b4b4b4;
-  font-size: 11.5px;
-  line-height: 22px;
-}
+    .cta-icon {
+      width: 9px;
+      height: 9px;
+    }
 
-.jsw-footer.variant-b .jsw-footer-legal {
-  position: static;
-  margin-top: 18px;
-  font-family: var(--jf-font);
-  font-size: 12px;
-  line-height: 16px;
-}
+    .column-title {
+      font-family: 'New Science Extended', new-science-extended, var(--display-font-family);
+      font-size: 16px;
+      line-height: 20px;
+    }
 
-.jsw-footer.variant-b .jsw-footer-legal-link:any-link {
-  color: #a3b6b9;
-  text-underline-offset: 3px;
-}
+    .link-list {
+      margin-top: 10px;
+    }
 
-.jsw-footer.variant-b .jsw-footer-action {
-  min-width: 0;
-  max-width: 100%;
-}
+    .link-item {
+      font-size: 11px;
+      line-height: 21.75px;
+    }
 
-/* the button: 235 × 36, its label at the left, the + at the right */
-.jsw-footer.variant-b .jsw-footer-cta {
-  justify-content: space-between;
-  gap: 12px;
-  width: 235px;
-  height: 36px;
-  margin: 0;
-  padding: 0 14px 0 9px;
-  font-size: 14.5px;
-}
+    .link {
+      color: #a9b4b6;
+    }
 
-.jsw-footer.variant-b .jsw-footer-cta-icon {
-  width: 9px;
-  height: 9px;
-}
+    /* the social column: its title only read out by screen readers, the squares at the top */
+    .column.is-social .column-head {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
 
-.jsw-footer.variant-b .jsw-footer-column-title {
-  font-family: 'New Science Extended', new-science-extended, var(--display-font-family);
-  font-size: 16px;
-  line-height: 20px;
-}
+    .social-list {
+      gap: 6px;
+      margin-top: 0;
+    }
 
-.jsw-footer.variant-b .jsw-footer-link-list {
-  margin-top: 10px;
-}
+    .social-icon {
+      background-color: #191e1e;
+    }
 
-.jsw-footer.variant-b .jsw-footer-link-item {
-  font-size: 11px;
-  line-height: 21.75px;
-}
+    .social-icon img {
+      width: 16px;
+      height: 16px;
+    }
 
-.jsw-footer.variant-b .jsw-footer-link {
-  color: #a9b4b6;
-}
+    @media (width >= 900px) {
+      min-height: 321px;
+      padding: 36px 64px 32px 36px;
 
-/* the social column: its title only read out by screen readers, the squares at the top */
-.jsw-footer.variant-b .jsw-footer-column.is-social .jsw-footer-column-head {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
+      /* the brand, the button (from x 507 at 1280: their columns in proportion), the columns */
+      .inner {
+        grid-template-columns: minmax(0, 471fr) minmax(0, 402fr) auto;
+        gap: 0;
+      }
 
-.jsw-footer.variant-b .jsw-footer-social-list {
-  gap: 6px;
-  margin-top: 0;
-}
+      .brand {
+        padding-top: 2.5px; /* (the wordmark's top at 38.5px) */
+      }
 
-.jsw-footer.variant-b .jsw-footer-social-link {
-  background-color: #191e1e;
-}
+      .link-columns {
+        gap: 0;
+      }
 
-.jsw-footer.variant-b .jsw-footer-social-link img {
-  width: 16px;
-  height: 16px;
-}
+      /* a column: as wide as its content and 24px, at least 146px (the design's EXPLORE: its
+         title, then the space before the social squares), so a longer title (TECHNOLOGY) is
+         never cut */
+      .column {
+        flex: 0 0 auto;
+        box-sizing: border-box;
+        min-width: 146px;
+        padding-right: 24px;
+      }
 
-@media (width >= 900px) {
-  .jsw-footer.variant-b {
-    min-height: 321px;
-    padding: 36px 64px 32px 36px;
-  }
+      .column-title {
+        overflow: visible;
+      }
 
-  /* the brand, the button (from x 507 at 1280: their columns in proportion), the columns */
-  .jsw-footer.variant-b .jsw-footer-inner {
-    grid-template-columns: minmax(0, 471fr) minmax(0, 402fr) auto;
-    gap: 0;
-  }
-
-  .jsw-footer.variant-b .jsw-footer-brand {
-    padding-top: 2.5px; /* (the wordmark's top at 38.5px) */
-  }
-
-  .jsw-footer.variant-b .jsw-footer-columns {
-    gap: 0;
-  }
-
-  /* a column: as wide as its content and 24px, at least 146px (the design's EXPLORE: its title,
-     then the space before the social squares), so a longer title (TECHNOLOGY) is never cut */
-  .jsw-footer.variant-b .jsw-footer-column {
-    flex: 0 0 auto;
-    box-sizing: border-box;
-    min-width: 146px;
-    padding-right: 24px;
-  }
-
-  .jsw-footer.variant-b .jsw-footer-column-title {
-    overflow: visible;
-  }
-
-  .jsw-footer.variant-b .jsw-footer-column.is-social {
-    flex: none;
-    min-width: 0;
-    padding-right: 0;
+      .column.is-social {
+        flex: none;
+        min-width: 0;
+        padding-right: 0;
+      }
+    }
   }
 }

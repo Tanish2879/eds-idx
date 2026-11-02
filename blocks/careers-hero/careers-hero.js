@@ -84,26 +84,26 @@ export default function decorate(block) {
     moveInstrumentation(image.source, img);
     if (authoring) editable(img, 'image', 'media', 'Background image');
     // (the design's shallow focus: the upper half softer, see the CSS)
-    media = el('div', { class: 'careers-hero-media' }, picture, el('span', { class: 'careers-hero-focus', 'aria-hidden': 'true' }));
+    media = el('div', { class: 'media' }, picture, el('span', { class: 'focus', 'aria-hidden': 'true' }));
   }
 
   // the heading, the description, the button
-  const heading = text(headingRow) ? el('h1', { class: 'careers-hero-heading' }, text(headingRow)) : null;
+  const heading = text(headingRow) ? el('h1', { class: 'heading' }, text(headingRow)) : null;
   if (authoring) editable(heading, 'heading', 'text', 'Heading');
   const description = text(descriptionRow)
-    ? el('p', { class: 'careers-hero-description' }, text(descriptionRow)) : null;
+    ? el('p', { class: 'description' }, text(descriptionRow)) : null;
   if (authoring) editable(description, 'description', 'text', 'Subheading / description');
   const href = linkRow?.querySelector('a[href]')?.getAttribute('href') || text(linkRow);
   const label = text(labelRow);
   let cta = null;
   if (label && href) {
     const isAnchor = href.startsWith('#');
-    const labelEl = el('span', { class: 'careers-hero-cta-label' }, label);
+    const labelEl = el('span', { class: 'cta-label' }, label);
     if (authoring) editable(labelEl, 'ctaLabel', 'text', 'Button label');
     cta = el(
       'a',
-      { class: `careers-hero-cta${isAnchor ? ' is-anchor' : ''}`, href },
-      el('span', { class: 'careers-hero-cta-icon', 'aria-hidden': 'true' }),
+      { class: `cta${isAnchor ? ' is-anchor' : ''}`, href },
+      el('span', { class: 'cta-icon', 'aria-hidden': 'true' }),
       labelEl,
     );
     if (isAnchor) {
@@ -118,8 +118,8 @@ export default function decorate(block) {
 
   const content = el(
     'div',
-    { class: 'careers-hero-content' },
-    el('div', { class: 'careers-hero-text' }, heading || '', description || ''),
+    { class: 'content' },
+    el('div', { class: 'text' }, heading || '', description || ''),
     cta || '',
   );
   block.replaceChildren(...[media, content].filter(Boolean));

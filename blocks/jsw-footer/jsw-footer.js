@@ -115,11 +115,11 @@ function buildBackground(typeRow, imageRow, videoRow, authoring) {
   const image = cellAsset(imageRow, 'image');
   const video = text(typeRow).toLowerCase() === 'video' ? cellAsset(videoRow, 'video') : null;
   if (!image && !video) return null;
-  const bg = el('div', { class: 'jsw-footer-background', 'aria-hidden': 'true' });
+  const bg = el('div', { class: 'background', 'aria-hidden': 'true' });
   if (video) {
     const type = /\.webm$/i.test(video.src) ? 'video/webm' : 'video/mp4';
     const player = el('video', {
-      class: 'jsw-footer-video', muted: true, loop: true, playsinline: true, preload: 'metadata', poster: image?.src,
+      class: 'video', muted: true, loop: true, playsinline: true, preload: 'metadata', poster: image?.src,
     }, el('source', { src: video.src, type }));
     player.muted = true;
     moveInstrumentation(video.source, player);
@@ -132,7 +132,7 @@ function buildBackground(typeRow, imageRow, videoRow, authoring) {
     bg.append(player);
     if (image && authoring) {
       // (in the editor the poster stays editable: the background image field, hidden behind)
-      const poster = el('img', { class: 'jsw-footer-poster', src: image.src, alt: '' });
+      const poster = el('img', { class: 'poster', src: image.src, alt: '' });
       moveInstrumentation(image.source, poster);
       editable(poster, 'background', 'media', 'Background image (the video\'s poster)');
       bg.append(poster);
@@ -175,16 +175,16 @@ function buildSocial(row, item, authoring) {
     ? el('img', {
       src: `${window.hlx?.codeBasePath || ''}/icons/jsw-social-${network}.svg`, alt: '', width: 13, height: 13, loading: 'lazy',
     })
-    : el('span', { class: 'jsw-footer-social-name' }, name);
+    : el('span', { class: 'social-name' }, name);
   const a = href
     ? el('a', {
-      class: 'jsw-footer-social-link',
+      class: 'social-icon',
       href,
       'aria-label': external ? `${accessible} (opens in a new tab)` : accessible,
       target: external ? '_blank' : undefined,
       rel: external ? 'noopener' : undefined,
     }, icon)
-    : el('span', { class: 'jsw-footer-social-link', 'aria-label': accessible }, icon);
+    : el('span', { class: 'social-icon', 'aria-label': accessible }, icon);
   if (link) moveInstrumentation(link.source, a);
   return a;
 }
@@ -195,23 +195,23 @@ function buildSocial(row, item, authoring) {
  */
 function buildColumn(row, authoring) {
   const [titleCell, ...linkCells] = [...row.children];
-  const column = el('div', { class: 'jsw-footer-column' });
+  const column = el('div', { class: 'column' });
   moveInstrumentation(row, column);
   const title = text(titleCell);
   if (authoring && column.dataset.aueResource) column.dataset.aueLabel = `Column: ${title || 'Untitled'}`;
-  const heading = el('h2', { class: 'jsw-footer-column-title' }, title);
+  const heading = el('h2', { class: 'column-title' }, title);
   if (authoring) editable(heading, 'title', 'text', 'Column title');
-  column.append(el('div', { class: 'jsw-footer-column-head' }, heading));
+  column.append(el('div', { class: 'column-head' }, heading));
   const links = linkCells.slice(0, COLUMN_LINKS).map((cell, i) => {
     // (a link needs both its text and its URL: with only one of them it is not rendered)
     const link = cellLink(cell);
     if (!(link?.label && link.href)) return null;
     const n = i + 1;
-    const a = el('a', { class: 'jsw-footer-link', href: link.href }, link.label);
+    const a = el('a', { class: 'link', href: link.href }, link.label);
     if (authoring) editable(a, `link${n}Text`, 'text', `Link ${n} text`);
-    return el('li', { class: 'jsw-footer-link-item' }, a);
+    return el('li', { class: 'link-item' }, a);
   }).filter(Boolean);
-  if (links.length) column.append(el('ul', { class: 'jsw-footer-link-list' }, ...links));
+  if (links.length) column.append(el('ul', { class: 'link-list' }, ...links));
   return column;
 }
 
@@ -228,16 +228,16 @@ function isCompleteSocial(row) {
 function buildSocialColumn(headingRow, rows, authoring) {
   const title = text(headingRow);
   if (!title && !rows.length) return null;
-  const column = el('div', { class: 'jsw-footer-column is-social' });
-  const heading = el('h2', { class: 'jsw-footer-column-title' }, title);
+  const column = el('div', { class: 'column is-social' });
+  const heading = el('h2', { class: 'column-title' }, title);
   if (authoring) editable(heading, 'socialHeading', 'text', 'Social heading');
-  column.append(el('div', { class: 'jsw-footer-column-head' }, heading));
+  column.append(el('div', { class: 'column-head' }, heading));
   // (an icon without its network or its link is not rendered; nor the ones over the limit)
   const shown = rows.filter(isCompleteSocial).slice(0, MAX_ITEMS);
   // (in the editor the others stay, dimmed, so the authors can complete or remove them)
   const hidden = authoring ? rows.filter((row) => !shown.includes(row)) : [];
   const item = (row) => {
-    const li = el('li', { class: 'jsw-footer-social-item' });
+    const li = el('li', { class: 'social-item' });
     moveInstrumentation(row, li);
     li.append(buildSocial(row, li, authoring));
     if (!shown.includes(row)) {
@@ -248,7 +248,7 @@ function buildSocialColumn(headingRow, rows, authoring) {
     return li;
   };
   const listed = rows.filter((row) => shown.includes(row) || hidden.includes(row));
-  if (listed.length) column.append(el('ul', { class: 'jsw-footer-social-list' }, ...listed.map(item)));
+  if (listed.length) column.append(el('ul', { class: 'social-list' }, ...listed.map(item)));
   return column;
 }
 
@@ -268,7 +268,7 @@ export default function decorate(block) {
   const bg = alternate ? null : buildBackground(typeRow, imageRow, videoRow, authoring);
 
   // the brand: the wordmark (a link), the copyright and location
-  const brand = el('div', { class: 'jsw-footer-brand' });
+  const brand = el('div', { class: 'brand' });
   const logo = cellAsset(logoRow, 'image');
   if (logo) {
     const vector = /\.(svg|png)$/i.test(new URL(logo.src, window.location).pathname);
@@ -282,23 +282,23 @@ export default function decorate(block) {
     const home = cellLink(logoLinkRow);
     const media = img.closest('picture') || img;
     brand.append(home
-      ? el('a', { class: 'jsw-footer-logo', href: home.href }, media)
-      : el('span', { class: 'jsw-footer-logo' }, media));
+      ? el('a', { class: 'logo', href: home.href }, media)
+      : el('span', { class: 'logo' }, media));
   }
-  const copyright = text(copyrightRow) ? el('span', { class: 'jsw-footer-copyright' }, text(copyrightRow)) : null;
+  const copyright = text(copyrightRow) ? el('span', { class: 'copyright' }, text(copyrightRow)) : null;
   if (authoring) editable(copyright, 'copyright', 'text', 'Copyright text');
-  const location = text(locationRow) ? el('span', { class: 'jsw-footer-location' }, text(locationRow)) : null;
+  const location = text(locationRow) ? el('span', { class: 'location' }, text(locationRow)) : null;
   if (authoring) editable(location, 'location', 'text', 'Location text');
-  if (copyright || location) brand.append(el('p', { class: 'jsw-footer-meta' }, copyright || '', location || ''));
+  if (copyright || location) brand.append(el('p', { class: 'meta' }, copyright || '', location || ''));
 
   // the button: its label and its link, two fields (shown with its link)
   const ctaLabel = text(ctaLabelRow);
   const ctaLink = cellLink(ctaLinkRow) || (text(ctaLinkRow) ? { href: text(ctaLinkRow) } : null);
   let button = null;
   if (ctaLink) {
-    const label = el('span', { class: 'jsw-footer-cta-label' }, ctaLabel || ctaLink.label || 'Register interest');
+    const label = el('span', { class: 'cta-label' }, ctaLabel || ctaLink.label || 'Register interest');
     if (authoring) editable(label, 'ctaLabel', 'text', 'CTA button text');
-    button = el('a', { class: 'jsw-footer-cta', href: ctaLink.href }, label, el('span', { class: 'jsw-footer-cta-icon', 'aria-hidden': 'true' }));
+    button = el('a', { class: 'cta', href: ctaLink.href }, label, el('span', { class: 'cta-icon', 'aria-hidden': 'true' }));
     if (ctaLink.source) moveInstrumentation(ctaLink.source, button);
   }
 
@@ -306,26 +306,26 @@ export default function decorate(block) {
   const legal = cellLink(legalRow);
   let legalEl = null;
   if (legal) {
-    const a = el('a', { class: 'jsw-footer-legal-link', href: legal.href }, legal.label || 'Privacy policy');
+    const a = el('a', { class: 'legal-link', href: legal.href }, legal.label || 'Privacy policy');
     moveInstrumentation(legal.source, a);
     if (authoring) editable(a, 'legalLinkText', 'text', 'Privacy policy text');
-    legalEl = el('p', { class: 'jsw-footer-legal' }, a);
+    legalEl = el('p', { class: 'legal' }, a);
   }
 
   // the columns: the footer's Footer Columns, then the social column
   const columns = items.filter((c) => c.kind === 'column').map(({ row }) => buildColumn(row, authoring));
   const social = buildSocialColumn(socialHeadingRow, items.filter((c) => c.kind === 'social').map(({ row }) => row), authoring);
-  const nav = el('nav', { class: 'jsw-footer-columns', 'aria-label': 'Footer' }, ...columns, social || '');
+  const nav = el('nav', { class: 'link-columns', 'aria-label': 'Footer' }, ...columns, social || '');
 
   let inner;
   if (alternate) {
     // B: the brand with the legal link under it; the button in its own column; the columns
     if (legalEl) brand.append(legalEl);
-    inner = el('div', { class: 'jsw-footer-inner' }, brand, el('div', { class: 'jsw-footer-action' }, button || ''), nav);
+    inner = el('div', { class: 'inner' }, brand, el('div', { class: 'action' }, button || ''), nav);
   } else {
     // A: the button under the brand; the columns; the legal link at the bottom left
     if (button) brand.append(button);
-    inner = el('div', { class: 'jsw-footer-inner' }, brand, nav, legalEl || '');
+    inner = el('div', { class: 'inner' }, brand, nav, legalEl || '');
   }
   block.replaceChildren(...[bg, inner].filter(Boolean));
 }
