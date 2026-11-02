@@ -1176,7 +1176,7 @@
         "valueType": "string",
         "name": "classes",
         "label": "Layout",
-        "description": "Variant A: the brand and button at the left, the columns at the right, over the background. Variant B: one row (brand, button, columns; the social squares without their title) on a black-to-teal gradient (no background media).",
+        "description": "Variant A: columns at the right, over the background media; Variant B: one row on a teal gradient.",
         "value": "variant-a",
         "options": [
           {
@@ -1194,7 +1194,7 @@
         "valueType": "string",
         "name": "logo",
         "label": "Logo",
-        "description": "The JSW MOTORS wordmark (white, on transparent).",
+        "description": "The JSW MOTORS wordmark (white, on transparent): SVG, PNG or JPG.",
         "multi": false,
         "required": true
       },
@@ -1243,7 +1243,7 @@
         "valueType": "string",
         "name": "ctaLabel",
         "label": "Button label",
-        "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it). Leave empty for no button.",
+        "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it).",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1254,7 +1254,7 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "Where the button leads: a page, a URL or a mailto: address. Without a link the button is not shown."
+        "description": "A page, URL or mailto: address; without a link the button is not shown."
       },
       {
         "component": "aem-content",
@@ -1279,7 +1279,7 @@
         "valueType": "string",
         "name": "backgroundMedia",
         "label": "Background media",
-        "description": "Variant A's background: the image, or the video (playing muted, looping; the image is its poster and stays for visitors who prefer less motion). Note: Background media is only used in Variant A. This field is ignored if Variant B is selected.",
+        "description": "Image, or a looping video with the image as its poster. Variant A only (ignored in Variant B).",
         "value": "image",
         "options": [
           {
@@ -1297,7 +1297,7 @@
         "valueType": "string",
         "name": "background",
         "label": "Background image",
-        "description": "Fills the footer behind everything (dark at the top, where the texts sit). With a video: its poster. Note: Background media is only used in Variant A. This field is ignored if Variant B is selected.",
+        "description": "JPG or PNG; also the video's poster. Variant A only (ignored in Variant B).",
         "multi": false
       },
       {
@@ -1305,7 +1305,7 @@
         "valueType": "string",
         "name": "backgroundVideo",
         "label": "Background video",
-        "description": "An MP4 (or WebM) video asset, used when the Background media is Video. Note: Background media is only used in Variant A. This field is ignored if Variant B is selected.",
+        "description": "MP4 or MOV, used when Background media is Video. Variant A only (ignored in Variant B).",
         "multi": false
       },
       {
@@ -1313,7 +1313,7 @@
         "valueType": "string",
         "name": "socialHeading",
         "label": "Social heading",
-        "description": "The social icons' heading, e.g. CONNECT (in Variant B read out by screen readers only). The icons are the footer's Social Link children (up to 4 are shown).",
+        "description": "E.g. CONNECT, above the social icons (up to 4); in Variant B for screen readers only.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1341,7 +1341,7 @@
         "valueType": "string",
         "name": "link1",
         "label": "Link 1",
-        "description": "A page, a URL or a mailto: address. A column has up to 4 links (Link 1 to Link 4); leave a link empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page.",
+        "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
         "required": true
       },
       {
@@ -1349,7 +1349,7 @@
         "valueType": "string",
         "name": "link1Text",
         "label": "Link 1 text",
-        "description": "E.g. NEVs. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page.",
+        "description": "E.g. NEVs; without Link 1 the link is not shown.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1361,7 +1361,7 @@
         "valueType": "string",
         "name": "link2",
         "label": "Link 2",
-        "description": "A page, a URL or a mailto: address. Leave empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
+        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown."
       },
       {
         "component": "text",
@@ -1372,14 +1372,14 @@
         "validation": {
           "maxLength": 64
         },
-        "description": "Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
+        "description": "Without Link 2 the link is not shown."
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "link3",
         "label": "Link 3",
-        "description": "A page, a URL or a mailto: address. Leave empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
+        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown."
       },
       {
         "component": "text",
@@ -1390,14 +1390,14 @@
         "validation": {
           "maxLength": 64
         },
-        "description": "Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
+        "description": "Without Link 3 the link is not shown."
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "link4",
         "label": "Link 4",
-        "description": "A page, a URL or a mailto: address. Leave empty to not show it. Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
+        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown."
       },
       {
         "component": "text",
@@ -1408,7 +1408,7 @@
         "validation": {
           "maxLength": 64
         },
-        "description": "Warning: Both the text and the URL must be provided. If one is missing, the link will not be displayed on the page."
+        "description": "Without Link 4 the link is not shown."
       }
     ]
   },
@@ -1420,7 +1420,7 @@
         "valueType": "string",
         "name": "network",
         "label": "Network",
-        "description": "Its icon (a square button), and the link's name for screen readers. Warning: Both the network and the profile link must be provided. If one is missing, the icon will not be displayed on the page.",
+        "description": "The icon and its screen-reader name; without a profile link the icon is not shown.",
         "value": "facebook",
         "required": true,
         "options": [
@@ -1451,7 +1451,7 @@
         "valueType": "string",
         "name": "link",
         "label": "Profile link",
-        "description": "The network's page, e.g. https://www.linkedin.com/company/… Warning: Both the network and the profile link must be provided. If one is missing, the icon will not be displayed on the page.",
+        "description": "The network page URL; without a network the icon is not shown.",
         "required": true
       },
       {
@@ -1459,7 +1459,7 @@
         "valueType": "string",
         "name": "label",
         "label": "Accessible name",
-        "description": "Optional: what screen readers announce, e.g. JSW Motors on LinkedIn (default: JSW Motors on <network>).",
+        "description": "Optional screen-reader name (default: JSW Motors on <network>).",
         "value": "",
         "validation": {
           "maxLength": 64

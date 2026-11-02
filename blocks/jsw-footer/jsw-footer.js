@@ -45,8 +45,11 @@ const NETWORK_HOSTS = {
   'youtube.com': 'youtube',
   'youtu.be': 'youtube',
 };
-const IMAGE_FILE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
-const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
+// the accepted asset formats, by field: an asset in another format is not shown (a warning is
+// logged); SVG is accepted for the logo only
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png'];
+const LOGO_EXTENSIONS = [...IMAGE_EXTENSIONS, 'svg'];
+const VIDEO_EXTENSIONS = ['mp4', 'mov'];
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -67,19 +70,35 @@ function assetSrc(href) {
   return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : href;
 }
 
+// a file's extension (from its address's path, without the query), lower case
+function extensionOf(src) {
+  try {
+    const file = new URL(src, window.location).pathname.split('/').pop();
+    return file.includes('.') ? file.split('.').pop().toLowerCase() : '';
+  } catch (e) {
+    return '';
+  }
+}
+
 /*
- * The asset of a cell: an <img>, or a link to a file of that kind (AEM delivers an asset it
- * can't resolve, or a video, as a plain link).
+ * The asset of a cell: an <img>, or a link (AEM delivers an asset it can't resolve, or a video,
+ * as a plain link); only in one of the field's accepted formats (extensions): another is not
+ * shown, with a warning
  */
-function cellAsset(cell, kind = 'image') {
-  const img = kind === 'image' ? cell?.querySelector('img') : null;
-  if (img) return { src: img.src, alt: img.alt, source: img };
-  const pattern = kind === 'image' ? IMAGE_FILE : VIDEO_FILE;
-  const link = [...(cell?.querySelectorAll('a[href]') || [])]
-    .find((a) => pattern.test(new URL(a.href, window.location).pathname));
-  if (!link) return null;
+function cellAsset(cell, field, extensions) {
+  const img = cell?.querySelector('img');
+  const link = img ? null : cell?.querySelector('a[href]');
+  if (!img && !link) return null;
+  const src = img ? img.src : assetSrc(link.href);
+  const extension = extensionOf(src);
+  if (!extensions.includes(extension)) {
+    // eslint-disable-next-line no-console
+    console.warn(`jsw-footer: the ${field} "${src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't accepted there (accepted: ${extensions.map((x) => `.${x}`).join(', ')})`);
+    return null;
+  }
+  if (img) return { src, alt: img.alt, source: img };
   const label = link.textContent.trim();
-  return { src: assetSrc(link.href), alt: label && !label.includes('/') ? label : '', source: link };
+  return { src, alt: label && !label.includes('/') ? label : '', source: link };
 }
 
 // a link cell: its href and label (the label from the link's text, unless that is only the URL)
@@ -112,12 +131,13 @@ function readRows(block) {
 
 // the background: the image, or the video with the image as its poster
 function buildBackground(typeRow, imageRow, videoRow, authoring) {
-  const image = cellAsset(imageRow, 'image');
-  const video = text(typeRow).toLowerCase() === 'video' ? cellAsset(videoRow, 'video') : null;
+  const image = cellAsset(imageRow, 'background image', IMAGE_EXTENSIONS);
+  const video = text(typeRow).toLowerCase() === 'video' ? cellAsset(videoRow, 'background video', VIDEO_EXTENSIONS) : null;
   if (!image && !video) return null;
   const bg = el('div', { class: 'background', 'aria-hidden': 'true' });
   if (video) {
-    const type = /\.webm$/i.test(video.src) ? 'video/webm' : 'video/mp4';
+    // (an MP4 declared as such; a MOV without a type: the browser plays it if it can decode it)
+    const type = extensionOf(video.src) === 'mp4' ? 'video/mp4' : undefined;
     const player = el('video', {
       class: 'video', muted: true, loop: true, playsinline: true, preload: 'metadata', poster: image?.src,
     }, el('source', { src: video.src, type }));
@@ -269,7 +289,7 @@ export default function decorate(block) {
 
   // the brand: the wordmark (a link), the copyright and location
   const brand = el('div', { class: 'brand' });
-  const logo = cellAsset(logoRow, 'image');
+  const logo = cellAsset(logoRow, 'logo', LOGO_EXTENSIONS);
   if (logo) {
     const vector = /\.(svg|png)$/i.test(new URL(logo.src, window.location).pathname);
     const img = vector
