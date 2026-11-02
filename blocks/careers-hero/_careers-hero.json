@@ -25,7 +25,7 @@
           "valueType": "string",
           "name": "image",
           "label": "Background image",
-          "description": "Fills the hero behind the heading (cropped to fit; the design's cool tone is added over it).",
+          "description": "The hero photo (cropped to fit, toned). JPG, PNG, WebP or SVG; other files are not shown.",
           "multi": false,
           "required": true
         },
@@ -34,7 +34,7 @@
           "valueType": "string",
           "name": "imageAlt",
           "label": "Background image alt text",
-          "description": "Describe the photo for screen readers, e.g. People in silhouette before a city skyline. Leave empty if it is only decorative.",
+          "description": "Describes the photo for screen readers; empty if decorative.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -45,7 +45,7 @@
           "valueType": "string",
           "name": "heading",
           "label": "Heading",
-          "description": "The page's main heading, e.g. THE WORLD NEEDS PIONEERS (it wraps onto two lines).",
+          "description": "E.g. THE WORLD NEEDS PIONEERS.",
           "value": "",
           "required": true,
           "validation": {
@@ -69,7 +69,7 @@
           "valueType": "string",
           "name": "ctaLabel",
           "label": "Button label",
-          "description": "E.g. SCROLL or VIEW OPENINGS. Leave empty for no button.",
+          "description": "E.g. SCROLL; empty for no button.",
           "value": "",
           "validation": {
             "maxLength": 30
@@ -80,7 +80,7 @@
           "valueType": "string",
           "name": "ctaLink",
           "label": "Button link",
-          "description": "#open-roles scrolls smoothly down to the Job Board on this page (any #anchor: to the element with that id, else to the job board); a page path or URL opens that page.",
+          "description": "#open-roles scrolls to the Job Board; a page or URL opens it.",
           "value": "",
           "validation": {
             "maxLength": 256

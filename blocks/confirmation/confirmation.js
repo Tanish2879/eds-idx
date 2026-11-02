@@ -18,7 +18,6 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  */
 
 const VARIANTS = ['variant-a', 'variant-b'];
-const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const TOKEN = /(,?\s*)\{(\w+)(?:\|([^}]*))?\}/g;
 const STORED = 'jsw-reservation'; // the reservation form's last sent data (sessionStorage)
 
@@ -33,26 +32,51 @@ function el(tag, attrs = {}, ...children) {
 
 const text = (cell) => (cell?.textContent || '').trim();
 
+// the accepted image formats (a file of another format, e.g. a PDF, is not shown: a warning is
+// logged)
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+
+// a file's extension (from its address's path, without the query), lower case
+function extensionOf(src) {
+  try {
+    const file = new URL(src, window.location).pathname.split('/').pop();
+    return file.includes('.') ? file.split('.').pop().toLowerCase() : '';
+  } catch (e) {
+    return '';
+  }
+}
+
 /*
- * The image of a row: an <img>, or a link to an image file. AEM delivers an image reference it
- * can't resolve (an asset that isn't in AEM Assets yet) as a plain link (its text: the alt text,
- * or the path); placeholder images under a /drafts/ folder are then loaded from the copy in this
- * repository, on the code host (in the Universal Editor the page itself comes from AEM author).
+ * The image of a row: an <img>, or a link (AEM delivers an image reference it can't resolve, an
+ * asset that isn't in AEM Assets yet, as a plain link: its text the alt text, or the path);
+ * placeholder images under a /drafts/ folder are then loaded from the copy in this repository, on
+ * the code host (in the Universal Editor the page itself comes from AEM author). Only in an
+ * accepted format (IMAGE_EXTENSIONS).
  */
-function rowImage(row) {
+function rowImage(row, field) {
   const img = row?.querySelector('img');
-  if (img) return { src: img.src, alt: img.alt, source: img };
-  const link = [...(row?.querySelectorAll('a[href]') || [])]
-    .find((a) => IMAGE_FILE.test(new URL(a.href, window.location).pathname));
-  if (!link) return null;
-  const { pathname } = new URL(link.href, window.location);
-  const drafts = pathname.indexOf('/drafts/');
-  const label = link.textContent.trim();
-  return {
-    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
-    alt: label && !label.includes('/') ? label : '',
-    source: link,
-  };
+  const link = img ? null : row?.querySelector('a[href]');
+  if (!img && !link) return null;
+  let image;
+  if (img) {
+    image = { src: img.src, alt: img.alt, source: img };
+  } else {
+    const { pathname } = new URL(link.href, window.location);
+    const drafts = pathname.indexOf('/drafts/');
+    const label = link.textContent.trim();
+    image = {
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      alt: label && !label.includes('/') ? label : '',
+      source: link,
+    };
+  }
+  const extension = extensionOf(image.src);
+  if (!IMAGE_EXTENSIONS.includes(extension)) {
+    // eslint-disable-next-line no-console
+    console.warn(`confirmation: the ${field} "${image.src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't an accepted image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
+    return null;
+  }
+  return image;
 }
 
 // the reservation's values: the page address first, then the form's data in this tab
@@ -73,7 +97,7 @@ function fill(value, values) {
   value.replace(TOKEN, (match, before, key, fallback, offset) => {
     nodes.push(value.slice(last, offset));
     const found = values[key]?.trim();
-    if (found) nodes.push(before, el('span', { class: 'confirmation-value' }, found));
+    if (found) nodes.push(before, el('span', { class: 'value' }, found));
     else if (fallback !== undefined) nodes.push(before, fallback);
     last = offset + match.length;
     return match;
@@ -97,7 +121,10 @@ function editable(node, prop, type, label) {
 
 function picture(image, eager, breakpoints, className) {
   if (!image) return null;
-  const pic = createOptimizedPicture(image.src, image.alt, eager, breakpoints);
+  // (an SVG as it is: no resized renditions)
+  const pic = extensionOf(image.src) === 'svg'
+    ? el('picture', {}, el('img', { src: image.src, alt: image.alt, loading: eager ? 'eager' : 'lazy' }))
+    : createOptimizedPicture(image.src, image.alt, eager, breakpoints);
   pic.className = className;
   const img = pic.querySelector('img');
   moveInstrumentation(image.source, img);
@@ -117,46 +144,48 @@ export default function decorate(block) {
   const content = (value) => (authoring ? [value] : fill(value, values));
 
   // the text: heading, description, optional button
-  const copy = el('div', { class: 'confirmation-content' });
+  const copy = el('div', { class: 'content' });
   if (text(headingRow)) {
-    const heading = el('h1', { class: 'confirmation-heading' }, ...content(text(headingRow)));
+    const heading = el('h1', { class: 'heading' }, ...content(text(headingRow)));
     if (authoring) editable(heading, 'heading', 'text', 'Status heading');
     copy.append(heading);
   }
   if (text(descriptionRow)) {
     const parts = content(text(descriptionRow));
-    const p = el('p', { class: 'confirmation-description' }, ...(variant === 'variant-a' && !authoring ? bySentence(parts) : parts));
+    const p = el('p', { class: 'description' }, ...(variant === 'variant-a' && !authoring ? bySentence(parts) : parts));
     if (authoring) editable(p, 'description', 'text', 'Description');
     copy.append(p);
   }
   const link = ctaRow?.querySelector('a[href]');
   if (link) {
-    const cta = el('a', { class: 'confirmation-cta', href: link.getAttribute('href') }, text(link) || link.getAttribute('href'));
+    // (the text in its own span: cut with "…" when it doesn't fit)
+    const label = el('span', { class: 'cta-label' }, text(link) || link.getAttribute('href'));
+    const cta = el('a', { class: 'cta', href: link.getAttribute('href') }, label);
     moveInstrumentation(link, cta);
-    if (authoring) editable(cta, 'ctaLinkText', 'text', 'Button text');
+    if (authoring) editable(label, 'ctaLinkText', 'text', 'Button text');
     copy.append(cta);
   }
 
-  const image = rowImage(imageRow);
+  const image = rowImage(imageRow, 'image');
   if (variant === 'variant-a') {
     // background (decorative, the largest element: loaded first), the word, the car in front
-    const background = rowImage(backgroundRow);
+    const background = rowImage(backgroundRow, 'background image');
     if (background) background.alt = '';
-    const bg = picture(background, true, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }], 'confirmation-background');
+    const bg = picture(background, true, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }], 'background');
     if (bg && authoring) editable(bg.querySelector('img'), 'background', 'media', 'Background image');
     const word = text(wordRow)
-      ? el('p', { class: 'confirmation-word', 'aria-hidden': authoring ? undefined : 'true' }, text(wordRow))
+      ? el('p', { class: 'word', 'aria-hidden': authoring ? undefined : 'true' }, text(wordRow))
       : null;
     if (authoring) editable(word, 'displayWord', 'text', 'Background word');
-    const car = picture(image, true, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }], 'confirmation-image');
+    const car = picture(image, true, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }], 'image');
     if (car && authoring) editable(car.querySelector('img'), 'image', 'media', 'Image');
     // the stage keeps the design's 1280 × 720 composition, scaled to the window
-    const stage = el('div', { class: 'confirmation-stage' }, word, car, copy);
+    const stage = el('div', { class: 'stage' }, word, car, copy);
     block.replaceChildren(...[bg, stage].filter(Boolean));
   } else {
-    const photo = picture(image, true, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }], 'confirmation-image');
+    const photo = picture(image, true, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }], 'image');
     if (photo && authoring) editable(photo.querySelector('img'), 'image', 'media', 'Image');
-    const stage = el('div', { class: 'confirmation-stage' }, photo, copy);
+    const stage = el('div', { class: 'stage' }, photo, copy);
     block.replaceChildren(stage);
   }
 }

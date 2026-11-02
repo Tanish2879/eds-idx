@@ -11,7 +11,6 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * link opens its page.
  */
 
-const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const BOARD = 'main .job-board'; // where an anchor without its own target leads
 
 function el(tag, attrs = {}, ...children) {
@@ -25,24 +24,49 @@ function el(tag, attrs = {}, ...children) {
 
 const text = (cell) => (cell?.textContent || '').trim();
 
+// the accepted image formats (a file of another format, e.g. a PDF, is not shown: a warning is
+// logged)
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+
+// a file's extension (from its address's path, without the query), lower case
+function extensionOf(src) {
+  try {
+    const file = new URL(src, window.location).pathname.split('/').pop();
+    return file.includes('.') ? file.split('.').pop().toLowerCase() : '';
+  } catch (e) {
+    return '';
+  }
+}
+
 /*
- * The image of a row: an <img>, or a link to an image file (AEM delivers an image it can't
- * resolve as a link; placeholders under /drafts/ then come from this repository).
+ * The image of a row: an <img>, or a link (AEM delivers an image it can't resolve as a link;
+ * placeholders under /drafts/ then come from this repository); only in an accepted format
+ * (IMAGE_EXTENSIONS: another is not shown, with a warning)
  */
-function rowImage(row) {
+function rowImage(row, field) {
   const img = row?.querySelector('img');
-  if (img) return { src: img.src, alt: img.alt, source: img };
-  const link = [...(row?.querySelectorAll('a[href]') || [])]
-    .find((a) => IMAGE_FILE.test(new URL(a.href, window.location).pathname));
-  if (!link) return null;
-  const { pathname } = new URL(link.href, window.location);
-  const drafts = pathname.indexOf('/drafts/');
-  const label = link.textContent.trim();
-  return {
-    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
-    alt: label && !label.includes('/') ? label : '',
-    source: link,
-  };
+  const link = img ? null : row?.querySelector('a[href]');
+  if (!img && !link) return null;
+  let image;
+  if (img) {
+    image = { src: img.src, alt: img.alt, source: img };
+  } else {
+    const { pathname } = new URL(link.href, window.location);
+    const drafts = pathname.indexOf('/drafts/');
+    const label = link.textContent.trim();
+    image = {
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      alt: label && !label.includes('/') ? label : '',
+      source: link,
+    };
+  }
+  const extension = extensionOf(image.src);
+  if (!IMAGE_EXTENSIONS.includes(extension)) {
+    // eslint-disable-next-line no-console
+    console.warn(`careers-hero: the ${field} "${image.src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't an accepted image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
+    return null;
+  }
+  return image;
 }
 
 // authoring: an editable field of the block (resource inherited)
@@ -74,11 +98,14 @@ export default function decorate(block) {
   const [imageRow, headingRow, descriptionRow, labelRow, linkRow] = [...block.children];
 
   // the photo (the page's largest element: loaded first)
-  const image = rowImage(imageRow);
+  const image = rowImage(imageRow, 'image');
   let media = null;
   if (image) {
-    const picture = createOptimizedPicture(image.src, image.alt || text(imageRow), true, [
-      { media: '(min-width: 900px)', width: '2400' }, { width: '900' }]);
+    // (an SVG as it is: no resized renditions)
+    const picture = extensionOf(image.src) === 'svg'
+      ? el('picture', {}, el('img', { src: image.src, alt: image.alt || text(imageRow) }))
+      : createOptimizedPicture(image.src, image.alt || text(imageRow), true, [
+        { media: '(min-width: 900px)', width: '2400' }, { width: '900' }]);
     const img = picture.querySelector('img');
     img.setAttribute('fetchpriority', 'high');
     moveInstrumentation(image.source, img);

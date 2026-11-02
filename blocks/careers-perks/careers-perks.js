@@ -17,7 +17,6 @@ export const MAX_PERKS = 6;
 const BLOCK_ROWS = 2;
 const ITEM = 'careers-perk';
 const ICON = /^[a-z][a-z0-9-]*$/;
-const IMAGE_FILE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -40,19 +39,47 @@ function lines(cell) {
   return raw.split('\n').map((l) => l.trim()).filter(Boolean);
 }
 
+// the accepted image formats (a file of another format, e.g. a PDF, is not shown: a warning is
+// logged)
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+
+// a file's extension (from its address's path, without the query), lower case
+function extensionOf(src) {
+  try {
+    const file = new URL(src, window.location).pathname.split('/').pop();
+    return file.includes('.') ? file.split('.').pop().toLowerCase() : '';
+  } catch (e) {
+    return '';
+  }
+}
+
 /*
- * The image of a cell: an <img>, or a link to an image file (AEM delivers an image it can't
- * resolve as a link; placeholders under /drafts/ then come from this repository).
+ * The image of a cell: an <img>, or a link (AEM delivers an image it can't resolve as a link;
+ * placeholders under /drafts/ then come from this repository); only in an accepted format
+ * (IMAGE_EXTENSIONS: another is not shown, with a warning)
  */
-function cellImage(cell) {
+function cellImage(cell, field) {
   const img = cell?.querySelector('img');
-  if (img) return { src: img.src, source: img };
-  const link = [...(cell?.querySelectorAll('a[href]') || [])]
-    .find((a) => IMAGE_FILE.test(new URL(a.href, window.location).pathname));
-  if (!link) return null;
-  const { pathname } = new URL(link.href, window.location);
-  const drafts = pathname.indexOf('/drafts/');
-  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href, source: link };
+  const link = img ? null : cell?.querySelector('a[href]');
+  if (!img && !link) return null;
+  let image;
+  if (img) {
+    image = { src: img.src, source: img };
+  } else {
+    const { pathname } = new URL(link.href, window.location);
+    const drafts = pathname.indexOf('/drafts/');
+    image = {
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      source: link,
+    };
+  }
+  const extension = extensionOf(image.src);
+  if (!IMAGE_EXTENSIONS.includes(extension)) {
+    // eslint-disable-next-line no-console
+    console.warn(`careers-perks: the ${field} "${image.src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't an accepted image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
+    return null;
+  }
+  return image;
 }
 
 // authoring: an editable field of the block or of the perk it sits in (resource inherited)
@@ -62,9 +89,9 @@ function editable(node, prop, type, label) {
 
 // a perk's icon: the custom image, else the chosen line icon (decorative: the title says it all)
 function buildIcon(iconCell, imageCell, authoring) {
-  const image = cellImage(imageCell);
+  const image = cellImage(imageCell, 'custom icon image');
   if (image) {
-    const svg = /\.svg$/i.test(new URL(image.src, window.location).pathname);
+    const svg = extensionOf(image.src) === 'svg';
     const img = svg
       ? el('img', {
         src: image.src, alt: '', width: 28, height: 28, loading: 'lazy',

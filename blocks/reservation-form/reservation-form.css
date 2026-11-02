@@ -3,19 +3,20 @@
    first rule in this file (an @import after any other rule is ignored) */
 
 /* (off for now: New Science Extended is self-hosted, see styles/fonts.css)
-@import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css'); */
+   @import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css'); */
 
 /* Reservation Form: the car image beside the form on black. Values from the design at 1280x720:
    image 599px (46.8%) wide, form column 511px centred in the black panel; fields 47px tall on
    #191919 with 8px corners and 12px gaps. Mobile first: phones stack the image (a banner) over
    the form; from 768px the two columns. */
 
-main > .section.reservation-form-container > .reservation-form-wrapper {
+main > .section > .reservation-form-wrapper {
   max-width: none;
   padding: 0;
+  margin: 0;
 }
 
-.reservation-form {
+main > .section > .reservation-form-wrapper > .block {
   /* colors */
   --rf-bg: #000;
   --rf-text: #fff;
@@ -39,381 +40,388 @@ main > .section.reservation-form-container > .reservation-form-wrapper {
   display: grid;
   background-color: var(--rf-bg);
   color: var(--rf-text);
-}
 
-/* image: a banner on phones, the left column from 768px (cropped to fill, centred) */
-.reservation-form .reservation-form-media {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background-color: #1a0a08;
-}
+  /* image: a banner on phones, the left column from 768px (cropped to fill, centred) */
+  .media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background-color: #1a0a08;
+  }
 
-/* (phones: a taller banner with the price card over it, so the car still shows above the card) */
-.reservation-form .reservation-form-media:has(.reservation-form-price) {
-  aspect-ratio: 1;
-}
+  /* (phones: a taller banner with the price card over it, so the car still shows above the card) */
+  .media:has(.price) {
+    aspect-ratio: 1;
+  }
 
-/* (out of the flow: the portrait image must not set the block's height) */
-.reservation-form .reservation-form-media picture {
-  position: absolute;
-  inset: 0;
-}
+  /* (out of the flow: the portrait image must not set the block's height) */
+  .media picture {
+    position: absolute;
+    inset: 0;
+  }
 
-.reservation-form .reservation-form-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 45%;
-}
+  .media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
 
-/* the price card over the bottom of the image (the design at 1280 × 720: 525 × 150px, 39px from
-   the image's left, 33px above the bottom): dark glass, the label and badge, the amount in the
-   extended face, the note */
-.reservation-form .reservation-form-price {
-  position: absolute;
-  inset: auto 12px 12px;
-  box-sizing: border-box;
-  padding: 14px 16px 16px;
-  border: 1px solid rgb(255 255 255 / 6%);
-  border-radius: 10px;
-  background-color: rgb(0 0 0 / 55%);
-  backdrop-filter: blur(14px);
-}
+  /* the price card over the bottom of the image (the design at 1280 × 720: 525 × 150px, 39px from
+     the image's left, 33px above the bottom): dark glass, the label and badge, the amount in the
+     extended face, the note */
+  .price {
+    position: absolute;
+    inset: auto 12px 12px;
+    box-sizing: border-box;
+    padding: 14px 16px 16px;
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 10px;
+    background-color: rgb(0 0 0 / 55%);
+    backdrop-filter: blur(14px);
+  }
 
-.reservation-form .reservation-form-price-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
+  .price-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
 
-.reservation-form .reservation-form-price-label {
-  margin: 0;
-  color: #8c8c8c;
-  font-family: var(--rf-body-font);
-  font-size: 10px;
-  line-height: 14px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
+  .price-label {
+    margin: 0;
+    color: #8c8c8c;
+    font-family: var(--rf-body-font);
+    font-size: 10px;
+    line-height: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
 
-.reservation-form .reservation-form-price-badge {
-  flex: none;
-  box-sizing: border-box;
-  height: 22px;
-  padding: 0 9px;
-  border: 1px solid rgb(255 255 255 / 40%);
-  border-radius: 6px;
-  color: var(--rf-text);
-  font-family: var(--rf-display-font);
-  font-size: 9px;
-  line-height: 20px;
-  text-transform: uppercase;
-}
+  .price-badge {
+    flex: none;
+    box-sizing: border-box;
+    height: 22px;
+    padding: 0 9px;
+    border: 1px solid rgb(255 255 255 / 40%);
+    border-radius: 6px;
+    color: var(--rf-text);
+    font-family: var(--rf-display-font);
+    font-size: 9px;
+    line-height: 20px;
+    text-transform: uppercase;
+  }
 
-.reservation-form .reservation-form-price-amount {
-  margin: 2px 0 0;
-  color: var(--rf-text);
-  font-family: var(--rf-display-font);
-  font-size: 28px;
-  line-height: 1.15;
-}
+  .price-amount {
+    margin: 2px 0 0;
+    color: var(--rf-text);
+    font-family: var(--rf-display-font);
+    font-size: 28px;
+    line-height: 1.15;
+  }
 
-.reservation-form .reservation-form-price-note {
-  max-width: 420px;
-  margin: 8px 0 0;
-  color: #b3b3b3;
-  font-family: var(--rf-body-font);
-  font-size: 12px;
-  line-height: 18px;
-}
+  .price-note {
+    max-width: 420px;
+    margin: 8px 0 0;
+    color: #b3b3b3;
+    font-family: var(--rf-body-font);
+    font-size: 12px;
+    line-height: 18px;
+  }
 
-/* the form column, centred in the black panel */
-.reservation-form .reservation-form-panel {
-  display: grid;
-  grid-template-columns: minmax(0, var(--rf-column));
-  place-content: center center;
-  padding: 40px 24px 56px;
-}
+  /* the form column, centred in the black panel */
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, var(--rf-column));
+    place-content: center center;
+    padding: 40px 24px 56px;
+  }
 
-.reservation-form .reservation-form-heading {
-  margin: 0;
-  color: var(--rf-text);
-  font-family: var(--rf-display-font);
-  position: relative;
-  top: 1px; /* (the face's caps sit 1px high in its line box, against the design) */
-  font-size: clamp(24px, 7.7vw, 30px);
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: 0.12em; /* the narrower fallback (Sequel) spaced out to the design's width */
-  text-transform: uppercase;
-}
+  .heading {
+    margin: 0;
+    color: var(--rf-text);
+    font-family: var(--rf-display-font);
+    position: relative;
+    top: 1px; /* (the face's caps sit 1px high in its line box, against the design) */
+    font-size: clamp(24px, 7.7vw, 30px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.12em; /* the narrower fallback (Sequel) spaced out to the design's width */
+    text-transform: uppercase;
+  }
 
-/* with the design's own extended face loaded (detected by the block JS): its natural spacing */
-.reservation-form.has-design-faces .reservation-form-heading {
-  letter-spacing: 0;
-}
+  /* with the design's own extended face loaded (detected by the block JS): its natural spacing */
+  &.has-design-faces .heading {
+    letter-spacing: 0;
+  }
 
-.reservation-form .reservation-form-description {
-  max-width: 420px;
-  margin: 15px 0 0;
-  color: var(--rf-muted);
-  font-family: var(--rf-body-font);
-  font-size: 16px;
-  line-height: 23px;
-  white-space: pre-line;
-}
+  .description {
+    max-width: 420px;
+    margin: 15px 0 0;
+    color: var(--rf-muted);
+    font-family: var(--rf-body-font);
+    font-size: 16px;
+    line-height: 23px;
+    white-space: pre-line;
+  }
 
-.reservation-form .reservation-form-form {
-  display: grid;
-  gap: var(--rf-gap);
-  margin: 22px 0 0;
-}
+  .form {
+    display: grid;
+    gap: var(--rf-gap);
+    margin: 22px 0 0;
+  }
 
-/* a section: a grid of fields, two half-width fields side by side */
-.reservation-form .reservation-form-section {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--rf-gap);
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
+  /* a section: a grid of fields, two half-width fields side by side */
+  .field-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--rf-gap);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
 
-.reservation-form .reservation-form-field {
-  position: relative;
-  grid-column: 1 / -1;
-  min-width: 0;
-}
+  .field {
+    position: relative;
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
 
-.reservation-form .reservation-form-field.is-half {
-  grid-column: span 1;
-}
+  .field.is-half {
+    grid-column: span 1;
+  }
 
-/* a fixed prefix (+91) in its own box before the field */
-.reservation-form .reservation-form-field.has-prefix {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-  gap: 0 var(--rf-gap);
-}
+  /* a fixed prefix (+91) in its own box before the field */
+  .field.has-prefix {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 0 var(--rf-gap);
+  }
 
-/* screen-reader-only text: field labels (the design shows them inside the fields), section names */
-.reservation-form .reservation-form-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  border: 0;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
+  /* screen-reader-only text: field labels (the design shows them inside the fields), section names */
+  .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 
-.reservation-form .reservation-form-prefix,
-.reservation-form .reservation-form-input {
-  box-sizing: border-box;
-  height: var(--rf-field-height);
-  border: 1px solid transparent;
-  border-radius: var(--rf-radius);
-  background-color: var(--rf-field-bg);
-  font-family: var(--rf-body-font);
-  font-size: 13px;
-  line-height: 1;
-}
+  .prefix,
+  .input {
+    box-sizing: border-box;
+    height: var(--rf-field-height);
+    border: 1px solid transparent;
+    border-radius: var(--rf-radius);
+    background-color: var(--rf-field-bg);
+    font-family: var(--rf-body-font);
+    font-size: 13px;
+    line-height: 1;
+  }
 
-.reservation-form .reservation-form-prefix {
-  display: flex;
-  align-items: center;
-  padding: 0 0 0 13px;
-  color: var(--rf-faint);
-}
+  .prefix {
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 13px;
+    color: var(--rf-faint);
+  }
 
-.reservation-form .reservation-form-input {
-  width: 100%;
-  margin: 0;
-  padding: 0 13px;
-  color: var(--rf-text);
-  outline: none;
-  transition: border-color 0.2s ease-out;
-  appearance: none;
-}
+  .input {
+    width: 100%;
+    margin: 0;
+    padding: 0 13px;
+    color: var(--rf-text);
+    outline: none;
+    transition: border-color 0.2s ease-out;
+    appearance: none;
+  }
 
-.reservation-form .reservation-form-input::placeholder {
-  color: var(--rf-faint);
-  opacity: 1;
-}
+  .input::placeholder {
+    color: var(--rf-faint);
+    opacity: 1;
+  }
 
-.reservation-form .reservation-form-input:focus-visible {
-  border-color: #5c5c5c;
-}
+  .input:focus-visible {
+    border-color: #5c5c5c;
+  }
 
-/* a field the block's checks flagged (see the JS: no browser validation): red outline, and its
-   message on the line below (only there while it applies, so a valid form keeps the design's
-   spacing) */
-.reservation-form .reservation-form-input[aria-invalid='true'] {
-  border-color: var(--rf-error);
-}
+  /* a field the block's checks flagged (see the JS: no browser validation): red outline, and its
+     message on the line below (only there while it applies, so a valid form keeps the design's
+     spacing) */
+  .input[aria-invalid='true'] {
+    border-color: var(--rf-error);
+  }
 
-.reservation-form .reservation-form-error {
-  grid-column: 1 / -1;
-  margin: 6px 0 0;
-  color: var(--rf-error);
-  font-family: var(--rf-body-font);
-  font-size: 12px;
-  line-height: 16px;
-}
+  .error {
+    grid-column: 1 / -1;
+    margin: 6px 0 0;
+    color: var(--rf-error);
+    font-family: var(--rf-body-font);
+    font-size: 12px;
+    line-height: 16px;
+  }
 
-.reservation-form .reservation-form-error:empty {
-  display: none;
-}
+  .error:empty {
+    display: none;
+  }
 
-/* dropdown: a thin chevron on the right; grey while nothing is chosen */
-.reservation-form select.reservation-form-input {
-  padding-right: 52px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Cpath d='M1 1l7 7 7-7' fill='none' stroke='%234d4d4d' stroke-width='1.4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 19px center;
-  background-size: 16px 9px;
-  cursor: pointer;
-}
+  /* dropdown: a thin chevron on the right; grey while nothing is chosen */
+  & select.input {
+    padding-right: 52px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Cpath d='M1 1l7 7 7-7' fill='none' stroke='%234d4d4d' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 19px center;
+    background-size: 16px 9px;
+    cursor: pointer;
+  }
 
-.reservation-form select.reservation-form-input:has(option[value='']:checked) {
-  color: var(--rf-faint);
-}
+  & select.input:has(option[value='']:checked) {
+    color: var(--rf-faint);
+  }
 
-.reservation-form select.reservation-form-input option {
-  background-color: var(--rf-field-bg);
-  color: var(--rf-text);
-}
+  & select.input option {
+    background-color: var(--rf-field-bg);
+    color: var(--rf-text);
+  }
 
-/* button: white, after a 24px space */
-.reservation-form .reservation-form-submit {
-  justify-self: start;
-  min-width: 127px;
-  height: var(--rf-field-height);
-  margin: 12px 0 0;
-  padding: 0 32px;
-  border: 0;
-  border-radius: var(--rf-radius);
-  background-color: #fff;
-  color: #000;
-  font-family: var(--rf-body-font);
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background-color 0.2s ease-out;
-}
+  /* button: white, after a 24px space */
+  .submit {
+    justify-self: start;
+    min-width: 127px;
+    height: var(--rf-field-height);
+    margin: 12px 0 0;
+    padding: 0 32px;
+    border: 0;
+    border-radius: var(--rf-radius);
+    background-color: #fff;
+    color: #000;
+    font-family: var(--rf-body-font);
+    font-size: 13px;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease-out;
+  }
 
-.reservation-form .reservation-form-submit:hover {
-  background-color: #e6e6e6;
-}
+  .submit:hover {
+    background-color: #e6e6e6;
+  }
 
-.reservation-form .reservation-form-submit:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 3px;
-}
+  .submit:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
 
-.reservation-form .reservation-form-submit:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
 
-.reservation-form .reservation-form-status {
-  margin: 0;
-  color: var(--rf-error);
-  font-family: var(--rf-body-font);
-  font-size: 13px;
-  line-height: 18px;
-}
+  .status {
+    margin: 0;
+    color: var(--rf-error);
+    font-family: var(--rf-body-font);
+    font-size: 13px;
+    line-height: 18px;
+  }
 
-.reservation-form .reservation-form-status:empty {
-  display: none;
-}
+  .status:empty {
+    display: none;
+  }
 
-/* (a cancelled payment: not an error) */
-.reservation-form .reservation-form-status.is-info {
-  color: var(--rf-muted);
-}
+  /* (a cancelled payment: not an error) */
+  .status.is-info {
+    color: var(--rf-muted);
+  }
 
-.reservation-form .reservation-form-success {
-  margin: 23px 0 0;
-  color: var(--rf-text);
-  font-family: var(--rf-body-font);
-  font-size: 16px;
-  line-height: 23px;
-  white-space: pre-line;
-  outline: none;
-}
+  .success {
+    margin: 23px 0 0;
+    color: var(--rf-text);
+    font-family: var(--rf-body-font);
+    font-size: 16px;
+    line-height: 23px;
+    white-space: pre-line;
+    outline: none;
+  }
 
-.reservation-form .reservation-form-disclaimer {
-  margin: 36px 0 0;
-  color: var(--rf-faint);
-  font-family: var(--rf-body-font);
-  font-size: 12px;
-  line-height: 16px;
-}
+  .disclaimer {
+    margin: 36px 0 0;
+    color: var(--rf-faint);
+    font-family: var(--rf-body-font);
+    font-size: 12px;
+    line-height: 16px;
+  }
 
-.reservation-form .reservation-form-disclaimer a:any-link {
-  color: inherit;
-  text-decoration: none;
-}
+  .disclaimer a:any-link {
+    color: inherit;
+    text-decoration: none;
+  }
 
-.reservation-form .reservation-form-disclaimer a:hover,
-.reservation-form .reservation-form-disclaimer a:focus-visible {
-  text-decoration: underline;
-}
+  .disclaimer a:hover,
+  .disclaimer a:focus-visible {
+    text-decoration: underline;
+  }
 
-/* two columns: the image fills the left 46.8% at full height, the form is centred on the right */
-@media (width >= 768px) {
-  .reservation-form {
+  /* two columns: the image fills the left 46.8% at full height, the form is centred on the right */
+  @media (width >= 768px) {
     grid-template-columns: 46.8% minmax(0, 1fr);
     min-height: 100svh;
+
+    .media,
+    .media:has(.price) {
+      aspect-ratio: auto;
+    }
+
+    .panel {
+      padding: 75px 43px 55px 37px; /* the design's column sits 3px left of and 10px below centre */
+    }
+
+    .price {
+      inset: auto 35px 33px 39px;
+      padding: 16px 20px 18px 24px;
+    }
+
+    .price-label {
+      font-size: 11px;
+    }
+
+    .price-badge {
+      margin-top: 2px; /* (the design's badge sits a little below the label) */
+    }
+
+    .price-amount {
+      margin-top: 0;
+      font-size: 35px;
+    }
+
+    .price-note {
+      max-width: 440px;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 21px;
+    }
   }
 
-  .reservation-form .reservation-form-media,
-  .reservation-form .reservation-form-media:has(.reservation-form-price) {
-    aspect-ratio: auto;
-  }
-
-  .reservation-form .reservation-form-panel {
-    padding: 75px 43px 55px 37px; /* the design's column sits 3px left of and 10px below centre */
-  }
-
-  .reservation-form .reservation-form-price {
-    inset: auto 35px 33px 39px;
-    padding: 16px 20px 18px 24px;
-  }
-
-  .reservation-form .reservation-form-price-label {
-    font-size: 11px;
-  }
-
-  .reservation-form .reservation-form-price-badge {
-    margin-top: 2px; /* (the design's badge sits a little below the label) */
-  }
-
-  .reservation-form .reservation-form-price-amount {
-    margin-top: 0;
-    font-size: 35px;
-  }
-
-  .reservation-form .reservation-form-price-note {
-    max-width: 440px;
-    margin-top: 10px;
-    font-size: 13px;
-    line-height: 21px;
+  /* authoring (Universal Editor, see styles.css): a fixed height instead of the screen height */
+  @media (width >= 768px) {
+    html.is-authoring & {
+      min-height: var(--authoring-screen);
+    }
   }
 }
 
 /* the "verifying your payment" window (see payment.js), in the style of Razorpay's checkout: its
    white card over the dimmed page, the merchant's name on the header in the checkout's theme
-   colour, a spinner in Razorpay blue */
+   colour, a spinner in Razorpay blue. (A page-level window, added to the page's body over
+   everything, the header too, the page's scrolling locked: its rules and keyframes can't be
+   nested in the block's root.) */
 html.rf-pay-open {
   overflow: hidden;
 }
@@ -519,12 +527,5 @@ html.rf-pay-open {
   .rf-pay-overlay,
   .rf-pay-overlay .rf-pay-spinner {
     animation-duration: 2.4s;
-  }
-}
-
-/* authoring (Universal Editor, see styles.css): a fixed height instead of the screen height */
-@media (width >= 768px) {
-  html.is-authoring .reservation-form {
-    min-height: var(--authoring-screen);
   }
 }

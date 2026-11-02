@@ -245,14 +245,14 @@ function editable(node, prop, type, label) {
 }
 
 function buildField(field, id, authoring) {
-  const wrap = el('div', { class: `reservation-form-field${field.half ? ' is-half' : ''}${field.prefix ? ' has-prefix' : ''}` });
+  const wrap = el('div', { class: `field${field.half ? ' is-half' : ''}${field.prefix ? ' has-prefix' : ''}` });
   moveInstrumentation(field.row, wrap);
   if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = `${field.type === 'select' ? 'Dropdown' : 'Field'}: ${field.label || field.key}`;
   const required = field.required || Boolean(field.rule); // (the rules' fields are required)
   const shown = `${field.label}${required ? '*' : ''}`;
   // the label is read out by screen readers; the design shows it inside the field
-  wrap.append(el('label', { class: 'reservation-form-label', for: id }, field.label || field.key));
-  if (field.prefix) wrap.append(el('span', { class: 'reservation-form-prefix', 'aria-hidden': 'true' }, field.prefix));
+  wrap.append(el('label', { class: 'label', for: id }, field.label || field.key));
+  if (field.prefix) wrap.append(el('span', { class: 'prefix', 'aria-hidden': 'true' }, field.prefix));
   // (no HTML validation attributes: the block checks the fields itself, see validate)
   const common = {
     id,
@@ -267,7 +267,7 @@ function buildField(field, id, authoring) {
   if (field.type === 'select') {
     control = el(
       'select',
-      { ...common, class: 'reservation-form-input' },
+      { ...common, class: 'input' },
       el('option', { value: '' }, shown),
       ...field.options.map((option) => el('option', { value: option }, option)),
     );
@@ -277,7 +277,7 @@ function buildField(field, id, authoring) {
     const email = field.type === 'email';
     control = el('input', {
       ...common,
-      class: 'reservation-form-input',
+      class: 'input',
       type: email ? 'text' : field.type,
       placeholder: shown,
       inputmode: { tel: 'tel', email: 'email' }[field.type],
@@ -287,7 +287,7 @@ function buildField(field, id, authoring) {
   }
   wrap.append(control);
   // the field's error line (empty while valid)
-  wrap.append(el('p', { class: 'reservation-form-error', id: `${id}-error`, 'aria-live': 'polite' }));
+  wrap.append(el('p', { class: 'error', id: `${id}-error`, 'aria-live': 'polite' }));
   if (field.rule || required) {
     // checked when the field is left (a dropdown: when changed); once flagged, re-checked as it
     // is corrected
@@ -296,7 +296,7 @@ function buildField(field, id, authoring) {
       if (control.hasAttribute('aria-invalid')) validate(control);
     });
   }
-  if (field.prefix) wrap.append(el('span', { id: `${id}-prefix`, class: 'reservation-form-label' }, `Prefix ${field.prefix}`));
+  if (field.prefix) wrap.append(el('span', { id: `${id}-prefix`, class: 'label' }, `Prefix ${field.prefix}`));
   return wrap;
 }
 
@@ -334,7 +334,7 @@ export default function decorate(block) {
   const prop = (row) => (items.includes(row) ? undefined : row);
 
   // image (the page's largest element: loaded first)
-  const media = el('div', { class: 'reservation-form-media' });
+  const media = el('div', { class: 'media' });
   const image = rowImage(imageRow);
   if (image) {
     const picture = createOptimizedPicture(image.src, image.alt || text(imageRow), true, [{ media: '(min-width: 768px)', width: '1200' }, { width: '750' }]);
@@ -350,39 +350,39 @@ export default function decorate(block) {
   const amountLabel = text(prop(amountLabelRow));
   const displayAmount = amount ? INR.format(amount) : '';
   if (amount) {
-    const label = el('p', { class: 'reservation-form-price-label' }, amountLabel);
+    const label = el('p', { class: 'price-label' }, amountLabel);
     if (authoring) editable(label, 'amountLabel', 'text', 'Amount label');
     const badge = text(prop(badgeRow))
-      ? el('span', { class: 'reservation-form-price-badge' }, text(badgeRow)) : null;
+      ? el('span', { class: 'price-badge' }, text(badgeRow)) : null;
     if (authoring) editable(badge, 'amountBadge', 'text', 'Amount badge');
     const note = lines(prop(noteRow)).join(' ');
-    const noteEl = note ? el('p', { class: 'reservation-form-price-note' }, note) : null;
+    const noteEl = note ? el('p', { class: 'price-note' }, note) : null;
     if (authoring) editable(noteEl, 'amountNote', 'text', 'Amount note');
     media.append(el(
       'div',
-      { class: 'reservation-form-price' },
-      el('div', { class: 'reservation-form-price-head' }, label, badge),
-      el('p', { class: 'reservation-form-price-amount' }, displayAmount),
+      { class: 'price' },
+      el('div', { class: 'price-head' }, label, badge),
+      el('p', { class: 'price-amount' }, displayAmount),
       noteEl,
     ));
   }
 
   // heading, description
-  const panel = el('div', { class: 'reservation-form-panel' });
+  const panel = el('div', { class: 'panel' });
   if (text(headingRow)) {
-    const heading = el('h1', { class: 'reservation-form-heading' }, text(headingRow));
+    const heading = el('h1', { class: 'heading' }, text(headingRow));
     if (authoring) editable(heading, 'heading', 'text', 'Heading');
     panel.append(heading);
   }
   const description = lines(descriptionRow);
   if (description.length) {
-    const p = el('p', { class: 'reservation-form-description' }, description.join('\n'));
+    const p = el('p', { class: 'description' }, description.join('\n'));
     if (authoring) editable(p, 'description', 'text', 'Description');
     panel.append(p);
   }
 
   // the form: its sections (fieldsets) with their fields, then the button
-  const form = el('form', { class: 'reservation-form-form', novalidate: true });
+  const form = el('form', { class: 'form', novalidate: true });
   let group = null;
   let index = 0;
   items.forEach((row) => {
@@ -395,10 +395,10 @@ export default function decorate(block) {
     if (kind === 'section') {
       // Form Section
       const title = text(row);
-      group = el('fieldset', { class: 'reservation-form-section' });
+      group = el('fieldset', { class: 'field-group' });
       moveInstrumentation(row, group);
       if (title) {
-        const legend = el('legend', { class: 'reservation-form-label' }, title);
+        const legend = el('legend', { class: 'label' }, title);
         if (authoring) editable(legend, 'title', 'text', 'Section name');
         group.append(legend);
       }
@@ -408,7 +408,7 @@ export default function decorate(block) {
     }
     // Form Field (fields before any section get a group of their own)
     if (!group) {
-      group = el('div', { class: 'reservation-form-section' });
+      group = el('div', { class: 'field-group' });
       form.append(group);
     }
     group.append(buildField(parseField(row, index, kind), `${uid}-${index}`, authoring));
@@ -421,9 +421,9 @@ export default function decorate(block) {
     seen.set(control.name, n + 1);
     if (n) control.name = `${control.name}${n + 1}`;
   });
-  const submit = el('button', { type: 'submit', class: 'reservation-form-submit' }, text(submitRow) || 'Submit');
+  const submit = el('button', { type: 'submit', class: 'submit' }, text(submitRow) || 'Submit');
   if (authoring) editable(submit, 'submitLabel', 'text', 'Button text');
-  const status = el('p', { class: 'reservation-form-status', role: 'status', 'aria-live': 'polite' });
+  const status = el('p', { class: 'status', role: 'status', 'aria-live': 'polite' });
   form.append(submit, status);
   panel.append(form);
 
@@ -440,7 +440,7 @@ export default function decorate(block) {
   const privacy = linkOf(privacyRow);
   if (privacy) privacy.text ||= 'Privacy Notice';
   if (disclaimer || email || privacy) {
-    const small = el('p', { class: 'reservation-form-disclaimer' });
+    const small = el('p', { class: 'disclaimer' });
     let placed = false;
     if (disclaimer) {
       // (its own span when links follow it: authoring edits only the text itself in place)
@@ -565,7 +565,7 @@ export default function decorate(block) {
     // the cleaned values; a mobile number without its own + country code gets the prefix box's
     const data = {};
     results.forEach(({ value }, control) => {
-      const prefix = control.parentElement.querySelector('.reservation-form-prefix')?.textContent;
+      const prefix = control.parentElement.querySelector('.prefix')?.textContent;
       data[control.name] = prefix && value && !value.startsWith('+') ? `${prefix}${value}` : value;
     });
     if (payment.keyId) {
@@ -578,7 +578,7 @@ export default function decorate(block) {
       // kept for this tab: a confirmation page fills its {firstName}, {email}, … from it
       store(data);
       // the confirmation takes the form's place
-      const done = el('p', { class: 'reservation-form-success', tabindex: '-1', role: 'status' }, success || 'Thank you.');
+      const done = el('p', { class: 'success', tabindex: '-1', role: 'status' }, success || 'Thank you.');
       form.replaceWith(done);
       done.focus({ preventScroll: true });
     } catch (err) {

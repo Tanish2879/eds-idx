@@ -282,7 +282,7 @@
         "valueType": "string",
         "name": "image",
         "label": "Background image",
-        "description": "Fills the hero behind the heading (cropped to fit; the design's cool tone is added over it).",
+        "description": "The hero photo (cropped to fit, toned). JPG, PNG, WebP or SVG; other files are not shown.",
         "multi": false,
         "required": true
       },
@@ -291,7 +291,7 @@
         "valueType": "string",
         "name": "imageAlt",
         "label": "Background image alt text",
-        "description": "Describe the photo for screen readers, e.g. People in silhouette before a city skyline. Leave empty if it is only decorative.",
+        "description": "Describes the photo for screen readers; empty if decorative.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -302,7 +302,7 @@
         "valueType": "string",
         "name": "heading",
         "label": "Heading",
-        "description": "The page's main heading, e.g. THE WORLD NEEDS PIONEERS (it wraps onto two lines).",
+        "description": "E.g. THE WORLD NEEDS PIONEERS.",
         "value": "",
         "required": true,
         "validation": {
@@ -326,7 +326,7 @@
         "valueType": "string",
         "name": "ctaLabel",
         "label": "Button label",
-        "description": "E.g. SCROLL or VIEW OPENINGS. Leave empty for no button.",
+        "description": "E.g. SCROLL; empty for no button.",
         "value": "",
         "validation": {
           "maxLength": 30
@@ -337,7 +337,7 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "#open-roles scrolls smoothly down to the Job Board on this page (any #anchor: to the element with that id, else to the job board); a page path or URL opens that page.",
+        "description": "#open-roles scrolls to the Job Board; a page or URL opens it.",
         "value": "",
         "validation": {
           "maxLength": 256
@@ -353,7 +353,7 @@
         "valueType": "string",
         "name": "heading",
         "label": "Heading",
-        "description": "Centred above the perks, e.g. OUR PERKS.",
+        "description": "E.g. OUR PERKS.",
         "value": "",
         "required": true,
         "validation": {
@@ -366,7 +366,7 @@
         "valueFormat": "string-multiline",
         "name": "intro",
         "label": "Intro",
-        "description": "Under the heading, centred. Start a new line where the text should break (otherwise it wraps by itself).",
+        "description": "Under the heading; new lines are kept.",
         "value": "",
         "validation": {
           "maxLength": 200
@@ -440,7 +440,7 @@
         "valueType": "string",
         "name": "iconImage",
         "label": "Custom icon image",
-        "description": "Optional: an image (ideally a square SVG with a 2px line) shown instead of the icon above, at 28 × 28.",
+        "description": "Optional: replaces the icon (square, ideally SVG). JPG, PNG, WebP or SVG; other files are not shown.",
         "multi": false
       },
       {
@@ -448,7 +448,7 @@
         "valueType": "string",
         "name": "title",
         "label": "Title",
-        "description": "Up to 64 characters. The block shows up to 6 perks (the first 6 in the content tree).",
+        "description": "E.g. Flexible hours. Up to 6 perks are shown.",
         "value": "",
         "required": true,
         "validation": {
@@ -461,7 +461,7 @@
         "valueFormat": "string-multiline",
         "name": "description",
         "label": "Description",
-        "description": "Two or three short lines under the title.",
+        "description": "Two or three short lines.",
         "value": "",
         "required": true,
         "validation": {
@@ -621,7 +621,7 @@
         "valueType": "string",
         "name": "classes",
         "label": "Layout",
-        "description": "Variant A: the big word on a spotlight with the car in front, text centred below. Variant B: the image on the left, the text beside it.",
+        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
         "value": "variant-a",
         "options": [
           {
@@ -639,31 +639,41 @@
         "valueType": "string",
         "name": "displayWord",
         "label": "Background word",
-        "description": "Variant A: the large word behind the car, e.g. RESERVED (not used by Variant B).",
-        "value": ""
+        "description": "Variant A only: the large word behind the car, e.g. RESERVED.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "heading",
         "label": "Status heading",
-        "description": "E.g. YOU’RE IN, {firstName}. Values of the reservation (from the form, or the page address) fill {firstName}, {lastName}, {email}, {mobile}, {city}; {name|fallback} shows the fallback when there is none, otherwise the value and its comma are left out.",
-        "value": ""
+        "description": "E.g. YOU’RE IN, {firstName}. Tokens: {firstName}, {lastName}, {email}, {mobile}, {city}; {token|fallback} when empty.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
+        "valueFormat": "string-multiline",
         "name": "description",
         "label": "Description",
-        "description": "E.g. We’ll message you when allocation opens. Your receipt is on its way to {email|your inbox}. Variant A shows each sentence on its own line. Values as in the heading.",
-        "value": ""
+        "description": "E.g. Your receipt is on its way to {email|your inbox}. Variant A: one line per sentence.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
       },
       {
         "component": "reference",
         "valueType": "string",
         "name": "image",
         "label": "Image",
-        "description": "Variant A: the car, cut out on a transparent background, in front of the word. Variant B: the photo on the left.",
+        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
         "multi": false
       },
       {
@@ -671,14 +681,18 @@
         "valueType": "string",
         "name": "imageAlt",
         "label": "Image alt text",
-        "value": ""
+        "description": "Describes the image for screen readers.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
       },
       {
         "component": "reference",
         "valueType": "string",
         "name": "background",
         "label": "Background image",
-        "description": "Variant A: fills the block behind the word and the car (decorative; not used by Variant B).",
+        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
         "multi": false
       },
       {
@@ -686,14 +700,18 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "Optional: a button under the description (none in the designs)."
+        "description": "Optional: a button under the description."
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "ctaLinkText",
         "label": "Button text",
-        "value": ""
+        "description": "The button text, e.g. TRY AGAIN.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
       }
     ]
   },
@@ -960,7 +978,7 @@
         "valueType": "string",
         "name": "gallery",
         "label": "Gallery image",
-        "description": "The photo strip under the board, across the full width. Optional.",
+        "description": "Optional: the photo strip under the board. JPG, PNG, WebP or SVG; other files are not shown.",
         "multi": false
       },
       {
@@ -971,14 +989,15 @@
         "value": "",
         "validation": {
           "maxLength": 64
-        }
+        },
+        "description": "Describes the photo strip for screen readers."
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "emptyMessage",
         "label": "No results message",
-        "description": "Shown when no job matches the search and filters, e.g. No roles match your search.",
+        "description": "Shown when nothing matches, e.g. No roles match your search.",
         "value": "",
         "validation": {
           "maxLength": 150
@@ -994,7 +1013,7 @@
         "valueType": "string",
         "name": "heading",
         "label": "Heading",
-        "description": "The heading's first line, in grey, e.g. OPEN ROLES AT.",
+        "description": "First line, in grey, e.g. OPEN ROLES AT.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1005,7 +1024,7 @@
         "valueType": "string",
         "name": "headingEmphasis",
         "label": "Heading (second line)",
-        "description": "The heading's second line, in black, e.g. JSW MOTORS.",
+        "description": "Second line, in black, e.g. JSW MOTORS.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1016,7 +1035,7 @@
         "valueType": "string",
         "name": "placeholder",
         "label": "Search input placeholder",
-        "description": "Shown inside the empty search box, e.g. Search Roles.",
+        "description": "Inside the empty search box, e.g. Search Roles.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1055,7 +1074,7 @@
         "valueType": "string",
         "name": "locationLabel",
         "label": "Location dropdown label",
-        "description": "Shown in the dropdown while no location is chosen (it then lists every location), e.g. Locations.",
+        "description": "The dropdown's label, e.g. Locations.",
         "value": "",
         "validation": {
           "maxLength": 30
@@ -1065,7 +1084,7 @@
         "component": "container",
         "name": "locations",
         "label": "Locations",
-        "description": "The location dropdown's choices: add, edit, reorder or remove them here, e.g. Bangalore, India. A choice shows the jobs whose Job location is the same (or starts with it: Mumbai also shows Mumbai, India). Left empty, the dropdown lists the jobs' own locations.",
+        "description": "The dropdown's choices; empty: the jobs' own locations.",
         "multi": true,
         "fields": [
           {
@@ -1085,7 +1104,7 @@
         "valueType": "string",
         "name": "departmentLabel",
         "label": "Department dropdown label",
-        "description": "Shown in the dropdown while no department is chosen (it then lists every department), e.g. Departments.",
+        "description": "The dropdown's label, e.g. Departments.",
         "value": "",
         "validation": {
           "maxLength": 30
@@ -1095,7 +1114,7 @@
         "component": "container",
         "name": "departments",
         "label": "Departments",
-        "description": "The department dropdown's choices: add, edit, reorder or remove them here. A choice shows the jobs whose Department is the same. Left empty, the dropdown lists the jobs' own departments.",
+        "description": "The dropdown's choices; empty: the jobs' own departments.",
         "multi": true,
         "fields": [
           {
@@ -1125,14 +1144,14 @@
         "validation": {
           "maxLength": 64
         },
-        "description": "Up to 64 characters. The board shows up to 15 jobs (the first 15 in the content tree)."
+        "description": "E.g. Embedded Software Engineer. Up to 15 jobs are shown."
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "department",
         "label": "Department",
-        "description": "Shown under the title; one of the Filters' departments (written the same way), e.g. Hardware and Embedded Engineering.",
+        "description": "One of the filter's departments, written the same way.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -1143,7 +1162,7 @@
         "valueType": "string",
         "name": "location",
         "label": "Job location",
-        "description": "Shown with the pin; one of the Filters' locations, e.g. Bangalore, India. Several, separated by semicolons, for a job in more than one place: Mumbai, India; Pune, India.",
+        "description": "E.g. Bangalore, India; separate several with semicolons.",
         "value": "",
         "required": true,
         "validation": {
@@ -1155,7 +1174,7 @@
         "valueType": "string",
         "name": "description",
         "label": "Job description",
-        "description": "A short line under the department and location (up to 64 characters; the search also looks in it).",
+        "description": "A short summary under the location (searchable).",
         "value": "",
         "required": true,
         "valueFormat": "string-multiline",
@@ -1168,7 +1187,7 @@
         "valueType": "string",
         "name": "applyLink",
         "label": "Apply button link",
-        "description": "Where the button leads: a page, a URL or a mailto: address.",
+        "description": "A page, URL or mailto: address.",
         "required": true
       },
       {
@@ -1530,7 +1549,7 @@
         "valueType": "string",
         "name": "image",
         "label": "Car image",
-        "description": "Fills the left half of the block (on phones: a banner above the form).",
+        "description": "The left half (a banner above the form on phones).",
         "multi": false
       },
       {
@@ -1538,7 +1557,8 @@
         "valueType": "string",
         "name": "imageAlt",
         "label": "Car image alt text",
-        "value": ""
+        "value": "",
+        "description": "Describes the image for screen readers."
       },
       {
         "component": "text",
@@ -1553,7 +1573,7 @@
         "valueType": "string",
         "name": "description",
         "label": "Description",
-        "description": "Shown under the heading.",
+        "description": "Under the heading.",
         "value": ""
       },
       {
@@ -1569,7 +1589,7 @@
         "valueType": "string",
         "name": "submitAction",
         "label": "Send the form to (URL)",
-        "description": "The form data is posted there as JSON ({ data: { firstName, … } }). Leave empty to only show the confirmation message.",
+        "description": "Where the data is posted as JSON; empty: only the success message.",
         "value": ""
       },
       {
@@ -1577,7 +1597,7 @@
         "valueType": "string",
         "name": "successMessage",
         "label": "Confirmation message",
-        "description": "Replaces the form once it has been sent.",
+        "description": "Replaces the form once sent.",
         "value": ""
       },
       {
@@ -1585,7 +1605,7 @@
         "valueType": "string",
         "name": "disclaimer",
         "label": "Privacy disclaimer",
-        "description": "Small print under the button, e.g. “… or request erasure anytime at”. The contact email and the privacy notice link follow it, each with a full stop.",
+        "description": "Small print under the button; the email and privacy link follow it.",
         "value": ""
       },
       {
@@ -1593,7 +1613,7 @@
         "valueType": "string",
         "name": "privacyEmail",
         "label": "Privacy contact email",
-        "description": "Shown as a link after the disclaimer: the address as mailto:…, e.g. mailto:privacy@jswmotors.com."
+        "description": "E.g. mailto:privacy@jswmotors.com."
       },
       {
         "component": "text",
@@ -1607,7 +1627,8 @@
         "component": "aem-content",
         "valueType": "string",
         "name": "privacyLink",
-        "label": "Privacy notice link"
+        "label": "Privacy notice link",
+        "description": "The privacy notice page."
       },
       {
         "component": "text",
@@ -1627,7 +1648,7 @@
         "valueType": "string",
         "name": "amountLabel",
         "label": "Amount label",
-        "description": "Shown on the price card over the image, e.g. RESERVATION AMOUNT. Leave the amount empty to hide the card.",
+        "description": "On the price card, e.g. RESERVATION AMOUNT.",
         "value": ""
       },
       {
@@ -1635,14 +1656,14 @@
         "valueType": "number",
         "name": "amount",
         "label": "Reservation amount (₹)",
-        "description": "In rupees, e.g. 10000 (shown as ₹10,000). Also the amount charged when no payment service is set; with one, the service's amount is charged, so keep the two the same."
+        "description": "In rupees, e.g. 10000; empty hides the card. Match the payment service."
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "amountBadge",
         "label": "Amount badge",
-        "description": "The small outlined tag beside the label, e.g. REFUNDABLE. Optional.",
+        "description": "Optional tag beside the label, e.g. REFUNDABLE.",
         "value": ""
       },
       {
@@ -1650,7 +1671,7 @@
         "valueType": "string",
         "name": "amountNote",
         "label": "Amount note",
-        "description": "Under the amount, e.g. Total payable today. Refundable until you confirm your order.",
+        "description": "Under the amount, e.g. Total payable today.",
         "value": ""
       },
       {
@@ -1663,7 +1684,7 @@
         "valueType": "string",
         "name": "razorpayKeyId",
         "label": "Razorpay Key ID",
-        "description": "The PUBLIC key only (rzp_test_… or rzp_live_…). NEVER enter the Key Secret here: this page is public and anyone could read it. The secret belongs only in the payment service's settings. Leave empty to send the form without a payment.",
+        "description": "Public Key ID only (rzp_test_… / rzp_live_…), never the Key Secret. Empty: no payment.",
         "value": "",
         "validation": {
           "regExp": "^rzp_(test|live)_[A-Za-z0-9]+$",
@@ -1675,7 +1696,7 @@
         "valueType": "string",
         "name": "paymentService",
         "label": "Payment service URL",
-        "description": "The address of the payment service that creates the orders and verifies the payments with the Key Secret, e.g. https://jsw-payments.example.workers.dev. Without it, payments are not verified (test mode only).",
+        "description": "The service that creates and verifies payments; empty: test mode.",
         "value": ""
       },
       {
@@ -1683,7 +1704,7 @@
         "valueType": "string",
         "name": "merchantName",
         "label": "Name in the payment window",
-        "description": "E.g. JSW Motors. The amount label is shown under it.",
+        "description": "E.g. JSW Motors; shown in the checkout.",
         "value": ""
       },
       {
@@ -1691,14 +1712,14 @@
         "valueType": "string",
         "name": "successPage",
         "label": "Page after a successful payment",
-        "description": "E.g. the Confirmation page (default: /confirmation)."
+        "description": "After a payment (default: /confirmation)."
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "failurePage",
         "label": "Page after a failed payment",
-        "description": "E.g. the Payment Failed page (default: /payment-failed)."
+        "description": "After a failed payment (default: /payment-failed)."
       }
     ]
   },
@@ -1710,7 +1731,7 @@
         "valueType": "string",
         "name": "title",
         "label": "Section name",
-        "description": "E.g. User Details. Groups the fields that follow it (up to the next section); read out by screen readers as the group's name (not shown in the design).",
+        "description": "E.g. User Details; names the fields after it (screen readers).",
         "value": ""
       }
     ]
@@ -1723,7 +1744,7 @@
         "valueType": "string",
         "name": "label",
         "label": "Label",
-        "description": "Shown inside the field and read out by screen readers, e.g. First Name (required fields get a * added). The field’s kind follows its name: an email address, a mobile / phone number (with the +91 box) or text; first and last name sit side by side.",
+        "description": "Shown in the field, e.g. First Name; its kind follows the name.",
         "value": ""
       },
       {
@@ -1731,7 +1752,7 @@
         "valueType": "string",
         "name": "fieldName",
         "label": "Field name",
-        "description": "Key of this value in the sent data, e.g. firstName. Leave empty to make it from the label.",
+        "description": "The value's key in the sent data, e.g. firstName; empty: from the label.",
         "value": ""
       },
       {
@@ -1751,7 +1772,7 @@
         "valueType": "string",
         "name": "label",
         "label": "Label",
-        "description": "Shown in the dropdown until a choice is made, e.g. Select City (a required one gets a * added).",
+        "description": "Shown until a choice is made, e.g. Select City.",
         "value": ""
       },
       {
@@ -1759,7 +1780,7 @@
         "valueType": "string",
         "name": "fieldName",
         "label": "Field name",
-        "description": "Key of the choice in the sent data, e.g. city. Leave empty to make it from the label.",
+        "description": "The choice's key in the sent data, e.g. city; empty: from the label.",
         "value": ""
       },
       {
@@ -1773,7 +1794,7 @@
         "component": "container",
         "name": "options",
         "label": "Cities",
-        "description": "The dropdown’s choices: add a city per entry, edit, reorder or remove them here.",
+        "description": "The choices, one city per entry.",
         "multi": true,
         "fields": [
           {
