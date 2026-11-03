@@ -112,8 +112,7 @@ var CustomImportScript = (() => {
         cells.push([
           idCell(document, "jsw-footer-social-link"),
           textCell(document, "network", clean(a.dataset.network)),
-          linkCell(document, "link", a, clean(a.getAttribute("href"))),
-          textCell(document, "label", "")
+          linkCell(document, "link", a, clean(a.getAttribute("href")))
         ]);
       });
       main.append(WebImporter.Blocks.createBlock(document, { name: "jsw-footer", cells }));

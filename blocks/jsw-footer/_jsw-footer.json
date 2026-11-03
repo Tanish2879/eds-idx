@@ -333,17 +333,6 @@
           "label": "Profile link",
           "description": "The network page URL; without a network the icon is not shown.",
           "required": true
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "label",
-          "label": "Accessible name",
-          "description": "Optional screen-reader name (default: JSW Motors on <network>).",
-          "value": "",
-          "validation": {
-            "maxLength": 64
-          }
         }
       ]
     }
