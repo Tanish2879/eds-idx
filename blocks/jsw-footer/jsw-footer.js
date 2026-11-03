@@ -8,8 +8,9 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  *   Footer Column (5 cells): title | link 1 … link 4 (each a link with its text: Link N and
  *                            Link N text, one cell); a column holds its links, at most 4 (its
  *                            four link fields), edited in place as the column's fields
- *   Social Link (3 cells): network (facebook, instagram, x, linkedin, youtube: its icon,
- *                          icons/jsw-social-<network>.svg) | link | accessible name (optional)
+ *   Social Link (2 cells): network (facebook, instagram, x, linkedin, youtube: its icon,
+ *                          icons/jsw-social-<network>.svg; read out as JSW Motors on <network>)
+ *                          | link
  *   (as imported, each child row starts with its component id; AEM renders them without it, told
  *   apart by their cell count)
  * The Social Links, under the block's Social heading, are the last column; the first MAX_ITEMS
@@ -123,7 +124,7 @@ function readRows(block) {
   const items = rows.slice(start).map((row) => {
     let kind = ITEM_KINDS[text(row.firstElementChild)];
     if (kind) row.firstElementChild.remove();
-    else kind = row.children.length === 3 ? 'social' : 'column';
+    else kind = row.children.length <= 3 ? 'social' : 'column'; // (a column: 5 cells)
     return { kind, row };
   });
   return { props: rows.slice(0, start), items };
@@ -182,14 +183,14 @@ function networkOf(chosen, href) {
 
 // a Social Link child: its square button (the network's icon)
 function buildSocial(row, item, authoring) {
-  const [networkCell, linkCell, labelCell] = [...row.children];
+  const [networkCell, linkCell] = [...row.children];
   const link = cellLink(linkCell);
   const href = link?.href || text(linkCell);
   const network = networkOf(text(networkCell).toLowerCase(), href);
   const name = NETWORKS[network] || network || 'Social';
   const external = /^https?:/i.test(href || '')
     && new URL(href, window.location).origin !== window.location.origin;
-  const accessible = text(labelCell) || `JSW Motors on ${name}`;
+  const accessible = `JSW Motors on ${name}`;
   if (authoring && item.dataset.aueResource) item.dataset.aueLabel = `Icon: ${name}`;
   const icon = NETWORKS[network]
     ? el('img', {

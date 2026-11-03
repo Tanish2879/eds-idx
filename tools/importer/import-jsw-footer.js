@@ -14,7 +14,7 @@
  * then the children, each row starting with its component id (the block allows several child
  * types: the content upload picks the child's model by that first cell):
  *   jsw-footer-column | title | link1 … link4 (each a link, its text the Link N text)
- *   jsw-footer-social-link | network | link | label (accessible name, optional)
+ *   jsw-footer-social-link | network | link
  */
 
 function clean(text) {
@@ -111,7 +111,6 @@ export default {
         idCell(document, 'jsw-footer-social-link'),
         textCell(document, 'network', clean(a.dataset.network)),
         linkCell(document, 'link', a, clean(a.getAttribute('href'))),
-        textCell(document, 'label', ''),
       ]);
     });
     main.append(WebImporter.Blocks.createBlock(document, { name: 'jsw-footer', cells }));
