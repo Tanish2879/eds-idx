@@ -4,13 +4,16 @@
  *                 with the Key Secret, never in the page); without one: test mode, page amount
  *   2. checkout   Razorpay's Standard Checkout window (checkout.js, loaded on demand)
  *   3. verify     Razorpay's success callback is checked by the payment service (the signature,
- *                 made with the Key Secret) while a "verifying" window is shown
- * pay() resolves with the outcome: { state: 'paid' | 'failed' | 'cancelled' | 'unavailable', … }.
+ *                 made with the Key Secret), at most VERIFY_TIMEOUT
+ * As soon as the payment is submitted (Razorpay's success callback) config.onPending() is called:
+ * the form shows its pending view until the outcome. pay() resolves with the outcome:
+ * { state: 'paid' | 'failed' | 'cancelled' | 'unavailable', … }.
  * Only the public Key ID is ever in the page.
  */
 
 const CHECKOUT_SCRIPT = 'https://checkout.razorpay.com/v1/checkout.js';
 const THEME = '#000000';
+const VERIFY_TIMEOUT = 30000; // (no answer by then: the payment counts as not verified)
 let checkoutLoading = null;
 
 function el(tag, attrs = {}, ...children) {
@@ -38,61 +41,18 @@ function loadCheckout() {
   return checkoutLoading;
 }
 
-// a POST to the payment service, its JSON answer (an error for any non-2xx answer)
-async function call(service, path, body) {
+// a POST to the payment service, its JSON answer (an error for any non-2xx answer, or none in
+// time)
+async function call(service, path, body, timeout) {
   const res = await fetch(`${service.replace(/\/+$/, '')}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
+    signal: timeout ? AbortSignal.timeout?.(timeout) : undefined,
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.error || `${res.status}`);
   return json;
-}
-
-/*
- * The "verifying your payment" window, in the style of Razorpay's checkout (its card with the
- * merchant's name over the page, dimmed); it can't be closed while the check runs.
- */
-function verifyingWindow(merchant, amount) {
-  const title = el('p', { class: 'rf-pay-title', id: 'rf-pay-title' }, 'Verifying your payment');
-  const card = el(
-    'div',
-    {
-      class: 'rf-pay-card',
-      role: 'alertdialog',
-      'aria-modal': 'true',
-      'aria-labelledby': 'rf-pay-title',
-      'aria-describedby': 'rf-pay-text',
-      'aria-busy': 'true',
-      tabindex: '-1',
-    },
-    el(
-      'div',
-      { class: 'rf-pay-header' },
-      el('span', { class: 'rf-pay-merchant' }, merchant),
-      amount ? el('span', { class: 'rf-pay-amount' }, amount) : null,
-    ),
-    el(
-      'div',
-      { class: 'rf-pay-body' },
-      el('span', { class: 'rf-pay-spinner', 'aria-hidden': 'true' }),
-      title,
-      el('p', { class: 'rf-pay-text', id: 'rf-pay-text' }, 'This takes a few seconds. Please don’t close this window or press back.'),
-    ),
-    el('p', { class: 'rf-pay-footer' }, 'Secured by ', el('strong', {}, 'Razorpay')),
-  );
-  const overlay = el('div', { class: 'rf-pay-overlay' }, card);
-  document.body.append(overlay);
-  document.documentElement.classList.add('rf-pay-open');
-  card.focus();
-  return {
-    set(text) { title.textContent = text; },
-    close() {
-      overlay.remove();
-      document.documentElement.classList.remove('rf-pay-open');
-    },
-  };
 }
 
 // the checkout window: resolves with Razorpay's success response, its failure, or a dismissal
@@ -131,7 +91,8 @@ function openCheckout(Razorpay, options) {
 /**
  * Takes the payment.
  * @param {object} config keyId, service (payment service URL, optional), amount (rupees, used
- *   without a service), merchant, description, displayAmount (as shown, e.g. ₹10,000)
+ *   without a service), merchant, description, displayAmount (as shown, e.g. ₹10,000), onPending
+ *   (called once the payment is submitted, while it is confirmed)
  * @param {object} data the form's cleaned values (prefill and the order's notes)
  */
 export default async function pay(config, data) {
@@ -177,6 +138,8 @@ export default async function pay(config, data) {
     retry: { enabled: false },
   });
   if (result.state !== 'authorized') return result;
+  // (the payment is submitted: the pending view while it is confirmed)
+  config.onPending?.();
 
   // 3. the payment checked with the payment service (the signature only it can make)
   const {
@@ -189,20 +152,17 @@ export default async function pay(config, data) {
       state: 'paid', paymentId, orderId, verified: false,
     };
   }
-  const verifying = verifyingWindow(config.merchant, config.displayAmount);
   try {
     const check = await call(config.service, '/verify', {
       razorpay_order_id: orderId,
       razorpay_payment_id: paymentId,
       razorpay_signature: signature,
-    });
+    }, VERIFY_TIMEOUT);
     if (!check.verified) throw new Error('not verified');
-    verifying.set('Payment verified');
     return {
-      state: 'paid', paymentId, orderId, verified: true, close: verifying.close,
+      state: 'paid', paymentId, orderId, verified: true,
     };
   } catch (e) {
-    verifying.close();
     return {
       state: 'failed',
       reason: 'We couldn’t verify your payment.',

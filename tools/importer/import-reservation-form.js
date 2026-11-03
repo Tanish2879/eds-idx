@@ -11,7 +11,8 @@
  *   6. successMessage   7. disclaimer   8. privacyEmail (+ privacyEmailText)
  *   9. privacyLink (+ privacyLinkText)   10. amountLabel   11. amount   12. amountBadge
  *   13. amountNote   14. razorpayKeyId (public; empty, for the authors)   15. paymentService
- *   16. merchantName   17. successPage   18. failurePage
+ *   16. merchantName   17. successPage   18. failurePage   19. pendingHeading
+ *   20. pendingDescription (the view shown while a payment is confirmed)
  *   (the contact email is its own mailto: link property: in a text field md2jcr keeps a link's URL
  *   instead of the text, and markdown turns an email address in a sentence into a link)
  *   then the items, each row starting with its component id (the block allows several child
@@ -124,6 +125,9 @@ export default {
       p.append(a);
       cells.push([hinted(document, `${kind}Page`, p)]);
     });
+    // 19–20. the pending view, while a payment is confirmed
+    cells.push([textCell(document, 'pendingHeading', value('.pending-title'))]);
+    cells.push([textCell(document, 'pendingDescription', value('.pending-description'))]);
 
     // items, in order
     src.querySelectorAll('.item').forEach((item) => {

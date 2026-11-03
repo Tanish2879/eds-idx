@@ -112,6 +112,8 @@ var CustomImportScript = (() => {
         p.append(a);
         cells.push([hinted(document, `${kind}Page`, p)]);
       });
+      cells.push([textCell(document, "pendingHeading", value(".pending-title"))]);
+      cells.push([textCell(document, "pendingDescription", value(".pending-description"))]);
       src.querySelectorAll(".item").forEach((item) => {
         if (item.classList.contains("section")) {
           cells.push([idCell(document, "reservation-form-section"), textCell(document, "title", clean(item.textContent))]);

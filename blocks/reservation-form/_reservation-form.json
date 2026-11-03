@@ -234,14 +234,37 @@
           "valueType": "string",
           "name": "successPage",
           "label": "Page after a successful payment",
-          "description": "After a payment (default: /confirmation)."
+          "description": "Confirmation page, after a confirmed payment (default: /confirmation)."
         },
         {
           "component": "aem-content",
           "valueType": "string",
           "name": "failurePage",
           "label": "Page after a failed payment",
-          "description": "After a failed payment (default: /payment-failed)."
+          "description": "Failure page, after a failed payment (default: /payment-failed)."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pendingHeading",
+          "label": "Pending title",
+          "description": "While the payment is confirmed, e.g. Processing your reservation.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "pendingDescription",
+          "label": "Pending description",
+          "description": "Under the pending title, e.g. Please wait while we process your request.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
         }
       ]
     },

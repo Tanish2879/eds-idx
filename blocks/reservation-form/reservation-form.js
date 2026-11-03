@@ -23,7 +23,7 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * a cancelled payment stays on the form. The pages read the values from this tab's storage.
  */
 
-const BLOCK_ROWS = 18;
+const BLOCK_ROWS = 20;
 const SUCCESS_PAGE = '/confirmation';
 const FAILURE_PAGE = '/payment-failed';
 const KEY_ID = /^rzp_(test|live)_[A-Za-z0-9]+$/; // Razorpay's public Key ID
@@ -37,6 +37,8 @@ const EMAIL = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/;
 const SEND_ERROR = 'Sorry, that didn’t go through. Please try again.';
 const PAY_CANCELLED = 'The payment was cancelled. You can try again whenever you’re ready.';
 const PAY_UNAVAILABLE = 'Sorry, the payment couldn’t be started. Please check your connection and try again.';
+const PENDING_HEADING = 'Processing your reservation';
+const PENDING_TEXT = 'Please wait while we process your request.';
 const INR = new Intl.NumberFormat('en-IN', {
   style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0,
 });
@@ -326,7 +328,7 @@ export default function decorate(block) {
   const rows = [...block.children];
   const [imageRow, headingRow, descriptionRow, submitRow, actionRow, successRow, disclaimerRow,
     emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, keyRow, serviceRow,
-    merchantRow, successPageRow, failurePageRow] = rows;
+    merchantRow, successPageRow, failurePageRow, pendingHeadingRow, pendingDescriptionRow] = rows;
   // (content imported before the price card and payment rows: its items start earlier, at the
   // first row naming an item's component)
   const first = rows.findIndex((row) => ITEM_KINDS[text(row.firstElementChild)]);
@@ -503,16 +505,46 @@ export default function decorate(block) {
     submit.disabled = false;
     submit.removeAttribute('aria-busy');
   };
+
+  /*
+   * The pending view: in the form's place (as tall, so nothing else moves) from the moment the
+   * payment is submitted until the next page opens: a spinner, the pending heading and text
+   */
+  const pendingDescription = lines(prop(pendingDescriptionRow)).join('\n');
+  const pending = el(
+    'div',
+    {
+      class: 'pending-view', role: 'status', 'aria-live': 'polite', 'aria-busy': 'true', tabindex: '-1',
+    },
+    el('span', { class: 'spinner', 'aria-hidden': 'true' }),
+    el('p', { class: 'status-title' }, text(prop(pendingHeadingRow)) || PENDING_HEADING),
+    el('p', { class: 'status-text' }, pendingDescription || PENDING_TEXT),
+  );
+  const showPending = () => {
+    if (pending.isConnected) return;
+    pending.style.setProperty('--form-height', `${form.offsetHeight}px`);
+    form.replaceWith(pending);
+    pending.focus({ preventScroll: true });
+  };
+  const hidePending = () => {
+    if (pending.isConnected) pending.replaceWith(form);
+  };
+  payment.onPending = showPending;
+  // the next page (the authored Confirmation / Failure page)
+  const go = (page) => {
+    showPending();
+    window.location.href = page;
+  };
   // back on the form from the next page (the browser's back button restores it as it was left)
   window.addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
+    hidePending();
     ready();
-    document.querySelector('.rf-pay-overlay')?.remove();
-    document.documentElement.classList.remove('rf-pay-open');
   });
 
   /*
-   * The payment, once the form is valid: Razorpay's window (see payment.js), then
+   * The payment, once the form is valid: Razorpay's window (see payment.js), the pending view
+   * once it is submitted, then
    *   paid       the success page (the values with the payment's sent to the send-to URL first)
    *   failed     the failure page (declined, or the payment couldn't be verified)
    *   cancelled  (the window closed) / unavailable (no connection): a message on the form
@@ -535,13 +567,14 @@ export default function decorate(block) {
       };
       store(paid);
       // (the payment is taken: the success page follows even when sending the lead fails)
+      showPending();
       if (action) await send(paid).catch(() => {});
-      window.location.assign(payment.successPage);
+      go(payment.successPage);
     } else if (result.state === 'failed') {
       store({
         ...data, paymentId, orderId, paymentStatus: 'failed', failureReason: result.reason, failureCode: result.code,
       });
-      window.location.assign(payment.failurePage);
+      go(payment.failurePage);
     } else {
       status.classList.toggle('is-info', result.state === 'cancelled');
       status.textContent = result.state === 'cancelled' ? PAY_CANCELLED : PAY_UNAVAILABLE;
