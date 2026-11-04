@@ -67,7 +67,7 @@ var CustomImportScript = (() => {
       const img = document.createElement("img");
       img.src = rootRelative(source.getAttribute("src"));
       img.alt = clean(source.getAttribute("alt"));
-      cells.push([hinted(document, "image", img)]);
+      cells.push([hinted(document, "background", img)]);
       cells.push([textCell(document, "heading", value("h1"))]);
       cells.push([textCell(document, "description", value(".description"))]);
       cells.push([textCell(document, "submitLabel", value(".submit"))]);
@@ -115,10 +115,7 @@ var CustomImportScript = (() => {
       cells.push([textCell(document, "pendingHeading", value(".pending-title"))]);
       cells.push([textCell(document, "pendingDescription", value(".pending-description"))]);
       src.querySelectorAll(".item").forEach((item) => {
-        if (item.classList.contains("section")) {
-          cells.push([idCell(document, "reservation-form-section"), textCell(document, "title", clean(item.textContent))]);
-          return;
-        }
+        if (item.classList.contains("section")) return;
         const label = clean([...item.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" "));
         const common = [
           textCell(document, "label", label),

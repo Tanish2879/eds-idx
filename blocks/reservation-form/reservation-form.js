@@ -370,7 +370,7 @@ export default function decorate(block) {
   const uid = `reservation-form-${formId}`;
   const authoring = isAuthoring();
   const rows = [...block.children];
-  const [imageRow, headingRow, descriptionRow, submitRow, actionRow, successRow, disclaimerRow,
+  const [backgroundRow, headingRow, descriptionRow, submitRow, actionRow, successRow, disclaimerRow,
     emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, keyRow, serviceRow,
     merchantRow, successPageRow, failurePageRow, pendingHeadingRow, pendingDescriptionRow] = rows;
   // (content imported before the price card and payment rows: its items start earlier, at the
@@ -381,13 +381,13 @@ export default function decorate(block) {
 
   // image (the page's largest element: loaded first)
   const media = el('div', { class: 'media' });
-  const image = rowImage(imageRow);
+  const image = rowImage(backgroundRow);
   if (image) {
-    const picture = createOptimizedPicture(image.src, image.alt || text(imageRow), true, [{ media: '(min-width: 768px)', width: '1200' }, { width: '750' }]);
+    const picture = createOptimizedPicture(image.src, image.alt || text(backgroundRow), true, [{ media: '(min-width: 768px)', width: '1200' }, { width: '750' }]);
     const img = picture.querySelector('img');
     img.setAttribute('fetchpriority', 'high');
     moveInstrumentation(image.source, img);
-    if (authoring) editable(img, 'image', 'media', 'Car image');
+    if (authoring) editable(img, 'background', 'media', 'Background Image');
     media.append(picture);
   }
 
@@ -427,9 +427,11 @@ export default function decorate(block) {
     panel.append(p);
   }
 
-  // the form: its sections (fieldsets) with their fields, then the button
+  // the form: its fields (the block's own children, in one grid), then the button; a Form
+  // Section row of content from before the fields were flattened is left out
   const form = el('form', { class: 'form', novalidate: true });
-  let group = null;
+  const group = el('div', { class: 'field-group' });
+  form.append(group);
   let index = 0;
   items.forEach((row) => {
     // an item row may start with its component id (as imported: AEM's content import picks the
@@ -438,25 +440,7 @@ export default function decorate(block) {
     if (kind) row.firstElementChild.remove();
     else if (row.children.length <= 1) kind = 'section';
     else kind = row.children.length === 4 ? 'dropdown' : 'field';
-    if (kind === 'section') {
-      // Form Section
-      const title = text(row);
-      group = el('fieldset', { class: 'field-group' });
-      moveInstrumentation(row, group);
-      if (title) {
-        const legend = el('legend', { class: 'label' }, fit(title, MAX_SHORT, 'section name'));
-        if (authoring) editable(legend, 'title', 'text', 'Section name');
-        group.append(legend);
-      }
-      if (authoring && group.dataset.aueResource) group.dataset.aueLabel = `Section: ${title || 'Form Section'}`;
-      form.append(group);
-      return;
-    }
-    // Form Field (fields before any section get a group of their own)
-    if (!group) {
-      group = el('div', { class: 'field-group' });
-      form.append(group);
-    }
+    if (kind === 'section') return;
     group.append(buildField(parseField(row, index, kind), `${uid}-${index}`, authoring));
     index += 1;
   });

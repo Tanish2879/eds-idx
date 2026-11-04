@@ -17,21 +17,6 @@
       }
     },
     {
-      "title": "Form Section",
-      "id": "reservation-form-section",
-      "plugins": {
-        "xwalk": {
-          "page": {
-            "resourceType": "core/franklin/components/block/v1/block/item",
-            "template": {
-              "name": "Form Section",
-              "model": "reservation-form-section"
-            }
-          }
-        }
-      }
-    },
-    {
       "title": "Form Field",
       "id": "reservation-form-field",
       "plugins": {
@@ -69,16 +54,16 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "image",
-          "label": "Car image",
-          "description": "The left half (a banner above the form on phones).",
+          "name": "background",
+          "label": "Background Image",
+          "description": "Fills the left half; a banner above the form on phones.",
           "multi": false
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "imageAlt",
-          "label": "Car image alt text",
+          "name": "backgroundAlt",
+          "label": "Background Image alt text",
           "description": "Describes the image for screen readers. Max 64 characters.",
           "value": "",
           "validation": {
@@ -90,7 +75,7 @@
           "valueType": "string",
           "name": "heading",
           "label": "Heading",
-          "description": "E.g. RESERVE NOW. Max 40 characters.",
+          "description": "The form's heading. Max 40 characters.",
           "value": "",
           "validation": {
             "maxLength": 40
@@ -102,7 +87,7 @@
           "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
-          "description": "Under the heading. Max 200 characters.",
+          "description": "Shown under the heading. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
@@ -113,7 +98,7 @@
           "valueType": "string",
           "name": "submitLabel",
           "label": "Button text",
-          "description": "E.g. PROCEED. Max 30 characters.",
+          "description": "The button's text. Max 30 characters.",
           "value": "",
           "validation": {
             "maxLength": 30
@@ -124,7 +109,7 @@
           "valueType": "string",
           "name": "submitAction",
           "label": "Send the form to (URL)",
-          "description": "Where the data is posted as JSON; empty: only the success message. Max 256 characters.",
+          "description": "Where the data is posted as JSON; leave empty to only show the confirmation message. Max 256 characters.",
           "value": "",
           "validation": {
             "maxLength": 256
@@ -136,7 +121,7 @@
           "valueFormat": "string-multiline",
           "name": "successMessage",
           "label": "Confirmation message",
-          "description": "Replaces the form once sent. Max 200 characters.",
+          "description": "Replaces the form once it is sent. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
@@ -148,7 +133,7 @@
           "valueFormat": "string-multiline",
           "name": "disclaimer",
           "label": "Privacy disclaimer",
-          "description": "Small print under the button; the email and privacy link follow it. Max 200 characters.",
+          "description": "Small print under the button; the contact email and privacy link follow it. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
@@ -159,14 +144,14 @@
           "valueType": "string",
           "name": "privacyEmail",
           "label": "Privacy contact email",
-          "description": "E.g. mailto:privacy@jswmotors.com."
+          "description": "A mailto: link to the privacy contact."
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "privacyEmailText",
           "label": "Privacy contact email text",
-          "description": "E.g. privacy@jswmotors.com. Max 64 characters.",
+          "description": "The email address as shown. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -184,7 +169,7 @@
           "valueType": "string",
           "name": "privacyLinkText",
           "label": "Privacy notice link text",
-          "description": "E.g. Full Privacy Notice. Max 30 characters.",
+          "description": "The link's text. Max 30 characters.",
           "value": "",
           "validation": {
             "maxLength": 30
@@ -200,7 +185,7 @@
           "valueType": "string",
           "name": "amountLabel",
           "label": "Amount label",
-          "description": "On the price card, e.g. RESERVATION AMOUNT. Max 30 characters.",
+          "description": "The price card's label. Max 30 characters.",
           "value": "",
           "validation": {
             "maxLength": 30
@@ -211,14 +196,14 @@
           "valueType": "number",
           "name": "amount",
           "label": "Reservation amount (₹)",
-          "description": "In rupees, e.g. 10000; empty hides the card. Match the payment service."
+          "description": "In rupees; leave empty to hide the price card. Keep it the same as the payment service's amount."
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "amountBadge",
           "label": "Amount badge",
-          "description": "Optional tag beside the label, e.g. REFUNDABLE. Max 30 characters.",
+          "description": "Optional tag beside the label. Max 30 characters.",
           "value": "",
           "validation": {
             "maxLength": 30
@@ -230,7 +215,7 @@
           "valueFormat": "string-multiline",
           "name": "amountNote",
           "label": "Amount note",
-          "description": "Under the amount, e.g. Total payable today. Max 200 characters.",
+          "description": "Shown under the amount. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
@@ -247,7 +232,7 @@
           "valueFormat": "regexp",
           "name": "razorpayKeyId",
           "label": "Razorpay Key ID",
-          "description": "Public Key ID only (rzp_test_… / rzp_live_…), never the Key Secret. Empty: no payment. Max 64 characters.",
+          "description": "Public Key ID only (rzp_test_… or rzp_live_…), never the Key Secret; leave empty for no payment. Max 64 characters.",
           "value": "",
           "validation": {
             "regExp": "^(rzp_(test|live)_[A-Za-z0-9]+)?$",
@@ -260,7 +245,7 @@
           "valueType": "string",
           "name": "paymentService",
           "label": "Payment service URL",
-          "description": "The service that creates and verifies payments; empty: test mode. Max 256 characters.",
+          "description": "The service that creates and verifies payments; leave empty for test mode. Max 256 characters.",
           "value": "",
           "validation": {
             "maxLength": 256
@@ -271,7 +256,7 @@
           "valueType": "string",
           "name": "merchantName",
           "label": "Name in the payment window",
-          "description": "E.g. JSW Motors; shown in the checkout. Max 64 characters.",
+          "description": "Shown in the payment window. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -282,21 +267,21 @@
           "valueType": "string",
           "name": "successPage",
           "label": "Page after a successful payment",
-          "description": "Confirmation page, after a confirmed payment (default: /confirmation)."
+          "description": "Opens after a confirmed payment (default: /confirmation)."
         },
         {
           "component": "aem-content",
           "valueType": "string",
           "name": "failurePage",
           "label": "Page after a failed payment",
-          "description": "Failure page, after a failed payment (default: /payment-failed)."
+          "description": "Opens after a failed payment (default: /payment-failed)."
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "pendingHeading",
           "label": "Pending title",
-          "description": "While the payment is confirmed, e.g. Processing your reservation. Max 64 characters.",
+          "description": "Shown while the payment is confirmed. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -308,26 +293,10 @@
           "valueFormat": "string-multiline",
           "name": "pendingDescription",
           "label": "Pending description",
-          "description": "Under the pending title, e.g. Please wait while we process your request. Max 200 characters.",
+          "description": "Shown under the pending title. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
-          }
-        }
-      ]
-    },
-    {
-      "id": "reservation-form-section",
-      "fields": [
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "title",
-          "label": "Section name",
-          "description": "E.g. User Details; names the fields after it (screen readers). Max 64 characters.",
-          "value": "",
-          "validation": {
-            "maxLength": 64
           }
         }
       ]
@@ -340,7 +309,7 @@
           "valueType": "string",
           "name": "label",
           "label": "Label",
-          "description": "Shown in the field, e.g. First Name; its kind follows the name. Max 64 characters.",
+          "description": "Shown in the field; it also sets the field's kind. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -351,7 +320,7 @@
           "valueType": "string",
           "name": "fieldName",
           "label": "Field name",
-          "description": "The value's key in the sent data, e.g. firstName; empty: from the label. Max 64 characters.",
+          "description": "The value's key in the sent data; leave empty to make it from the label. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -374,7 +343,7 @@
           "valueType": "string",
           "name": "label",
           "label": "Label",
-          "description": "Shown until a choice is made, e.g. Select City. Max 64 characters.",
+          "description": "Shown until a choice is made. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -385,7 +354,7 @@
           "valueType": "string",
           "name": "fieldName",
           "label": "Field name",
-          "description": "The choice's key in the sent data, e.g. city; empty: from the label. Max 64 characters.",
+          "description": "The choice's key in the sent data; leave empty to make it from the label. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -402,7 +371,7 @@
           "component": "container",
           "name": "options",
           "label": "Cities",
-          "description": "The choices, one city per entry.",
+          "description": "The choices, one per entry.",
           "multi": true,
           "fields": [
             {
@@ -425,7 +394,6 @@
     {
       "id": "reservation-form",
       "components": [
-        "reservation-form-section",
         "reservation-form-field",
         "reservation-form-dropdown"
       ]
