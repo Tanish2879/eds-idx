@@ -20,6 +20,26 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 const VARIANTS = ['variant-a', 'variant-b'];
 const TOKEN = /(,?\s*)\{(\w+)(?:\|([^}]*))?\}/g;
 const STORED = 'jsw-reservation'; // the reservation form's last sent data (sessionStorage)
+// the longest text each field takes (its maxLength in the model): the large word, the button's
+// text, the heading (and the image's alt text), the description
+const MAX_WORD = 12;
+const MAX_LABEL = 30;
+const MAX_SHORT = 64;
+const MAX_LONG = 200;
+
+/*
+ * An authored text within its field's limit: a longer one (content from before the limits, or
+ * imported) is cut with "…" on the page (never inside a {token}), with a warning for the authors;
+ * in the editor it stays whole (edited in place: a cut text would be saved cut) and only the CSS
+ * shortens what doesn't fit
+ */
+function fit(value, limit, field, authoring) {
+  if (!value || value.length <= limit) return value;
+  // eslint-disable-next-line no-console
+  console.warn(`confirmation: the ${field} has ${value.length} characters, more than its ${limit}${authoring ? '' : ': cut with "…"'}`);
+  if (authoring) return value;
+  return `${value.slice(0, limit - 1).replace(/\{[^}]*$/, '').trimEnd()}…`;
+}
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -59,7 +79,7 @@ function rowImage(row, field) {
   if (!img && !link) return null;
   let image;
   if (img) {
-    image = { src: img.src, alt: img.alt, source: img };
+    image = { src: img.src, alt: fit(img.alt, MAX_SHORT, `${field}'s alt text`, isAuthoring()), source: img };
   } else {
     const { pathname } = new URL(link.href, window.location);
     const drafts = pathname.indexOf('/drafts/');
@@ -146,12 +166,12 @@ export default function decorate(block) {
   // the text: heading, description, optional button
   const copy = el('div', { class: 'content' });
   if (text(headingRow)) {
-    const heading = el('h1', { class: 'heading' }, ...content(text(headingRow)));
+    const heading = el('h1', { class: 'heading' }, ...content(fit(text(headingRow), MAX_SHORT, 'heading', authoring)));
     if (authoring) editable(heading, 'heading', 'text', 'Status heading');
     copy.append(heading);
   }
   if (text(descriptionRow)) {
-    const parts = content(text(descriptionRow));
+    const parts = content(fit(text(descriptionRow), MAX_LONG, 'description', authoring));
     const p = el('p', { class: 'description' }, ...(variant === 'variant-a' && !authoring ? bySentence(parts) : parts));
     if (authoring) editable(p, 'description', 'text', 'Description');
     copy.append(p);
@@ -159,7 +179,7 @@ export default function decorate(block) {
   const link = ctaRow?.querySelector('a[href]');
   if (link) {
     // (the text in its own span: cut with "…" when it doesn't fit)
-    const label = el('span', { class: 'cta-label' }, text(link) || link.getAttribute('href'));
+    const label = el('span', { class: 'cta-label' }, fit(text(link), MAX_LABEL, 'button text', authoring) || link.getAttribute('href'));
     const cta = el('a', { class: 'cta', href: link.getAttribute('href') }, label);
     moveInstrumentation(link, cta);
     if (authoring) editable(label, 'ctaLinkText', 'text', 'Button text');
@@ -174,7 +194,7 @@ export default function decorate(block) {
     const bg = picture(background, true, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }], 'background');
     if (bg && authoring) editable(bg.querySelector('img'), 'background', 'media', 'Background image');
     const word = text(wordRow)
-      ? el('p', { class: 'word', 'aria-hidden': authoring ? undefined : 'true' }, text(wordRow))
+      ? el('p', { class: 'word', 'aria-hidden': authoring ? undefined : 'true' }, fit(text(wordRow), MAX_WORD, 'background word', authoring))
       : null;
     if (authoring) editable(word, 'displayWord', 'text', 'Background word');
     const car = picture(image, true, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }], 'image');

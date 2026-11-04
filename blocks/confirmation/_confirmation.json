@@ -54,7 +54,7 @@
           "valueType": "string",
           "name": "displayWord",
           "label": "Background word",
-          "description": "Variant A only: the large word behind the car, e.g. RESERVED.",
+          "description": "Variant A only: the large word behind the car, e.g. RESERVED. Max 12 characters.",
           "value": "",
           "validation": {
             "maxLength": 12
@@ -65,7 +65,7 @@
           "valueType": "string",
           "name": "heading",
           "label": "Status heading",
-          "description": "E.g. YOU’RE IN, {firstName}. Tokens: {firstName}, {lastName}, {email}, {mobile}, {city}; {token|fallback} when empty.",
+          "description": "E.g. YOU’RE IN, {firstName} (also {lastName}, {email}, {mobile}, {city}). Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -77,7 +77,7 @@
           "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
-          "description": "E.g. Your receipt is on its way to {email|your inbox}. Variant A: one line per sentence.",
+          "description": "E.g. Your receipt is on its way to {email|your inbox}. Variant A: one line per sentence. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
@@ -96,7 +96,7 @@
           "valueType": "string",
           "name": "imageAlt",
           "label": "Image alt text",
-          "description": "Describes the image for screen readers.",
+          "description": "Describes the image for screen readers. Max 64 characters.",
           "value": "",
           "validation": {
             "maxLength": 64
@@ -122,7 +122,7 @@
           "valueType": "string",
           "name": "ctaLinkText",
           "label": "Button text",
-          "description": "The button text, e.g. TRY AGAIN.",
+          "description": "The button text, e.g. TRY AGAIN. Max 30 characters.",
           "value": "",
           "validation": {
             "maxLength": 30

@@ -38,6 +38,13 @@ const SEND_ERROR = 'Sorry, that didn’t go through. Please try again.';
 const PAY_CANCELLED = 'The payment was cancelled. You can try again whenever you’re ready.';
 const PAY_UNAVAILABLE = 'Sorry, the payment couldn’t be started. Please check your connection and try again.';
 const PENDING_HEADING = 'Processing your reservation';
+// the longest text each kind of field takes (its maxLength in the model): button and link texts
+// (and the amount label), the heading (the design's one line in the display face), titles and
+// other short texts, descriptions
+const MAX_LABEL = 30;
+const MAX_HEADING = 40;
+const MAX_SHORT = 64;
+const MAX_LONG = 200;
 const LOGO_MARK = 'jsw-logo-mark'; // the pending view's mark: icons/jsw-logo-mark.svg
 const PENDING_TEXT = 'Please wait while we process your request.';
 const INR = new Intl.NumberFormat('en-IN', {
@@ -77,6 +84,19 @@ async function injectLogoMark(box) {
   svg.setAttribute('aria-hidden', 'true');
   svg.setAttribute('focusable', 'false');
   box.append(document.importNode(svg, true));
+}
+
+/*
+ * An authored text within its field's limit: a longer one (content from before the limits, or
+ * imported) is cut with "…" on the page, with a warning for the authors; in the editor it stays
+ * whole (edited in place: a cut text would be saved cut) and only the CSS shortens what doesn't fit
+ */
+function fit(value, limit, field) {
+  if (!value || value.length <= limit) return value;
+  const authoring = isAuthoring();
+  // eslint-disable-next-line no-console
+  console.warn(`reservation-form: the ${field} has ${value.length} characters, more than its ${limit}${authoring ? '' : ': cut with "…"'}`);
+  return authoring ? value : `${value.slice(0, limit - 1).trimEnd()}…`;
 }
 
 // a multi-line plain-text value: its lines (paragraphs, or line breaks within the text)
@@ -274,9 +294,10 @@ function buildField(field, id, authoring) {
   moveInstrumentation(field.row, wrap);
   if (authoring && wrap.dataset.aueResource) wrap.dataset.aueLabel = `${field.type === 'select' ? 'Dropdown' : 'Field'}: ${field.label || field.key}`;
   const required = field.required || Boolean(field.rule); // (the rules' fields are required)
-  const shown = `${field.label}${required ? '*' : ''}`;
+  const label = fit(field.label, MAX_SHORT, `field label "${field.label.slice(0, 24)}…"`);
+  const shown = `${label}${required ? '*' : ''}`;
   // the label is read out by screen readers; the design shows it inside the field
-  wrap.append(el('label', { class: 'label', for: id }, field.label || field.key));
+  wrap.append(el('label', { class: 'label', for: id }, label || field.key));
   if (field.prefix) wrap.append(el('span', { class: 'prefix', 'aria-hidden': 'true' }, field.prefix));
   // (no HTML validation attributes: the block checks the fields itself, see validate)
   const common = {
@@ -294,7 +315,7 @@ function buildField(field, id, authoring) {
       'select',
       { ...common, class: 'input' },
       el('option', { value: '' }, shown),
-      ...field.options.map((option) => el('option', { value: option }, option)),
+      ...field.options.map((option) => el('option', { value: option }, fit(option, MAX_SHORT, 'dropdown choice'))),
     );
   } else {
     // (an email field is a text input with the email keyboard: type=email would bring the
@@ -372,15 +393,15 @@ export default function decorate(block) {
 
   // the price card over the image: label (and badge), the amount, the note
   const amount = rupees(text(prop(amountRow)));
-  const amountLabel = text(prop(amountLabelRow));
+  const amountLabel = fit(text(prop(amountLabelRow)), MAX_LABEL, 'amount label');
   const displayAmount = amount ? INR.format(amount) : '';
   if (amount) {
     const label = el('p', { class: 'price-label' }, amountLabel);
     if (authoring) editable(label, 'amountLabel', 'text', 'Amount label');
     const badge = text(prop(badgeRow))
-      ? el('span', { class: 'price-badge' }, text(badgeRow)) : null;
+      ? el('span', { class: 'price-badge' }, fit(text(badgeRow), MAX_LABEL, 'amount badge')) : null;
     if (authoring) editable(badge, 'amountBadge', 'text', 'Amount badge');
-    const note = lines(prop(noteRow)).join(' ');
+    const note = fit(lines(prop(noteRow)).join(' '), MAX_LONG, 'amount note');
     const noteEl = note ? el('p', { class: 'price-note' }, note) : null;
     if (authoring) editable(noteEl, 'amountNote', 'text', 'Amount note');
     media.append(el(
@@ -395,13 +416,13 @@ export default function decorate(block) {
   // heading, description
   const panel = el('div', { class: 'panel' });
   if (text(headingRow)) {
-    const heading = el('h1', { class: 'heading' }, text(headingRow));
+    const heading = el('h1', { class: 'heading' }, fit(text(headingRow), MAX_HEADING, 'heading'));
     if (authoring) editable(heading, 'heading', 'text', 'Heading');
     panel.append(heading);
   }
   const description = lines(descriptionRow);
   if (description.length) {
-    const p = el('p', { class: 'description' }, description.join('\n'));
+    const p = el('p', { class: 'description' }, fit(description.join('\n'), MAX_LONG, 'description'));
     if (authoring) editable(p, 'description', 'text', 'Description');
     panel.append(p);
   }
@@ -423,7 +444,7 @@ export default function decorate(block) {
       group = el('fieldset', { class: 'field-group' });
       moveInstrumentation(row, group);
       if (title) {
-        const legend = el('legend', { class: 'label' }, title);
+        const legend = el('legend', { class: 'label' }, fit(title, MAX_SHORT, 'section name'));
         if (authoring) editable(legend, 'title', 'text', 'Section name');
         group.append(legend);
       }
@@ -446,7 +467,7 @@ export default function decorate(block) {
     seen.set(control.name, n + 1);
     if (n) control.name = `${control.name}${n + 1}`;
   });
-  const submit = el('button', { type: 'submit', class: 'submit' }, text(submitRow) || 'Submit');
+  const submit = el('button', { type: 'submit', class: 'submit' }, fit(text(submitRow), MAX_LABEL, 'button text') || 'Submit');
   if (authoring) editable(submit, 'submitLabel', 'text', 'Button text');
   const status = el('p', { class: 'status', role: 'status', 'aria-live': 'polite' });
   form.append(submit, status);
@@ -455,15 +476,15 @@ export default function decorate(block) {
   // privacy disclaimer: its text (email addresses in it become links), then the contact email and
   // the privacy notice link, each ending its sentence ("… anytime at privacy@… . Full Privacy
   // Notice."); the notice link replaces its text instead when the disclaimer contains it
-  const disclaimer = text(disclaimerRow);
+  const disclaimer = fit(text(disclaimerRow), MAX_LONG, 'disclaimer');
   const linkOf = (row) => {
     const a = row?.querySelector('a[href]');
     return a ? { href: a.getAttribute('href'), text: a.textContent.trim(), source: a } : null;
   };
   const email = linkOf(emailRow);
-  if (email) email.text ||= email.href.replace(/^mailto:/i, '');
+  if (email) email.text = fit(email.text || email.href.replace(/^mailto:/i, ''), MAX_SHORT, 'contact email text');
   const privacy = linkOf(privacyRow);
-  if (privacy) privacy.text ||= 'Privacy Notice';
+  if (privacy) privacy.text = fit(privacy.text || 'Privacy Notice', MAX_LABEL, 'privacy link text');
   if (disclaimer || email || privacy) {
     const small = el('p', { class: 'disclaimer' });
     let placed = false;
@@ -502,7 +523,7 @@ export default function decorate(block) {
 
   // sending
   const action = text(actionRow);
-  const success = lines(successRow).join('\n');
+  const success = fit(lines(successRow).join('\n'), MAX_LONG, 'success message');
   const send = (data) => fetch(action, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -519,7 +540,7 @@ export default function decorate(block) {
     service: text(prop(serviceRow)),
     amount,
     displayAmount,
-    merchant: text(prop(merchantRow)) || 'JSW Motors',
+    merchant: fit(text(prop(merchantRow)), MAX_SHORT, 'merchant name') || 'JSW Motors',
     description: amountLabel || 'Reservation amount',
     successPage: pageOf(successPageRow, SUCCESS_PAGE),
     failurePage: pageOf(failurePageRow, FAILURE_PAGE),
@@ -534,14 +555,14 @@ export default function decorate(block) {
    * is-pending) from the moment the payment is submitted until the next page opens: the JSW mark
    * with a light sweeping across it, the pending heading and text
    */
-  const pendingDescription = lines(prop(pendingDescriptionRow)).join('\n');
+  const pendingDescription = fit(lines(prop(pendingDescriptionRow)).join('\n'), MAX_LONG, 'pending description');
   const pending = el(
     'div',
     {
       class: 'pending-view', role: 'status', 'aria-live': 'polite', 'aria-busy': 'true', tabindex: '-1',
     },
     el('span', { class: 'logo', 'aria-hidden': 'true' }),
-    el('p', { class: 'status-title' }, text(prop(pendingHeadingRow)) || PENDING_HEADING),
+    el('p', { class: 'status-title' }, fit(text(prop(pendingHeadingRow)), MAX_SHORT, 'pending title') || PENDING_HEADING),
     el('p', { class: 'status-text' }, pendingDescription || PENDING_TEXT),
   );
   const showPending = () => {

@@ -41,6 +41,10 @@ main > .section > .reservation-form-wrapper > .block {
   background-color: var(--rf-bg);
   color: var(--rf-text);
 
+  /* (the texts' guardrails, against text longer than its field's limit, see the JS: each
+     authored text clamped to the lines its limit needs, cut with "…", long words broken; the
+     one-line ones (the button, the badge, a dropdown's value) cut with "…") */
+
   /* image: a banner on phones, the left column from 768px (cropped to fill, centred) */
   .media {
     position: relative;
@@ -90,6 +94,11 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .price-label {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     margin: 0;
     color: #8c8c8c;
     font-family: var(--rf-body-font);
@@ -100,6 +109,10 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .price-badge {
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     flex: none;
     box-sizing: border-box;
     height: 22px;
@@ -122,6 +135,11 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .price-note {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     max-width: 420px;
     margin: 8px 0 0;
     color: #b3b3b3;
@@ -139,6 +157,11 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .heading {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
     margin: 0;
     color: var(--rf-text);
     font-family: var(--rf-display-font);
@@ -157,6 +180,11 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .description {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
     max-width: 420px;
     margin: 15px 0 0;
     color: var(--rf-muted);
@@ -273,6 +301,9 @@ main > .section > .reservation-form-wrapper > .block {
 
   /* dropdown: a thin chevron on the right; grey while nothing is chosen */
   & select.input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     padding-right: 52px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Cpath d='M1 1l7 7 7-7' fill='none' stroke='%234d4d4d' stroke-width='1.4'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -292,6 +323,10 @@ main > .section > .reservation-form-wrapper > .block {
 
   /* button: white, after a 24px space */
   .submit {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     justify-self: start;
     min-width: 127px;
     height: var(--rf-field-height);
@@ -342,6 +377,11 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .success {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
     margin: 23px 0 0;
     color: var(--rf-text);
     font-family: var(--rf-body-font);
@@ -352,6 +392,11 @@ main > .section > .reservation-form-wrapper > .block {
   }
 
   .disclaimer {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
     margin: 36px 0 0;
     color: var(--rf-faint);
     font-family: var(--rf-body-font);
@@ -435,6 +480,11 @@ main > .section > .reservation-form-wrapper > .block {
     }
 
     .status-title {
+      display: -webkit-box;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       margin: 31px 0 0;
       color: var(--rf-text);
       font-family: var(--rf-body-font);
@@ -444,6 +494,11 @@ main > .section > .reservation-form-wrapper > .block {
     }
 
     .status-text {
+      display: -webkit-box;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
       margin: 11px 0 0;
       color: #bebebe;
       font-family: var(--rf-body-font);
