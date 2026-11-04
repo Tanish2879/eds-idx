@@ -251,6 +251,19 @@
           "description": "Opens after a failed payment (default: /payment-failed)."
         },
         {
+          "component": "tab",
+          "name": "pendingTab",
+          "label": "Pending"
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "pendingPreview",
+          "label": "Show pending state in the editor",
+          "description": "Shows the pending state in place of the form while editing, to edit its texts in place; never on the site.",
+          "value": false
+        },
+        {
           "component": "text",
           "valueType": "string",
           "name": "pendingHeading",

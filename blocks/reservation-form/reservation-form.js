@@ -10,8 +10,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  *   8. privacy notice link (+ its text)
  *   price card (over the image): 9. amount label   10. amount (rupees)   11. badge   12. note
  *   payment (Razorpay): 13. payment service URL   14. name in the payment window   15. page after
- *   the form is sent (and paid)   16. page after a failed payment   17. pending title
- *   18. pending description
+ *   the form is sent (and paid)   16. page after a failed payment
+ *   pending state: 17. its editor preview (true: the editor shows the pending view in the form's
+ *   place, its texts edited in place; never on the site)   18. pending title
+ *   19. pending description
  *   then the fields, in order (the block's direct children):
  *     Form Field (3 cells): label | field name | required; its kind follows its name (see kindOf)
  *     Dropdown Field (4 cells): label | field name | required | options (a multifield)
@@ -25,7 +27,7 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * payment stays on the form. The pages read the values from this tab's storage.
  */
 
-const BLOCK_ROWS = 18;
+const BLOCK_ROWS = 19;
 const SUCCESS_PAGE = '/confirmation';
 const FAILURE_PAGE = '/payment-failed';
 const KEY_ID = /^rzp_(test|live)_[A-Za-z0-9]+$/; // Razorpay's public Key ID
@@ -404,7 +406,8 @@ export default function decorate(block) {
   const rows = [...block.children];
   const [backgroundRow, headingRow, descriptionRow, submitRow, actionRow, disclaimerRow,
     emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, serviceRow,
-    merchantRow, successPageRow, failurePageRow, pendingHeadingRow, pendingDescriptionRow] = rows;
+    merchantRow, successPageRow, failurePageRow, pendingPreviewRow, pendingHeadingRow,
+    pendingDescriptionRow] = rows;
   // (content imported before the price card and payment rows: its items start earlier, at the
   // first row naming an item's component)
   const first = rows.findIndex((row) => ITEM_KINDS[text(row.firstElementChild)]);
@@ -568,31 +571,41 @@ export default function decorate(block) {
   /*
    * The pending view: in the form's place (as tall, so nothing else moves; the block marked
    * is-pending) from the moment the payment is submitted until the next page opens: the JSW mark
-   * with a light sweeping across it, the pending heading and text
+   * with a light sweeping across it, the pending heading and text. In the editor, with its preview
+   * on, it is shown in the form's place, the heading and text edited in place (the block's own
+   * fields: the block's resource)
    */
   const pendingDescription = fit(lines(prop(pendingDescriptionRow)).join('\n'), MAX_LONG, 'pending description');
+  const pendingTitle = el('p', { class: 'status-title' }, fit(text(prop(pendingHeadingRow)), MAX_SHORT, 'pending title') || PENDING_HEADING);
+  const pendingText = el('p', { class: 'status-text' }, pendingDescription || PENDING_TEXT);
+  if (authoring) {
+    editable(pendingTitle, 'pendingHeading', 'text', 'Pending title');
+    editable(pendingText, 'pendingDescription', 'text', 'Pending description');
+  }
   const pending = el(
     'div',
     {
       class: 'pending-view', role: 'status', 'aria-live': 'polite', 'aria-busy': 'true', tabindex: '-1',
     },
     el('span', { class: 'logo', 'aria-hidden': 'true' }),
-    el('p', { class: 'status-title' }, fit(text(prop(pendingHeadingRow)), MAX_SHORT, 'pending title') || PENDING_HEADING),
-    el('p', { class: 'status-text' }, pendingDescription || PENDING_TEXT),
+    pendingTitle,
+    pendingText,
   );
-  const showPending = () => {
+  const showPending = (focus = true) => {
     if (pending.isConnected) return;
     pending.style.setProperty('--form-height', `${form.offsetHeight}px`);
     injectLogoMark(pending.querySelector('.logo'));
     form.replaceWith(pending);
     block.classList.add('is-pending');
-    pending.focus({ preventScroll: true });
+    if (focus) pending.focus({ preventScroll: true });
   };
   const hidePending = () => {
     if (pending.isConnected) pending.replaceWith(form);
     block.classList.remove('is-pending');
   };
   payment.onPending = showPending;
+  // the editor's preview of the pending state (its Pending tab), never on the site
+  if (authoring && text(prop(pendingPreviewRow)) === 'true') showPending(false);
   // the next page (the authored Confirmation / Failure page)
   const go = (page) => {
     showPending();
