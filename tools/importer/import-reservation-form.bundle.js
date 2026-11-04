@@ -54,7 +54,7 @@ var CustomImportScript = (() => {
   }
   var import_reservation_form_default = {
     transform: (payload) => {
-      var _a, _b, _c;
+      var _a, _b, _c, _d;
       const { document } = payload;
       const src = document.querySelector(".reservation-form-source");
       const main = document.createElement("main");
@@ -72,16 +72,8 @@ var CustomImportScript = (() => {
       cells.push([textCell(document, "description", value(".description"))]);
       cells.push([textCell(document, "submitLabel", value(".submit"))]);
       cells.push([textCell(document, "submitAction", value(".action"))]);
-      cells.push([textCell(document, "disclaimer", value(".disclaimer"))]);
-      const mail = src.querySelector("a.email");
-      if (mail) {
-        const a = document.createElement("a");
-        a.href = mail.getAttribute("href");
-        a.textContent = clean(mail.textContent);
-        const p = document.createElement("p");
-        p.append(a);
-        cells.push([hinted(document, "privacyEmail", p)]);
-      } else cells.push([hinted(document, "privacyEmail")]);
+      const mail = clean((_a = src.querySelector("a.email")) == null ? void 0 : _a.textContent);
+      cells.push([textCell(document, "disclaimer", [value(".disclaimer"), mail ? `${mail.replace("@", "@\u200B")}.` : ""].filter(Boolean).join(" "))]);
       const privacy = src.querySelector("a.privacy");
       if (privacy) {
         const a = document.createElement("a");
@@ -129,10 +121,10 @@ var CustomImportScript = (() => {
       main.append(WebImporter.Blocks.createBlock(document, { name: "reservation-form", cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
-        Description: clean((_a = document.querySelector('meta[name="description"]')) == null ? void 0 : _a.getAttribute("content")),
+        Description: clean((_b = document.querySelector('meta[name="description"]')) == null ? void 0 : _b.getAttribute("content")),
         // the design has no header and no footer
-        nav: clean((_b = document.querySelector('meta[name="nav"]')) == null ? void 0 : _b.getAttribute("content")),
-        footer: clean((_c = document.querySelector('meta[name="footer"]')) == null ? void 0 : _c.getAttribute("content"))
+        nav: clean((_c = document.querySelector('meta[name="nav"]')) == null ? void 0 : _c.getAttribute("content")),
+        footer: clean((_d = document.querySelector('meta[name="footer"]')) == null ? void 0 : _d.getAttribute("content"))
       }));
       document.body.innerHTML = "";
       document.body.append(main);
