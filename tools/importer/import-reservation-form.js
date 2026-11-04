@@ -7,7 +7,7 @@
  * Writes ONLY /reservation-form — no other page is created or modified.
  *
  * Block rows (every property in its own cell):
- *   1. image (+ alt)   2. heading   3. description   4. submitLabel   5. submitAction
+ *   1. background (+ alt)   2. heading   3. description   4. submitLabel   5. submitAction
  *   6. successMessage   7. disclaimer   8. privacyEmail (+ privacyEmailText)
  *   9. privacyLink (+ privacyLinkText)   10. amountLabel   11. amount   12. amountBadge
  *   13. amountNote   14. razorpayKeyId (public; empty, for the authors)   15. paymentService
@@ -17,8 +17,8 @@
  *   instead of the text, and markdown turns an email address in a sentence into a link)
  *   then the items, each row starting with its component id (the block allows several child
  *   types: md2jcr picks the item's model by that first cell, and would otherwise read every item
- *   with the first allowed one): reservation-form-section | title,
- *   reservation-form-field | label | fieldName | required, or
+ *   with the first allowed one), every field a direct child of the block (the source's section
+ *   names are left out): reservation-form-field | label | fieldName | required, or
  *   reservation-form-dropdown | label | fieldName | required | options (a multifield; left empty
  *   for the authors to fill)
  */
@@ -74,7 +74,7 @@ export default {
     const img = document.createElement('img');
     img.src = rootRelative(source.getAttribute('src'));
     img.alt = clean(source.getAttribute('alt'));
-    cells.push([hinted(document, 'image', img)]);
+    cells.push([hinted(document, 'background', img)]);
     // 2–7. texts
     cells.push([textCell(document, 'heading', value('h1'))]);
     cells.push([textCell(document, 'description', value('.description'))]);
@@ -131,10 +131,8 @@ export default {
 
     // items, in order
     src.querySelectorAll('.item').forEach((item) => {
-      if (item.classList.contains('section')) {
-        cells.push([idCell(document, 'reservation-form-section'), textCell(document, 'title', clean(item.textContent))]);
-        return;
-      }
+      // (a section name: not part of the block, its fields are its direct children)
+      if (item.classList.contains('section')) return;
       const label = clean([...item.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(' '));
       const common = [
         textCell(document, 'label', label),

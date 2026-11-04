@@ -649,21 +649,6 @@
           }
         },
         {
-          "title": "Form Section",
-          "id": "reservation-form-section",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block/item",
-                "template": {
-                  "name": "Form Section",
-                  "model": "reservation-form-section"
-                }
-              }
-            }
-          }
-        },
-        {
           "title": "Form Field",
           "id": "reservation-form-field",
           "plugins": {
