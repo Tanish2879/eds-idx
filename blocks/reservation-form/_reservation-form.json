@@ -128,13 +128,6 @@
           }
         },
         {
-          "component": "aem-content",
-          "valueType": "string",
-          "name": "privacyEmail",
-          "label": "Privacy contact email",
-          "description": "A mailto: link to the privacy contact."
-        },
-        {
           "component": "text",
           "valueType": "string",
           "name": "privacyEmailText",
