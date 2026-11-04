@@ -72,7 +72,6 @@ var CustomImportScript = (() => {
       cells.push([textCell(document, "description", value(".description"))]);
       cells.push([textCell(document, "submitLabel", value(".submit"))]);
       cells.push([textCell(document, "submitAction", value(".action"))]);
-      cells.push([textCell(document, "successMessage", value(".success"))]);
       cells.push([textCell(document, "disclaimer", value(".disclaimer"))]);
       const mail = src.querySelector("a.email");
       if (mail) {
@@ -96,7 +95,6 @@ var CustomImportScript = (() => {
       cells.push([textCell(document, "amount", value(".amount"))]);
       cells.push([textCell(document, "amountBadge", value(".amount-badge"))]);
       cells.push([textCell(document, "amountNote", value(".amount-note"))]);
-      cells.push([textCell(document, "razorpayKeyId", value(".razorpay-key"))]);
       cells.push([textCell(document, "paymentService", value(".payment-service"))]);
       cells.push([textCell(document, "merchantName", value(".merchant"))]);
       ["success", "failure"].forEach((kind) => {

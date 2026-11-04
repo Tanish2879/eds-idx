@@ -5,28 +5,31 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * Reservation Form: a car image (left half; phones: a banner on top) beside a form on black:
  * heading, description, the form's fields, a button and a privacy disclaimer.
  * Rows (every property in its own cell, read by position):
- *   1. image (+ alt)   2. heading   3. description   4. button text   5. send-to URL
- *   6. confirmation message   7. privacy disclaimer   8. contact email (mailto: link + its text)
- *   9. privacy notice link (+ its text)
- *   price card (over the image): 10. amount label   11. amount (rupees)   12. badge   13. note
- *   payment (Razorpay): 14. Key ID (public)   15. payment service URL   16. name in the payment
- *   window   17. page after a successful payment   18. page after a failed payment
- *   then the items, in order:
- *     Form Section (1 cell): its name; groups the fields after it, up to the next section
+ *   1. background image (+ alt)   2. heading   3. description   4. button text   5. send-to URL
+ *   6. privacy disclaimer   7. contact email (mailto: link + its text)
+ *   8. privacy notice link (+ its text)
+ *   price card (over the image): 9. amount label   10. amount (rupees)   11. badge   12. note
+ *   payment (Razorpay): 13. payment service URL   14. name in the payment window   15. page after
+ *   the form is sent (and paid)   16. page after a failed payment   17. pending title
+ *   18. pending description
+ *   then the fields, in order (the block's direct children):
  *     Form Field (3 cells): label | field name | required; its kind follows its name (see kindOf)
  *     Dropdown Field (4 cells): label | field name | required | options (a multifield)
  *     (as imported, each item row starts with its component id, see below)
- * Without a Key ID the form posts its values as JSON ({ data: { … } }) to the send-to URL, then
- * shows the confirmation message in its place (without a URL it only shows the message). With a
- * Key ID it takes the reservation amount with Razorpay (see payment.js), then goes to the success
- * page (the values, with the payment's, are posted to the send-to URL first) or the failure page;
- * a cancelled payment stays on the form. The pages read the values from this tab's storage.
+ * The Razorpay Key ID (public) is not authored: it is the block's configuration, CONFIG
+ * (blocks/reservation-form/config.json: { "razorpayKeyId": "rzp_live_…" }); the Key Secret is
+ * never in it (only in the payment service). Without a Key ID the form posts its values as JSON
+ * ({ data: { … } }) to the send-to URL, then goes to the success page. With a Key ID it takes the
+ * reservation amount with Razorpay (see payment.js), then goes to the success page (the values,
+ * with the payment's, are posted to the send-to URL first) or the failure page; a cancelled
+ * payment stays on the form. The pages read the values from this tab's storage.
  */
 
-const BLOCK_ROWS = 20;
+const BLOCK_ROWS = 18;
 const SUCCESS_PAGE = '/confirmation';
 const FAILURE_PAGE = '/payment-failed';
 const KEY_ID = /^rzp_(test|live)_[A-Za-z0-9]+$/; // Razorpay's public Key ID
+const CONFIG = '/blocks/reservation-form/config.json'; // the block's configuration (the Key ID)
 const STORED = 'jsw-reservation'; // the form's data for the next pages (sessionStorage)
 const ITEM_KINDS = {
   'reservation-form-section': 'section', 'reservation-form-field': 'field', 'reservation-form-dropdown': 'dropdown',
@@ -63,6 +66,35 @@ function el(tag, attrs = {}, ...children) {
 }
 
 const text = (cell) => (cell?.textContent || '').trim();
+
+/*
+ * The Razorpay Key ID from the block's configuration: '' without one (no file, or no Key ID in
+ * it: the form is sent without a payment); a configuration that can't be loaded fails (the
+ * payment can't be started), so a reservation is never sent unpaid by mistake. Only a Key ID
+ * (rzp_test_… / rzp_live_…) is used: anything else, e.g. a Key Secret by mistake, is not.
+ */
+let configLoading = null;
+function loadKeyId() {
+  configLoading ||= fetch(`${window.hlx?.codeBasePath || ''}${CONFIG}`)
+    .then((res) => {
+      if (res.status === 404) return {};
+      if (!res.ok) throw new Error(`${res.status}`);
+      return res.json();
+    })
+    .then((config) => {
+      const keyId = String(config?.razorpayKeyId || '').trim();
+      if (keyId && !KEY_ID.test(keyId)) {
+        // eslint-disable-next-line no-console
+        console.warn(`reservation-form: ${CONFIG}'s razorpayKeyId isn't a Key ID (rzp_test_… / rzp_live_…): not used, the form is sent without a payment`);
+      }
+      return KEY_ID.test(keyId) ? keyId : '';
+    })
+    .catch((err) => {
+      configLoading = null; // (tried again on the next submit)
+      throw err;
+    });
+  return configLoading;
+}
 
 // the JSW mark's SVG markup (fetched once, when a payment starts; empty if it can't be loaded)
 let logoMarkup = null;
@@ -370,8 +402,8 @@ export default function decorate(block) {
   const uid = `reservation-form-${formId}`;
   const authoring = isAuthoring();
   const rows = [...block.children];
-  const [backgroundRow, headingRow, descriptionRow, submitRow, actionRow, successRow, disclaimerRow,
-    emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, keyRow, serviceRow,
+  const [backgroundRow, headingRow, descriptionRow, submitRow, actionRow, disclaimerRow,
+    emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, serviceRow,
     merchantRow, successPageRow, failurePageRow, pendingHeadingRow, pendingDescriptionRow] = rows;
   // (content imported before the price card and payment rows: its items start earlier, at the
   // first row naming an item's component)
@@ -507,7 +539,6 @@ export default function decorate(block) {
 
   // sending
   const action = text(actionRow);
-  const success = fit(lines(successRow).join('\n'), MAX_LONG, 'success message');
   const send = (data) => fetch(action, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -519,8 +550,7 @@ export default function decorate(block) {
   const pageOf = (row, fallback) => prop(row)?.querySelector('a[href]')?.getAttribute('href')
     || text(prop(row)) || fallback;
   const payment = {
-    // (a Razorpay Key ID only: anything else, e.g. a Key Secret entered by mistake, is not used)
-    keyId: KEY_ID.test(text(prop(keyRow))) ? text(prop(keyRow)) : '',
+    keyId: '', // (from the block's configuration, on sending: see loadKeyId)
     service: text(prop(serviceRow)),
     amount,
     displayAmount,
@@ -529,6 +559,7 @@ export default function decorate(block) {
     successPage: pageOf(successPageRow, SUCCESS_PAGE),
     failurePage: pageOf(failurePageRow, FAILURE_PAGE),
   };
+  if (!authoring) loadKeyId().catch(() => {}); // (ready by the time the form is sent)
   const ready = () => {
     submit.disabled = false;
     submit.removeAttribute('aria-busy');
@@ -634,19 +665,23 @@ export default function decorate(block) {
       const prefix = control.parentElement.querySelector('.prefix')?.textContent;
       data[control.name] = prefix && value && !value.startsWith('+') ? `${prefix}${value}` : value;
     });
+    submit.disabled = true;
+    try {
+      payment.keyId = await loadKeyId();
+    } catch (err) {
+      status.textContent = PAY_UNAVAILABLE;
+      submit.disabled = false;
+      return;
+    }
     if (payment.keyId) {
       takePayment(data);
       return;
     }
-    submit.disabled = true;
     try {
       if (action) await send(data);
-      // kept for this tab: a confirmation page fills its {firstName}, {email}, … from it
+      // kept for this tab: the confirmation page fills its {firstName}, {email}, … from it
       store(data);
-      // the confirmation takes the form's place
-      const done = el('p', { class: 'success', tabindex: '-1', role: 'status' }, success || 'Thank you.');
-      form.replaceWith(done);
-      done.focus({ preventScroll: true });
+      go(payment.successPage);
     } catch (err) {
       status.textContent = SEND_ERROR;
       submit.disabled = false;
