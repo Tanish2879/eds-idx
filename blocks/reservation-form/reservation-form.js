@@ -38,6 +38,7 @@ const SEND_ERROR = 'Sorry, that didn’t go through. Please try again.';
 const PAY_CANCELLED = 'The payment was cancelled. You can try again whenever you’re ready.';
 const PAY_UNAVAILABLE = 'Sorry, the payment couldn’t be started. Please check your connection and try again.';
 const PENDING_HEADING = 'Processing your reservation';
+const LOGO_MARK = 'jsw-logo-mark'; // the pending view's mark: icons/jsw-logo-mark.svg
 const PENDING_TEXT = 'Please wait while we process your request.';
 const INR = new Intl.NumberFormat('en-IN', {
   style: 'currency', currency: 'INR', minimumFractionDigits: 0, maximumFractionDigits: 0,
@@ -55,6 +56,28 @@ function el(tag, attrs = {}, ...children) {
 }
 
 const text = (cell) => (cell?.textContent || '').trim();
+
+// the JSW mark's SVG markup (fetched once, when a payment starts; empty if it can't be loaded)
+let logoMarkup = null;
+function loadLogoMark() {
+  logoMarkup ||= fetch(`${window.hlx?.codeBasePath || ''}/icons/${LOGO_MARK}.svg`)
+    .then((res) => (res.ok ? res.text() : ''))
+    .catch(() => '');
+  return logoMarkup;
+}
+
+// the mark injected inline in its box (decorative: the view's text says what is happening)
+async function injectLogoMark(box) {
+  const markup = await loadLogoMark();
+  if (!markup || box.firstElementChild) return;
+  const svg = new DOMParser().parseFromString(markup, 'image/svg+xml').documentElement;
+  if (svg.nodeName !== 'svg') return;
+  svg.removeAttribute('width');
+  svg.removeAttribute('height');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  box.append(document.importNode(svg, true));
+}
 
 // a multi-line plain-text value: its lines (paragraphs, or line breaks within the text)
 function lines(cell) {
@@ -507,8 +530,9 @@ export default function decorate(block) {
   };
 
   /*
-   * The pending view: in the form's place (as tall, so nothing else moves) from the moment the
-   * payment is submitted until the next page opens: a spinner, the pending heading and text
+   * The pending view: in the form's place (as tall, so nothing else moves; the block marked
+   * is-pending) from the moment the payment is submitted until the next page opens: the JSW mark
+   * with a light sweeping across it, the pending heading and text
    */
   const pendingDescription = lines(prop(pendingDescriptionRow)).join('\n');
   const pending = el(
@@ -516,18 +540,21 @@ export default function decorate(block) {
     {
       class: 'pending-view', role: 'status', 'aria-live': 'polite', 'aria-busy': 'true', tabindex: '-1',
     },
-    el('span', { class: 'spinner', 'aria-hidden': 'true' }),
+    el('span', { class: 'logo', 'aria-hidden': 'true' }),
     el('p', { class: 'status-title' }, text(prop(pendingHeadingRow)) || PENDING_HEADING),
     el('p', { class: 'status-text' }, pendingDescription || PENDING_TEXT),
   );
   const showPending = () => {
     if (pending.isConnected) return;
     pending.style.setProperty('--form-height', `${form.offsetHeight}px`);
+    injectLogoMark(pending.querySelector('.logo'));
     form.replaceWith(pending);
+    block.classList.add('is-pending');
     pending.focus({ preventScroll: true });
   };
   const hidePending = () => {
     if (pending.isConnected) pending.replaceWith(form);
+    block.classList.remove('is-pending');
   };
   payment.onPending = showPending;
   // the next page (the authored Confirmation / Failure page)
@@ -550,6 +577,7 @@ export default function decorate(block) {
    *   cancelled  (the window closed) / unavailable (no connection): a message on the form
    */
   async function takePayment(data) {
+    loadLogoMark(); // (the pending view's mark, ready by the time it shows)
     submit.disabled = true;
     submit.setAttribute('aria-busy', 'true');
     store(data);
