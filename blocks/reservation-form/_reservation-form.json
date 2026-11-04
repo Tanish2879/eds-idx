@@ -121,28 +121,10 @@
           "valueFormat": "string-multiline",
           "name": "disclaimer",
           "label": "Privacy disclaimer",
-          "description": "Small print under the button; the contact email and privacy link follow it. Max 200 characters.",
+          "description": "Small print under the button; an email address in it becomes a link, and the privacy link follows it. Max 200 characters.",
           "value": "",
           "validation": {
             "maxLength": 200
-          }
-        },
-        {
-          "component": "aem-content",
-          "valueType": "string",
-          "name": "privacyEmail",
-          "label": "Privacy contact email",
-          "description": "A mailto: link to the privacy contact."
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "privacyEmailText",
-          "label": "Privacy contact email text",
-          "description": "The email address as shown. Max 64 characters.",
-          "value": "",
-          "validation": {
-            "maxLength": 64
           }
         },
         {

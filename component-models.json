@@ -639,7 +639,7 @@
         "valueType": "string",
         "name": "displayWord",
         "label": "Background word",
-        "description": "Variant A only: the large word behind the car, e.g. RESERVED. Max 12 characters.",
+        "description": "Variant A only: the large word behind the car. Max 12 characters.",
         "value": "",
         "validation": {
           "maxLength": 12
@@ -650,7 +650,7 @@
         "valueType": "string",
         "name": "heading",
         "label": "Status heading",
-        "description": "E.g. YOU’RE IN, {firstName} (also {lastName}, {email}, {mobile}, {city}). Max 64 characters.",
+        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
         "value": "",
         "validation": {
           "maxLength": 64
@@ -662,7 +662,7 @@
         "valueFormat": "string-multiline",
         "name": "description",
         "label": "Description",
-        "description": "E.g. Your receipt is on its way to {email|your inbox}. Variant A: one line per sentence. Max 200 characters.",
+        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form. Variant A: one line per sentence. Max 200 characters.",
         "value": "",
         "validation": {
           "maxLength": 200
@@ -707,7 +707,7 @@
         "valueType": "string",
         "name": "ctaLinkText",
         "label": "Button text",
-        "description": "The button text, e.g. TRY AGAIN. Max 30 characters.",
+        "description": "The button's text. Max 30 characters.",
         "value": "",
         "validation": {
           "maxLength": 30
@@ -1603,28 +1603,10 @@
         "valueFormat": "string-multiline",
         "name": "disclaimer",
         "label": "Privacy disclaimer",
-        "description": "Small print under the button; the contact email and privacy link follow it. Max 200 characters.",
+        "description": "Small print under the button; an email address in it becomes a link, and the privacy link follows it. Max 200 characters.",
         "value": "",
         "validation": {
           "maxLength": 200
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "privacyEmail",
-        "label": "Privacy contact email",
-        "description": "A mailto: link to the privacy contact."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "privacyEmailText",
-        "label": "Privacy contact email text",
-        "description": "The email address as shown. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
         }
       },
       {
