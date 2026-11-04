@@ -110,6 +110,7 @@ var CustomImportScript = (() => {
         p.append(a);
         cells.push([hinted(document, `${kind}Page`, p)]);
       });
+      cells.push([textCell(document, "pendingPreview", "false")]);
       cells.push([textCell(document, "pendingHeading", value(".pending-title"))]);
       cells.push([textCell(document, "pendingDescription", value(".pending-description"))]);
       src.querySelectorAll(".item").forEach((item) => {

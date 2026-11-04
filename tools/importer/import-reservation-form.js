@@ -11,7 +11,8 @@
  *   6. disclaimer   7. privacyEmail (+ privacyEmailText)
  *   8. privacyLink (+ privacyLinkText)   9. amountLabel   10. amount   11. amountBadge
  *   12. amountNote   13. paymentService   14. merchantName   15. successPage   16. failurePage
- *   17. pendingHeading   18. pendingDescription (the view shown while a payment is confirmed)
+ *   17. pendingPreview (off: the pending view shown in the editor in the form's place)
+ *   18. pendingHeading   19. pendingDescription (the view shown while a payment is confirmed)
  *   (the Razorpay Key ID is not authored: blocks/reservation-form/config.json)
  *   (the contact email is its own mailto: link property: in a text field md2jcr keeps a link's URL
  *   instead of the text, and markdown turns an email address in a sentence into a link)
@@ -123,7 +124,8 @@ export default {
       p.append(a);
       cells.push([hinted(document, `${kind}Page`, p)]);
     });
-    // 17–18. the pending view, while a payment is confirmed
+    // 17–19. the pending view, while a payment is confirmed (its editor preview off)
+    cells.push([textCell(document, 'pendingPreview', 'false')]);
     cells.push([textCell(document, 'pendingHeading', value('.pending-title'))]);
     cells.push([textCell(document, 'pendingDescription', value('.pending-description'))]);
 
