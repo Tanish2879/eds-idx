@@ -369,51 +369,103 @@ main > .section > .reservation-form-wrapper > .block {
     text-decoration: underline;
   }
 
-  /* the pending view (while a payment is confirmed, in the form's place and as tall: see the
-     JS): an 80px ring, white turning amber on a dark track, turning; the title and the text
-     centred under it */
-  .pending-view {
-    display: grid;
-    align-content: center;
-    justify-items: center;
-    min-height: var(--form-height, 0);
-    box-sizing: border-box;
-    margin: 22px 0 0;
-    padding: 0 0 13px 11px; /* (the design's: 6px above the middle, 5px right of the column's) */
-    text-align: center;
-    outline: none;
-  }
+  /* the pending state (the block marked is-pending while a payment is confirmed, see the JS):
+     the pending view in the form's place and as tall, the JSW mark (160px, 18px left of the
+     text's centre, as the design) with a light sweeping across it from its bottom left to its
+     top right (no turning), the title and the text centred under it */
+  &.is-pending {
+    .pending-view {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      min-height: var(--form-height, 0);
+      box-sizing: border-box;
+      margin: 22px 0 0;
+      padding: 0 0 29px 11px; /* (the design's: 14px above the middle, 5px right of the column's) */
+      text-align: center;
+      outline: none;
+    }
 
-  .spinner {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: conic-gradient(#fff 0deg 80deg, #fcc560 100deg 143deg, #343434 143deg);
-    mask: radial-gradient(farthest-side, transparent calc(100% - 5.5px), #000 calc(100% - 5px));
-    animation: reservation-form-spin 1.1s linear infinite;
-  }
+    .logo {
+      position: relative;
+      display: block;
+      width: 160px;
+      aspect-ratio: 75 / 56;
+      translate: -18px 0;
+    }
 
-  .status-title {
-    margin: 16px 0 0;
-    color: var(--rf-text);
-    font-family: var(--rf-body-font);
-    font-size: 19.7px;
-    font-weight: 500;
-    line-height: 26px;
-  }
+    .logo svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
-  .status-text {
-    margin: 8px 0 0;
-    color: #bebebe;
-    font-family: var(--rf-body-font);
-    font-size: 15.3px;
-    line-height: 22px;
-    white-space: pre-line;
-  }
+    /* (the mark's outlines in the design's silver: the SVG's own dark grey would disappear on
+       the black) */
+    .logo svg path {
+      stroke: #a6a6a6;
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    .spinner {
-      animation-duration: 3.3s;
+    /* the sweep: a bright diagonal band, only where the mark is (masked by its shape) */
+    .logo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent 38%, rgb(255 255 255 / 0%) 42%, rgb(255 255 255 / 95%) 50%, rgb(255 236 210 / 0%) 58%, transparent 62%) 100% 0% / 300% 300% no-repeat;
+      mask: url('../../icons/jsw-logo-mark.svg') center / contain no-repeat;
+      animation: reservation-form-sweep 2.4s ease-in-out infinite;
+    }
+
+    /* the glare: a thin streak off the swoosh's tip (the mark's top right) up to the right,
+       brightest as the sweep reaches it */
+    .logo::before {
+      content: '';
+      position: absolute;
+      top: 4%;
+      left: 91%;
+      width: 48%;
+      height: 2px;
+      border-radius: 1px;
+      background: linear-gradient(90deg, transparent, rgb(255 244 228 / 85%) 55%, transparent);
+      opacity: 0;
+      transform-origin: 0 50%;
+      rotate: -39deg;
+      animation: reservation-form-glare 2.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .status-title {
+      margin: 31px 0 0;
+      color: var(--rf-text);
+      font-family: var(--rf-body-font);
+      font-size: 19.7px;
+      font-weight: 500;
+      line-height: 26px;
+    }
+
+    .status-text {
+      margin: 11px 0 0;
+      color: #bebebe;
+      font-family: var(--rf-body-font);
+      font-size: 15.3px;
+      line-height: 22px;
+      white-space: pre-line;
+    }
+
+    /* (less motion: the design's still frame, the light on the mark's top right) */
+    @media (prefers-reduced-motion: reduce) {
+      .logo::after,
+      .logo::before {
+        animation: none;
+      }
+
+      .logo::after {
+        background-position: 22% 78%;
+      }
+
+      .logo::before {
+        opacity: 1;
+      }
     }
   }
 
@@ -465,9 +517,28 @@ main > .section > .reservation-form-wrapper > .block {
   }
 }
 
-/* (keyframes can't be nested in a rule: the pending view's spinner, used above) */
-@keyframes reservation-form-spin {
+/* (keyframes can't be nested in a rule: the pending view's sweep and glare, used above) */
+@keyframes reservation-form-sweep {
+  from {
+    background-position: 100% 0%;
+  }
+
   to {
-    transform: rotate(360deg);
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes reservation-form-glare {
+  0%,
+  45% {
+    opacity: 0;
+  }
+
+  62% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }
