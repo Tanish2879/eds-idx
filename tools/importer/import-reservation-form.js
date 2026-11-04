@@ -8,11 +8,11 @@
  *
  * Block rows (every property in its own cell):
  *   1. background (+ alt)   2. heading   3. description   4. submitLabel   5. submitAction
- *   6. successMessage   7. disclaimer   8. privacyEmail (+ privacyEmailText)
- *   9. privacyLink (+ privacyLinkText)   10. amountLabel   11. amount   12. amountBadge
- *   13. amountNote   14. razorpayKeyId (public; empty, for the authors)   15. paymentService
- *   16. merchantName   17. successPage   18. failurePage   19. pendingHeading
- *   20. pendingDescription (the view shown while a payment is confirmed)
+ *   6. disclaimer   7. privacyEmail (+ privacyEmailText)
+ *   8. privacyLink (+ privacyLinkText)   9. amountLabel   10. amount   11. amountBadge
+ *   12. amountNote   13. paymentService   14. merchantName   15. successPage   16. failurePage
+ *   17. pendingHeading   18. pendingDescription (the view shown while a payment is confirmed)
+ *   (the Razorpay Key ID is not authored: blocks/reservation-form/config.json)
  *   (the contact email is its own mailto: link property: in a text field md2jcr keeps a link's URL
  *   instead of the text, and markdown turns an email address in a sentence into a link)
  *   then the items, each row starting with its component id (the block allows several child
@@ -69,20 +69,19 @@ export default {
     const value = (sel) => clean(src.querySelector(sel)?.textContent);
 
     const cells = [];
-    // 1. image (alt text collapses into the image)
+    // 1. background image (alt text collapses into the image)
     const source = src.querySelector('img.image');
     const img = document.createElement('img');
     img.src = rootRelative(source.getAttribute('src'));
     img.alt = clean(source.getAttribute('alt'));
     cells.push([hinted(document, 'background', img)]);
-    // 2–7. texts
+    // 2–6. texts
     cells.push([textCell(document, 'heading', value('h1'))]);
     cells.push([textCell(document, 'description', value('.description'))]);
     cells.push([textCell(document, 'submitLabel', value('.submit'))]);
     cells.push([textCell(document, 'submitAction', value('.action'))]);
-    cells.push([textCell(document, 'successMessage', value('.success'))]);
     cells.push([textCell(document, 'disclaimer', value('.disclaimer'))]);
-    // 8. contact email: a mailto: link (its text collapses into it)
+    // 7. contact email: a mailto: link (its text collapses into it)
     const mail = src.querySelector('a.email');
     if (mail) {
       const a = document.createElement('a');
@@ -92,7 +91,7 @@ export default {
       p.append(a);
       cells.push([hinted(document, 'privacyEmail', p)]);
     } else cells.push([hinted(document, 'privacyEmail')]);
-    // 9. privacy notice link (its text collapses into the link)
+    // 8. privacy notice link (its text collapses into the link)
     const privacy = src.querySelector('a.privacy');
     if (privacy) {
       const a = document.createElement('a');
@@ -102,14 +101,13 @@ export default {
       p.append(a);
       cells.push([hinted(document, 'privacyLink', p)]);
     } else cells.push([hinted(document, 'privacyLink')]);
-    // 10–13. the price card
+    // 9–12. the price card
     cells.push([textCell(document, 'amountLabel', value('.amount-label'))]);
     cells.push([textCell(document, 'amount', value('.amount'))]);
     cells.push([textCell(document, 'amountBadge', value('.amount-badge'))]);
     cells.push([textCell(document, 'amountNote', value('.amount-note'))]);
-    // 14–18. payment: Key ID (public), payment service URL, name in the payment window, the
-    // pages after a successful / failed payment (links)
-    cells.push([textCell(document, 'razorpayKeyId', value('.razorpay-key'))]);
+    // 13–16. payment: the payment service URL, the name in the payment window, the pages after
+    // a sent / failed payment (links)
     cells.push([textCell(document, 'paymentService', value('.payment-service'))]);
     cells.push([textCell(document, 'merchantName', value('.merchant'))]);
     ['success', 'failure'].forEach((kind) => {
@@ -125,7 +123,7 @@ export default {
       p.append(a);
       cells.push([hinted(document, `${kind}Page`, p)]);
     });
-    // 19–20. the pending view, while a payment is confirmed
+    // 17–18. the pending view, while a payment is confirmed
     cells.push([textCell(document, 'pendingHeading', value('.pending-title'))]);
     cells.push([textCell(document, 'pendingDescription', value('.pending-description'))]);
 

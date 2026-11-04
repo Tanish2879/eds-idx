@@ -376,21 +376,6 @@ main > .section > .reservation-form-wrapper > .block {
     color: var(--rf-muted);
   }
 
-  .success {
-    display: -webkit-box;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    margin: 23px 0 0;
-    color: var(--rf-text);
-    font-family: var(--rf-body-font);
-    font-size: 16px;
-    line-height: 23px;
-    white-space: pre-line;
-    outline: none;
-  }
-
   .disclaimer {
     display: -webkit-box;
     overflow: hidden;

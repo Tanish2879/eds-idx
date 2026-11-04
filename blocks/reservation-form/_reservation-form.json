@@ -109,22 +109,10 @@
           "valueType": "string",
           "name": "submitAction",
           "label": "Send the form to (URL)",
-          "description": "Where the data is posted as JSON; leave empty to only show the confirmation message. Max 256 characters.",
+          "description": "Where the data is posted as JSON; leave empty to send nothing. Max 256 characters.",
           "value": "",
           "validation": {
             "maxLength": 256
-          }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "valueFormat": "string-multiline",
-          "name": "successMessage",
-          "label": "Confirmation message",
-          "description": "Replaces the form once it is sent. Max 200 characters.",
-          "value": "",
-          "validation": {
-            "maxLength": 200
           }
         },
         {
@@ -229,23 +217,9 @@
         {
           "component": "text",
           "valueType": "string",
-          "valueFormat": "regexp",
-          "name": "razorpayKeyId",
-          "label": "Razorpay Key ID",
-          "description": "Public Key ID only (rzp_test_… or rzp_live_…), never the Key Secret; leave empty for no payment. Max 64 characters.",
-          "value": "",
-          "validation": {
-            "regExp": "^(rzp_(test|live)_[A-Za-z0-9]+)?$",
-            "customErrorMsg": "Enter the Key ID (rzp_test_… or rzp_live_…), never the Key Secret: this page is public.",
-            "maxLength": 64
-          }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
           "name": "paymentService",
           "label": "Payment service URL",
-          "description": "The service that creates and verifies payments; leave empty for test mode. Max 256 characters.",
+          "description": "The service that creates and verifies payments; leave empty for test mode. The Key ID is in the block's configuration. Max 256 characters.",
           "value": "",
           "validation": {
             "maxLength": 256
@@ -266,8 +240,8 @@
           "component": "aem-content",
           "valueType": "string",
           "name": "successPage",
-          "label": "Page after a successful payment",
-          "description": "Opens after a confirmed payment (default: /confirmation)."
+          "label": "Page after the form is sent",
+          "description": "Opens once the form is sent and its payment confirmed (default: /confirmation)."
         },
         {
           "component": "aem-content",
