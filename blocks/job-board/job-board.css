@@ -24,9 +24,9 @@ main > .section > .job-board-wrapper > .block {
   --jb-border: #b8b8b8;
   --jb-line: #efefef;
 
-  /* type: the project's New Science face, New Science Extended (fonts/new-science-extended.woff2,
-     see styles/fonts.css), for every text: the designs draw the job board's texts in the
-     normal-width New Science (and New Science Mono for the buttons), which aren't in the project;
+  /* type: New Science Extended (new-science-extended, the Adobe Fonts kit: see styles/fonts.css),
+     for every text: the designs draw the job board's texts in the normal-width New Science (and
+     New Science Mono for the buttons), which this block doesn't use yet;
      with the wider Extended face the texts are sized to the designs' widths, kept at 12px or more
      to stay readable (the buttons' 10px) */
   --jb-display-font: 'New Science Extended', new-science-extended, var(--display-font-family);

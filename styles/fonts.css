@@ -1,5 +1,12 @@
 /* stylelint-disable max-line-length */
 
+/* New Science (the JSW designs' faces): Adobe Fonts kit qil0qom, the site's one font key, loaded
+   from Typekit (no local copy): new-science (Regular 400, Medium 500, normal width) and
+   new-science-extended (Regular 400, Medium 500, the extended width) — two families, not one
+   family's font-stretch: the blocks name the family for each style. (Must stay this file's first
+   rule: an @import after any other rule is ignored.) */
+@import url('https://use.typekit.net/qil0qom.css');
+
 /* Sequel — MG Select display face (headings, eyebrows, years) */
 @font-face {
   font-family: sequel;
@@ -7,17 +14,6 @@
   font-weight: 400;
   font-display: swap;
   src: url('../fonts/sequel.woff2') format('woff2');
-}
-
-/* New Science Extended (Newlyn) — display face of the JSW reservation / confirmation designs:
-   headings and the large word (the designs' body copy is the normal-width New Science, not in the
-   repository yet: Inter stands in) */
-@font-face {
-  font-family: 'New Science Extended';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../fonts/new-science-extended.woff2') format('woff2'), url('../fonts/fonnts.com-New_Science_Regular_Extended.otf') format('opentype');
 }
 
 /* Inter — body copy (variable, latin subset) */
