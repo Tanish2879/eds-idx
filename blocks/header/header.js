@@ -7,13 +7,17 @@
  *               <p><strong> starts a group (optional subtitle <p>, description <p>,
  *               image, <ul> of links); a bold link is a direct-link group
  *   last      — section with only a <ul> of links → floating sticky CTAs
- * A standard nav document without tabs (brand | sections <ul> | tools links) renders as a
- * floating pill bar instead. Pages pick their nav document with the "nav" metadata
- * (e.g. /jsw-nav), or have no header with "off" (designs without one); without it the site
- * default /nav is used.
+ * A nav document built from blocks (the JSW pages' /jsw-nav: a Jsw Nav block) is rendered as
+ * such: its sections and blocks decorated and loaded like a fragment's (the editor's
+ * instrumentation removed: it is edited in its own document). A standard nav document without
+ * tabs (brand | sections <ul> | tools links) renders as a floating pill bar (the JSW nav's earlier
+ * form, until its document holds the block). Pages pick their nav document with the "nav"
+ * metadata (e.g. /jsw-nav), or have no header with "off" (designs without one); without it the
+ * site default /nav is used.
  */
 
-import { getPageMetadata } from '../../scripts/scripts.js';
+import { getPageMetadata, decorateMain } from '../../scripts/scripts.js';
+import { loadSections } from '../../scripts/aem.js';
 
 const DESKTOP = window.matchMedia('(width >= 900px)');
 const PILL_DESKTOP = window.matchMedia('(width >= 768px)');
@@ -38,6 +42,15 @@ async function fetchNav() {
   const tmp = document.createElement('div');
   tmp.innerHTML = await resp.text();
   return tmp;
+}
+
+// the editor's instrumentation of the nav document (its resources, fields)
+function stripInstrumentation(root) {
+  root.querySelectorAll('*').forEach((node) => {
+    [...node.attributes].forEach(({ name }) => {
+      if (name.startsWith('data-aue-') || name.startsWith('data-richtext-')) node.removeAttribute(name);
+    });
+  });
 }
 
 function isBoldParagraph(node) {
@@ -390,6 +403,20 @@ export default async function decorate(block) {
   const fragment = await fetchNav();
   block.textContent = '';
   if (!fragment) return;
+  // a nav document of blocks (the Jsw Nav): decorated in place, inside the header (its blocks
+  // know they are a page's header)
+  if (fragment.querySelector(':scope > div > .jsw-nav')) {
+    stripInstrumentation(fragment);
+    const main = document.createElement('main');
+    main.append(...fragment.childNodes);
+    main.querySelectorAll('.metadata').forEach((table) => table.remove());
+    block.append(main);
+    decorateMain(main);
+    await loadSections(main);
+    block.classList.add('is-blocks');
+    main.replaceWith(...main.children);
+    return;
+  }
   headerId += 1;
   const uid = `nav-${headerId}`;
   const sections = [...fragment.children].filter((c) => c.tagName === 'DIV' && c.children.length);
