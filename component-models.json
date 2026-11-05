@@ -1499,7 +1499,7 @@
         "valueType": "string",
         "name": "logo",
         "label": "Logo",
-        "description": "The JSW MOTORS logo, shown at the bar's left.",
+        "description": "The JSW mark only, shown left of the brand name.",
         "multi": false
       },
       {
@@ -1507,10 +1507,21 @@
         "valueType": "string",
         "name": "logoAlt",
         "label": "Logo alt text",
-        "description": "Describes the logo for screen readers. Max 64 characters.",
+        "description": "Describes the mark for screen readers when there is no brand name. Max 64 characters.",
         "value": "",
         "validation": {
           "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "brandName",
+        "label": "Brand name",
+        "description": "Shown as text right of the mark. Max 24 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 24
         }
       },
       {

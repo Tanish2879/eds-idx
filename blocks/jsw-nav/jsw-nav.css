@@ -80,20 +80,39 @@ main > .section > .jsw-nav-wrapper {
     text-transform: uppercase;
   }
 
-  .logo {
+  /* the logo: the JSW mark, and the brand name as text beside it (the brand artwork's
+     proportions: the name's capitals a third of the mark's height, 7px after it, its letters
+     widely spaced; the mark's image has 1px of clear space around it) */
+  .logo:any-link {
     display: flex;
     min-width: 0;
     align-items: center;
+    gap: min(6px, calc((100vw - 212px) * 0.036));
     height: 36px;
+    color: var(--color-white);
+    text-decoration: none;
   }
 
-  /* the logo artwork includes ~2px of clear space around the mark */
+  /* (phones: the mark and the name shrink together to the room the bar leaves them, the window's
+     width less the bar's fixed parts, about 212px: full size from 390px wide) */
   .logo img {
     display: block;
+    flex: none;
     width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 24px;
+    height: min(23px, calc((100vw - 212px) * 0.139));
+  }
+
+  .brand-name {
+    min-width: 0;
+    margin-right: -0.385em; /* (no spacing after the last letter) */
+    overflow: hidden;
+    font-family: new-science-extended, var(--display-font-family);
+    font-size: min(9.9px, calc((100vw - 212px) * 0.0598));
+    font-weight: 500; /* (the closest to the brand artwork's heavier lettering) */
+    line-height: 1;
+    letter-spacing: 0.385em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .toggle {
@@ -271,13 +290,18 @@ main > .section > .jsw-nav-wrapper {
       display: none;
     }
 
-    .logo {
+    .logo:any-link {
       flex-shrink: 0;
+      gap: 6px;
       height: 28px;
     }
 
     .logo img {
-      height: 23px;
+      height: 22px;
+    }
+
+    .brand-name {
+      font-size: 9.4px;
     }
 
     .toggle {

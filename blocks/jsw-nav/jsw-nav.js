@@ -2,12 +2,13 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 
 /*
  * JSW Nav: the JSW pages' navigation bar (in the nav document, e.g. /jsw-nav, that pages pick
- * with their "nav" metadata; the header shows it). A floating grey bar: the logo at the left, up
- * to LINKS links and the button at the right; phones: the logo and a short button in the bar,
- * the menu button beside it opening the links and the button in a dropdown.
+ * with their "nav" metadata; the header shows it). A floating grey bar: the logo (the JSW mark
+ * and the brand name as text) at the left, up to LINKS links and the button at the right;
+ * phones: the logo and a short button in the bar, the menu button beside it opening the links and
+ * the button in a dropdown.
  * Rows (every property in its own cell, read by position):
- *   1. logo (+ alt)   2. logo link   3.–6. links 1–4 (each its target and its text, one cell)
- *   7. button (its target and its text)
+ *   1. logo: the mark (+ alt)   2. brand name (text, beside the mark)   3. logo link
+ *   4.–7. links 1–4 (each its target and its text, one cell)   8. button (its target and its text)
  * Every link is optional: one is shown only with both its text and its target (the others left
  * out, the links sharing the row: see the CSS); a text longer than MAX_TEXT (MAX_CTA for the
  * button) is cut with "…" on the site, a warning logged. In the editor (its own document) the
@@ -17,6 +18,7 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 const LINKS = 4;
 const MAX_TEXT = 12;
 const MAX_CTA = 30;
+const MAX_BRAND = 24;
 const DESKTOP = window.matchMedia('(width >= 768px)');
 
 function el(tag, attrs = {}, ...children) {
@@ -66,21 +68,28 @@ export default function decorate(block) {
   navId += 1;
   const inHeader = !!block.closest('header');
   const authoring = isAuthoring() && !inHeader;
-  const [logoRow, logoLinkRow, ...rest] = [...block.children];
+  const [logoRow, brandRow, logoLinkRow, ...rest] = [...block.children];
   const linkRows = rest.slice(0, LINKS);
   const ctaRow = rest[LINKS];
 
-  // the logo (a link home)
+  // the logo (a link home): the mark, and the brand name as text beside it (the mark then
+  // decorative: the name says it)
   const home = cellLink(logoLinkRow);
   const logo = el('a', { href: home?.href || '/', class: 'logo' });
+  const name = fit(text(brandRow), MAX_BRAND, 'brand name', authoring);
   const img = logoRow?.querySelector('img');
   if (img) {
-    const shown = el('img', { src: img.getAttribute('src'), alt: img.getAttribute('alt') || 'JSW Motors', loading: 'eager' });
+    const shown = el('img', {
+      src: img.getAttribute('src'), alt: name ? '' : img.getAttribute('alt') || 'JSW Motors', loading: 'eager',
+    });
     moveInstrumentation(img, shown);
     if (authoring) editable(shown, 'logo', 'media', 'Logo');
     logo.append(shown);
-  } else {
-    logo.textContent = text(logoRow) || 'JSW Motors';
+  }
+  if (name || !img) {
+    const brand = el('span', { class: 'brand-name' }, name || 'JSW Motors');
+    if (authoring) editable(brand, 'brandName', 'text', 'Brand name');
+    logo.append(brand);
   }
 
   // the links: only those with both their text and their target

@@ -7,8 +7,9 @@
  * or footer). Pages opt in with the "nav" page metadata (/jsw-nav). Writes ONLY /jsw-nav.
  *
  * jsw-nav rows (every property in its own cell):
- *   1. logo (+ logoAlt)   2. logoLink   3.–6. link1 … link4 (each a link, its text the Link N
- *   text; the source's links in order, the others left empty)   7. cta (+ ctaText)
+ *   1. logo (the mark, + logoAlt)   2. brandName (the text beside it)   3. logoLink
+ *   4.–7. link1 … link4 (each a link, its text the Link N text; the source's links in order, the
+ *   others left empty)   8. cta (+ ctaText)
  */
 
 const LINKS = 4;
@@ -33,6 +34,13 @@ function hinted(document, field, ...nodes) {
   const cell = document.createElement('div');
   cell.append(document.createComment(` field:${field} `), ...nodes);
   return cell;
+}
+
+function textCell(document, field, value) {
+  if (!value) return hinted(document, field);
+  const p = document.createElement('p');
+  p.textContent = value;
+  return hinted(document, field, p);
 }
 
 // a link property: the link, its text (when it has one) as the link's text
@@ -62,6 +70,7 @@ export default {
     const cta = document.querySelector('.tools a[href]');
     const cells = [
       [hinted(document, 'logo', ...(img ? [img] : []))],
+      [textCell(document, 'brandName', clean(brand?.querySelector('.brand-name')?.textContent))],
       [linkCell(document, 'logoLink', logoLink, clean(logoLink?.getAttribute('href')))],
       ...[0, 1, 2, 3].map((i) => [linkCell(document, `link${i + 1}`, links[i], clean(links[i]?.textContent))]),
       [linkCell(document, 'cta', cta, clean(cta?.textContent))],

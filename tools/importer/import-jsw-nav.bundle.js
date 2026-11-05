@@ -42,6 +42,12 @@ var CustomImportScript = (() => {
     cell.append(document.createComment(` field:${field} `), ...nodes);
     return cell;
   }
+  function textCell(document, field, value) {
+    if (!value) return hinted(document, field);
+    const p = document.createElement("p");
+    p.textContent = value;
+    return hinted(document, field, p);
+  }
   function linkCell(document, field, a, label) {
     if (!a) return hinted(document, field);
     const out = document.createElement("a");
@@ -53,6 +59,7 @@ var CustomImportScript = (() => {
   }
   var import_jsw_nav_default = {
     transform: (payload) => {
+      var _a;
       const { document } = payload;
       const main = document.createElement("main");
       const brand = document.querySelector(".brand");
@@ -67,10 +74,11 @@ var CustomImportScript = (() => {
       const cta = document.querySelector(".tools a[href]");
       const cells = [
         [hinted(document, "logo", ...img ? [img] : [])],
+        [textCell(document, "brandName", clean((_a = brand == null ? void 0 : brand.querySelector(".brand-name")) == null ? void 0 : _a.textContent))],
         [linkCell(document, "logoLink", logoLink, clean(logoLink == null ? void 0 : logoLink.getAttribute("href")))],
         ...[0, 1, 2, 3].map((i) => {
-          var _a;
-          return [linkCell(document, `link${i + 1}`, links[i], clean((_a = links[i]) == null ? void 0 : _a.textContent))];
+          var _a2;
+          return [linkCell(document, `link${i + 1}`, links[i], clean((_a2 = links[i]) == null ? void 0 : _a2.textContent))];
         }),
         [linkCell(document, "cta", cta, clean(cta == null ? void 0 : cta.textContent))]
       ];
