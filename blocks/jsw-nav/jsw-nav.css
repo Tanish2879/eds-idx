@@ -80,14 +80,14 @@ main > .section > .jsw-nav-wrapper {
     text-transform: uppercase;
   }
 
-  /* the logo: the JSW mark, and the brand name as text beside it (the brand artwork's
-     proportions: the name's capitals a third of the mark's height, 7px after it, its letters
-     widely spaced; the mark's image has 1px of clear space around it) */
+  /* the logo: the JSW mark (an SVG framed to its ink), and the brand name as text beside it (the
+     brand artwork's proportions: the name's capitals a third of the mark's height, 7px after it,
+     its letters widely spaced) */
   .logo:any-link {
     display: flex;
     min-width: 0;
     align-items: center;
-    gap: min(6px, calc((100vw - 212px) * 0.036));
+    gap: min(7px, calc((100vw - 212px) * 0.039));
     height: 36px;
     color: var(--color-white);
     text-decoration: none;
@@ -99,7 +99,7 @@ main > .section > .jsw-nav-wrapper {
     display: block;
     flex: none;
     width: auto;
-    height: min(23px, calc((100vw - 212px) * 0.139));
+    height: min(21px, calc((100vw - 212px) * 0.127));
   }
 
   .brand-name {
@@ -292,12 +292,12 @@ main > .section > .jsw-nav-wrapper {
 
     .logo:any-link {
       flex-shrink: 0;
-      gap: 6px;
+      gap: 7px;
       height: 28px;
     }
 
     .logo img {
-      height: 22px;
+      height: 20px;
     }
 
     .brand-name {
