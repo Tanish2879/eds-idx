@@ -2,7 +2,10 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/jsw-nav/source.html",
   "path": "jsw-nav",
-  "timestamp": "2026-10-09T05:25:33.686Z",
+  "timestamp": "2026-11-05T10:24:53.218Z",
   "title": "JSW Motors navigation",
-  "template": "nav"
+  "template": "jsw-nav",
+  "blocks": [
+    "jsw-nav"
+  ]
 }

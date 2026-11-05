@@ -1,0 +1,143 @@
+{
+  "definitions": [
+    {
+      "title": "Jsw Nav",
+      "id": "jsw-nav",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Jsw Nav",
+              "model": "jsw-nav"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "jsw-nav",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "logo",
+          "label": "Logo",
+          "description": "The JSW MOTORS logo, shown at the bar's left.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "logoAlt",
+          "label": "Logo alt text",
+          "description": "Describes the logo for screen readers. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "logoLink",
+          "label": "Logo link",
+          "description": "Where the logo leads."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link1",
+          "label": "Link 1 target",
+          "description": "Optional: a page or URL; Link 1 is shown only with its text."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link1Text",
+          "label": "Link 1 text",
+          "description": "Optional; shown only with its target. Max 12 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 12
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link2",
+          "label": "Link 2 target",
+          "description": "Optional: a page or URL; Link 2 is shown only with its text."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link2Text",
+          "label": "Link 2 text",
+          "description": "Optional; shown only with its target. Max 12 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 12
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link3",
+          "label": "Link 3 target",
+          "description": "Optional: a page or URL; Link 3 is shown only with its text."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link3Text",
+          "label": "Link 3 text",
+          "description": "Optional; shown only with its target. Max 12 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 12
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link4",
+          "label": "Link 4 target",
+          "description": "Optional: a page or URL; Link 4 is shown only with its text."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link4Text",
+          "label": "Link 4 text",
+          "description": "Optional; shown only with its target. Max 12 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 12
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "cta",
+          "label": "Button target",
+          "description": "Optional: a page or URL; the button is shown only with its text."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ctaText",
+          "label": "Button text",
+          "description": "Optional; shown only with its target. Max 30 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

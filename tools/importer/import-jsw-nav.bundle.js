@@ -23,71 +23,69 @@ var CustomImportScript = (() => {
   __export(import_jsw_nav_exports, {
     default: () => import_jsw_nav_default
   });
+  var LINKS = 4;
   function clean(text) {
     return (text || "").replace(/[​\s]+/g, " ").trim();
   }
   function rootRelative(src) {
     try {
-      const u = new URL(src, "https://x");
+      const base = "https://root.invalid";
+      const u = new URL(src, base);
+      if (u.origin !== base) return src;
       return u.pathname + u.search + u.hash;
     } catch (e) {
       return src;
     }
   }
-  function link(document, a, child) {
+  function hinted(document, field, ...nodes) {
+    const cell = document.createElement("div");
+    cell.append(document.createComment(` field:${field} `), ...nodes);
+    return cell;
+  }
+  function linkCell(document, field, a, label) {
+    if (!a) return hinted(document, field);
     const out = document.createElement("a");
     out.href = rootRelative(a.getAttribute("href"));
-    out.append(child || document.createTextNode(clean(a.textContent)));
-    return out;
-  }
-  function brand(document, src) {
-    const section = document.createElement("div");
-    const a = src.querySelector("a[href]");
-    const img = src.querySelector("img");
-    if (!a || !img) return section;
-    const out = document.createElement("img");
-    out.src = rootRelative(img.getAttribute("src"));
-    out.alt = clean(img.getAttribute("alt"));
+    out.textContent = label || out.href;
     const p = document.createElement("p");
-    p.append(link(document, a, out));
-    section.append(p);
-    return section;
-  }
-  function sections(document, src) {
-    const section = document.createElement("div");
-    const ul = document.createElement("ul");
-    src.querySelectorAll("li a[href]").forEach((a) => {
-      const li = document.createElement("li");
-      li.append(link(document, a));
-      ul.append(li);
-    });
-    section.append(ul);
-    return section;
-  }
-  function tools(document, src) {
-    const section = document.createElement("div");
-    src.querySelectorAll("a[href]").forEach((a) => {
-      const p = document.createElement("p");
-      p.append(link(document, a));
-      section.append(p);
-    });
-    return section;
+    p.append(out);
+    return hinted(document, field, p);
   }
   var import_jsw_nav_default = {
     transform: (payload) => {
       const { document } = payload;
       const main = document.createElement("main");
-      main.append(brand(document, document.querySelector(".brand")));
-      main.append(document.createElement("hr"));
-      main.append(sections(document, document.querySelector(".sections")));
-      main.append(document.createElement("hr"));
-      main.append(tools(document, document.querySelector(".tools")));
+      const brand = document.querySelector(".brand");
+      const logoLink = brand == null ? void 0 : brand.querySelector("a[href]");
+      const logo = brand == null ? void 0 : brand.querySelector("img");
+      const img = logo ? document.createElement("img") : null;
+      if (img) {
+        img.src = rootRelative(logo.getAttribute("src"));
+        img.alt = clean(logo.getAttribute("alt"));
+      }
+      const links = [...document.querySelectorAll(".sections li a[href]")].slice(0, LINKS);
+      const cta = document.querySelector(".tools a[href]");
+      const cells = [
+        [hinted(document, "logo", ...img ? [img] : [])],
+        [linkCell(document, "logoLink", logoLink, clean(logoLink == null ? void 0 : logoLink.getAttribute("href")))],
+        ...[0, 1, 2, 3].map((i) => {
+          var _a;
+          return [linkCell(document, `link${i + 1}`, links[i], clean((_a = links[i]) == null ? void 0 : _a.textContent))];
+        }),
+        [linkCell(document, "cta", cta, clean(cta == null ? void 0 : cta.textContent))]
+      ];
+      main.append(WebImporter.Blocks.createBlock(document, { name: "jsw-nav", cells }));
+      main.append(WebImporter.Blocks.getMetadataBlock(document, {
+        Title: clean(document.title),
+        nav: "off",
+        footer: "off"
+      }));
       document.body.innerHTML = "";
       document.body.append(main);
       return [{
         element: document.body,
         path: "/jsw-nav",
-        report: { title: "JSW Motors navigation", template: "nav" }
+        report: { title: document.title, template: "jsw-nav", blocks: ["jsw-nav"] }
       }];
     }
   };

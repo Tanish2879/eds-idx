@@ -1,0 +1,348 @@
+/* JSW Nav: the floating grey bar of the JSW pages (values from the walkthrough at 1280: a
+   738 × 39 bar with 8px corners, the logo 16px in, the links and the button at the right).
+   Mobile first: phones a grey bar with the logo and a short button, the menu button a grey square
+   beside it, the dropdown a grey panel below; from 768px one bar, the links on one line sharing
+   their row (each link as wide as it needs, all growing or giving way alike: 1, 2, 3 or 4).
+   In a page's header the bar is fixed at the top of the window; on its own document (the
+   editor) it sits at the top of the page.
+   Every rule is nested in one root: the block in its section's wrapper, in a page's header
+   (.header) or in its own document (main). */
+
+main > .section > .jsw-nav-wrapper {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+}
+
+:is(main, .header) > .section > .jsw-nav-wrapper > .block {
+  --pill-bg: #a3a3a3;
+  --pill-ink: #111;
+  --pill-ease: var(--ease-power2-in-out);
+
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  padding: 36px 22px 0;
+  pointer-events: none;
+
+  /* (a page's header: fixed at the top of the window while the page scrolls) */
+  header & {
+    position: fixed;
+    inset: 36px 22px auto;
+    padding: 0;
+  }
+
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 100%;
+    color: var(--color-white);
+    font-family: var(--body-font-family);
+    pointer-events: auto;
+    transition:
+      border-radius 0.3s var(--pill-ease),
+      background-color 0.25s var(--pill-ease);
+  }
+
+  .bar-start {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0; /* narrow phones: the logo gives way, so the menu button stays on the same row */
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    min-height: 42px;
+    padding: 4px 4px 4px 12px;
+    border-radius: 10px;
+    background-color: var(--pill-bg);
+    transition: background-color 0.25s var(--pill-ease);
+  }
+
+  .quick:any-link {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 33px;
+    padding: 0 18px;
+    border-radius: 6px;
+    background-color: var(--color-white);
+    color: var(--pill-ink);
+    font-family: var(--mono-font-family);
+    font-size: 12px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .logo {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    height: 36px;
+  }
+
+  /* the logo artwork includes ~2px of clear space around the mark */
+  .logo img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 24px;
+  }
+
+  .toggle {
+    position: relative;
+    width: 38px;
+    height: 42px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background-color: var(--pill-bg);
+    cursor: pointer;
+    transition: background-color 0.25s var(--pill-ease);
+  }
+
+  .toggle .toggle-line {
+    position: absolute;
+    left: 11px;
+    width: 16px;
+    height: 1.5px;
+    background-color: var(--color-white);
+    transition: transform 0.3s var(--pill-ease);
+  }
+
+  .toggle-line.is-top {
+    top: 17px;
+  }
+
+  .toggle-line.is-bottom {
+    top: 24px;
+  }
+
+  .bar[aria-expanded='true'] .toggle-line.is-top {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  .bar[aria-expanded='true'] .toggle-line.is-bottom {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  .menu {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 8px 16px 16px;
+    border-radius: 12px;
+    background-color: var(--pill-bg);
+  }
+
+  .bar[aria-expanded='true'] .menu {
+    display: flex;
+  }
+
+  .nav-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .link:any-link {
+    display: block;
+    padding: 10px 0;
+    overflow: hidden;
+    color: var(--color-white);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    white-space: nowrap;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cta:any-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 50px;
+    background-color: var(--color-white);
+    color: var(--pill-ink);
+    font-family: var(--mono-font-family);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.3s var(--pill-ease), color 0.3s var(--pill-ease);
+  }
+
+  .cta:hover {
+    background-color: var(--pill-ink);
+    color: var(--color-white);
+  }
+
+  .bar a:focus-visible,
+  .toggle:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+
+  /* dark states: on a dark video hero or a confirmation page while at the top, and over the
+     darkened blog (the same look): no grey bar, logo + links + button straight on the dark, the
+     phone menu button a dark square */
+  body.is-page-dark & .bar:not([aria-expanded='true']),
+  body.is-page-dark & .bar:not([aria-expanded='true']) .bar-start,
+  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not([aria-expanded='true']),
+  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not([aria-expanded='true']) .bar-start,
+  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not([aria-expanded='true']),
+  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not([aria-expanded='true']) .bar-start {
+    background-color: transparent;
+  }
+
+  body.is-page-dark & .bar:not([aria-expanded='true']) .toggle,
+  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not([aria-expanded='true']) .toggle,
+  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not([aria-expanded='true']) .toggle {
+    background-color: rgb(255 255 255 / 8%);
+  }
+
+  /* over the careers hero while at the top: the design's dark glass bar (the photo shows
+     through) */
+  body:has(main > .section:first-child.careers-hero-container) &.is-at-top {
+    --pill-bg: rgb(12 16 22 / 45%);
+  }
+
+  body:has(main > .section:first-child.careers-hero-container) &.is-at-top .bar:not([aria-expanded='true']) .bar-start {
+    backdrop-filter: blur(12px);
+  }
+
+  @media (width >= 768px) {
+    padding: 24px 16px 0;
+
+    header & {
+      inset: 24px 16px auto;
+      padding: 0;
+    }
+
+    /* walkthrough at 1280: 738 × 39 bar, 8px corners, logo 16px in (wider only when its links
+       need it, up to the window's width) */
+    .bar,
+    .bar[aria-expanded='true'] {
+      flex-wrap: nowrap;
+      gap: 0;
+      width: auto;
+      min-width: min(738px, 100%);
+      max-width: 100%;
+      min-height: 39px;
+      padding: 6px 4px 6px 16px;
+      border-radius: 8px;
+      background-color: var(--pill-bg);
+    }
+
+    .bar-start {
+      display: contents;
+    }
+
+    .quick:any-link {
+      display: none;
+    }
+
+    .logo {
+      flex-shrink: 0;
+      height: 28px;
+    }
+
+    .logo img {
+      height: 23px;
+    }
+
+    .toggle {
+      display: none;
+    }
+
+    .menu,
+    .bar[aria-expanded='true'] .menu {
+      display: flex;
+      flex-basis: auto;
+      flex-direction: row;
+      align-items: center;
+      gap: 34px;
+      min-width: 0;
+      margin-left: auto;
+      padding: 0 0 0 24px;
+      border-radius: 0;
+      background: none;
+    }
+
+    /* the links on one line: each as wide as its text, all growing alike into any room and giving
+       way alike (cut with "…") when the bar is short of it, whether 1, 2, 3 or 4 are authored */
+    .nav-list {
+      flex: 0 1 auto;
+      flex-flow: row nowrap;
+      gap: 24px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    /* (the links' gaps by their number: the design's 24px for 1 or 2, tighter for 3 and 4, so four
+       links at their 12-character limit fit the bar) */
+    .nav-list[data-links='3'] {
+      gap: 20px;
+    }
+
+    .nav-list[data-links='4'] {
+      gap: 12px;
+    }
+
+    .menu:has(.nav-list[data-links='4']) {
+      gap: 24px;
+    }
+
+    .nav-item {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .link:any-link {
+      padding: 4px 0;
+      font-size: 10.5px;
+    }
+
+    .actions {
+      flex-direction: row;
+      flex-shrink: 0;
+    }
+
+    /* walkthrough: 138 × 27 white button with 6px corners, ≈10px mono */
+    .cta:any-link {
+      min-height: 27px;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-size: 10px;
+    }
+  }
+}
