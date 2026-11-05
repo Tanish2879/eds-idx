@@ -11,10 +11,11 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * Rows (each property in its own cell, read by position; the Layout is the block's class):
  *   1. background word   2. status heading   3. description   4. image (+ alt)
  *   5. background image   6. button link (+ its text)
- * The heading and description may hold the reservation's values: {firstName}, {email}, … (from
- * the page address, e.g. ?firstName=Sanjay, or the reservation form's data in this tab);
- * {key|fallback} shows the fallback without a value, otherwise the token (and the comma before it)
- * is left out. While authoring, the text is shown as written.
+ * The heading and description may hold the reservation's values: {name} (the name entered in the
+ * form: its first name), {firstName}, {lastName}, {email}, … (from the page address, e.g.
+ * ?name=Sanjay, or the reservation form's data in this tab); {key|fallback} shows the fallback
+ * without a value, otherwise the token (and the comma before it) is left out. While authoring,
+ * the text is shown as written.
  */
 
 const VARIANTS = ['variant-a', 'variant-b'];
@@ -107,6 +108,8 @@ function reservationValues() {
   } catch (e) { /* no storage (private mode) or not JSON */ }
   const values = { ...stored };
   new URLSearchParams(window.location.search).forEach((value, key) => { values[key] = value; });
+  // {name}: the name entered in the form (its first name; the last name without one)
+  if (!values.name?.trim()) values.name = values.firstName?.trim() || values.lastName?.trim() || '';
   return values;
 }
 

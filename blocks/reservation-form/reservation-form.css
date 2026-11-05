@@ -1,10 +1,3 @@
-/* external platform styles (Teamskit / "New Science", the design's text face): replace the
-   placeholder with the link from the lead (the same one as in engine-showcase.css). Must stay the
-   first rule in this file (an @import after any other rule is ignored) */
-
-/* (off for now: New Science Extended is self-hosted, see styles/fonts.css)
-   @import url('https://REPLACE-WITH-NEW-SCIENCE-TEAMSKIT-CSS-URL/styles.css'); */
-
 /* Reservation Form: the car image beside the form on black. Values from the design at 1280x720:
    image 599px (46.8%) wide, form column 511px centred in the black panel; fields 47px tall on
    #191919 with 8px corners and 12px gaps. Mobile first: phones stack the image (a banner) over
@@ -26,10 +19,12 @@ main > .section > .reservation-form-wrapper > .block {
   --rf-chevron: #4d4d4d;
   --rf-error: #ff6b6b;
 
-  /* type: the design's New Science faces (extended for the heading) from the platform stylesheet
-     above; until it loads, the site's Sequel / Inter */
-  --rf-display-font: 'New Science Extended', new-science-extended, var(--display-font-family);
-  --rf-body-font: 'New Science', new-science, var(--body-font-family);
+  /* type: the design's New Science faces, from the site's Adobe Fonts kit (styles/fonts.css): the
+     extended width (new-science-extended) and the normal one (new-science), each in Regular 400
+     and Medium 500; until they load, the site's Sequel / Inter. (The kit's two widths are two
+     families: the family picks the width, font-stretch as the design names it.) Sizes in rem. */
+  --rf-display-font: new-science-extended, var(--display-font-family);
+  --rf-body-font: new-science, var(--body-font-family);
 
   /* layout */
   --rf-column: 511px;
@@ -164,11 +159,11 @@ main > .section > .reservation-form-wrapper > .block {
     -webkit-line-clamp: 4;
     margin: 0;
     color: var(--rf-text);
-    font-family: var(--rf-display-font); /* (the design's Medium Extended: New Science Extended at
-      500; only its Regular is in the project, styles/fonts.css, used until the Medium is added) */
+    font-family: var(--rf-display-font); /* (Medium Extended) */
+    font-stretch: expanded;
     position: relative;
     top: 1px; /* (the face's caps sit 1px high in its line box, against the design) */
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: 500;
     line-height: 1.2;
     letter-spacing: 0.12em; /* the narrower fallback (Sequel) spaced out to the design's width */
@@ -189,8 +184,9 @@ main > .section > .reservation-form-wrapper > .block {
     max-width: 420px;
     margin: 15px 0 0;
     color: var(--rf-muted);
-    font-family: var(--rf-body-font); /* (the design's New Science Medium; Inter stands in) */
-    font-size: 16px;
+    font-family: var(--rf-body-font); /* (Medium) */
+    font-stretch: normal;
+    font-size: 1rem;
     font-weight: 500;
     line-height: 1.4;
     letter-spacing: 0;
@@ -251,9 +247,12 @@ main > .section > .reservation-form-wrapper > .block {
     border: 1px solid transparent;
     border-radius: var(--rf-radius);
     background-color: var(--rf-field-bg);
-    font-family: var(--rf-body-font);
-    font-size: 13px;
-    line-height: 1;
+    font-family: var(--rf-body-font); /* (Medium) */
+    font-stretch: normal;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
   }
 
   .prefix {
@@ -273,15 +272,11 @@ main > .section > .reservation-form-wrapper > .block {
     appearance: none;
   }
 
-  /* the placeholders (the design's New Science Medium; Inter stands in), and a dropdown showing
-     its own (its first, empty choice) in the same type */
+  /* the placeholders: the fields' type (Medium, 0.75rem / 1.5) */
   .input::placeholder {
     color: var(--rf-faint);
-    font-family: var(--rf-body-font);
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.5;
-    letter-spacing: 0;
+    font: inherit;
+    letter-spacing: inherit;
     opacity: 1;
   }
 
@@ -324,9 +319,6 @@ main > .section > .reservation-form-wrapper > .block {
 
   & select.input:has(option[value='']:checked) {
     color: var(--rf-faint);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0;
   }
 
   & select.input option {
@@ -349,10 +341,14 @@ main > .section > .reservation-form-wrapper > .block {
     border-radius: var(--rf-radius);
     background-color: #fff;
     color: #000;
-    font-family: var(--rf-body-font);
-    font-size: 13px;
-    line-height: 1;
-    letter-spacing: 0.01em;
+    font-family: var(--rf-body-font); /* (Medium) */
+    font-stretch: normal;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-align: center;
+    vertical-align: middle;
     text-transform: uppercase;
     cursor: pointer;
     transition: background-color 0.2s ease-out;
@@ -397,9 +393,12 @@ main > .section > .reservation-form-wrapper > .block {
     -webkit-line-clamp: 5;
     margin: 36px 0 0;
     color: var(--rf-faint);
-    font-family: var(--rf-body-font);
-    font-size: 12px;
-    line-height: 16px;
+    font-family: var(--rf-body-font); /* (Regular) */
+    font-stretch: normal;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
   }
 
   .disclaimer a:any-link {

@@ -8,14 +8,15 @@
  *
  * Block rows (every property in its own cell):
  *   1. background (+ alt)   2. heading   3. description   4. submitLabel   5. submitAction
- *   6. disclaimer   7. privacyEmail (+ privacyEmailText)
- *   8. privacyLink (+ privacyLinkText)   9. amountLabel   10. amount   11. amountBadge
- *   12. amountNote   13. paymentService   14. merchantName   15. successPage   16. failurePage
- *   17. pendingPreview (off: the pending view shown in the editor in the form's place)
- *   18. pendingHeading   19. pendingDescription (the view shown while a payment is confirmed)
+ *   6. disclaimer (with the contact email in it)
+ *   7. privacyLink (+ privacyLinkText)   8. amountLabel   9. amount   10. amountBadge
+ *   11. amountNote   12. paymentService   13. merchantName   14. successPage   15. failurePage
+ *   16. pendingPreview (off: the pending view shown in the editor in the form's place)
+ *   17. pendingHeading   18. pendingDescription (the view shown while a payment is confirmed)
  *   (the Razorpay Key ID is not authored: blocks/reservation-form/config.json)
- *   (the contact email is its own mailto: link property: in a text field md2jcr keeps a link's URL
- *   instead of the text, and markdown turns an email address in a sentence into a link)
+ *   (the contact email is written into the disclaimer with a zero-width space after its @: in a
+ *   text field md2jcr keeps a link's URL instead of the text, and markdown turns an email address
+ *   in a sentence into a link)
  *   then the items, each row starting with its component id (the block allows several child
  *   types: md2jcr picks the item's model by that first cell, and would otherwise read every item
  *   with the first allowed one), every field a direct child of the block (the source's section
@@ -81,18 +82,12 @@ export default {
     cells.push([textCell(document, 'description', value('.description'))]);
     cells.push([textCell(document, 'submitLabel', value('.submit'))]);
     cells.push([textCell(document, 'submitAction', value('.action'))]);
-    cells.push([textCell(document, 'disclaimer', value('.disclaimer'))]);
-    // 7. contact email: a mailto: link (its text collapses into it)
-    const mail = src.querySelector('a.email');
-    if (mail) {
-      const a = document.createElement('a');
-      a.href = mail.getAttribute('href');
-      a.textContent = clean(mail.textContent);
-      const p = document.createElement('p');
-      p.append(a);
-      cells.push([hinted(document, 'privacyEmail', p)]);
-    } else cells.push([hinted(document, 'privacyEmail')]);
-    // 8. privacy notice link (its text collapses into the link)
+    // (the contact email: written into the disclaimer, where the block makes it a mailto: link; a
+    // zero-width space after its @ keeps the content upload from reading it as a link: md2jcr would
+    // then keep only the link's URL as the field's value, the block takes the space out again)
+    const mail = clean(src.querySelector('a.email')?.textContent);
+    cells.push([textCell(document, 'disclaimer', [value('.disclaimer'), mail ? `${mail.replace('@', '@\u200b')}.` : ''].filter(Boolean).join(' '))]);
+    // 7. privacy notice link (its text collapses into the link)
     const privacy = src.querySelector('a.privacy');
     if (privacy) {
       const a = document.createElement('a');
@@ -102,12 +97,12 @@ export default {
       p.append(a);
       cells.push([hinted(document, 'privacyLink', p)]);
     } else cells.push([hinted(document, 'privacyLink')]);
-    // 9–12. the price card
+    // 8–11. the price card
     cells.push([textCell(document, 'amountLabel', value('.amount-label'))]);
     cells.push([textCell(document, 'amount', value('.amount'))]);
     cells.push([textCell(document, 'amountBadge', value('.amount-badge'))]);
     cells.push([textCell(document, 'amountNote', value('.amount-note'))]);
-    // 13–16. payment: the payment service URL, the name in the payment window, the pages after
+    // 12–15. payment: the payment service URL, the name in the payment window, the pages after
     // a sent / failed payment (links)
     cells.push([textCell(document, 'paymentService', value('.payment-service'))]);
     cells.push([textCell(document, 'merchantName', value('.merchant'))]);
@@ -124,7 +119,7 @@ export default {
       p.append(a);
       cells.push([hinted(document, `${kind}Page`, p)]);
     });
-    // 17–19. the pending view, while a payment is confirmed (its editor preview off)
+    // 16–18. the pending view, while a payment is confirmed (its editor preview off)
     cells.push([textCell(document, 'pendingPreview', 'false')]);
     cells.push([textCell(document, 'pendingHeading', value('.pending-title'))]);
     cells.push([textCell(document, 'pendingDescription', value('.pending-description'))]);

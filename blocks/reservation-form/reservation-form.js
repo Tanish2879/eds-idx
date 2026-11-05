@@ -6,14 +6,14 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * heading, description, the form's fields, a button and a privacy disclaimer.
  * Rows (every property in its own cell, read by position):
  *   1. background image (+ alt)   2. heading   3. description   4. button text   5. send-to URL
- *   6. privacy disclaimer   7. contact email (mailto: link + its text)
- *   8. privacy notice link (+ its text)
- *   price card (over the image): 9. amount label   10. amount (rupees)   11. badge   12. note
- *   payment (Razorpay): 13. payment service URL   14. name in the payment window   15. page after
- *   the form is sent (and paid)   16. page after a failed payment
- *   pending state: 17. its editor preview (true: the editor shows the pending view in the form's
- *   place, its texts edited in place; never on the site)   18. pending title
- *   19. pending description
+ *   6. privacy disclaimer (an email address in it becomes a mailto: link)
+ *   7. privacy notice link (+ its text)
+ *   price card (over the image): 8. amount label   9. amount (rupees)   10. badge   11. note
+ *   payment (Razorpay): 12. payment service URL   13. name in the payment window   14. page after
+ *   the form is sent (and paid)   15. page after a failed payment
+ *   pending state: 16. its editor preview (true: the editor shows the pending view in the form's
+ *   place, its texts edited in place; never on the site)   17. pending title
+ *   18. pending description
  *   then the fields, in order (the block's direct children):
  *     Form Field (3 cells): label | field name | required; its kind follows its name (see kindOf)
  *     Dropdown Field (4 cells): label | field name | required | options (a multifield)
@@ -27,7 +27,7 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * payment stays on the form. The pages read the values from this tab's storage.
  */
 
-const BLOCK_ROWS = 19;
+const BLOCK_ROWS = 18;
 const SUCCESS_PAGE = '/confirmation';
 const FAILURE_PAGE = '/payment-failed';
 const KEY_ID = /^rzp_(test|live)_[A-Za-z0-9]+$/; // Razorpay's public Key ID
@@ -405,7 +405,7 @@ export default function decorate(block) {
   const authoring = isAuthoring();
   const rows = [...block.children];
   const [backgroundRow, headingRow, descriptionRow, submitRow, actionRow, disclaimerRow,
-    emailRow, privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, serviceRow,
+    privacyRow, amountLabelRow, amountRow, badgeRow, noteRow, serviceRow,
     merchantRow, successPageRow, failurePageRow, pendingPreviewRow, pendingHeadingRow,
     pendingDescriptionRow] = rows;
   // (content imported before the price card and payment rows: its items start earlier, at the
@@ -492,37 +492,31 @@ export default function decorate(block) {
   form.append(submit, status);
   panel.append(form);
 
-  // privacy disclaimer: its text (email addresses in it become links), then the contact email and
-  // the privacy notice link, each ending its sentence ("… anytime at privacy@… . Full Privacy
-  // Notice."); the notice link replaces its text instead when the disclaimer contains it
-  const disclaimer = fit(text(disclaimerRow), MAX_LONG, 'disclaimer');
+  // privacy disclaimer: its text (email addresses in it become mailto: links), then the privacy
+  // notice link ending its sentence ("… anytime at privacy@…. Full Privacy Notice."); the notice
+  // link replaces its text instead when the disclaimer contains it
+  // (zero-width spaces taken out: the import puts one after an email's @, see the importer)
+  const disclaimer = fit(text(disclaimerRow).replace(/\u200b/g, ''), MAX_LONG, 'disclaimer');
   const linkOf = (row) => {
     const a = row?.querySelector('a[href]');
     return a ? { href: a.getAttribute('href'), text: a.textContent.trim(), source: a } : null;
   };
-  const email = linkOf(emailRow);
-  if (email) email.text = fit(email.text || email.href.replace(/^mailto:/i, ''), MAX_SHORT, 'contact email text');
   const privacy = linkOf(privacyRow);
   if (privacy) privacy.text = fit(privacy.text || 'Privacy Notice', MAX_LABEL, 'privacy link text');
-  if (disclaimer || email || privacy) {
+  if (disclaimer || privacy) {
     const small = el('p', { class: 'disclaimer' });
     let placed = false;
     if (disclaimer) {
       // (its own span when links follow it: authoring edits only the text itself in place)
-      const own = email || privacy ? el('span') : small;
+      const own = privacy ? el('span') : small;
       placed = fillDisclaimer(own, disclaimer, privacy);
       if (authoring) editable(own, 'disclaimer', 'text', 'Privacy disclaimer');
       if (own !== small) small.append(own);
     }
-    if (email) {
-      const a = el('a', { href: email.href }, email.text);
-      moveInstrumentation(email.source, a);
-      small.append(disclaimer ? ' ' : '', a, '.');
-    }
     if (privacy && !placed) {
       const a = el('a', { href: privacy.href }, privacy.text);
       moveInstrumentation(privacy.source, a);
-      small.append(disclaimer || email ? ' ' : '', a, '.');
+      small.append(disclaimer ? ' ' : '', a, '.');
     }
     panel.append(small);
   }
