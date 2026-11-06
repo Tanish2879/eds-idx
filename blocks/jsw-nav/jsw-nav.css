@@ -33,6 +33,13 @@ main > .section > .jsw-nav-wrapper {
     padding: 0;
   }
 
+  /* (the phones' menu open: the page behind it locked, the page's root its scrolling element;
+     the script also holds wheel and touch scrolling) */
+  :root:has(& .bar.is-open) {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   .bar {
     display: flex;
     flex-wrap: wrap;
@@ -145,45 +152,54 @@ main > .section > .jsw-nav-wrapper {
     top: 24px;
   }
 
-  .bar[aria-expanded='true'] .toggle-line.is-top {
+  .bar.is-open .toggle-line.is-top {
     transform: translateY(3.5px) rotate(45deg);
   }
 
-  .bar[aria-expanded='true'] .toggle-line.is-bottom {
+  .bar.is-open .toggle-line.is-bottom {
     transform: translateY(-3.5px) rotate(-45deg);
   }
 
+  /* the phones' open menu: one centred column under the bar, the links large, the button below
+     them; never taller than the window below the bar (36px down, 42px tall, 5px gap, 16px
+     margin): a longer menu scrolls on its own, the page behind it not following */
   .menu {
     display: none;
     flex-basis: 100%;
     flex-direction: column;
-    gap: 16px;
+    align-items: center;
+    gap: 32px;
     box-sizing: border-box;
-    padding: 8px 16px 16px;
+    max-height: calc(100svh - 99px);
+    padding: 16px 16px 32px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     border-radius: 12px;
     background-color: var(--pill-bg);
   }
 
-  .bar[aria-expanded='true'] .menu {
+  .bar.is-open .menu {
     display: flex;
   }
 
   .nav-list {
     display: flex;
     flex-direction: column;
+    align-self: stretch;
     margin: 0;
     padding: 0;
     list-style: none;
+    text-align: center;
   }
 
   .link:any-link {
     display: block;
-    padding: 10px 0;
+    padding: 8px 0;
     overflow: hidden;
     color: var(--color-white);
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 400;
-    line-height: 20px;
+    line-height: 26px;
     text-overflow: ellipsis;
     text-transform: uppercase;
     text-decoration: none;
@@ -234,18 +250,18 @@ main > .section > .jsw-nav-wrapper {
   /* dark states: on a dark video hero or a confirmation page while at the top, and over the
      darkened blog (the same look): no grey bar, logo + links + button straight on the dark, the
      phone menu button a dark square */
-  body.is-page-dark & .bar:not([aria-expanded='true']),
-  body.is-page-dark & .bar:not([aria-expanded='true']) .bar-start,
-  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not([aria-expanded='true']),
-  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not([aria-expanded='true']) .bar-start,
-  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not([aria-expanded='true']),
-  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not([aria-expanded='true']) .bar-start {
+  body.is-page-dark & .bar:not(.is-open),
+  body.is-page-dark & .bar:not(.is-open) .bar-start,
+  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not(.is-open),
+  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not(.is-open) .bar-start,
+  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not(.is-open),
+  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not(.is-open) .bar-start {
     background-color: transparent;
   }
 
-  body.is-page-dark & .bar:not([aria-expanded='true']) .toggle,
-  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not([aria-expanded='true']) .toggle,
-  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not([aria-expanded='true']) .toggle {
+  body.is-page-dark & .bar:not(.is-open) .toggle,
+  body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not(.is-open) .toggle,
+  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not(.is-open) .toggle {
     background-color: rgb(255 255 255 / 8%);
   }
 
@@ -255,7 +271,7 @@ main > .section > .jsw-nav-wrapper {
     --pill-bg: rgb(12 16 22 / 45%);
   }
 
-  body:has(main > .section:first-child.careers-hero-container) &.is-at-top .bar:not([aria-expanded='true']) .bar-start {
+  body:has(main > .section:first-child.careers-hero-container) &.is-at-top .bar:not(.is-open) .bar-start {
     backdrop-filter: blur(12px);
   }
 
@@ -270,7 +286,7 @@ main > .section > .jsw-nav-wrapper {
     /* walkthrough at 1280: 738 × 39 bar, 8px corners, logo 16px in (wider only when its links
        need it, up to the window's width) */
     .bar,
-    .bar[aria-expanded='true'] {
+    .bar.is-open {
       flex-wrap: nowrap;
       gap: 0;
       width: auto;
@@ -309,15 +325,18 @@ main > .section > .jsw-nav-wrapper {
     }
 
     .menu,
-    .bar[aria-expanded='true'] .menu {
+    .bar.is-open .menu {
       display: flex;
       flex-basis: auto;
       flex-direction: row;
       align-items: center;
       gap: 34px;
       min-width: 0;
+      max-height: none;
       margin-left: auto;
       padding: 0 0 0 24px;
+      overflow: visible;
+      overscroll-behavior: auto;
       border-radius: 0;
       background: none;
     }
@@ -327,8 +346,10 @@ main > .section > .jsw-nav-wrapper {
     .nav-list {
       flex: 0 1 auto;
       flex-flow: row nowrap;
+      align-self: auto;
       gap: 24px;
       min-width: 0;
+      text-align: start;
       white-space: nowrap;
     }
 
@@ -354,6 +375,7 @@ main > .section > .jsw-nav-wrapper {
     .link:any-link {
       padding: 4px 0;
       font-size: 10.5px;
+      line-height: 20px;
     }
 
     .actions {
