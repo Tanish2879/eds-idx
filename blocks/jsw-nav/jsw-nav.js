@@ -19,6 +19,7 @@ const LINKS = 4;
 const MAX_TEXT = 12;
 const MAX_CTA = 30;
 const MAX_BRAND = 24;
+const IMAGE_EXTENSIONS = ['svg', 'png', 'jpg', 'jpeg', 'webp'];
 const DESKTOP = window.matchMedia('(width >= 768px)');
 
 function el(tag, attrs = {}, ...children) {
@@ -39,6 +40,32 @@ function cellLink(cell) {
   const href = a.getAttribute('href');
   const label = text(a);
   return { href, label: label && label !== href ? label : '', source: a };
+}
+
+/*
+ * The logo's image: an <img>, or a link to an image file (AEM delivers a reference it can't
+ * resolve, an asset not in AEM Assets at that path, as a plain link); a path with a drafts folder
+ * in it (the content's placeholders, under the site's DAM folder) is then loaded from the copy in
+ * this repository, on the code host. Nothing without one (no placeholder, no broken image).
+ */
+function cellImage(cell) {
+  const img = cell?.querySelector('img');
+  const link = img ? null : cell?.querySelector('a[href]');
+  const raw = img?.getAttribute('src') || link?.getAttribute('href');
+  if (!raw) return null;
+  const url = new URL(raw, window.location);
+  const extension = url.pathname.split('.').pop().toLowerCase();
+  if (!IMAGE_EXTENSIONS.includes(extension)) {
+    // eslint-disable-next-line no-console
+    console.warn(`jsw-nav: the logo "${raw}" is not shown: .${extension} isn't an image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
+    return null;
+  }
+  const drafts = url.pathname.indexOf('/drafts/');
+  const src = link && drafts >= 0 ? `${window.hlx?.codeBasePath || ''}${url.pathname.slice(drafts)}` : raw;
+  const label = link ? text(link) : '';
+  let alt = img ? img.getAttribute('alt') || '' : '';
+  if (link && label && !label.includes('/')) alt = label;
+  return { src, alt, source: img || link };
 }
 
 // a text within its limit: a longer one cut with "…" on the site (with a warning); the editor
@@ -77,20 +104,20 @@ export default function decorate(block) {
   const home = cellLink(logoLinkRow);
   const logo = el('a', { href: home?.href || '/', class: 'logo' });
   const name = fit(text(brandRow), MAX_BRAND, 'brand name', authoring);
-  const img = logoRow?.querySelector('img');
-  if (img) {
-    const shown = el('img', {
-      src: img.getAttribute('src'), alt: name ? '' : img.getAttribute('alt') || 'JSW Motors', loading: 'eager',
-    });
-    moveInstrumentation(img, shown);
+  const mark = cellImage(logoRow);
+  if (mark) {
+    const shown = el('img', { src: mark.src, alt: name ? '' : mark.alt, loading: 'eager' });
+    moveInstrumentation(mark.source, shown);
     if (authoring) editable(shown, 'logo', 'media', 'Logo');
     logo.append(shown);
   }
-  if (name || !img) {
-    const brand = el('span', { class: 'brand-name' }, name || 'JSW Motors');
+  if (name) {
+    const brand = el('span', { class: 'brand-name' }, name);
     if (authoring) editable(brand, 'brandName', 'text', 'Brand name');
     logo.append(brand);
   }
+  // (a mark alone, without alt text: the link still named)
+  if (mark && !name && !mark.alt) logo.setAttribute('aria-label', 'Home');
 
   // the links: only those with both their text and their target
   const list = el('ul', { class: 'nav-list' });
@@ -125,7 +152,8 @@ export default function decorate(block) {
     el('span', { class: 'toggle-line is-top' }),
     el('span', { class: 'toggle-line is-bottom' }),
   );
-  const start = el('div', { class: 'bar-start' }, logo);
+  // (no mark and no name: no logo at all)
+  const start = el('div', { class: 'bar-start' }, logo.children.length ? logo : '');
   if (cta) {
     start.append(el('a', { href: cta.getAttribute('href'), class: 'quick', 'aria-label': cta.textContent }, cta.textContent.split(/\s+/)[0]));
   }
