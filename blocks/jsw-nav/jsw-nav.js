@@ -12,7 +12,8 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * Every link is optional: one is shown only with both its text and its target (the others left
  * out, the links sharing the row: see the CSS); a text longer than MAX_TEXT (MAX_CTA for the
  * button) is cut with "…" on the site, a warning logged. In the editor (its own document) the
- * texts are edited in place; as a page's header it is only shown.
+ * texts are edited in place; as a page's header it is only shown. The logo, the links and the
+ * button carry analytics names (data-cta, from their texts: no fields to author).
  */
 
 const LINKS = 4;
@@ -82,11 +83,56 @@ function editable(node, prop, type, label) {
   if (node) Object.assign(node.dataset, { aueProp: prop, aueType: type, aueLabel: label });
 }
 
-function toggleMenu(bar, button, force) {
-  const open = force !== undefined ? force : bar.getAttribute('aria-expanded') !== 'true';
-  bar.setAttribute('aria-expanded', open);
-  button.setAttribute('aria-expanded', open);
-  button.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+// analytics: a link's data-cta name (jsw-nav:<its text, lower case, hyphenated>:<action>), set
+// for the site's tag manager to read
+function track(node, name, action = 'view') {
+  const slug = name.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  node.dataset.cta = `jsw-nav:${slug || 'not-set'}:${action}`;
+}
+
+/*
+ * The phones' menu (from 768px always shown, the menu button hidden). Its open state is the
+ * bar's is-open class (the menu button's aria-expanded for assistive technology). While it is
+ * open the page behind stands still: the CSS locks the page's scrolling, and wheel and touch
+ * scrolling (which iOS doesn't stop with that) are cancelled unless they scroll the open menu
+ * itself. Closed by the menu button, Escape (focus back on the button), a click outside, focus
+ * leaving the bar (tabbing out of it), and the window widening to the desktop layout.
+ */
+function controlMenu(bar, button, menu) {
+  const isOpen = () => bar.classList.contains('is-open');
+  const holdPage = (e) => {
+    if (menu.contains(e.target) && menu.scrollHeight > menu.clientHeight) return;
+    if (e.cancelable) e.preventDefault();
+  };
+  const hold = { capture: true, passive: false };
+  const setOpen = (open) => {
+    if (open === isOpen()) return;
+    bar.classList.toggle('is-open', open);
+    button.setAttribute('aria-expanded', open);
+    button.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    ['wheel', 'touchmove'].forEach((type) => {
+      if (open) window.addEventListener(type, holdPage, hold);
+      else window.removeEventListener(type, holdPage, hold);
+    });
+  };
+
+  button.addEventListener('click', () => setOpen(!isOpen()));
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !isOpen()) return;
+    setOpen(false);
+    button.focus();
+  });
+  document.addEventListener('click', (e) => {
+    if (!bar.contains(e.target)) setOpen(false);
+  });
+  // (focus moving to an element outside the bar; a click on the bar's own background moves focus
+  // nowhere, and leaves the menu open)
+  bar.addEventListener('focusout', (e) => {
+    if (e.relatedTarget && !bar.contains(e.relatedTarget)) setOpen(false);
+  });
+  DESKTOP.addEventListener('change', () => setOpen(false));
 }
 
 let navId = 0;
@@ -103,10 +149,14 @@ export default function decorate(block) {
   // decorative: the name says it)
   const home = cellLink(logoLinkRow);
   const logo = el('a', { href: home?.href || '/', class: 'logo' });
+  track(logo, 'home');
   const name = fit(text(brandRow), MAX_BRAND, 'brand name', authoring);
   const mark = cellImage(logoRow);
   if (mark) {
-    const shown = el('img', { src: mark.src, alt: name ? '' : mark.alt, loading: 'eager' });
+    // (at the top of every page: fetched at once, ahead of the page's other images)
+    const shown = el('img', {
+      src: mark.src, alt: name ? '' : mark.alt, loading: 'eager', fetchpriority: 'high',
+    });
     moveInstrumentation(mark.source, shown);
     if (authoring) editable(shown, 'logo', 'media', 'Logo');
     logo.append(shown);
@@ -127,6 +177,7 @@ export default function decorate(block) {
     const n = i + 1;
     const a = el('a', { href: link.href, class: 'link' }, fit(link.label, MAX_TEXT, `link ${n} text`, authoring));
     if (authoring) editable(a, `link${n}Text`, 'text', `Link ${n} text`);
+    track(a, link.label);
     list.append(el('li', { class: 'nav-item' }, a));
   });
   list.dataset.links = list.children.length;
@@ -138,6 +189,7 @@ export default function decorate(block) {
   if (action?.label && action.href) {
     cta = el('a', { href: action.href, class: 'cta' }, fit(action.label, MAX_CTA, 'button text', authoring));
     if (authoring) editable(cta, 'ctaText', 'text', 'Button text');
+    track(cta, action.label, 'click');
     actions.append(cta);
   }
 
@@ -155,25 +207,16 @@ export default function decorate(block) {
   // (no mark and no name: no logo at all)
   const start = el('div', { class: 'bar-start' }, logo.children.length ? logo : '');
   if (cta) {
-    start.append(el('a', { href: cta.getAttribute('href'), class: 'quick', 'aria-label': cta.textContent }, cta.textContent.split(/\s+/)[0]));
+    const quick = el('a', { href: cta.getAttribute('href'), class: 'quick', 'aria-label': cta.textContent }, cta.textContent.split(/\s+/)[0]);
+    quick.dataset.cta = cta.dataset.cta;
+    start.append(quick);
   }
   const menu = el('div', { class: 'menu', id: `${uid}-menu` });
   if (list.children.length) menu.append(list);
   if (actions.children.length) menu.append(actions);
-  const bar = el('nav', { class: 'bar', 'aria-expanded': 'false', 'aria-label': 'Main' }, start, button, menu);
+  const bar = el('nav', { class: 'bar', 'aria-label': 'Main' }, start, button, menu);
   block.replaceChildren(bar);
-
-  button.addEventListener('click', () => toggleMenu(bar, button));
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && bar.getAttribute('aria-expanded') === 'true') {
-      toggleMenu(bar, button, false);
-      button.focus();
-    }
-  });
-  document.addEventListener('click', (e) => {
-    if (!bar.contains(e.target)) toggleMenu(bar, button, false);
-  });
-  DESKTOP.addEventListener('change', () => toggleMenu(bar, button, false));
+  controlMenu(bar, button, menu);
 
   // the page's top (the CSS drops the grey bar there over a dark hero; it shows once the page
   // scrolls)
