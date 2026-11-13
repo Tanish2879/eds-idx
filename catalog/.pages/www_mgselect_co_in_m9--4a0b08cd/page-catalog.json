@@ -1,0 +1,378 @@
+{
+  "url": "https://www.mgselect.co.in/m9",
+  "title": "MG M9 Car Price in India - Luxury 7-Seater Electric MPV",
+  "timestamp": "2026-10-06T09:39:30.729Z",
+  "duration": "139.3s",
+  "cleanup": {
+    "elementsRemoved": 12,
+    "types": [
+      "overlay",
+      "popup"
+    ],
+    "cookieConsentDismissed": true
+  },
+  "fingerprints": {
+    "urlPattern": "/m9",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 900
+    },
+    "topSectionStrategy": "hero",
+    "topSectionPlaceholders": [
+      {
+        "type": "image",
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 898
+      },
+      {
+        "type": "text",
+        "x": 398,
+        "y": 632,
+        "width": 645,
+        "height": 46
+      },
+      {
+        "type": "text",
+        "x": 449,
+        "y": 643,
+        "width": 541,
+        "height": 46
+      },
+      {
+        "type": "text",
+        "x": 526,
+        "y": 643,
+        "width": 388,
+        "height": 46
+      },
+      {
+        "type": "text",
+        "x": 574,
+        "y": 710,
+        "width": 293,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 69,
+        "y": 724,
+        "width": 148,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 671,
+        "y": 754,
+        "width": 139,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 671,
+        "y": 754,
+        "width": 139,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 671,
+        "y": 754,
+        "width": 139,
+        "height": 19
+      },
+      {
+        "type": "image",
+        "x": 638,
+        "y": 755,
+        "width": 18,
+        "height": 18
+      },
+      {
+        "type": "image",
+        "x": 638,
+        "y": 755,
+        "width": 18,
+        "height": 18
+      },
+      {
+        "type": "image",
+        "x": 638,
+        "y": 755,
+        "width": 18,
+        "height": 18
+      },
+      {
+        "type": "text",
+        "x": 94,
+        "y": 784,
+        "width": 250,
+        "height": 20
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "span",
+        "fontSize": 18,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 573,
+        "y": 714,
+        "width": 293,
+        "height": 21,
+        "textLength": 32
+      },
+      {
+        "tag": "span",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "roboto",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 671,
+        "y": 748,
+        "width": 139,
+        "height": 32,
+        "textLength": 17
+      },
+      {
+        "tag": "span",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "roboto",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 671,
+        "y": 748,
+        "width": 139,
+        "height": 32,
+        "textLength": 17
+      },
+      {
+        "tag": "span",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "roboto",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 671,
+        "y": 748,
+        "width": 139,
+        "height": 32,
+        "textLength": 17
+      },
+      {
+        "tag": "p",
+        "fontSize": 20,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 69,
+        "y": 724,
+        "width": 148,
+        "height": 27,
+        "textLength": 14
+      },
+      {
+        "tag": "span",
+        "fontSize": 13,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 94,
+        "y": 788,
+        "width": 120,
+        "height": 13,
+        "textLength": 11
+      },
+      {
+        "tag": "span",
+        "fontSize": 16,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 300,
+        "y": 786,
+        "width": 44,
+        "height": 16,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 900,
+    "topSectionTitleRect": null,
+    "bodyBounds": null,
+    "bodyStartY": null,
+    "bodyPlaceholders": []
+  },
+  "skeleton": {
+    "signature": "sB(s,s(s(sB,s,s),sB,s(sB,s,s),sB(s(sB,sB),2x1),s(s(sB,sB),6x1,2x1B),sB,s(s(sB,sB),5x1,2x1B),s(s(sB,sB),5x1,2x1B),s(sB,s(sB,3x1)),3x1B,2x1B,4x1B,s),s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(1)",
+      "rc2c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(1) > section.product__banner--wrapper > div.product__banner--container.position-relative.vh-100.add-download-cta > canvas.product__banner--canvas",
+      "rc2c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(1) > section.product__banner--wrapper > div.product__banner--container.position-relative.vh-100.add-download-cta > div.product__banner__video--content.d-flex.flex-column.mx-auto.justify-content-end.align-items-center.position-absolute.top-0.bottom-0.start-0.end-0.w-100.overflow-hidden",
+      "rc2c1c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(1) > section.product__banner--wrapper > div.product__banner--container.position-relative.vh-100.add-download-cta > div.product__banner__video--content.d-flex.flex-column.justify-content-end.align-items-start.position-absolute.top-0.bottom-0.start-0.end-0.w-100.overflow-hidden.mx-auto",
+      "rc2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3)",
+      "rc2c3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3) > section.product__banner--wrapper > div.product__banner--container.position-relative.vh-100.add-download-cta > canvas.product__banner--canvas",
+      "rc2c3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3) > section.product__banner--wrapper > div.product__banner--container.position-relative.vh-100.add-download-cta > div.product__banner__video--content.d-flex.flex-column.mx-auto.justify-content-end.align-items-center.position-absolute.top-0.bottom-0.start-0.end-0.w-100.overflow-hidden",
+      "rc2c3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3) > section.product__banner--wrapper > div.product__banner--container.position-relative.vh-100.add-download-cta > div.product__banner__video--content.d-flex.flex-column.justify-content-end.align-items-start.position-absolute.top-0.bottom-0.start-0.end-0.w-100.overflow-hidden.mx-auto",
+      "rc2c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.drivingMode.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c4c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.drivingMode.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > section.driving-mode.hide-header.driving-mode--publish.bg-black > div.driving-mode__wrapper.driving-mode__wrapper--publish.d-flex.flex-column.d-xl-block.h-100 > div.driving-mode__wrapper.d-flex.flex-column.d-xl-block.h-100.position-relative.z-1 > div.driving-mode__bg.driving-mode__bg--publish.position-relative.h-100",
+      "rc2c4c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.drivingMode.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > section.driving-mode.hide-header.driving-mode--publish.bg-black > div.driving-mode__wrapper.driving-mode__wrapper--publish.d-flex.flex-column.d-xl-block.h-100 > div.driving-mode__wrapper.d-flex.flex-column.d-xl-block.h-100.position-relative.z-1 > div.driving-mode__bg.driving-mode__bg--publish.position-relative.h-100 > div:nth-of-type(2)",
+      "rc2c4c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.drivingMode.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > section.driving-mode.hide-header.driving-mode--publish.bg-black > div.driving-mode__wrapper.driving-mode__wrapper--publish.d-flex.flex-column.d-xl-block.h-100 > div.driving-mode__wrapper.d-flex.flex-column.d-xl-block.h-100.position-relative.z-1 > div.driving-mode__bg.driving-mode__bg--publish.position-relative.h-100 > div:nth-of-type(3)",
+      "rc2c4c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.drivingMode.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > section.driving-mode.hide-header.driving-mode--publish.bg-black > div.driving-mode__wrapper.driving-mode__wrapper--publish.d-flex.flex-column.d-xl-block.h-100 > div.driving-mode__wrapper.d-flex.flex-column.d-xl-block.h-100.position-relative.z-1 > div.driving-mode__content__wrapper.d-flex.flex-column.flex-xl-row.justify-content-between.align-items-start.align-items-xl-end.z-1",
+      "rc2c5": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5)",
+      "rc2c5c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details",
+      "rc2c5c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details > div:nth-of-type(1)",
+      "rc2c5c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details > div:nth-of-type(2)",
+      "rc2c5c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__container.feature-cards-vh.add-sticky",
+      "rc2c5c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div:nth-of-type(3)",
+      "rc2c6": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c7": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7)",
+      "rc2c7c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details",
+      "rc2c7c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details > div:nth-of-type(1)",
+      "rc2c7c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details > div:nth-of-type(2)",
+      "rc2c7c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__container.feature-cards-vh.add-sticky.handle-card-height",
+      "rc2c7c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div:nth-of-type(3)",
+      "rc2c8": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8)",
+      "rc2c8c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details",
+      "rc2c8c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details > div:nth-of-type(1)",
+      "rc2c8c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__details > div:nth-of-type(2)",
+      "rc2c8c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div.feature-cards__container.feature-cards-vh.add-sticky.handle-card-height",
+      "rc2c8c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8) > section.feature-cards.pe-0.position-relative.feature-cards-vh > div.feature-cards__wrapper.h-100.add-sticky > div:nth-of-type(3)",
+      "rc2c9": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.colorVariant.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c9c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.colorVariant.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.color-variant.position-relative.height-vh > div.color-variant__models.h-100",
+      "rc2c9c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.colorVariant.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.color-variant.position-relative.height-vh > div.color-variant__title-tab.position-absolute.w-100",
+      "rc2c9c2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.colorVariant.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.color-variant.position-relative.height-vh > div.color-variant__title-tab.position-absolute.w-100 > div:nth-of-type(1)",
+      "rc2c9c2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.colorVariant.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.color-variant.position-relative.height-vh > div.color-variant__title-tab.position-absolute.w-100 > div.color-variant__color-tabs.w-100.d-flex.flex-wrap.justify-content-center.align-items-center.gap-4",
+      "rc2c10": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.artGallery.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c11": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.textImage.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c12": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.quickAction.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c13": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(1)",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc4",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.product-banner.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3)",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc5",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.drivingMode.light-header.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc6",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5)",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc7",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc8",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7)",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc9",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureCards.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8)",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc10",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.colorVariant.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc11",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.artGallery.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": "3x1",
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc12",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.textImage.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": "2x1",
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc13",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.quickAction.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": "4x1",
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc14",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.scroller.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc15",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": []
+}

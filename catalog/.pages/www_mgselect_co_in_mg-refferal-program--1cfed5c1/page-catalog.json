@@ -1,0 +1,318 @@
+{
+  "url": "https://www.mgselect.co.in/mg-refferal-program",
+  "title": "MG Select Referral Programme – Terms & Conditions",
+  "timestamp": "2026-10-06T10:02:04.133Z",
+  "duration": "189.7s",
+  "cleanup": {
+    "elementsRemoved": 11,
+    "types": [
+      "popup"
+    ],
+    "cookieConsentDismissed": false
+  },
+  "fingerprints": {
+    "urlPattern": "/mg-refferal-program",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 100,
+      "width": 1440,
+      "height": 100
+    },
+    "topSectionStrategy": "title",
+    "topSectionPlaceholders": [
+      {
+        "type": "text",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 126,
+        "width": 901,
+        "height": 66
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "h1",
+        "fontSize": 60,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 80,
+        "y": 126,
+        "width": 1280,
+        "height": 66,
+        "textLength": 20
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43,
+        "textLength": 23
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 110,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#606060",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43,
+        "textLength": 30
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 170,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 192,
+    "topSectionTitleRect": {
+      "x": 80,
+      "y": 126,
+      "width": 1280,
+      "height": 66,
+      "text": "TERMS AND CONDITIONS",
+      "fontWeight": 700,
+      "color": "rgb(0, 0, 0)"
+    },
+    "bodyBounds": {
+      "x": 0,
+      "y": 200,
+      "width": 1440,
+      "height": 700
+    },
+    "bodyStartY": 200,
+    "bodyPlaceholders": [
+      {
+        "type": "text",
+        "x": 1081,
+        "y": 200,
+        "width": 339,
+        "height": 23
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 200,
+        "width": 1280,
+        "height": 58
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 258,
+        "width": 614,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 278,
+        "width": 804,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 298,
+        "width": 1037,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 318,
+        "width": 1260,
+        "height": 40
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 358,
+        "width": 1159,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 378,
+        "width": 704,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 398,
+        "width": 694,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 418,
+        "width": 958,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 438,
+        "width": 724,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 458,
+        "width": 1234,
+        "height": 40
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 498,
+        "width": 378,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 100,
+        "y": 518,
+        "width": 1039,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 538,
+        "width": 1280,
+        "height": 24
+      }
+    ]
+  },
+  "skeleton": {
+    "signature": "sB(sB,sB(sB,sB,s(sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB),sB),s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(1)",
+      "rc2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(2)",
+      "rc2c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul",
+      "rc2c3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(1)",
+      "rc2c3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(2)",
+      "rc2c3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(3)",
+      "rc2c3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(4)",
+      "rc2c3c5": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(5)",
+      "rc2c3c6": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(6)",
+      "rc2c3c7": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(7)",
+      "rc2c3c8": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(8)",
+      "rc2c3c9": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(9)",
+      "rc2c3c10": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(10)",
+      "rc2c3c11": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(11)",
+      "rc2c3c12": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > ul > div:nth-of-type(12)",
+      "rc2c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(3)",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "44ee60b",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 9 CTAs + 1 paragraph block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 1,
+        "imageCount": 0,
+        "buttonCount": 9,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "heading + text + 9 CTAs"
+      },
+      "selector": "div.cookieConsent.aem-GridColumn",
+      "bounds": {
+        "x": 0,
+        "y": 586,
+        "width": 1440,
+        "height": 0
+      },
+      "screenshot": null,
+      "error": "Element not visible"
+    }
+  ]
+}
