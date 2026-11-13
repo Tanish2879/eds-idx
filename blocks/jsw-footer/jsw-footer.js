@@ -28,6 +28,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  *   10. background video   11. social heading
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const BLOCK_ROWS = 11;
 const MAX_ITEMS = 4;
 const VARIANTS = ['variant-a', 'variant-b'];
@@ -68,7 +72,7 @@ const text = (cell) => (cell?.textContent || '').trim();
 function assetSrc(href) {
   const { pathname } = new URL(href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : href;
+  return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : href;
 }
 
 // a file's extension (from its address's path, without the query), lower case

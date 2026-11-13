@@ -20,7 +20,7 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
  * lands whole); 3. it locks in as that card (the collage card is given the same image) and the
  * showcase fades away, revealing the rest of the collage around it. Whichever engine is active is
  * the one that travels.
- * Timings follow the reference walkthrough (drafts/new-energy/jsw_walkthrough.mp4).
+ * Timings follow the reference walkthrough (drafts/jsw/new-energy/jsw_walkthrough.mp4).
  * Rows:
  *   1.  headline
  *   2+. one engine per row: engine image (+ optional thumbnail image, + optional framing
@@ -33,6 +33,10 @@ import { cubicBezier } from '../../scripts/scroll-stops.js';
  *       % of the engine image from its bottom-left corner ("40" and "40%" both work), so they
  *       stay on the same part at any size or framing
  */
+
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
 
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 // hero → showcase glide, fitted to the walkthrough's card rise
@@ -102,7 +106,7 @@ function rowImages(row) {
     if (!IMAGE_FILE.test(pathname)) return null;
     const drafts = pathname.indexOf('/drafts/');
     return {
-      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : node.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : node.href,
       alt: node.textContent.trim(),
       source: node,
     };

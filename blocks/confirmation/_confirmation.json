@@ -115,7 +115,10 @@
           "valueType": "string",
           "name": "ctaLink",
           "label": "Button link",
-          "description": "Optional: a button under the description."
+          "description": "Optional: a button under the description.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",

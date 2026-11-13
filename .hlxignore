@@ -8,6 +8,6 @@ test/*
 _*
 
 # reference recordings (not site content)
-drafts/new-energy/jsw_walkthrough.mp4
-drafts/new-energy/jsw_output.mp4
+drafts/jsw/new-energy/jsw_walkthrough.mp4
+drafts/jsw/new-energy/jsw_output.mp4
 catalog/

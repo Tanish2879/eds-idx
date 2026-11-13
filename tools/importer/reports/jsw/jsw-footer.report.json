@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/jsw-footer/source.html",
+  "path": "jsw/jsw-footer",
+  "timestamp": "2026-11-13T08:20:35.449Z",
+  "title": "JSW Footer",
+  "template": "jsw-footer",
+  "blocks": [
+    "jsw-footer"
+  ],
+  "importScript": "fb09797332ee"
+}

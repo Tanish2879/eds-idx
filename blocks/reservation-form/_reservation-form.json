@@ -132,7 +132,10 @@
           "valueType": "string",
           "name": "privacyLink",
           "label": "Privacy notice link",
-          "description": "The privacy notice page."
+          "description": "The privacy notice page.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",
@@ -223,14 +226,20 @@
           "valueType": "string",
           "name": "successPage",
           "label": "Page after the form is sent",
-          "description": "Opens once the form is sent and its payment confirmed (default: /confirmation)."
+          "description": "Opens once the form is sent and its payment confirmed (default: /jsw/confirmation).",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "aem-content",
           "valueType": "string",
           "name": "failurePage",
           "label": "Page after a failed payment",
-          "description": "Opens after a failed payment (default: /payment-failed)."
+          "description": "Opens after a failed payment (default: /jsw/payment-failed).",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "tab",

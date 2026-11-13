@@ -2,9 +2,9 @@
 /* global WebImporter */
 
 /**
- * Importer for the new /sustainable-future page (design source: drafts/sustainable-future/source.html).
+ * Importer for the new /jsw/sustainable-future page (design source: drafts/jsw/sustainable-future/source.html).
  * Single section: parallax-collage (row 1 heading + subtitle, rows 2+ image | position modifier)
- * Writes ONLY /sustainable-future — no other page is created or modified.
+ * Writes ONLY /jsw/sustainable-future — no other page is created or modified.
  */
 
 function clean(text) {
@@ -69,7 +69,7 @@ export default {
     document.body.append(main);
     return [{
       element: document.body,
-      path: '/sustainable-future',
+      path: '/jsw/sustainable-future',
       report: { title: document.title, template: 'sustainable-future', blocks: ['parallax-collage'] },
     }];
   },

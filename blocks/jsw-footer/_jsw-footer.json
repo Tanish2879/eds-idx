@@ -94,7 +94,10 @@
           "valueType": "string",
           "name": "logoLink",
           "label": "Logo link",
-          "description": "Where the logo leads, e.g. the home page."
+          "description": "Where the logo leads, e.g. the home page.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",
@@ -134,14 +137,20 @@
           "valueType": "string",
           "name": "ctaLink",
           "label": "Button link",
-          "description": "A page, URL or mailto: address; without a link the button is not shown."
+          "description": "A page, URL or mailto: address; without a link the button is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "aem-content",
           "valueType": "string",
           "name": "legalLink",
           "label": "Legal link",
-          "description": "E.g. the privacy policy."
+          "description": "E.g. the privacy policy.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",
@@ -222,7 +231,10 @@
           "name": "link1",
           "label": "Link 1",
           "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
-          "required": true
+          "required": true,
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",
@@ -241,7 +253,10 @@
           "valueType": "string",
           "name": "link2",
           "label": "Link 2",
-          "description": "A page, URL or mailto: address; without Link 2 text the link is not shown."
+          "description": "A page, URL or mailto: address; without Link 2 text the link is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",
@@ -259,7 +274,10 @@
           "valueType": "string",
           "name": "link3",
           "label": "Link 3",
-          "description": "A page, URL or mailto: address; without Link 3 text the link is not shown."
+          "description": "A page, URL or mailto: address; without Link 3 text the link is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",
@@ -277,7 +295,10 @@
           "valueType": "string",
           "name": "link4",
           "label": "Link 4",
-          "description": "A page, URL or mailto: address; without Link 4 text the link is not shown."
+          "description": "A page, URL or mailto: address; without Link 4 text the link is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",

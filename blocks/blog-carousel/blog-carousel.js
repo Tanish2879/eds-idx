@@ -6,9 +6,10 @@ import {
 /*
  * Blog Carousel: one centred glass card ("OUR BLOGS" with previous / next arrows) showing a blog
  * teaser at a time (eyebrow, title, description, READ MORE bar), over a blurred backdrop image.
- * Scroll (walkthrough drafts/new-energy/jsw_walkthrough.mp4, 16.4–23.9s): the glass card peeks in
- * at the bottom while the previous section's images scroll away, then rises over that section's
- * text, which stays pinned until the card covers it (see CSS). The stage then pins and, tied to the
+ * Scroll (walkthrough drafts/jsw/new-energy/jsw_walkthrough.mp4, 16.4–23.9s): the glass card
+ * peeks in at the bottom while the previous section's images scroll away, then rises over that
+ * section's text, which stays pinned until the card covers it (see CSS). The stage then pins and,
+ * tied to the
  * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg, see CSS) goes
  * from white to black, the blurred backdrop fades in after it and the card settles into the
  * centre. The card's content is in place throughout, as in the walkthrough. One wheel gesture
@@ -18,6 +19,10 @@ import {
  *   heading ("OUR BLOGS") | backdrop image (both optional, one row each)
  *   then one row per blog: eyebrow | title | description | link (its text is the bar label)
  */
+
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
 
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const MOTION = window.matchMedia('(prefers-reduced-motion: no-preference)');
@@ -57,7 +62,7 @@ function rowImage(row) {
   if (!link) return null;
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href, alt: '', source: link };
+  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href, alt: '', source: link };
 }
 
 /*

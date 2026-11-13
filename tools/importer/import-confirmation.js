@@ -2,10 +2,10 @@
 /* global WebImporter */
 
 /**
- * Importer for the confirmation pages (design sources: drafts/confirmation/source-variant-*.html).
+ * Importer for the confirmation pages (design sources: drafts/jsw/confirmation/source-variant-*.html).
  * Builds one confirmation block in the source's layout (its variant: the block option / Layout)
  * with xwalk field hints + page metadata (JSW nav, no footer). Each source names the page it
- * becomes (meta target-path): /confirmation (Variant A), /confirmation-all-set (Variant B).
+ * becomes (meta target-path): /jsw/confirmation (Variant A), /jsw/confirmation-all-set (Variant B).
  * Writes ONLY those pages — no other page is created or modified.
  *
  * Block rows (every property in its own cell): 1. displayWord  2. heading  3. description
@@ -79,7 +79,7 @@ export default {
       footer: clean(document.querySelector('meta[name="footer"]')?.getAttribute('content')),
     }));
 
-    const path = clean(document.querySelector('meta[name="target-path"]')?.getAttribute('content')) || '/confirmation';
+    const path = clean(document.querySelector('meta[name="target-path"]')?.getAttribute('content')) || '/jsw/confirmation';
     document.body.innerHTML = '';
     document.body.append(main);
     return [{

@@ -54,7 +54,10 @@
           "component": "aem-content",
           "valueType": "string",
           "name": "link",
-          "label": "Button link"
+          "label": "Button link",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",

@@ -92,7 +92,10 @@
           "valueType": "string",
           "name": "link",
           "label": "Link",
-          "description": "The blog post the READ MORE bar opens."
+          "description": "The blog post the READ MORE bar opens.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",

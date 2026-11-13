@@ -92,7 +92,7 @@ var CustomImportScript = (() => {
       document.body.append(main);
       return [{
         element: document.body,
-        path: "/jsw-nav",
+        path: "/jsw/jsw-nav",
         report: { title: document.title, template: "jsw-nav", blocks: ["jsw-nav"] }
       }];
     }

@@ -16,6 +16,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * button carry analytics names (data-cta, from their texts: no fields to author).
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const LINKS = 4;
 const MAX_TEXT = 12;
 const MAX_CTA = 30;
@@ -62,7 +66,7 @@ function cellImage(cell) {
     return null;
   }
   const drafts = url.pathname.indexOf('/drafts/');
-  const src = link && drafts >= 0 ? `${window.hlx?.codeBasePath || ''}${url.pathname.slice(drafts)}` : raw;
+  const src = link && drafts >= 0 ? `${window.hlx?.codeBasePath || ''}${url.pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : raw;
   const label = link ? text(link) : '';
   let alt = img ? img.getAttribute('alt') || '' : '';
   if (link && label && !label.includes('/')) alt = label;
