@@ -29,7 +29,8 @@ module.exports = {
       'job-board-filters': 5,
       'job-board-job': 6,
       'careers-hero': 5,
-      'jsw-footer': 11, // (10 rows + the Layout, a class)
+      'jsw-footer': 12, // (11 rows + the Layout, a class)
+      'jsw-footer-column': 5, // (title + up to 4 links)
     }],
   },
 };
