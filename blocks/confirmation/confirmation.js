@@ -18,6 +18,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * the text is shown as written.
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const VARIANTS = ['variant-a', 'variant-b'];
 const TOKEN = /(,?\s*)\{(\w+)(?:\|([^}]*))?\}/g;
 const STORED = 'jsw-reservation'; // the reservation form's last sent data (sessionStorage)
@@ -86,7 +90,7 @@ function rowImage(row, field) {
     const drafts = pathname.indexOf('/drafts/');
     const label = link.textContent.trim();
     image = {
-      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href,
       alt: label && !label.includes('/') ? label : '',
       source: link,
     };

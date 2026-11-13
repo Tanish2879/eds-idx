@@ -125,7 +125,7 @@ var CustomImportScript = (() => {
       document.body.append(main);
       return [{
         element: document.body,
-        path: "/jsw-footer",
+        path: "/jsw/jsw-footer",
         report: { title: document.title, template: "jsw-footer", blocks: ["jsw-footer"] }
       }];
     }

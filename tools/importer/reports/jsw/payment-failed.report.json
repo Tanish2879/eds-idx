@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/confirmation/source-payment-failed.html",
+  "path": "jsw/payment-failed",
+  "timestamp": "2026-11-13T08:21:06.033Z",
+  "title": "Payment Failed | JSW Motors",
+  "template": "confirmation",
+  "variant": "variant-a",
+  "blocks": [
+    "confirmation"
+  ],
+  "importScript": "242dc86aebd9"
+}

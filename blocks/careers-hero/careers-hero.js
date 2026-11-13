@@ -11,6 +11,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * link opens its page.
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const BOARD = 'main .job-board'; // where an anchor without its own target leads
 
 function el(tag, attrs = {}, ...children) {
@@ -55,7 +59,7 @@ function rowImage(row, field) {
     const drafts = pathname.indexOf('/drafts/');
     const label = link.textContent.trim();
     image = {
-      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href,
       alt: label && !label.includes('/') ? label : '',
       source: link,
     };

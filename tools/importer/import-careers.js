@@ -2,10 +2,10 @@
 /* global WebImporter */
 
 /**
- * Importer for the /careers page (source: drafts/careers/source.html).
+ * Importer for the /jsw/careers page (source: drafts/jsw/careers/source.html).
  * Builds three sections: the careers-hero block, the job-board block, the careers-perks block,
  * with xwalk field hints + page metadata (JSW nav, no footer).
- * Writes ONLY /careers — no other page is created or modified.
+ * Writes ONLY /jsw/careers — no other page is created or modified.
  *
  * careers-hero rows (every property in its own cell): 1. image (+ imageAlt)   2. heading
  *   3. description   4. ctaLabel   5. ctaLink (plain text, e.g. #open-roles)
@@ -172,7 +172,7 @@ export default {
     document.body.append(main);
     return [{
       element: document.body,
-      path: '/careers',
+      path: '/jsw/careers',
       report: { title: document.title, template: 'careers', blocks: ['careers-hero', 'job-board', 'careers-perks'] },
     }];
   },

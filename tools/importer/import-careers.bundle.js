@@ -157,7 +157,7 @@ var CustomImportScript = (() => {
       document.body.append(main);
       return [{
         element: document.body,
-        path: "/careers",
+        path: "/jsw/careers",
         report: { title: document.title, template: "careers", blocks: ["careers-hero", "job-board", "careers-perks"] }
       }];
     }

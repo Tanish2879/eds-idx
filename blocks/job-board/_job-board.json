@@ -281,7 +281,10 @@
           "name": "applyLink",
           "label": "Apply button link",
           "description": "A page, URL or mailto: address.",
-          "required": true
+          "required": true,
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
         },
         {
           "component": "text",

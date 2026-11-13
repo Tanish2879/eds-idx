@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/confirmation/source-variant-b.html",
+  "path": "jsw/confirmation-all-set",
+  "timestamp": "2026-11-13T08:21:02.257Z",
+  "title": "You're all set | JSW Motors",
+  "template": "confirmation",
+  "variant": "variant-b",
+  "blocks": [
+    "confirmation"
+  ],
+  "importScript": "242dc86aebd9"
+}

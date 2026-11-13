@@ -80,7 +80,7 @@ var CustomImportScript = (() => {
       document.body.append(main);
       return [{
         element: document.body,
-        path: "/sustainable-future",
+        path: "/jsw/sustainable-future",
         report: { title: document.title, template: "sustainable-future", blocks: ["parallax-collage"] }
       }];
     }

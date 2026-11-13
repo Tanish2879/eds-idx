@@ -2,9 +2,9 @@
 /* global WebImporter */
 
 /**
- * Importer for the /reservation-form page (design source: drafts/reservation-form/source.html).
+ * Importer for the /jsw/reservation-form page (design source: drafts/jsw/reservation-form/source.html).
  * Builds one reservation-form block with xwalk field hints + page metadata (no header, no footer).
- * Writes ONLY /reservation-form — no other page is created or modified.
+ * Writes ONLY /jsw/reservation-form — no other page is created or modified.
  *
  * Block rows (every property in its own cell):
  *   1. background (+ alt)   2. heading   3. description   4. submitLabel   5. submitAction
@@ -154,7 +154,7 @@ export default {
     document.body.append(main);
     return [{
       element: document.body,
-      path: '/reservation-form',
+      path: '/jsw/reservation-form',
       report: { title: document.title, template: 'reservation-form', blocks: ['reservation-form'] },
     }];
   },

@@ -85,7 +85,7 @@ var CustomImportScript = (() => {
         nav: clean((_b = document.querySelector('meta[name="nav"]')) == null ? void 0 : _b.getAttribute("content")),
         footer: clean((_c = document.querySelector('meta[name="footer"]')) == null ? void 0 : _c.getAttribute("content"))
       }));
-      const path = clean((_d = document.querySelector('meta[name="target-path"]')) == null ? void 0 : _d.getAttribute("content")) || "/confirmation";
+      const path = clean((_d = document.querySelector('meta[name="target-path"]')) == null ? void 0 : _d.getAttribute("content")) || "/jsw/confirmation";
       document.body.innerHTML = "";
       document.body.append(main);
       return [{

@@ -213,7 +213,10 @@
         "valueType": "string",
         "name": "link",
         "label": "Link",
-        "description": "The blog post the READ MORE bar opens."
+        "description": "The blog post the READ MORE bar opens.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -700,7 +703,10 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "Optional: a button under the description."
+        "description": "Optional: a button under the description.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -926,7 +932,10 @@
         "component": "aem-content",
         "valueType": "string",
         "name": "link",
-        "label": "Button link"
+        "label": "Button link",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1188,7 +1197,10 @@
         "name": "applyLink",
         "label": "Apply button link",
         "description": "A page, URL or mailto: address.",
-        "required": true
+        "required": true,
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1249,7 +1261,10 @@
         "valueType": "string",
         "name": "logoLink",
         "label": "Logo link",
-        "description": "Where the logo leads, e.g. the home page."
+        "description": "Where the logo leads, e.g. the home page.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1289,14 +1304,20 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "A page, URL or mailto: address; without a link the button is not shown."
+        "description": "A page, URL or mailto: address; without a link the button is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "legalLink",
         "label": "Legal link",
-        "description": "E.g. the privacy policy."
+        "description": "E.g. the privacy policy.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1377,7 +1398,10 @@
         "name": "link1",
         "label": "Link 1",
         "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
-        "required": true
+        "required": true,
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1396,7 +1420,10 @@
         "valueType": "string",
         "name": "link2",
         "label": "Link 2",
-        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown."
+        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1414,7 +1441,10 @@
         "valueType": "string",
         "name": "link3",
         "label": "Link 3",
-        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown."
+        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1432,7 +1462,10 @@
         "valueType": "string",
         "name": "link4",
         "label": "Link 4",
-        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown."
+        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1529,14 +1562,20 @@
         "valueType": "string",
         "name": "logoLink",
         "label": "Logo link",
-        "description": "Where the logo leads."
+        "description": "Where the logo leads.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "link1",
         "label": "Link 1 target",
-        "description": "Optional: a page or URL; Link 1 is shown only with its text."
+        "description": "Optional: a page or URL; Link 1 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1554,7 +1593,10 @@
         "valueType": "string",
         "name": "link2",
         "label": "Link 2 target",
-        "description": "Optional: a page or URL; Link 2 is shown only with its text."
+        "description": "Optional: a page or URL; Link 2 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1572,7 +1614,10 @@
         "valueType": "string",
         "name": "link3",
         "label": "Link 3 target",
-        "description": "Optional: a page or URL; Link 3 is shown only with its text."
+        "description": "Optional: a page or URL; Link 3 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1590,7 +1635,10 @@
         "valueType": "string",
         "name": "link4",
         "label": "Link 4 target",
-        "description": "Optional: a page or URL; Link 4 is shown only with its text."
+        "description": "Optional: a page or URL; Link 4 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1608,7 +1656,10 @@
         "valueType": "string",
         "name": "cta",
         "label": "Button target",
-        "description": "Optional: a page or URL; the button is shown only with its text."
+        "description": "Optional: a page or URL; the button is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1746,7 +1797,10 @@
         "valueType": "string",
         "name": "privacyLink",
         "label": "Privacy notice link",
-        "description": "The privacy notice page."
+        "description": "The privacy notice page.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1837,14 +1891,20 @@
         "valueType": "string",
         "name": "successPage",
         "label": "Page after the form is sent",
-        "description": "Opens once the form is sent and its payment confirmed (default: /confirmation)."
+        "description": "Opens once the form is sent and its payment confirmed (default: /jsw/confirmation).",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "failurePage",
         "label": "Page after a failed payment",
-        "description": "Opens after a failed payment (default: /payment-failed)."
+        "description": "Opens after a failed payment (default: /jsw/payment-failed).",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "tab",
