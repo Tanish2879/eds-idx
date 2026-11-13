@@ -1,0 +1,865 @@
+{
+  "url": "https://www.mgselect.co.in/brand-collaboration/mg-select-x-gaurav-gupta",
+  "title": "MG Select x Gaurav Gupta | Couture Edition Cyberster & M9",
+  "timestamp": "2026-10-06T10:23:49.808Z",
+  "duration": "192.1s",
+  "cleanup": {
+    "elementsRemoved": 11,
+    "types": [
+      "popup"
+    ],
+    "cookieConsentDismissed": false
+  },
+  "fingerprints": {
+    "urlPattern": "/brand-collaboration/mg-select-x-gaurav-gupta",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 675
+    },
+    "topSectionStrategy": "title+placeholder",
+    "topSectionPlaceholders": [
+      {
+        "type": "image",
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 675
+      },
+      {
+        "type": "text",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 1181,
+        "y": 240,
+        "width": 239,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 1118,
+        "y": 300,
+        "width": 302,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 479,
+        "y": 500,
+        "width": 482,
+        "height": 33
+      },
+      {
+        "type": "text",
+        "x": 553,
+        "y": 551,
+        "width": 334,
+        "height": 26
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "h5",
+        "fontSize": 27,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 479,
+        "y": 498,
+        "width": 482,
+        "height": 38,
+        "textLength": 24
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43,
+        "textLength": 23
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 110,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#606060",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43,
+        "textLength": 30
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 170,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1181,
+        "y": 240,
+        "width": 239,
+        "height": 43,
+        "textLength": 19
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 230,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#606060",
+        "x": 1118,
+        "y": 300,
+        "width": 302,
+        "height": 43,
+        "textLength": 26
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 290,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 675,
+    "topSectionTitleRect": {
+      "x": 479,
+      "y": 498,
+      "width": 482,
+      "height": 38,
+      "text": "MG SELECT x GAURAV GUPTA",
+      "fontWeight": 700,
+      "color": "rgb(255, 255, 255)"
+    },
+    "bodyBounds": {
+      "x": 0,
+      "y": 675,
+      "width": 1440,
+      "height": 5502
+    },
+    "bodyStartY": 675,
+    "bodyPlaceholders": [
+      {
+        "type": "text",
+        "x": 420,
+        "y": 699,
+        "width": 601,
+        "height": 25
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 737,
+        "width": 1280,
+        "height": 16
+      },
+      {
+        "type": "text",
+        "x": 87,
+        "y": 753,
+        "width": 1266,
+        "height": 48
+      },
+      {
+        "type": "text",
+        "x": 130,
+        "y": 801,
+        "width": 1180,
+        "height": 16
+      },
+      {
+        "type": "image",
+        "x": 80,
+        "y": 865,
+        "width": 604,
+        "height": 354
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 869,
+        "width": 522,
+        "height": 25
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 909,
+        "width": 593,
+        "height": 39
+      },
+      {
+        "type": "image",
+        "x": 362,
+        "y": 920,
+        "width": 10,
+        "height": 10
+      },
+      {
+        "type": "text",
+        "x": 48,
+        "y": 952,
+        "width": 274,
+        "height": 26
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 968,
+        "width": 602,
+        "height": 119
+      },
+      {
+        "type": "text",
+        "x": 48,
+        "y": 1006,
+        "width": 317,
+        "height": 120
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 1088,
+        "width": 604,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 1108,
+        "width": 166,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 170,
+        "y": 1176,
+        "width": 80,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 777,
+        "y": 1187,
+        "width": 65,
+        "height": 19
+      },
+      {
+        "type": "image",
+        "x": 851,
+        "y": 1190,
+        "width": 14,
+        "height": 14
+      },
+      {
+        "type": "text",
+        "x": 170,
+        "y": 1243,
+        "width": 80,
+        "height": 19
+      },
+      {
+        "type": "image",
+        "x": 756,
+        "y": 1271,
+        "width": 604,
+        "height": 288
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1329,
+        "width": 280,
+        "height": 25
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1369,
+        "width": 585,
+        "height": 138
+      },
+      {
+        "type": "image",
+        "x": 80,
+        "y": 1611,
+        "width": 602,
+        "height": 900
+      },
+      {
+        "type": "image",
+        "x": 698,
+        "y": 1611,
+        "width": 662,
+        "height": 900
+      },
+      {
+        "type": "text",
+        "x": 88,
+        "y": 2560,
+        "width": 1265,
+        "height": 30
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2591,
+        "width": 1280,
+        "height": 24
+      },
+      {
+        "type": "text",
+        "x": 672,
+        "y": 2616,
+        "width": 96,
+        "height": 14
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2631,
+        "width": 1280,
+        "height": 16
+      },
+      {
+        "type": "image",
+        "x": 80,
+        "y": 2695,
+        "width": 604,
+        "height": 334
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 2699,
+        "width": 456,
+        "height": 25
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 2739,
+        "width": 604,
+        "height": 158
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 2897,
+        "width": 604,
+        "height": 20
+      },
+      {
+        "type": "text",
+        "x": 756,
+        "y": 2917,
+        "width": 166,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 777,
+        "y": 2996,
+        "width": 65,
+        "height": 19
+      },
+      {
+        "type": "image",
+        "x": 851,
+        "y": 2999,
+        "width": 14,
+        "height": 14
+      },
+      {
+        "type": "image",
+        "x": 756,
+        "y": 3081,
+        "width": 604,
+        "height": 288
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3169,
+        "width": 341,
+        "height": 25
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3209,
+        "width": 547,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3248,
+        "width": 597,
+        "height": 40
+      },
+      {
+        "type": "image",
+        "x": 80,
+        "y": 3421,
+        "width": 602,
+        "height": 900
+      },
+      {
+        "type": "image",
+        "x": 698,
+        "y": 3421,
+        "width": 662,
+        "height": 900
+      }
+    ]
+  },
+  "skeleton": {
+    "signature": "sB(sB(s,s),s(s(sB,sB),sB(sB,sB,sB,sB),2x1,2x1,2x1,sB(sB,sB,sB,sB),2x1,2x1,2x1),s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc1c1": "#gWzYlGIrlQ > div.header__main--container.px-4.px-xl-6.px-xxl-14.bg-white.d-flex.flex-column > ul.header__main--tabs.list-style-none.d-flex.flex-md-row.flex-column.align-items-lg-center.mb-md-4.mb-xl-8.pt-8.pt-md-0.mt-3.mt-md-0",
+      "rc1c2": "#header-maintabpanel-0",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.light-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.hero__banner--wrapper.position-relative > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100 > div.hero__banner__dm__img--container.h-100",
+      "rc2c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.hero__banner--wrapper.position-relative > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100 > div.hero__banner__content--container-align.position-absolute.d-flex.flex-column.align-center.align-center-md.align-bottom.align-bottom-md.light",
+      "rc2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(2)",
+      "rc2c2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(2) > div.mgrte__container.text-black.w-100 > div:nth-of-type(1)",
+      "rc2c2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(2) > div.mgrte__container.text-black.w-100 > div:nth-of-type(2)",
+      "rc2c2c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(2) > div.mgrte__container.text-black.w-100 > div:nth-of-type(3)",
+      "rc2c2c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(2) > div.mgrte__container.text-black.w-100 > div:nth-of-type(4)",
+      "rc2c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3)",
+      "rc2c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(4)",
+      "rc2c5": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.imageCollabGallery.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5)",
+      "rc2c6": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(6)",
+      "rc2c6c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(6) > div.mgrte__container.text-black.w-100 > div:nth-of-type(1)",
+      "rc2c6c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(6) > div.mgrte__container.text-black.w-100 > div:nth-of-type(2)",
+      "rc2c6c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(6) > div.mgrte__container.text-black.w-100 > div:nth-of-type(3)",
+      "rc2c6c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(6) > div.mgrte__container.text-black.w-100 > div:nth-of-type(4)",
+      "rc2c7": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7)",
+      "rc2c8": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8)",
+      "rc2c9": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.imageCollabGallery.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(9)",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.light-header.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(2)",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc4",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(3)",
+        "layout": "2x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc5",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(4)",
+        "layout": "2x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc6",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.imageCollabGallery.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(5)",
+        "layout": "2x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc7",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(6)",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc8",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(7)",
+        "layout": "2x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc9",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.featureBlock.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(8)",
+        "layout": "2x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc10",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.imageCollabGallery.aem-GridColumn.aem-GridColumn--default--12:nth-of-type(9)",
+        "layout": "2x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc11",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "31a81dc9",
+      "type": "hero",
+      "confidence": "high",
+      "description": "1 heading + 1 image + 1 CTA block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 0,
+        "imageCount": 1,
+        "buttonCount": 1,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "heading + 1 CTAs + image"
+      },
+      "selector": "div.banner.light-header",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 675
+      },
+      "screenshot": "blocks/31a81dc9.jpg"
+    },
+    {
+      "id": "745ba566",
+      "type": "carousel",
+      "confidence": "high",
+      "description": "1 heading + 1 image + 8 CTAs block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 4,
+        "imageCount": 1,
+        "buttonCount": 8,
+        "linkCount": 3,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "heading + text + 8 CTAs + image"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3)",
+      "bounds": {
+        "x": 0,
+        "y": 841,
+        "width": 1440,
+        "height": 402
+      },
+      "screenshot": "blocks/745ba566.jpg"
+    },
+    {
+      "id": "745ba547",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 1 image + 1 paragraph block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 1,
+        "imageCount": 1,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "heading + text + image"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4)",
+      "bounds": {
+        "x": 0,
+        "y": 1243,
+        "width": 1440,
+        "height": 336
+      },
+      "screenshot": "blocks/745ba547.jpg"
+    },
+    {
+      "id": "745ba528",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "3 images block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 3,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "3 images"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(5)",
+      "bounds": {
+        "x": 0,
+        "y": 1578,
+        "width": 1440,
+        "height": 948
+      },
+      "screenshot": "blocks/745ba528.jpg"
+    },
+    {
+      "id": "745ba4ea",
+      "type": "carousel",
+      "confidence": "high",
+      "description": "1 heading + 1 image + 8 CTAs + 3 paragraphs block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 3,
+        "imageCount": 1,
+        "buttonCount": 8,
+        "linkCount": 3,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "heading + text + 8 CTAs + image"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(7)",
+      "bounds": {
+        "x": 0,
+        "y": 2662,
+        "width": 1440,
+        "height": 382
+      },
+      "screenshot": "blocks/745ba4ea.jpg"
+    },
+    {
+      "id": "745ba4cb",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 1 image + 2 paragraphs block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 2,
+        "imageCount": 1,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "heading + text + image"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(8)",
+      "bounds": {
+        "x": 0,
+        "y": 3044,
+        "width": 1440,
+        "height": 336
+      },
+      "screenshot": "blocks/745ba4cb.jpg"
+    },
+    {
+      "id": "745ba4ac",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "3 images block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 3,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "3 images"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(9)",
+      "bounds": {
+        "x": 0,
+        "y": 3380,
+        "width": 1440,
+        "height": 948
+      },
+      "screenshot": "blocks/745ba4ac.jpg"
+    },
+    {
+      "id": "44ee60b",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 9 CTAs + 1 paragraph block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 1,
+        "imageCount": 0,
+        "buttonCount": 9,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "heading + text + 9 CTAs"
+      },
+      "selector": "div.cookieConsent.aem-GridColumn",
+      "bounds": {
+        "x": 0,
+        "y": 4328,
+        "width": 1440,
+        "height": 0
+      },
+      "screenshot": null,
+      "error": "Element not visible"
+    }
+  ]
+}

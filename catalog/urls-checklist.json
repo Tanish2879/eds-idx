@@ -1,0 +1,302 @@
+{
+  "analysis-urls-checklist": {
+    "captured": "2026-10-06T09:16:13.747Z",
+    "totalPages": 49,
+    "statusBreakdown": {
+      "marked": 1,
+      "analyzed": 15,
+      "failed": 33
+    },
+    "pages": {
+      "https://www.mgselect.co.in/": {
+        "url": "https://www.mgselect.co.in/",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:07:36.285Z",
+        "slug": "www_mgselect_co_in--bd7b71db",
+        "title": "MG Latest Luxury & Electric Cars in India - Prices & Models",
+        "blockCount": 2
+      },
+      "https://www.mgselect.co.in/brand-collaboration/jwc": {
+        "url": "https://www.mgselect.co.in/brand-collaboration/jwc",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:10:50.653Z",
+        "slug": "www_mgselect_co_in_brand-collaboration_jwc--9239dfd7",
+        "title": "MG Select x Jaipur Watch Company (JWC) | Limited Edition",
+        "blockCount": 7
+      },
+      "https://www.mgselect.co.in/brand-collaboration/callaway": {
+        "url": "https://www.mgselect.co.in/brand-collaboration/callaway",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:14:05.332Z",
+        "slug": "www_mgselect_co_in_brand-collaboration_callaway--90b61158",
+        "title": "MG Select x Callaway – Co-Branded Golf Apparel Collection",
+        "blockCount": 7
+      },
+      "https://www.mgselect.co.in/brand-collaboration/blue-tokai-coffee-roasters": {
+        "url": "https://www.mgselect.co.in/brand-collaboration/blue-tokai-coffee-roasters",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:17:19.968Z",
+        "slug": "www_mgselect_co_in_brand-collaboration_blue-tokai-coffee-roasters--09292cfb",
+        "title": "MG Select x Blue Tokai – Signature Roast Coffee Experience",
+        "blockCount": 7
+      },
+      "https://www.mgselect.co.in/brand-collaboration/san-cha-tea-boutique": {
+        "url": "https://www.mgselect.co.in/brand-collaboration/san-cha-tea-boutique",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:20:34.561Z",
+        "slug": "www_mgselect_co_in_brand-collaboration_san-cha-tea-boutique--7c4e7c86",
+        "title": "MG Select x San-Cha Tea Boutique – Signature Tea Blends",
+        "blockCount": 7
+      },
+      "https://www.mgselect.co.in/brand-collaboration/mg-select-x-gaurav-gupta": {
+        "url": "https://www.mgselect.co.in/brand-collaboration/mg-select-x-gaurav-gupta",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:23:49.909Z",
+        "slug": "www_mgselect_co_in_brand-collaboration_mg-select-x-gaurav-gupta--8b01bccc",
+        "title": "MG Select x Gaurav Gupta | Couture Edition Cyberster & M9",
+        "blockCount": 8
+      },
+      "https://www.mgselect.co.in/brand-collaboration": {
+        "url": "https://www.mgselect.co.in/brand-collaboration",
+        "status": "marked"
+      },
+      "https://www.mgselect.co.in/cyberster/kmi": {
+        "url": "https://www.mgselect.co.in/cyberster/kmi",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/gallery": {
+        "url": "https://www.mgselect.co.in/cyberster/gallery",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/e-booking": {
+        "url": "https://www.mgselect.co.in/cyberster/e-booking",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/service": {
+        "url": "https://www.mgselect.co.in/cyberster/service",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/e-book-couture-edition": {
+        "url": "https://www.mgselect.co.in/cyberster/e-book-couture-edition",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/request-callback-couture-edition": {
+        "url": "https://www.mgselect.co.in/cyberster/request-callback-couture-edition",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster": {
+        "url": "https://www.mgselect.co.in/cyberster",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/pre-reserve/post-payment": {
+        "url": "https://www.mgselect.co.in/cyberster/pre-reserve/post-payment",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/pre-reserve/choose-your-color": {
+        "url": "https://www.mgselect.co.in/cyberster/pre-reserve/choose-your-color",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/cyberster/pre-reserve/book-your-slot": {
+        "url": "https://www.mgselect.co.in/cyberster/pre-reserve/book-your-slot",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/hyderabad-pearl-select": {
+        "url": "https://www.mgselect.co.in/dealer/hyderabad-pearl-select",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/delhi-shiva-motorcorp": {
+        "url": "https://www.mgselect.co.in/dealer/delhi-shiva-motorcorp",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/mumbai-krishiv-auto": {
+        "url": "https://www.mgselect.co.in/dealer/mumbai-krishiv-auto",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/chandigarh-krishna-motor": {
+        "url": "https://www.mgselect.co.in/dealer/chandigarh-krishna-motor",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/chennai-fpl-mobility": {
+        "url": "https://www.mgselect.co.in/dealer/chennai-fpl-mobility",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/gurugram-jubilant-motorworks": {
+        "url": "https://www.mgselect.co.in/dealer/gurugram-jubilant-motorworks",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/pune-nova-select": {
+        "url": "https://www.mgselect.co.in/dealer/pune-nova-select",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/ahmedabad-aeromark-cars": {
+        "url": "https://www.mgselect.co.in/dealer/ahmedabad-aeromark-cars",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/surat-opulent-auto": {
+        "url": "https://www.mgselect.co.in/dealer/surat-opulent-auto",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/kolkata-aeromark-cars": {
+        "url": "https://www.mgselect.co.in/dealer/kolkata-aeromark-cars",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/thane-tejpal-motors": {
+        "url": "https://www.mgselect.co.in/dealer/thane-tejpal-motors",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/cochin-coastal-select": {
+        "url": "https://www.mgselect.co.in/dealer/cochin-coastal-select",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/bengaluru-jubilant-motorworks": {
+        "url": "https://www.mgselect.co.in/dealer/bengaluru-jubilant-motorworks",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/bengaluru-aiconic-automobiles": {
+        "url": "https://www.mgselect.co.in/dealer/bengaluru-aiconic-automobiles",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/showroom-locator": {
+        "url": "https://www.mgselect.co.in/dealer/showroom-locator",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/service-center-locator": {
+        "url": "https://www.mgselect.co.in/dealer/service-center-locator",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/dealer/partnership": {
+        "url": "https://www.mgselect.co.in/dealer/partnership",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9/kmi": {
+        "url": "https://www.mgselect.co.in/m9/kmi",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9/gallery": {
+        "url": "https://www.mgselect.co.in/m9/gallery",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9/e-booking": {
+        "url": "https://www.mgselect.co.in/m9/e-booking",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9/service": {
+        "url": "https://www.mgselect.co.in/m9/service",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9/e-book-couture-edition": {
+        "url": "https://www.mgselect.co.in/m9/e-book-couture-edition",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9/request-callback-couture-edition": {
+        "url": "https://www.mgselect.co.in/m9/request-callback-couture-edition",
+        "status": "failed",
+        "pageStatus": "PAGE_TIMEOUT"
+      },
+      "https://www.mgselect.co.in/m9": {
+        "url": "https://www.mgselect.co.in/m9",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:39:30.854Z",
+        "slug": "www_mgselect_co_in_m9--4a0b08cd",
+        "title": "MG M9 Car Price in India - Luxury 7-Seater Electric MPV",
+        "blockCount": 0
+      },
+      "https://www.mgselect.co.in/errors/404": {
+        "url": "https://www.mgselect.co.in/errors/404",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:42:43.453Z",
+        "slug": "www_mgselect_co_in_errors_404--3fb5fa67",
+        "title": "404",
+        "blockCount": 2
+      },
+      "https://www.mgselect.co.in/privacy": {
+        "url": "https://www.mgselect.co.in/privacy",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:45:58.190Z",
+        "slug": "www_mgselect_co_in_privacy--8cb86b02",
+        "title": "Privacy Policy - Committed to Data Protection & Transparency",
+        "blockCount": 1
+      },
+      "https://www.mgselect.co.in/terms-of-service": {
+        "url": "https://www.mgselect.co.in/terms-of-service",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:49:12.332Z",
+        "slug": "www_mgselect_co_in_terms-of-service--0ca9a847",
+        "title": "Terms of Service | MG Select",
+        "blockCount": 1
+      },
+      "https://www.mgselect.co.in/dealer-referral": {
+        "url": "https://www.mgselect.co.in/dealer-referral",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:52:25.088Z",
+        "slug": "www_mgselect_co_in_dealer-referral--97153e38",
+        "title": "Dealer Referral Enquiry Form",
+        "blockCount": 5
+      },
+      "https://www.mgselect.co.in/about-us": {
+        "url": "https://www.mgselect.co.in/about-us",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:55:37.280Z",
+        "slug": "www_mgselect_co_in_about-us--d357889d",
+        "title": "About MG Select – Luxury Channel of JSW MG Motor India",
+        "blockCount": 1
+      },
+      "https://www.mgselect.co.in/test-drive": {
+        "url": "https://www.mgselect.co.in/test-drive",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T09:58:51.388Z",
+        "slug": "www_mgselect_co_in_test-drive--56ea8421",
+        "title": "Book a Test Drive – Luxury MG Cars Near You | MG Select",
+        "blockCount": 12
+      },
+      "https://www.mgselect.co.in/mg-refferal-program": {
+        "url": "https://www.mgselect.co.in/mg-refferal-program",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:02:04.219Z",
+        "slug": "www_mgselect_co_in_mg-refferal-program--1cfed5c1",
+        "title": "MG Select Referral Programme – Terms & Conditions",
+        "blockCount": 1
+      },
+      "https://www.mgselect.co.in/service-booking": {
+        "url": "https://www.mgselect.co.in/service-booking",
+        "status": "analyzed",
+        "analyzedAt": "2026-10-06T10:05:17.370Z",
+        "slug": "www_mgselect_co_in_service-booking--c5ad04bd",
+        "title": "Service Booking",
+        "blockCount": 2
+      }
+    }
+  }
+}
