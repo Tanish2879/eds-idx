@@ -1724,6 +1724,112 @@
     ]
   },
   {
+    "id": "payment-failed",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Spotlight (word and car)",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – Image beside the text",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "displayWord",
+        "label": "Background word",
+        "description": "Variant A only: the large word behind the car. Max 12 characters.",
+        "value": "FAILED",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Status heading",
+        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
+        "value": "PAYMENT FAILED, {name}.",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form, {failureReason} with the payment's failure reason. Variant A: one line per sentence. Max 200 characters.",
+        "value": "{failureReason|Your payment didn’t go through.} If any amount was deducted, it will be refunded automatically.",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describes the image for screen readers. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "Optional: a button under the description, back to the reservation form by default.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        },
+        "value": "/content/uet-eds/jsw/reservation-form"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLinkText",
+        "label": "Button text",
+        "description": "The button's text. Max 30 characters.",
+        "value": "TRY AGAIN",
+        "validation": {
+          "maxLength": 30
+        }
+      }
+    ]
+  },
+  {
     "id": "reservation-form",
     "fields": [
       {

@@ -270,14 +270,14 @@ main > .section > .jsw-nav-wrapper {
   body.is-page-dark & .bar:not(.is-open) .bar-start,
   body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not(.is-open),
   body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not(.is-open) .bar-start,
-  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not(.is-open),
-  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not(.is-open) .bar-start {
+  body:has(main > .section:first-child:is(.confirmation-container, .payment-failed-container)) &.is-at-top .bar:not(.is-open),
+  body:has(main > .section:first-child:is(.confirmation-container, .payment-failed-container)) &.is-at-top .bar:not(.is-open) .bar-start {
     background-color: transparent;
   }
 
   body.is-page-dark & .bar:not(.is-open) .toggle,
   body:has(main > .section:first-child.hero-video-container) &.is-at-top .bar:not(.is-open) .toggle,
-  body:has(main > .section:first-child.confirmation-container) &.is-at-top .bar:not(.is-open) .toggle {
+  body:has(main > .section:first-child:is(.confirmation-container, .payment-failed-container)) &.is-at-top .bar:not(.is-open) .toggle {
     background-color: rgb(255 255 255 / 8%);
   }
 
