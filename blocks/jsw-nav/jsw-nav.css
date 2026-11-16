@@ -241,6 +241,22 @@ main > .section > .jsw-nav-wrapper {
     color: var(--color-white);
   }
 
+  /* the editor: an empty group (no logo, links or button yet) a placeholder to select, and a
+     group's spare copy (not used) dimmed */
+  .is-empty {
+    min-width: 48px;
+    min-height: 24px;
+    outline: 1px dashed rgb(255 255 255 / 60%);
+    outline-offset: -1px;
+  }
+
+  .extra {
+    padding: 4px 8px;
+    font-size: 11px;
+    opacity: 0.5;
+    outline: 1px dashed currentcolor;
+  }
+
   .bar a:focus-visible,
   .toggle:focus-visible {
     outline: 2px solid var(--color-white);

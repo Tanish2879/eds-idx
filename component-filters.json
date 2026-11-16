@@ -124,6 +124,14 @@
     ]
   },
   {
+    "id": "jsw-nav",
+    "components": [
+      "jsw-nav-brand",
+      "jsw-nav-links",
+      "jsw-nav-button"
+    ]
+  },
+  {
     "id": "parallax-collage",
     "components": [
       "parallax-collage-image"

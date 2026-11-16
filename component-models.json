@@ -1525,7 +1525,7 @@
     ]
   },
   {
-    "id": "jsw-nav",
+    "id": "jsw-nav-brand",
     "fields": [
       {
         "component": "reference",
@@ -1566,7 +1566,12 @@
         "validation": {
           "rootPath": "/content/uet-eds/jsw"
         }
-      },
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-links",
+    "fields": [
       {
         "component": "aem-content",
         "valueType": "string",
@@ -1650,7 +1655,12 @@
         "validation": {
           "maxLength": 12
         }
-      },
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-button",
+    "fields": [
       {
         "component": "aem-content",
         "valueType": "string",

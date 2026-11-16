@@ -6,14 +6,23 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * and the brand name as text) at the left, up to LINKS links and the button at the right;
  * phones: the logo and a short button in the bar, the menu button beside it opening the links and
  * the button in a dropdown.
- * Rows (every property in its own cell, read by position):
- *   1. logo: the mark (+ alt)   2. brand name (text, beside the mark)   3. logo link
- *   4.–7. links 1–4 (each its target and its text, one cell)   8. button (its target and its text)
+ * The block holds no properties of its own: like the default nav's three sections (brand, links,
+ * tools), its children are three groups, each its own component in the editor's content tree
+ * (one row each, its properties in its cells, read by position):
+ *   Nav Brand (3 cells): logo, the mark (+ alt) | brand name (text, beside the mark) | logo link
+ *   Nav Links (4 cells): links 1–4 (each its target and its text, one cell)
+ *   Nav Button (1 cell): the button (its target and its text)
+ *   (as imported, each row starts with its component id; AEM renders them without it, told apart
+ *   by their cell count; the first of each is used, any other shown dimmed in the editor only, so
+ *   the authors can find and remove it)
  * Every link is optional: one is shown only with both its text and its target (the others left
  * out, the links sharing the row: see the CSS); a text longer than MAX_TEXT (MAX_CTA for the
- * button) is cut with "…" on the site, a warning logged. In the editor (its own document) the
- * texts are edited in place; as a page's header it is only shown. The logo, the links and the
- * button carry analytics names (data-cta, from their texts: no fields to author).
+ * button) is cut with "…" on the site, a warning logged. In the editor (its own document) each
+ * group is selectable (empty, a placeholder) and its texts are edited in place, on the group's
+ * resource; as a page's header it is only shown. The logo, the links and the button carry
+ * analytics names (data-cta, from their texts: no fields to author).
+ * (A nav document of the earlier, flat block, its eight properties the block's own rows, is
+ * shown alike until it is re-authored.)
  */
 
 // (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
@@ -26,6 +35,12 @@ const MAX_CTA = 30;
 const MAX_BRAND = 24;
 const IMAGE_EXTENSIONS = ['svg', 'png', 'jpg', 'jpeg', 'webp'];
 const DESKTOP = window.matchMedia('(width >= 768px)');
+const GROUPS = {
+  brand: { id: 'jsw-nav-brand', cells: 3, title: 'Nav Brand' },
+  links: { id: 'jsw-nav-links', cells: LINKS, title: 'Nav Links' },
+  button: { id: 'jsw-nav-button', cells: 1, title: 'Nav Button' },
+};
+const FLAT_ROWS = 8; // (the earlier flat block: logo, brand name, logo link, 4 links, button)
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -139,23 +154,62 @@ function controlMenu(bar, button, menu) {
   DESKTOP.addEventListener('change', () => setOpen(false));
 }
 
+/*
+ * The block's groups (brand, links, button): each its row (its node in the editor) and its cells;
+ * a group's other rows in extras. A flat block's rows: the groups' cells, without rows of their
+ * own (the block their node).
+ */
+function readGroups(block) {
+  const rows = [...block.children];
+  const kindOf = (id) => Object.keys(GROUPS).find((k) => GROUPS[k].id === id);
+  const groups = { extras: [] };
+  if (rows.length === FLAT_ROWS && rows.every((row) => row.children.length === 1)
+    && !kindOf(text(rows[0].firstElementChild))) {
+    const cells = rows.map((row) => row.firstElementChild);
+    return {
+      ...groups,
+      brand: { cells: cells.slice(0, 3) },
+      links: { cells: cells.slice(3, 7) },
+      button: { cells: cells.slice(7) },
+    };
+  }
+  rows.forEach((row) => {
+    let kind = kindOf(text(row.firstElementChild));
+    if (kind) row.firstElementChild.remove();
+    else kind = Object.keys(GROUPS).find((k) => GROUPS[k].cells === row.children.length);
+    if (!kind) return;
+    if (groups[kind]) groups.extras.push({ kind, row });
+    else groups[kind] = { row, cells: [...row.children] };
+  });
+  return groups;
+}
+
+// a group's element: its node in the editor (the group's row's instrumentation; an empty group
+// still shown there, a placeholder to select)
+function groupNode(node, group, authoring) {
+  if (group?.row) moveInstrumentation(group.row, node);
+  if (authoring && !node.children.length) node.classList.add('is-empty');
+  return node;
+}
+
 let navId = 0;
 
 export default function decorate(block) {
   navId += 1;
   const inHeader = !!block.closest('header');
   const authoring = isAuthoring() && !inHeader;
-  const [logoRow, brandRow, logoLinkRow, ...rest] = [...block.children];
-  const linkRows = rest.slice(0, LINKS);
-  const ctaRow = rest[LINKS];
+  const groups = readGroups(block);
+  const [logoCell, brandCell, logoLinkCell] = groups.brand?.cells || [];
+  const linkCells = (groups.links?.cells || []).slice(0, LINKS);
+  const [ctaCell] = groups.button?.cells || [];
 
   // the logo (a link home): the mark, and the brand name as text beside it (the mark then
   // decorative: the name says it)
-  const home = cellLink(logoLinkRow);
+  const home = cellLink(logoLinkCell);
   const logo = el('a', { href: home?.href || '/', class: 'logo' });
   track(logo, 'home');
-  const name = fit(text(brandRow), MAX_BRAND, 'brand name', authoring);
-  const mark = cellImage(logoRow);
+  const name = fit(text(brandCell), MAX_BRAND, 'brand name', authoring);
+  const mark = cellImage(logoCell);
   if (mark) {
     // (at the top of every page: fetched at once, ahead of the page's other images)
     const shown = el('img', {
@@ -175,8 +229,8 @@ export default function decorate(block) {
 
   // the links: only those with both their text and their target
   const list = el('ul', { class: 'nav-list' });
-  linkRows.forEach((row, i) => {
-    const link = cellLink(row);
+  linkCells.forEach((cell, i) => {
+    const link = cellLink(cell);
     if (!(link?.label && link.href)) return;
     const n = i + 1;
     const a = el('a', { href: link.href, class: 'link' }, fit(link.label, MAX_TEXT, `link ${n} text`, authoring));
@@ -187,7 +241,7 @@ export default function decorate(block) {
   list.dataset.links = list.children.length;
 
   // the button (only with both its text and its target)
-  const action = cellLink(ctaRow);
+  const action = cellLink(ctaCell);
   const actions = el('div', { class: 'actions' });
   let cta = null;
   if (action?.label && action.href) {
@@ -208,16 +262,28 @@ export default function decorate(block) {
     el('span', { class: 'toggle-line is-top' }),
     el('span', { class: 'toggle-line is-bottom' }),
   );
-  // (no mark and no name: no logo at all)
-  const start = el('div', { class: 'bar-start' }, logo.children.length ? logo : '');
+  // each group's element its node in the editor (there always shown, an empty one a placeholder;
+  // on the site an empty one left out: no mark and no name, no logo at all)
+  const included = (node, group) => (authoring && group) || node.children.length;
+  const start = el('div', { class: 'bar-start' });
+  if (included(logo, groups.brand)) start.append(groupNode(logo, groups.brand, authoring));
   if (cta) {
     const quick = el('a', { href: cta.getAttribute('href'), class: 'quick', 'aria-label': cta.textContent }, cta.textContent.split(/\s+/)[0]);
     quick.dataset.cta = cta.dataset.cta;
     start.append(quick);
   }
   const menu = el('div', { class: 'menu', id: `${uid}-menu` });
-  if (list.children.length) menu.append(list);
-  if (actions.children.length) menu.append(actions);
+  if (included(list, groups.links)) menu.append(groupNode(list, groups.links, authoring));
+  if (included(actions, groups.button)) menu.append(groupNode(actions, groups.button, authoring));
+  // (the editor: a group's other copies, not used, shown dimmed for the authors to remove)
+  if (authoring) {
+    groups.extras.forEach(({ kind, row }) => {
+      const extra = el('div', { class: 'extra' }, `${GROUPS[kind].title} (not used)`);
+      moveInstrumentation(row, extra);
+      extra.dataset.aueLabel = `${GROUPS[kind].title} (not used: only the first is shown)`;
+      menu.append(extra);
+    });
+  }
   const bar = el('nav', { class: 'bar', 'aria-label': 'Main' }, start, button, menu);
   block.replaceChildren(bar);
   controlMenu(bar, button, menu);

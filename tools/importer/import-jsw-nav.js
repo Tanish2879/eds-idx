@@ -6,10 +6,12 @@
  * Produces /jsw/jsw-nav as one jsw-nav block (+ page metadata: the document itself without a header
  * or footer). Pages opt in with the "nav" page metadata (/jsw/jsw-nav). Writes ONLY /jsw/jsw-nav.
  *
- * jsw-nav rows (every property in its own cell):
- *   1. logo (the mark, + logoAlt)   2. brandName (the text beside it)   3. logoLink
- *   4.–7. link1 … link4 (each a link, its text the Link N text; the source's links in order, the
- *   others left empty)   8. cta (+ ctaText)
+ * jsw-nav children (no properties of its own; each child a row led by its component id, every
+ * property in its own cell):
+ *   jsw-nav-brand    logo (the mark, + logoAlt) | brandName (the text beside it) | logoLink
+ *   jsw-nav-links    link1 … link4 (each a link, its text the Link N text; the source's links in
+ *                    order, the others left empty)
+ *   jsw-nav-button   cta (+ ctaText)
  */
 
 const LINKS = 4;
@@ -54,6 +56,13 @@ function linkCell(document, field, a, label) {
   return hinted(document, field, p);
 }
 
+// the component id cell that starts a child row
+function idCell(document, id) {
+  const cell = document.createElement('div');
+  cell.textContent = id;
+  return cell;
+}
+
 export default {
   transform: (payload) => {
     const { document } = payload;
@@ -68,12 +77,19 @@ export default {
     }
     const links = [...document.querySelectorAll('.sections li a[href]')].slice(0, LINKS);
     const cta = document.querySelector('.tools a[href]');
+    // the block's children: the brand, the links and the button, each a row led by its id
     const cells = [
-      [hinted(document, 'logo', ...(img ? [img] : []))],
-      [textCell(document, 'brandName', clean(brand?.querySelector('.brand-name')?.textContent))],
-      [linkCell(document, 'logoLink', logoLink, clean(logoLink?.getAttribute('href')))],
-      ...[0, 1, 2, 3].map((i) => [linkCell(document, `link${i + 1}`, links[i], clean(links[i]?.textContent))]),
-      [linkCell(document, 'cta', cta, clean(cta?.textContent))],
+      [
+        idCell(document, 'jsw-nav-brand'),
+        hinted(document, 'logo', ...(img ? [img] : [])),
+        textCell(document, 'brandName', clean(brand?.querySelector('.brand-name')?.textContent)),
+        linkCell(document, 'logoLink', logoLink, clean(logoLink?.getAttribute('href'))),
+      ],
+      [
+        idCell(document, 'jsw-nav-links'),
+        ...[0, 1, 2, 3].map((i) => linkCell(document, `link${i + 1}`, links[i], clean(links[i]?.textContent))),
+      ],
+      [idCell(document, 'jsw-nav-button'), linkCell(document, 'cta', cta, clean(cta?.textContent))],
     ];
     main.append(WebImporter.Blocks.createBlock(document, { name: 'jsw-nav', cells }));
     main.append(WebImporter.Blocks.getMetadataBlock(document, {

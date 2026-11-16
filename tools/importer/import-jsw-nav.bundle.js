@@ -57,6 +57,11 @@ var CustomImportScript = (() => {
     p.append(out);
     return hinted(document, field, p);
   }
+  function idCell(document, id) {
+    const cell = document.createElement("div");
+    cell.textContent = id;
+    return cell;
+  }
   var import_jsw_nav_default = {
     transform: (payload) => {
       var _a;
@@ -73,14 +78,20 @@ var CustomImportScript = (() => {
       const links = [...document.querySelectorAll(".sections li a[href]")].slice(0, LINKS);
       const cta = document.querySelector(".tools a[href]");
       const cells = [
-        [hinted(document, "logo", ...img ? [img] : [])],
-        [textCell(document, "brandName", clean((_a = brand == null ? void 0 : brand.querySelector(".brand-name")) == null ? void 0 : _a.textContent))],
-        [linkCell(document, "logoLink", logoLink, clean(logoLink == null ? void 0 : logoLink.getAttribute("href")))],
-        ...[0, 1, 2, 3].map((i) => {
-          var _a2;
-          return [linkCell(document, `link${i + 1}`, links[i], clean((_a2 = links[i]) == null ? void 0 : _a2.textContent))];
-        }),
-        [linkCell(document, "cta", cta, clean(cta == null ? void 0 : cta.textContent))]
+        [
+          idCell(document, "jsw-nav-brand"),
+          hinted(document, "logo", ...img ? [img] : []),
+          textCell(document, "brandName", clean((_a = brand == null ? void 0 : brand.querySelector(".brand-name")) == null ? void 0 : _a.textContent)),
+          linkCell(document, "logoLink", logoLink, clean(logoLink == null ? void 0 : logoLink.getAttribute("href")))
+        ],
+        [
+          idCell(document, "jsw-nav-links"),
+          ...[0, 1, 2, 3].map((i) => {
+            var _a2;
+            return linkCell(document, `link${i + 1}`, links[i], clean((_a2 = links[i]) == null ? void 0 : _a2.textContent));
+          })
+        ],
+        [idCell(document, "jsw-nav-button"), linkCell(document, "cta", cta, clean(cta == null ? void 0 : cta.textContent))]
       ];
       main.append(WebImporter.Blocks.createBlock(document, { name: "jsw-nav", cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
