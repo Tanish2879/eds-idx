@@ -2,12 +2,12 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/jsw/confirmation/source-variant-a.html",
   "path": "jsw/confirmation",
-  "timestamp": "2026-11-13T08:20:56.051Z",
+  "timestamp": "2026-11-16T07:51:09.139Z",
   "title": "Reserved | JSW Motors",
   "template": "confirmation",
   "variant": "variant-a",
   "blocks": [
     "confirmation"
   ],
-  "importScript": "242dc86aebd9"
+  "importScript": "9ebc7e5109e2"
 }

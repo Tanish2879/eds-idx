@@ -63,6 +63,7 @@ var CustomImportScript = (() => {
         return clean((_a2 = src.querySelector(sel)) == null ? void 0 : _a2.textContent);
       };
       const variant = src.dataset.variant || "variant-a";
+      const block = src.dataset.block || "confirmation";
       const cells = [];
       cells.push([textCell(document, "displayWord", value(".word"))]);
       cells.push([textCell(document, "heading", value("h1"))]);
@@ -78,7 +79,7 @@ var CustomImportScript = (() => {
         p.append(a);
         cells.push([hinted(document, "ctaLink", p)]);
       } else cells.push([hinted(document, "ctaLink")]);
-      main.append(WebImporter.Blocks.createBlock(document, { name: "confirmation", variants: [variant], cells }));
+      main.append(WebImporter.Blocks.createBlock(document, { name: block, variants: [variant], cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
         Description: clean((_a = document.querySelector('meta[name="description"]')) == null ? void 0 : _a.getAttribute("content")),
@@ -91,7 +92,7 @@ var CustomImportScript = (() => {
       return [{
         element: document.body,
         path,
-        report: { title: document.title, template: "confirmation", variant, blocks: ["confirmation"] }
+        report: { title: document.title, template: "confirmation", variant, blocks: [block] }
       }];
     }
   };
