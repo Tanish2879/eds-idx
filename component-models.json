@@ -288,6 +288,23 @@
             "value": "roller"
           }
         ]
+      },
+      {
+        "component": "select",
+        "name": "classes_animation",
+        "label": "Animation Direction",
+        "description": "Select the scroll animation direction for the cards.",
+        "value": "horizontal",
+        "options": [
+          {
+            "name": "Horizontal",
+            "value": "horizontal"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          }
+        ]
       }
     ]
   },
