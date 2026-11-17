@@ -495,6 +495,81 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+// blocks with their own scroll-driven animation (pinned stages, stepping, a curtain): their
+// sections are never moved by the section transitions, only faded on leaving
+const SCROLL_BLOCKS = [
+  '.collage', '.cards.pillars', '.cards.timeline', '.cards.roller', '.cards.carousel',
+  '.interactive-showcase', '.parallax-collage', '.engine-showcase', '.blog-carousel', '.hero-video',
+].join(', ');
+
+/**
+ * Section-to-section transitions (pages with the JSW theme; not while authoring or with reduced
+ * motion): each section of main gets its state from three IntersectionObservers, set at most once
+ * a frame:
+ *   is-entering  on screen, not yet locked in (coming up from below)
+ *   is-active    locked in: holding the screen's middle, or wholly on screen (a short one); from
+ *                then on also is-seen
+ *   is-exiting   on screen only within its top fifth (leaving at the top)
+ * The CSS (styles.css) reveals a section's content as it becomes active (rising and fading in)
+ * and fades it as it leaves. A section with a scroll-driven block (SCROLL_BLOCKS) is marked
+ * data-motion="block" and one just before such a block's section data-motion="held" (the
+ * interactive showcase's curtain holds it still, moving it every frame): neither is ever moved,
+ * so the blocks' own animations take over untouched. The sections already on screen when this
+ * starts keep their content as it is.
+ * @param {Element} main
+ */
+function decorateSectionMotion(main) {
+  if (!document.body.classList.contains('jsw') || isAuthoring() || !('IntersectionObserver' in window)
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const sections = [...main.querySelectorAll(':scope > .section')];
+  if (!sections.length) return;
+  const state = new Map();
+  sections.forEach((section, i) => {
+    if (section.querySelector(SCROLL_BLOCKS)) section.dataset.motion = 'block';
+    else if (sections[i + 1]?.querySelector('.interactive-showcase')) section.dataset.motion = 'held';
+    if (section.getBoundingClientRect().top < window.innerHeight) section.classList.add('is-seen');
+    state.set(section, {
+      visible: false, whole: false, middle: false, above: false, low: false,
+    });
+  });
+  document.documentElement.classList.add('has-section-motion');
+
+  let frame = 0;
+  const apply = () => {
+    frame = 0;
+    state.forEach(({
+      visible, whole, middle, above, low,
+    }, section) => {
+      const exiting = visible && !low;
+      // (one past the middle stays locked in until it reaches the top fifth)
+      const active = visible && !exiting && (middle || whole || above);
+      section.classList.toggle('is-active', active);
+      section.classList.toggle('is-entering', visible && !active && !exiting);
+      section.classList.toggle('is-exiting', exiting);
+      if (active) section.classList.add('is-seen');
+    });
+  };
+  // the observers: on screen (and wholly on it), on the middle line, below the top fifth
+  const observe = (options, read) => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => Object.assign(state.get(entry.target), read(entry)));
+      if (!frame) frame = requestAnimationFrame(apply);
+    }, options);
+    sections.forEach((section) => observer.observe(section));
+  };
+  observe({ threshold: [0, 0.99] }, (entry) => ({
+    visible: entry.isIntersecting, whole: entry.intersectionRatio >= 0.99,
+  }));
+  observe({ rootMargin: '-50% 0px -50% 0px' }, (entry) => {
+    const line = entry.rootBounds?.top ?? window.innerHeight / 2;
+    return {
+      middle: entry.isIntersecting,
+      above: !entry.isIntersecting && entry.boundingClientRect.bottom <= line,
+    };
+  });
+  observe({ rootMargin: '-20% 0px 0px 0px' }, (entry) => ({ low: entry.isIntersecting }));
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -530,6 +605,7 @@ async function loadLazy(doc) {
 
   const main = doc.querySelector('main');
   await loadSections(main);
+  if (main) decorateSectionMotion(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

@@ -426,6 +426,42 @@ main > .section > .default-content-wrapper:last-child {
   padding-bottom: var(--section-spacing);
 }
 
+/* section-to-section transitions (pages with the JSW theme: scripts.js, decorateSectionMotion,
+   sets the states): a section's content, its wrappers, rises 5rem and fades in as the section
+   locks into the screen (is-active, the walkthroughs' ease), and fades away (lifting 2rem) as it
+   leaves at the top (is-exiting). A section with its own scroll animation
+   (data-motion="block"), or one held still by the next (data-motion="held"), is only faded:
+   never moved, its transforms left to its block. The blocks' own rules are untouched. */
+html.has-section-motion main > .section {
+  --section-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  > div {
+    transition: opacity 0.9s var(--section-ease);
+  }
+
+  &:not([data-motion]) > div {
+    transition:
+      opacity 0.9s var(--section-ease),
+      transform 0.9s var(--section-ease);
+  }
+
+  /* not yet reached: its content waiting below, unseen */
+  &:not(.is-seen, [data-motion]) > div {
+    opacity: 0;
+    transform: translateY(5rem);
+  }
+
+  /* leaving at the top */
+  &.is-exiting > div {
+    opacity: 0;
+    transition-duration: 0.6s;
+  }
+
+  &.is-exiting:not([data-motion]) > div {
+    transform: translateY(-2rem);
+  }
+}
+
 /* page metadata table: published pages turn it into <meta> tags; never render it as content */
 main .metadata {
   display: none;

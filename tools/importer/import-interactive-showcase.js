@@ -4,7 +4,8 @@
 /**
  * Importer for the /jsw/interactive-showcase page (design source:
  * drafts/jsw/interactive-showcase/source.html). One interactive-showcase block + page metadata
- * (JSW nav and footer, the JSW theme). Writes ONLY /jsw/interactive-showcase.
+ * (JSW nav and footer, the JSW theme), and in a new section the collage block. Writes ONLY
+ * /jsw/interactive-showcase.
  *
  * interactive-showcase rows (every property in its own cell):
  *   1. title
@@ -90,6 +91,25 @@ export default {
     });
     main.append(WebImporter.Blocks.createBlock(document, { name: 'interactive-showcase', cells }));
 
+    // a new section: the collage (heading, description, then one row per image: image + alt |
+    // caption; at most 5)
+    const collage = document.querySelector('.collage-source');
+    if (collage) {
+      main.append(document.createElement('hr'));
+      const collageCells = [
+        [textCell(document, 'heading', clean(collage.querySelector(':scope > h2')?.textContent))],
+        [textCell(document, 'description', clean(collage.querySelector(':scope > .description')?.textContent))],
+      ];
+      [...collage.querySelectorAll(':scope > figure')].slice(0, 5).forEach((figure) => {
+        const img = figure.querySelector('img');
+        collageCells.push([
+          img ? hinted(document, 'image', picture(document, img)) : hinted(document, 'image'),
+          textCell(document, 'caption', clean(figure.querySelector('figcaption')?.textContent)),
+        ]);
+      });
+      main.append(WebImporter.Blocks.createBlock(document, { name: 'collage', cells: collageCells }));
+    }
+
     main.append(WebImporter.Blocks.getMetadataBlock(document, {
       Title: clean(document.title),
       Description: clean(document.querySelector('meta[name="description"]')?.getAttribute('content')),
@@ -103,7 +123,7 @@ export default {
     return [{
       element: document.body,
       path: '/jsw/interactive-showcase',
-      report: { title: document.title, template: 'interactive-showcase', blocks: ['interactive-showcase'] },
+      report: { title: document.title, template: 'interactive-showcase', blocks: ['interactive-showcase', 'collage'] },
     }];
   },
 };

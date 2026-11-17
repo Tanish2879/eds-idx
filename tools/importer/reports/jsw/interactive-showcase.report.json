@@ -2,11 +2,12 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/jsw/interactive-showcase/source.html",
   "path": "jsw/interactive-showcase",
-  "timestamp": "2026-11-17T09:27:02.602Z",
+  "timestamp": "2026-11-17T10:13:05.000Z",
   "title": "Interactive Showcase | JSW Motors",
   "template": "interactive-showcase",
   "blocks": [
-    "interactive-showcase"
+    "interactive-showcase",
+    "collage"
   ],
-  "importScript": "9f23adfbce48"
+  "importScript": "d7709b5d8dff"
 }
