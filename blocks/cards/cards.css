@@ -570,7 +570,8 @@ main > .section > .cards-wrapper > .block {
     }
 
     /* stepped (the site): the block one screen per card, its stage pinned meanwhile; the images
-       stack (the first on top) and the current one wipes up to the next, the texts crossfade */
+       stack (the first on top) and the current one wipes off to the next, the texts crossfade,
+       in the Animation Direction (a class: horizontal or vertical) */
     &.is-stepped {
       height: calc(var(--count, 1) * 100svh);
 
@@ -607,11 +608,6 @@ main > .section > .cards-wrapper > .block {
         width: auto;
         clip-path: inset(0 round 1.5rem);
         pointer-events: none;
-        transition: clip-path var(--pl-move) var(--pl-ease);
-      }
-
-      .img {
-        transition: transform var(--pl-move) var(--pl-ease);
       }
 
       .content {
@@ -621,13 +617,35 @@ main > .section > .cards-wrapper > .block {
         background: none;
         opacity: 0;
         pointer-events: none;
-        transition: opacity var(--pl-move) var(--pl-ease);
       }
 
       .frame {
         grid-area: frame;
         background: var(--pl-corners);
         pointer-events: none;
+      }
+
+      .card.is-active .content {
+        pointer-events: auto;
+      }
+    }
+
+    /* (the directions' rules never meet, a block being one or the other: their order free) */
+    /* stylelint-disable no-descending-specificity */
+
+    /* vertical: once a step is reached, the current image wipes up (and back down when scrolling
+       up), the next one's zoom settling, the texts crossfading */
+    &.vertical.is-stepped {
+      .image {
+        transition: clip-path var(--pl-move) var(--pl-ease);
+      }
+
+      .img {
+        transition: transform var(--pl-move) var(--pl-ease);
+      }
+
+      .content {
+        transition: opacity var(--pl-move) var(--pl-ease);
       }
 
       .card.is-before .image {
@@ -645,10 +663,30 @@ main > .section > .cards-wrapper > .block {
 
         .content {
           opacity: 1;
-          pointer-events: auto;
         }
       }
     }
+
+    /* horizontal (the default): tied to the scroll, the current image wipes off from its left
+       edge to its right as the page scrolls down (right to left back up), the next one's zoom
+       settling, the texts crossfading as they drift left to right; each card's place in that set
+       by the script (--wipe, --near, --seen, --shift, see track in cards.js) */
+    &.horizontal.is-stepped {
+      .image {
+        clip-path: inset(0 0 0 var(--wipe, 0%) round 1.5rem);
+      }
+
+      .img {
+        transform: scale(calc(var(--pl-zoom-next) - (var(--pl-zoom-next) - var(--pl-zoom-on)) * var(--near, 1)));
+        will-change: transform;
+      }
+
+      .content {
+        opacity: var(--seen, 0);
+        transform: translateX(calc(var(--shift, 0) * 3rem));
+      }
+    }
+    /* stylelint-enable no-descending-specificity */
 
     /* the rail: on the image, at its bottom left, one mark per card; the current one a track that
        fills */

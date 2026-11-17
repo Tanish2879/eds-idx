@@ -404,6 +404,27 @@ function decorateCarousel(block, ul, options = {}) {
 }
 
 /**
+ * An image's alt text when the author left it empty: the card's heading, or its first line of
+ * text, or else the image's file name made words (an AEM rendition's generated name, media_…,
+ * says nothing: then "Card image").
+ * @param {Element} li the card
+ * @param {string} src the image's address
+ * @returns {string}
+ */
+function fallbackAlt(li, src) {
+  const heading = li.querySelector('h1, h2, h3, h4, h5, h6')?.textContent.trim();
+  const line = [...li.querySelectorAll('p')].map((p) => p.textContent.trim()).find(Boolean);
+  if (heading || line) return heading || line;
+  let name = '';
+  try {
+    name = decodeURIComponent(new URL(src, window.location.href).pathname.split('/').pop())
+      .replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ').trim();
+  } catch (e) { /* not an address */ }
+  if (!name || /^media [0-9a-f]+$/i.test(name)) return 'Card image';
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+/**
  * An author warning on the canvas (Universal Editor only).
  * @param {string} text
  * @returns {HTMLParagraphElement}
@@ -429,7 +450,9 @@ function pillarImage(cell) {
     const { pathname } = new URL(link.href, window.location);
     const drafts = pathname.indexOf('/drafts/');
     const src = drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href;
-    const picture = createOptimizedPicture(src, '', false, [{ media: '(min-width: 900px)', width: '1200' }, { width: '750' }]);
+    const label = link.textContent.trim();
+    const alt = label && !label.includes('/') ? label : fallbackAlt(cell.closest('li'), src);
+    const picture = createOptimizedPicture(src, alt, false, [{ media: '(min-width: 900px)', width: '1200' }, { width: '750' }]);
     moveInstrumentation(link, picture.querySelector('img'));
     cell.replaceChildren(picture);
   }
@@ -467,9 +490,10 @@ function pillarText(content) {
  * Pillars style: each card an image and its text in a corner-marked frame beside it (stacked on
  * phones). On the site the block pins to the screen and the cards take turns, one per scroll step
  * (the page's scroll stops, scripts/scroll-stops.js: one wheel gesture, one card; scrolling any
- * other way steps alike): the image wipes up to the next, the text crossfades, a rail on the image
- * marks the current card (its marks also jump to a card). In the editor, or with reduced motion,
- * the cards are a plain list, each one editable.
+ * other way steps alike), in the author's Animation Direction: horizontal (the default) the image
+ * wipes off left to right, tied to the scroll (see track), vertical it wipes up once a step is
+ * reached; the text crossfades, a rail on the image marks the current card (its marks also jump
+ * to a card). In the editor, or with reduced motion, the cards are a plain list, each one editable.
  * @param {Element} block
  * @param {HTMLUListElement} ul the decorated card list
  */
@@ -531,6 +555,9 @@ function decoratePillars(block, ul) {
   block.replaceChildren(stage);
   block.classList.add('is-stepped');
   block.style.setProperty('--count', cards.length);
+  // the Animation Direction (a class of the block): vertical, or else horizontal (the default)
+  const horizontal = !block.classList.contains('vertical');
+  if (horizontal) block.classList.add('horizontal');
 
   let active = -1;
   const show = (to) => {
@@ -549,28 +576,52 @@ function decoratePillars(block, ul) {
     });
   };
 
+  /*
+   * Horizontal (the author's Animation Direction, the default): tied to the scroll, the current
+   * image wipes off from its left edge to its right, uncovering the next one (its zoom settling
+   * meanwhile), the text crossfading and drifting left to right; scrolling back up plays it back,
+   * right to left. Each card's place in that (d: its distance from the scroll's position, in
+   * cards) is set as custom properties, which the CSS maps: --wipe (how much of the image is wiped
+   * off), --near (how close the next image is to the front), --seen (the text's opacity), --shift
+   * (the text's drift).
+   */
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const track = (position) => cards.forEach((li, i) => {
+    const d = position - i;
+    li.style.setProperty('--wipe', `${(clamp(d, 0, 1) * 100).toFixed(2)}%`);
+    li.style.setProperty('--near', clamp(1 + d, 0, 1).toFixed(4));
+    li.style.setProperty('--seen', (1 - clamp(Math.abs(d), 0, 1)).toFixed(4));
+    li.style.setProperty('--shift', clamp(d, -1, 1).toFixed(4));
+  });
+
   // a step: one screen of the block's scroll (its height: one screen per card); the stops: each
   // card, then the next section's top. Measured once the block is laid out (its section is shown
-  // after loading) and again whenever its size changes.
-  const step = () => block.offsetHeight / cards.length;
-  const onScroll = () => {
-    if (step()) show(Math.round(-block.getBoundingClientRect().top / step()));
-  };
+  // after loading) and again whenever its size changes; the scroll read and painted at most once
+  // a frame.
+  let step = 0;
   let frameRequest = 0;
+  const paint = () => {
+    frameRequest = 0;
+    if (!step) return;
+    const position = clamp(-block.getBoundingClientRect().top / step, 0, cards.length - 1);
+    show(Math.round(position));
+    if (horizontal) track(position);
+  };
   window.addEventListener('scroll', () => {
-    cancelAnimationFrame(frameRequest);
-    frameRequest = requestAnimationFrame(onScroll);
+    if (!frameRequest) frameRequest = requestAnimationFrame(paint);
   }, { passive: true });
   new ResizeObserver(() => {
-    if (!step()) return;
-    block.dataset.scrollStops = cards.map((li, i) => Math.round(i * step()))
-      .concat(Math.round(cards.length * step())).join(' ');
-    onScroll();
+    step = block.offsetHeight / cards.length;
+    if (!step) return;
+    block.dataset.scrollStops = cards.map((li, i) => Math.round(i * step))
+      .concat(Math.round(cards.length * step)).join(' ');
+    paint();
   }).observe(block);
   show(0);
+  if (horizontal) track(0);
 
   marks.forEach((mark, i) => mark.addEventListener('click', async () => {
-    const top = block.getBoundingClientRect().top + window.scrollY + i * step();
+    const top = block.getBoundingClientRect().top + window.scrollY + i * step;
     const { glideTo } = await import('../../scripts/scroll-stops.js');
     glideTo(top);
   }));
@@ -595,8 +646,10 @@ export default async function decorate(block) {
     });
     ul.append(li);
   });
+  // (every image described: the author's alt text, or one from its card, see fallbackAlt)
   ul.querySelectorAll('picture > img').forEach((img) => {
-    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
+    const alt = img.alt.trim() || fallbackAlt(img.closest('li'), img.src);
+    const optimizedPic = createOptimizedPicture(img.src, alt, false, [{ width: '750' }]);
     const optimizedImg = optimizedPic.querySelector('img');
     optimizedImg.classList.add('card-img');
     moveInstrumentation(img, optimizedImg);
