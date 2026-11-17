@@ -2,13 +2,14 @@
   "status": "success",
   "url": "http://localhost:3000/drafts/jsw/cards/source.html",
   "path": "jsw/cards",
-  "timestamp": "2026-11-17T06:48:00.182Z",
+  "timestamp": "2026-11-17T07:22:32.376Z",
   "title": "Cards | JSW Motors",
   "template": "cards",
   "blocks": [
     "cards"
   ],
   "styles": [
+    "pillars",
     "timeline"
   ],
   "importScript": "3f6a44c75eaa"

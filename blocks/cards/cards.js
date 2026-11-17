@@ -1,5 +1,9 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
+
+// Pillars: the cards authors may add, and the image formats it shows
+const PILLARS_MAX = 6;
+const PILLAR_IMAGES = ['jpg', 'jpeg', 'png'];
 
 const AUTOPLAY_MS = 3000;
 // cards the ring holds at least: five on show plus spares on both sides
@@ -399,6 +403,180 @@ function decorateCarousel(block, ul, options = {}) {
   };
 }
 
+/**
+ * An author warning on the canvas (Universal Editor only).
+ * @param {string} text
+ * @returns {HTMLParagraphElement}
+ */
+function authorNote(text) {
+  const p = document.createElement('p');
+  p.className = 'note';
+  p.setAttribute('role', 'alert');
+  p.textContent = text;
+  return p;
+}
+
+/**
+ * A pillar's image cell: the picture, or the image AEM delivers as a plain link (an asset it
+ * can't resolve: a placeholder under a /drafts/ folder then comes from this repository) made a
+ * picture. Only a JPG or PNG is shown (an address without an extension, a rendition, passes).
+ * @param {Element} cell the card's first cell
+ * @returns {boolean} whether the cell holds an image it may show (or nothing)
+ */
+function pillarImage(cell) {
+  const link = !cell.querySelector('picture') && cell.querySelector('a[href]');
+  if (link) {
+    const { pathname } = new URL(link.href, window.location);
+    const drafts = pathname.indexOf('/drafts/');
+    const src = drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href;
+    const picture = createOptimizedPicture(src, '', false, [{ media: '(min-width: 900px)', width: '1200' }, { width: '750' }]);
+    moveInstrumentation(link, picture.querySelector('img'));
+    cell.replaceChildren(picture);
+  }
+  const img = cell.querySelector('picture img');
+  if (!img) return !cell.textContent.trim() && !cell.querySelector('video');
+  img.className = 'img';
+  // (the picture straight in the cell: not in the paragraph it was authored in)
+  cell.replaceChildren(img.closest('picture'));
+  const file = new URL(img.src, window.location.href).pathname.split('/').pop();
+  const extension = file.includes('.') ? file.split('.').pop().toLowerCase() : '';
+  return !extension || PILLAR_IMAGES.includes(extension);
+}
+
+/**
+ * A pillar's text: the paragraphs before the heading its label, the heading, the paragraphs after
+ * it the description (its opening words in bold).
+ * @param {Element} content the card's text cell
+ */
+function pillarText(content) {
+  let heading = null;
+  content.querySelectorAll(':scope > :is(p, h1, h2, h3, h4, h5, h6)').forEach((node) => {
+    node.classList.remove('card-text');
+    if (node.tagName !== 'P') {
+      if (!heading) {
+        heading = node;
+        node.classList.add('heading');
+      }
+      return;
+    }
+    node.classList.add(heading ? 'description' : 'label');
+  });
+}
+
+/**
+ * Pillars style: each card an image and its text in a corner-marked frame beside it (stacked on
+ * phones). On the site the block pins to the screen and the cards take turns, one per scroll step
+ * (the page's scroll stops, scripts/scroll-stops.js: one wheel gesture, one card; scrolling any
+ * other way steps alike): the image wipes up to the next, the text crossfades, a rail on the image
+ * marks the current card (its marks also jump to a card). In the editor, or with reduced motion,
+ * the cards are a plain list, each one editable.
+ * @param {Element} block
+ * @param {HTMLUListElement} ul the decorated card list
+ */
+function decoratePillars(block, ul) {
+  const authoring = isAuthoring();
+  ul.className = 'list';
+  [...ul.children].forEach((li) => {
+    const [media, content] = li.children;
+    if (media) media.className = 'image';
+    if (content) {
+      content.className = 'content';
+      pillarText(content);
+    }
+    if (!media || pillarImage(media)) return;
+    // Universal Editor can't restrict the asset type: the author is told on the card; on the site
+    // the card is left out
+    if (authoring) {
+      media.classList.add('is-invalid');
+      media.prepend(authorNote('Only JPG and PNG images are allowed. Replace this file with a .jpg or .png image.'));
+    } else {
+      li.remove();
+    }
+  });
+
+  // Universal Editor can't cap the number of items either: the author is warned, and the cards
+  // past the limit are kept off the site
+  if (authoring && ul.children.length > PILLARS_MAX) {
+    const extra = ul.children.length - PILLARS_MAX;
+    block.prepend(authorNote(`Remove ${extra} card${extra === 1 ? '' : 's'}: Pillars takes at most ${PILLARS_MAX} cards (now ${ul.children.length}).`));
+  }
+  if (!authoring) [...ul.children].slice(PILLARS_MAX).forEach((li) => li.remove());
+  const cards = [...ul.children];
+
+  if (authoring || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !cards.length) {
+    block.classList.add('is-static');
+    return;
+  }
+
+  // the stage (pinned while the block scrolls by): the cards (their images stacked, the first on
+  // top), the frame's corner marks and, with two cards or more, the rail
+  const frame = document.createElement('div');
+  frame.className = 'frame';
+  frame.setAttribute('aria-hidden', 'true');
+  const rail = document.createElement('div');
+  rail.className = 'rail';
+  const marks = cards.map((li, i) => {
+    const mark = document.createElement('button');
+    mark.type = 'button';
+    mark.className = 'mark';
+    mark.setAttribute('aria-label', li.querySelector('.label')?.textContent.trim() || `Card ${i + 1}`);
+    rail.append(mark);
+    return mark;
+  });
+  cards.forEach((li, i) => li.style.setProperty('--z', cards.length - i));
+  const stage = document.createElement('div');
+  stage.className = 'stage';
+  stage.append(ul, frame);
+  if (cards.length > 1) stage.append(rail);
+  block.replaceChildren(stage);
+  block.classList.add('is-stepped');
+  block.style.setProperty('--count', cards.length);
+
+  let active = -1;
+  const show = (to) => {
+    const next = Math.max(0, Math.min(cards.length - 1, to));
+    if (next === active) return;
+    active = next;
+    cards.forEach((li, i) => {
+      li.classList.toggle('is-active', i === active);
+      li.classList.toggle('is-before', i < active);
+      li.classList.toggle('is-next', i === active + 1);
+      li.setAttribute('aria-hidden', String(i !== active));
+    });
+    marks.forEach((mark, i) => {
+      if (i === active) mark.setAttribute('aria-current', 'step');
+      else mark.removeAttribute('aria-current');
+    });
+  };
+
+  // a step: one screen of the block's scroll (its height: one screen per card); the stops: each
+  // card, then the next section's top. Measured once the block is laid out (its section is shown
+  // after loading) and again whenever its size changes.
+  const step = () => block.offsetHeight / cards.length;
+  const onScroll = () => {
+    if (step()) show(Math.round(-block.getBoundingClientRect().top / step()));
+  };
+  let frameRequest = 0;
+  window.addEventListener('scroll', () => {
+    cancelAnimationFrame(frameRequest);
+    frameRequest = requestAnimationFrame(onScroll);
+  }, { passive: true });
+  new ResizeObserver(() => {
+    if (!step()) return;
+    block.dataset.scrollStops = cards.map((li, i) => Math.round(i * step()))
+      .concat(Math.round(cards.length * step())).join(' ');
+    onScroll();
+  }).observe(block);
+  show(0);
+
+  marks.forEach((mark, i) => mark.addEventListener('click', async () => {
+    const top = block.getBoundingClientRect().top + window.scrollY + i * step();
+    const { glideTo } = await import('../../scripts/scroll-stops.js');
+    glideTo(top);
+  }));
+  import('../../scripts/scroll-stops.js').then(({ default: init }) => init());
+}
+
 export default async function decorate(block) {
   const ul = document.createElement('ul');
   ul.className = 'card-list';
@@ -438,12 +616,8 @@ export default async function decorate(block) {
     return;
   }
 
-  // Pillars style (About Us): likewise fetched only when used
+  // Pillars style: its layout here and in cards.css
   if (block.classList.contains('pillars')) {
-    const [, { default: decoratePillars }] = await Promise.all([
-      loadCSS(`${window.hlx.codeBasePath}/blocks/cards/cards-pillars.css`),
-      import('./cards-pillars.js'),
-    ]);
     decoratePillars(block, ul);
     return;
   }
