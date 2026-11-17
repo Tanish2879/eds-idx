@@ -491,7 +491,7 @@ function pillarText(content) {
  * phones). On the site the block pins to the screen and the cards take turns, one per scroll step
  * (the page's scroll stops, scripts/scroll-stops.js: one wheel gesture, one card; scrolling any
  * other way steps alike), in the author's Animation Direction: horizontal (the default) the image
- * wipes off left to right, tied to the scroll (see track), vertical it wipes up once a step is
+ * wipes off right to left, tied to the scroll (see track), vertical it wipes up once a step is
  * reached; the text crossfades, a rail on the image marks the current card (its marks also jump
  * to a card). In the editor, or with reduced motion, the cards are a plain list, each one editable.
  * @param {Element} block
@@ -578,9 +578,9 @@ function decoratePillars(block, ul) {
 
   /*
    * Horizontal (the author's Animation Direction, the default): tied to the scroll, the current
-   * image wipes off from its left edge to its right, uncovering the next one (its zoom settling
-   * meanwhile), the text crossfading and drifting left to right; scrolling back up plays it back,
-   * right to left. Each card's place in that (d: its distance from the scroll's position, in
+   * image wipes off from its right edge to its left, uncovering the next one (its zoom settling
+   * meanwhile), the text crossfading and drifting right to left; scrolling back up plays it back,
+   * left to right. Each card's place in that (d: its distance from the scroll's position, in
    * cards) is set as custom properties, which the CSS maps: --wipe (how much of the image is wiped
    * off), --near (how close the next image is to the front), --seen (the text's opacity), --shift
    * (the text's drift).
