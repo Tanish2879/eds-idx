@@ -8,10 +8,10 @@
 /* the card spans the page, inset 8px on every side (not the site's 1200px content column) */
 main > .section > .interactive-showcase-wrapper {
   max-width: none;
-  padding: 8px;
+  padding: 0.5rem;
 }
 
-.interactive-showcase {
+main > .section > .interactive-showcase-wrapper > .block {
   /* design tokens, as on the JSW NEV page; a page can override any of them */
   --interactive-showcase-ink: #0d0d0d;
   --interactive-showcase-white: #fff;
@@ -25,7 +25,7 @@ main > .section > .interactive-showcase-wrapper {
   --interactive-showcase-font: var(--text-font-family, new-science, 'Helvetica Neue', arial, sans-serif);
   --interactive-showcase-font-display: var(--font-family-display, new-science-extended, var(--interactive-showcase-font));
   --interactive-showcase-font-body: var(--interactive-showcase-font);
-  --interactive-showcase-radius-card: 24px;
+  --interactive-showcase-radius-card: 1.5rem;
   --interactive-showcase-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* a tooltip growing out of its hotspot and shrinking back: the same time and an even curve
@@ -40,13 +40,13 @@ main > .section > .interactive-showcase-wrapper {
   --interactive-showcase-slide-ease: cubic-bezier(0.33, 1, 0.68, 1);
 
   /* the closed hotspot's box: its tooltip starts as exactly this box and closes back into it */
-  --interactive-showcase-spot: 60px;
-  --interactive-showcase-spot-radius: 12px;
+  --interactive-showcase-spot: 3.75rem;
+  --interactive-showcase-spot-radius: 0.75rem;
 
   /* one colour for the closed hotspot and its open tooltip (40% black, the open module's), so the
      box never changes colour as it opens and closes */
   --interactive-showcase-spot-bg: rgb(0 0 0 / 20%);
-  --interactive-showcase-edge: 20px;
+  --interactive-showcase-edge: 1.25rem;
 
   /* one hundredth of the screen's height (vh / svh, svh falling back to vh): every size taken
      from the screen's height goes through these, so the editor can fix them (see below) */
@@ -56,22 +56,22 @@ main > .section > .interactive-showcase-wrapper {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 16px));
+  min-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 1rem));
   overflow: hidden;
-  border-radius: var(--interactive-showcase-radius-card, 24px);
+  border-radius: var(--interactive-showcase-radius-card, 1.5rem);
   color: var(--interactive-showcase-text-dark, #111);
   background:
     linear-gradient(291.69deg, rgb(0 0 0 / 18.24%) 0.96%, rgb(246 246 246 / 38%) 48.73%, rgb(255 255 255 / 38%) 62.61%),
     #fff;
   font-family: var(--interactive-showcase-font-body);
-  font-size: 16px;
+  font-size: 1rem;
   letter-spacing: 0;
   line-height: 1.35;
 
   @media (width >= 900px) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
     /* 48px of the 1280px frame: 3.75% of the card's width (the screen's, less the card's 8px
        inset on each side) */
-    --interactive-showcase-edge: calc((100vw - 16px) * 0.0375);
+    --interactive-showcase-edge: calc((100vw - 1rem) * 0.0375);
   }
 
   /* the site's default heading and paragraph margins do not apply in the card: every gap in it
@@ -89,9 +89,9 @@ main > .section > .interactive-showcase-wrapper {
      In the editor the card is laid out for a screen of the Figma frame's shape at the editor's
      width (interactive-showcase.js sets these from the width); 800px tall until then. */
   &.editing {
-    --interactive-showcase-vh: 8px;
-    --interactive-showcase-svh: 8px;
-    --interactive-showcase-panel-height: calc(100 * var(--interactive-showcase-svh) - 16px);
+    --interactive-showcase-vh: 0.5rem;
+    --interactive-showcase-svh: 0.5rem;
+    --interactive-showcase-panel-height: calc(100 * var(--interactive-showcase-svh) - 1rem);
   }
 
   .copy {
@@ -100,11 +100,11 @@ main > .section > .interactive-showcase-wrapper {
 
   .heading {
     order: 1;
-    padding: 92px var(--interactive-showcase-edge, 20px) 24px;
+    padding: 5.75rem var(--interactive-showcase-edge, 1.25rem) 1.5rem;
 
     /* never under the site's header where it stays over the page: 16px clear of it
        (--interactive-showcase-header-cover, measured by interactive-showcase.js) */
-    padding-top: max(92px, var(--interactive-showcase-header-cover, 0px) + 16px);
+    padding-top: max(5.75rem, var(--interactive-showcase-header-cover, 0rem) + 1rem);
   }
 
   .title {
@@ -117,7 +117,7 @@ main > .section > .interactive-showcase-wrapper {
        (the copy column narrows with the screen) */
     color: var(--interactive-showcase-text-dark, #000);
     font-family: var(--interactive-showcase-font-display);
-    font-size: clamp(19px, 2.3438vw, 30px);
+    font-size: clamp(1.1875rem, 2.3438vw, 1.875rem);
     font-weight: 500;
     line-height: 1.2;
     letter-spacing: 0.01em;
@@ -125,9 +125,9 @@ main > .section > .interactive-showcase-wrapper {
   }
 
   .description p {
-    max-width: 416px;
+    max-width: 26rem;
     color: var(--interactive-showcase-text-muted-dark, #4d4d4d);
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.5;
   }
 
@@ -158,16 +158,16 @@ main > .section > .interactive-showcase-wrapper {
 
   .detail {
     order: 3;
-    padding: 24px var(--interactive-showcase-edge, 20px) 32px;
+    padding: 1.5rem var(--interactive-showcase-edge, 1.25rem) 2rem;
   }
 
   /* Figma: a 416 x 15 text box, Medium 14px / 110%, uppercase, #666 */
   .counter {
-    max-width: 416px;
-    margin-bottom: 11px;
+    max-width: 26rem;
+    margin-bottom: 0.6875rem;
     color: var(--interactive-showcase-text-counter, #666);
     font-family: var(--interactive-showcase-font-body);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.1;
     text-transform: uppercase;
@@ -175,10 +175,10 @@ main > .section > .interactive-showcase-wrapper {
 
   /* Figma's 18px from 1280px wide up, smaller below */
   .item-title {
-    margin-bottom: 9px;
+    margin-bottom: 0.5625rem;
     color: var(--interactive-showcase-text-dark, #000);
     font-family: var(--interactive-showcase-font-body);
-    font-size: clamp(15px, 1.4063vw, 18px);
+    font-size: clamp(0.9375rem, 1.4063vw, 1.125rem);
     font-weight: 500;
     line-height: 1.25;
   }
@@ -201,20 +201,20 @@ main > .section > .interactive-showcase-wrapper {
   /* thumbnail tray: inactive thumbnails are greyscale */
   .thumbs {
     display: flex;
-    gap: 18px;
-    margin-top: 24px;
+    gap: 1.125rem;
+    margin-top: 1.5rem;
   }
 
   .thumb {
     position: relative;
     flex: none;
-    width: clamp(84px, 9.92vw, 127px);
+    width: clamp(5.25rem, 9.92vw, 7.9375rem);
     aspect-ratio: 127 / 157;
     margin: 0;
     padding: 0;
     overflow: hidden;
     border: 0;
-    border-radius: 6px;
+    border-radius: 0.375rem;
     cursor: pointer;
     background-color: var(--interactive-showcase-ink, #0d0d0d);
   }
@@ -268,7 +268,7 @@ main > .section > .interactive-showcase-wrapper {
     position: relative;
     order: 2;
     height: min(calc(64 * var(--interactive-showcase-svh)), 118vw);
-    margin: 0 12px;
+    margin: 0 0.75rem;
     overflow: hidden;
     container-type: size;
   }
@@ -277,7 +277,7 @@ main > .section > .interactive-showcase-wrapper {
      card is exactly one screen and the image takes the room the heading and copy leave, so the
      thumbnails stay on the screen (and can be tapped) instead of running past its bottom */
   @media (width >= 600px) and (width <= 899.98px) and (orientation: portrait) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
-    height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-vh) - 16px));
+    height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-vh) - 1rem));
 
     .stage {
       flex: 1 1 0;
@@ -342,11 +342,11 @@ main > .section > .interactive-showcase-wrapper {
   /* hotspots */
   .hotspot {
     /* the plus's icon size and place (see .hotspot::before) */
-    --interactive-showcase-icon: 22.5px;
+    --interactive-showcase-icon: 1.4063rem;
     --interactive-showcase-icon-at:
       translate(
-        calc(-50% + var(--interactive-showcase-icon-x, 0px)),
-        calc(-50% + var(--interactive-showcase-icon-y, 0px))
+        calc(-50% + var(--interactive-showcase-icon-x, 0rem)),
+        calc(-50% + var(--interactive-showcase-icon-y, 0rem))
       );
 
     position: absolute;
@@ -364,7 +364,7 @@ main > .section > .interactive-showcase-wrapper {
     background-color: var(--interactive-showcase-spot-bg);
 
     /* the same glass as the open module */
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(0.1875rem);
     transform: translate(-50%, -50%);
     transition: background-color 0.3s var(--interactive-showcase-ease);
   }
@@ -403,14 +403,14 @@ main > .section > .interactive-showcase-wrapper {
 
   /* the frame's minus: a 17px icon */
   .hotspot[aria-expanded='true'] {
-    --interactive-showcase-icon: 17px;
+    --interactive-showcase-icon: 1.0625rem;
   }
 
   /* ...except beside a tooltip opened below / above it: then it keeps its own box */
   .hotspot.hotspot-apart[aria-expanded='true'],
   .hotspot.hotspot-apart.is-closing {
     background-color: rgb(0 0 0 / 40%);
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(0.1875rem);
   }
 
   .hotspot[aria-expanded='true']::after {
@@ -450,25 +450,25 @@ main > .section > .interactive-showcase-wrapper {
     left: var(--interactive-showcase-x);
     z-index: 3;
     box-sizing: border-box;
-    width: min(272px, calc(100cqw - 16px));
+    width: min(17rem, calc(100cqw - 1rem));
 
     /* the title and the minus share a 20px row (at the top opening down, at the bottom opening
        up), 20px from the description, which runs the full width so its lines break as in the
        frame */
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 16px;
-    border-radius: 12px;
+    gap: 1.25rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
     color: var(--interactive-showcase-white, #fff);
     background-color: rgb(0 0 0 / 40%);
 
     /* the open module's glass: what is behind it is frosted */
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(0.1875rem);
     transform:
       translate(
-        calc(var(--interactive-showcase-tx) + var(--interactive-showcase-sx, 0px)),
-        calc(var(--interactive-showcase-ty) + var(--interactive-showcase-sy, 0px))
+        calc(var(--interactive-showcase-tx) + var(--interactive-showcase-sx, 0rem)),
+        calc(var(--interactive-showcase-ty) + var(--interactive-showcase-sy, 0rem))
       );
   }
 
@@ -498,7 +498,7 @@ main > .section > .interactive-showcase-wrapper {
     --interactive-showcase-ty: calc(-100% + var(--interactive-showcase-spot) / 2);
     --interactive-showcase-grow-from: inset(calc(100% - var(--interactive-showcase-spot)) 0 0 calc(100% - var(--interactive-showcase-spot)) round var(--interactive-showcase-spot-radius));
 
-    padding-bottom: 56px;
+    padding-bottom: 3.5rem;
   }
 
   .tooltip[data-side='right'][data-align='bottom'] {
@@ -513,12 +513,12 @@ main > .section > .interactive-showcase-wrapper {
   }
 
   .tooltip[data-align='below'] {
-    --interactive-showcase-ty: 36px;
+    --interactive-showcase-ty: 2.25rem;
     --interactive-showcase-grow-from: inset(0 calc(50% - var(--interactive-showcase-spot) / 2) 100% round var(--interactive-showcase-spot-radius));
   }
 
   .tooltip[data-align='above'] {
-    --interactive-showcase-ty: calc(-100% - 36px);
+    --interactive-showcase-ty: calc(-100% - 2.25rem);
     --interactive-showcase-grow-from: inset(100% calc(50% - var(--interactive-showcase-spot) / 2) 0 round var(--interactive-showcase-spot-radius));
   }
 
@@ -529,10 +529,10 @@ main > .section > .interactive-showcase-wrapper {
   /* the title shares its 20px row with the minus (the 17px icon, 16px after it): its first
      line's centre 10px into the row, on the minus (its last line's, opening up) */
   .tooltip-title {
-    margin-top: calc(10px - 0.7em);
-    padding-right: 33px;
+    margin-top: calc(0.625rem - 0.7em);
+    padding-right: 2.0625rem;
     font-family: var(--interactive-showcase-font-body);
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.4;
     letter-spacing: 0;
@@ -540,7 +540,7 @@ main > .section > .interactive-showcase-wrapper {
   }
 
   .tooltip[data-side='right'] .tooltip-title {
-    padding: 0 0 0 33px;
+    padding: 0 0 0 2.0625rem;
   }
 
   /* opening upwards the title has its row to itself, the whole width */
@@ -559,7 +559,7 @@ main > .section > .interactive-showcase-wrapper {
   .tooltip-text {
     color: var(--interactive-showcase-white, #fff);
     opacity: 0.8;
-    font-size: 12px;
+    font-size: 0.75rem;
     line-height: 1.35;
     letter-spacing: -0.02em;
   }
@@ -568,14 +568,14 @@ main > .section > .interactive-showcase-wrapper {
      the minus is the visible control) */
   .tooltip-close {
     position: absolute;
-    top: 8px;
-    right: 6.5px;
-    width: 36px;
-    height: 36px;
+    top: 0.5rem;
+    right: 0.4063rem;
+    width: 2.25rem;
+    height: 2.25rem;
     margin: 0;
     padding: 0;
     border: 0;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     cursor: pointer;
     color: inherit;
     background: none;
@@ -583,12 +583,12 @@ main > .section > .interactive-showcase-wrapper {
 
   .tooltip[data-side='right'] .tooltip-close {
     right: auto;
-    left: 6.5px;
+    left: 0.4063rem;
   }
 
   .tooltip[data-align='bottom'] .tooltip-close {
     top: auto;
-    bottom: 8px;
+    bottom: 0.5rem;
   }
 
   /* side by side from 900px, and on any landscape screen from 600px (a desktop zoomed far in,
@@ -598,12 +598,12 @@ main > .section > .interactive-showcase-wrapper {
     position: relative;
     display: grid;
     grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
-    height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 16px));
+    height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 1rem));
 
     /* the heading's top 152px and the copy's bottom 68px of the 720px frame, as shares of the
        card's height */
     .copy {
-      --card-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 16px));
+      --card-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 1rem));
 
       display: flex;
       flex-direction: column;
@@ -613,8 +613,8 @@ main > .section > .interactive-showcase-wrapper {
     }
 
     .heading {
-      padding: 0 24px 0 var(--interactive-showcase-edge);
-      padding-top: max(calc(var(--card-height) * 152 / 720), var(--interactive-showcase-header-cover, 0px) + 16px);
+      padding: 0 1.5rem 0 var(--interactive-showcase-edge);
+      padding-top: max(calc(var(--card-height) * 152 / 720), var(--interactive-showcase-header-cover, 0rem) + 1rem);
     }
 
     /* Figma sets the title as two 36px lines (30px at 120%) 2px apart, at 152 and 190: 38px
@@ -625,12 +625,12 @@ main > .section > .interactive-showcase-wrapper {
     }
 
     .detail {
-      padding: 0 24px 0 var(--interactive-showcase-edge);
+      padding: 0 1.5rem 0 var(--interactive-showcase-edge);
     }
 
     /* 127 x 157 of the 720px-tall frame: smaller with a shorter card, never bigger */
     .thumb {
-      width: clamp(72px, calc(var(--card-height) * 127 / 720), 127px);
+      width: clamp(4.5rem, calc(var(--card-height) * 127 / 720), 7.9375rem);
     }
 
     /* the stage covers the whole card, so each image can sit where its frame has it: partly
@@ -691,39 +691,39 @@ main > .section > .interactive-showcase-wrapper {
        description leaving room below it; one line of title and three of description fit it, as
        their character limits keep them (interactive-showcase.js) */
     .tooltip {
-      min-height: 120px;
+      min-height: 7.5rem;
     }
 
     .tooltip-title {
       --interactive-showcase-lines: 1;
 
       margin-top: 0;
-      line-height: 20px;
+      line-height: 1.25rem;
     }
 
     .tooltip-text {
       --interactive-showcase-lines: 3;
 
-      line-height: 16px;
+      line-height: 1rem;
     }
 
     /* opening upwards (no room below), 120 too: the minus sits in the bottom corner, beside the
        description's last line, which stops short of it (a float shaped to that line alone) */
     .tooltip[data-align='bottom'] {
-      padding-bottom: 16px;
+      padding-bottom: 1rem;
     }
 
     .tooltip[data-align='bottom'] .tooltip-text {
-      height: 48px;
+      height: 3rem;
       overflow: hidden;
     }
 
     .tooltip[data-align='bottom'] .tooltip-text::before {
       content: '';
       float: right;
-      width: 24px;
-      height: 48px;
-      shape-outside: inset(32px 0 0);
+      width: 1.5rem;
+      height: 3rem;
+      shape-outside: inset(2rem 0 0);
     }
 
     .tooltip[data-side='right'][data-align='bottom'] .tooltip-text::before {
@@ -733,13 +733,13 @@ main > .section > .interactive-showcase-wrapper {
 
   @media ((width >= 900px) or ((orientation: landscape) and (width >= 600px))) and (height <= 679.98px) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
     .thumb {
-      width: clamp(72px, calc(15 * var(--interactive-showcase-svh)), 120px);
+      width: clamp(4.5rem, calc(15 * var(--interactive-showcase-svh)), 7.5rem);
     }
 
     /* short screens: the copy's 24px gap tightens, so the thumbnails stay inside the card
        (e.g. a phone held sideways, 812 x 375) */
     .thumbs {
-      margin-top: 12px;
+      margin-top: 0.75rem;
     }
   }
 
@@ -762,14 +762,14 @@ main > .section > .interactive-showcase-wrapper {
        leaves the image a fraction of its size; never taller, so a page that snaps one card per
        screen shows all of it */
     @media (width <= 599.98px) {
-      min-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-vh) - 16px));
+      min-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-vh) - 1rem));
     }
 
     /* New Science Medium Extended 24px / 135%, -1% (narrower phones scale it down); the card's
        width breaks it "A NEW WAY TO" / "MOVE POWERED" / "BY TECH" */
     .title {
       max-width: none;
-      font-size: min(24px, 6.4vw);
+      font-size: min(1.5rem, 6.4vw);
       line-height: 1.35;
       letter-spacing: -0.01em;
     }
@@ -779,11 +779,11 @@ main > .section > .interactive-showcase-wrapper {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
       align-items: baseline;
-      column-gap: 12px;
+      column-gap: 0.75rem;
       order: 2;
 
       /* 24px below the main title: the heading's own bottom padding (base heading rule) */
-      padding: 0 20px;
+      padding: 0 1.25rem;
     }
 
     .texts,
@@ -829,15 +829,15 @@ main > .section > .interactive-showcase-wrapper {
     .counter {
       grid-column: 1;
       margin: 0;
-      font-size: 16px;
+      font-size: 1rem;
       line-height: 1.4;
     }
 
     /* New Science Regular 16px / 150% */
     .item-title {
       grid-column: 2;
-      margin: 0 0 12px;
-      font-size: 16px;
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
       font-weight: 400;
       line-height: 1.5;
     }
@@ -851,7 +851,7 @@ main > .section > .interactive-showcase-wrapper {
     /* New Science Regular 14px / 135%, -2% */
     .description p {
       max-width: none;
-      font-size: 14px;
+      font-size: 0.875rem;
       line-height: 1.35;
       letter-spacing: -0.02em;
     }
@@ -859,32 +859,32 @@ main > .section > .interactive-showcase-wrapper {
     /* the tray 200 x 79: three 64 x 79 thumbnails, 4px apart */
     .thumbs {
       grid-column: 1 / -1;
-      gap: 4px;
-      margin-top: 44px;
+      gap: 0.25rem;
+      margin-top: 2.75rem;
     }
 
     .thumb {
-      width: 64px;
+      width: 4rem;
     }
 
     /* phones (under 600px; touch tablets have the desktop ones, above) */
     @media (width <= 599.98px) {
       /* the + : 36 x 36, radius 8, 40% black (the mobile frame's) with the same glass */
-      --interactive-showcase-spot: 36px;
-      --interactive-showcase-spot-radius: 8px;
+      --interactive-showcase-spot: 2.25rem;
+      --interactive-showcase-spot-radius: 0.5rem;
       --interactive-showcase-spot-bg: rgb(0 0 0 / 40%);
 
       .hotspot {
-        --interactive-showcase-icon: 16px;
+        --interactive-showcase-icon: 1rem;
       }
 
       /* a tooltip just below / above its + : half of it (18px) and 6px apart */
       .tooltip[data-align='below'] {
-        --interactive-showcase-ty: 24px;
+        --interactive-showcase-ty: 1.5rem;
       }
 
       .tooltip[data-align='above'] {
-        --interactive-showcase-ty: calc(-100% - 24px);
+        --interactive-showcase-ty: calc(-100% - 1.5rem);
       }
 
       /* the open module: 150 x 92 at the least (12px padding, the 14px title row with the minus,
@@ -896,36 +896,36 @@ main > .section > .interactive-showcase-wrapper {
         --interactive-showcase-minus-x: 18px;
         --interactive-showcase-minus-y: 19px;
 
-        width: 150px;
-        min-height: 92px;
-        gap: 12px;
-        padding: 12px;
+        width: 9.375rem;
+        min-height: 5.75rem;
+        gap: 0.75rem;
+        padding: 0.75rem;
       }
 
       .tooltip-title {
         --interactive-showcase-lines: 2;
 
         margin-top: 0;
-        padding-right: 18px;
-        font-size: 10px;
-        line-height: 14px;
+        padding-right: 1.125rem;
+        font-size: 0.625rem;
+        line-height: 0.875rem;
       }
 
       .tooltip[data-side='right'] .tooltip-title {
-        padding: 0 0 0 18px;
+        padding: 0 0 0 1.125rem;
       }
 
       .tooltip-text {
         --interactive-showcase-lines: 8;
 
-        font-size: 10px;
-        line-height: 14px;
+        font-size: 0.625rem;
+        line-height: 0.875rem;
         letter-spacing: -0.01em;
       }
 
       /* the close button under the minus */
       .tooltip-close {
-        top: 1px;
+        top: 0.0625rem;
         right: 0;
       }
 
@@ -934,22 +934,22 @@ main > .section > .interactive-showcase-wrapper {
       }
 
       .tooltip[data-align='bottom'] .tooltip-close {
-        bottom: 1px;
+        bottom: 0.0625rem;
       }
 
       /* opening upwards: the minus in the bottom corner, beside the description's last line; the
          description keeps clear of it all down that side, however long it is */
       .tooltip[data-align='bottom'] {
-        padding-bottom: 12px;
+        padding-bottom: 0.75rem;
       }
 
       .tooltip[data-align='bottom'] .tooltip-text {
-        padding-right: 18px;
+        padding-right: 1.125rem;
       }
 
       .tooltip[data-side='right'][data-align='bottom'] .tooltip-text {
         padding-right: 0;
-        padding-left: 18px;
+        padding-left: 1.125rem;
       }
     }
 
@@ -958,10 +958,10 @@ main > .section > .interactive-showcase-wrapper {
        thumbnails and 45px clear of the card's bottom; on shorter phones that bottom gap narrows
        first, then the image shrinks */
     .stage {
-      flex: 1 0 170px;
+      flex: 1 0 10.625rem;
       order: 3;
       height: auto;
-      margin: 12px 0 0;
+      margin: 0.75rem 0 0;
     }
 
     .panel {
@@ -974,7 +974,7 @@ main > .section > .interactive-showcase-wrapper {
        (--interactive-showcase-vx of its width) fills the image box, the rest runs off the card's
        right edge, as there. --interactive-showcase-shown is that part's width */
     .figure {
-      --interactive-showcase-shown: min(90.4cqw, (100cqh - clamp(16px, 100cqh - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
+      --interactive-showcase-shown: min(90.4cqw, (100cqh - clamp(1rem, 100cqh - 15.625rem, 2.8125rem)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
 
       flex: none;
       width: calc(var(--interactive-showcase-shown) / var(--interactive-showcase-vx, 1));
@@ -1006,19 +1006,19 @@ main > .section > .interactive-showcase-wrapper {
      8px between them and the image, at least 8px below it */
   @media (width <= 599.98px) and (height <= 699.98px) {
     .heading {
-      padding-top: max(64px, var(--interactive-showcase-header-cover, 0px) + 16px);
+      padding-top: max(4rem, var(--interactive-showcase-header-cover, 0rem) + 1rem);
     }
 
     .thumbs {
-      margin-top: 24px;
+      margin-top: 1.5rem;
     }
 
     .stage {
-      margin-top: 8px;
+      margin-top: 0.5rem;
     }
 
     .figure {
-      --interactive-showcase-shown: min(90.4cqw, (100cqh - clamp(8px, 100cqh - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
+      --interactive-showcase-shown: min(90.4cqw, (100cqh - clamp(0.5rem, 100cqh - 15.625rem, 2.8125rem)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
     }
   }
 
@@ -1026,7 +1026,7 @@ main > .section > .interactive-showcase-wrapper {
      the screen (the + buttons are kept whole inside it by interactive-showcase.js) */
   @media ((width <= 599.98px) or ((hover: none) and (pointer: coarse) and (orientation: portrait))) and (height <= 600px) {
     .stage {
-      flex-basis: 140px;
+      flex-basis: 8.75rem;
     }
   }
 
@@ -1037,51 +1037,51 @@ main > .section > .interactive-showcase-wrapper {
      of the card's width, so the two balance */
   @media (hover: none) and (pointer: coarse) and (orientation: portrait) and (width >= 600px) {
     .heading {
-      padding: max(clamp(92px, 10vw, 112px), var(--interactive-showcase-header-cover, 0px) + 16px) clamp(32px, 4.7vw, 48px) 32px;
+      padding: max(clamp(5.75rem, 10vw, 7rem), var(--interactive-showcase-header-cover, 0rem) + 1rem) clamp(2rem, 4.7vw, 3rem) 2rem;
     }
 
     .title {
       max-width: 16.5em;
-      font-size: clamp(34px, 4.3vw, 44px);
+      font-size: clamp(2.125rem, 4.3vw, 2.75rem);
       line-height: 1.2;
       letter-spacing: 0.01em;
     }
 
     .detail {
-      column-gap: 16px;
-      padding: 0 clamp(32px, 4.7vw, 48px);
+      column-gap: 1rem;
+      padding: 0 clamp(2rem, 4.7vw, 3rem);
     }
 
     .counter {
-      font-size: clamp(20px, 2.2vw, 22px);
+      font-size: clamp(1.25rem, 2.2vw, 1.375rem);
     }
 
     .item-title {
-      margin-bottom: 16px;
-      font-size: clamp(20px, 2.2vw, 22px);
+      margin-bottom: 1rem;
+      font-size: clamp(1.25rem, 2.2vw, 1.375rem);
     }
 
     .description p {
-      max-width: 600px;
-      font-size: clamp(17px, 1.9vw, 19px);
+      max-width: 37.5rem;
+      font-size: clamp(1.0625rem, 1.9vw, 1.1875rem);
       line-height: 1.45;
     }
 
     .thumbs {
-      gap: 8px;
-      margin-top: 40px;
+      gap: 0.5rem;
+      margin-top: 2.5rem;
     }
 
     .thumb {
-      width: clamp(96px, 11vw, 120px);
+      width: clamp(6rem, 11vw, 7.5rem);
     }
 
     .stage {
-      margin-top: 24px;
+      margin-top: 1.5rem;
     }
 
     .figure {
-      --interactive-showcase-shown: min(80cqw, (100cqh - clamp(16px, 100cqh - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
+      --interactive-showcase-shown: min(80cqw, (100cqh - clamp(1rem, 100cqh - 15.625rem, 2.8125rem)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
     }
   }
 
@@ -1093,7 +1093,7 @@ main > .section > .interactive-showcase-wrapper {
     }
 
     .tooltip {
-      width: min(272px, calc(var(--interactive-showcase-cq-w) - 16px));
+      width: min(17rem, calc(var(--interactive-showcase-cq-w) - 1rem));
     }
 
     @media ((width >= 900px) or ((orientation: landscape) and (width >= 600px))) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
@@ -1108,7 +1108,7 @@ main > .section > .interactive-showcase-wrapper {
 
     @media (width <= 599.98px), (hover: none) and (pointer: coarse) and (orientation: portrait) {
       .figure {
-        width: min(var(--interactive-showcase-cq-w) * 0.904, (var(--interactive-showcase-cq-h) - clamp(16px, var(--interactive-showcase-cq-h) - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)));
+        width: min(var(--interactive-showcase-cq-w) * 0.904, (var(--interactive-showcase-cq-h) - clamp(1rem, var(--interactive-showcase-cq-h) - 15.625rem, 2.8125rem)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)));
       }
     }
   }
@@ -1126,7 +1126,7 @@ main > .section > .interactive-showcase-wrapper {
 
   &.curtain :is(.heading, .detail, .stage) {
     opacity: 0;
-    transform: translateY(80px);
+    transform: translateY(5rem);
     transition:
       opacity var(--interactive-showcase-veil-time) ease,
       transform var(--interactive-showcase-veil-time) ease;
@@ -1174,15 +1174,15 @@ main > .section > .interactive-showcase-wrapper {
 
   .hotspot-draggable.is-dragging {
     cursor: grabbing;
-    outline: 2px dashed var(--interactive-showcase-white, #fff);
-    outline-offset: 2px;
+    outline: 0.125rem dashed var(--interactive-showcase-white, #fff);
+    outline-offset: 0.125rem;
   }
 
   /* a + authored in the part of the image the card cuts off: drawn at the nearest visible edge,
      outlined, until it is moved in (hotspot-editor.js) */
   .hotspot-draggable.is-outside {
-    outline: 2px dashed #ff5a52;
-    outline-offset: 2px;
+    outline: 0.125rem dashed #ff5a52;
+    outline-offset: 0.125rem;
   }
 
   .hotspot-coords {
@@ -1190,21 +1190,21 @@ main > .section > .interactive-showcase-wrapper {
     top: var(--interactive-showcase-y);
     left: var(--interactive-showcase-x);
     z-index: 5;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
     color: var(--interactive-showcase-white, #fff);
     background-color: rgb(0 0 0 / 82%);
     font-family: var(--interactive-showcase-font-body);
-    font-size: 12px;
+    font-size: 0.75rem;
     line-height: 1.3;
     white-space: nowrap;
     pointer-events: none;
-    transform: translate(-50%, calc(-100% - 30px));
+    transform: translate(-50%, calc(-100% - 1.875rem));
   }
 
   /* near the image's top edge the badge goes below the point, so it is not cut off */
   .hotspot-coords.is-below {
-    transform: translate(-50%, 30px);
+    transform: translate(-50%, 1.875rem);
   }
 
   .hotspot-coords[hidden] {
@@ -1215,12 +1215,12 @@ main > .section > .interactive-showcase-wrapper {
      are shortened; these notes say so (interactive-showcase.js) */
   .limit-note {
     grid-column: 1 / -1;
-    margin-top: 12px;
-    padding: 8px 12px;
-    border-radius: 6px;
+    margin-top: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
     color: #5c3b00;
     background-color: #fff3d6;
-    font-size: 12px;
+    font-size: 0.75rem;
     line-height: 1.4;
   }
 }
@@ -1232,23 +1232,23 @@ main > .section > .interactive-showcase-wrapper {
 @keyframes interactive-showcase-tooltip-in {
   0% {
     clip-path: var(--interactive-showcase-grow-from);
-    translate: calc(0px - var(--interactive-showcase-sx, 0px)) calc(0px - var(--interactive-showcase-sy, 0px));
+    translate: calc(0rem - var(--interactive-showcase-sx, 0rem)) calc(0rem - var(--interactive-showcase-sy, 0rem));
     background-color: var(--interactive-showcase-spot-bg);
   }
 
   100% {
-    clip-path: inset(0 round 12px);
+    clip-path: inset(0 round 0.75rem);
   }
 }
 
 @keyframes interactive-showcase-tooltip-out {
   0% {
-    clip-path: inset(0 round 12px);
+    clip-path: inset(0 round 0.75rem);
   }
 
   100% {
     clip-path: var(--interactive-showcase-grow-from);
-    translate: calc(0px - var(--interactive-showcase-sx, 0px)) calc(0px - var(--interactive-showcase-sy, 0px));
+    translate: calc(0rem - var(--interactive-showcase-sx, 0rem)) calc(0rem - var(--interactive-showcase-sy, 0rem));
     background-color: var(--interactive-showcase-spot-bg);
   }
 }

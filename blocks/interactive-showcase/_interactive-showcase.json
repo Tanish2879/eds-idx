@@ -42,7 +42,7 @@
           "name": "title",
           "label": "Title",
           "value": "",
-          "description": "Up to 40 characters, so the title fits the card on every screen.",
+          "description": "The card's heading. Max 40 characters.",
           "validation": {
             "maxLength": 40,
             "customErrorMsg": "Keep the title to 40 characters at most."
@@ -60,7 +60,7 @@
           "label": "Thumbnail",
           "multi": false,
           "required": true,
-          "description": "Required: the item needs its thumbnail."
+          "description": "Shown in the thumbnail tray. Required."
         },
         {
           "component": "text",
@@ -76,7 +76,7 @@
           "label": "Showcase image",
           "multi": false,
           "required": true,
-          "description": "Required: the item needs its showcase image."
+          "description": "The image the + points sit on. Required."
         },
         {
           "component": "text",
@@ -91,19 +91,20 @@
           "name": "title",
           "label": "Title",
           "value": "",
-          "description": "Up to 40 characters, so the title fits the card on every screen.",
+          "description": "Max 40 characters.",
           "validation": {
             "maxLength": 40,
             "customErrorMsg": "Keep the title to 40 characters at most."
           }
         },
         {
-          "component": "textarea",
+          "component": "text",
           "valueType": "string",
+          "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
           "value": "",
-          "description": "Up to 160 characters, so the description fits the card on every screen.",
+          "description": "Max 160 characters.",
           "validation": {
             "maxLength": 160,
             "customErrorMsg": "Keep the description to 160 characters at most."
@@ -115,7 +116,7 @@
           "name": "hotspots",
           "label": "Hotspots (+ points)",
           "value": "",
-          "description": "Up to 6 bullets, one per + point, written as: x, y | TITLE | description. You can drag the + points to any position in preview mode. A maximum of 6 hotspots is allowed."
+          "description": "One bullet per + point, at most 6: x, y | TITLE | description (x and y: % of the image from its bottom-left corner). Drag the + points in preview mode to place them."
         }
       ]
     }

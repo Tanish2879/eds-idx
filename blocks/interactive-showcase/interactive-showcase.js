@@ -400,7 +400,7 @@ export default function decorate(block) {
     block.dataset.aueFilter = full ? 'interactive-showcase-full' : 'interactive-showcase';
   }
 
-  // Item field cells are separate in the model: title is text and description is a textarea.
+  // Item field cells are separate in the model: title is text and description multi-line text.
   // The parent model has only a title. Keep a fallback for published markup without UE field
   // attributes.
   const fieldCell = (row, name) => [...(row?.children || [])].find((cell) => (
