@@ -1,0 +1,395 @@
+/* Cards "Pillars" style (About Us); --p-u is one Figma design pixel */
+
+main > .section.cards-container:has(.cards.pillars) {
+  --p-u: min(100vw / 375, 100svh / 815);
+  --pl-text: #232323;
+
+  justify-content: center;
+  padding: 0;
+  background-color: var(--color-white);
+  color: var(--pl-text);
+
+  @media (width >= 900px) {
+    --p-u: min(100vw / 1280, 100svh / 720);
+  }
+
+  .cards-wrapper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.cards.pillars {
+  /* Figma colours: dark text on white */
+  --pl-ink: rgb(0 12 16 / 80%);
+  --pl-mute: rgb(35 35 35 / 50%);
+  --pl-mark: rgb(0 0 0 / 50%);
+  --pl-move: 1.2s;
+  --pl-ease: cubic-bezier(0.37, 0, 0.63, 1);
+
+  /* image zoom: current and next (desktop only) */
+  --pl-zoom-on: 1;
+  --pl-zoom-next: 1;
+
+  @media (width >= 900px) {
+    --pl-zoom-on: 1.08;
+    --pl-zoom-next: 1.6;
+  }
+
+  .card-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  :where(.card-body p, .pl-title) {
+    margin: 0;
+  }
+
+  /* 1 line at most, the rest cut off (no ellipsis) */
+  .pl-label {
+    max-height: 1lh;
+    overflow: hidden;
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--p-u));
+    font-weight: var(--font-weight-medium);
+    line-height: calc(22 / 14);
+    text-transform: uppercase;
+    color: var(--pl-mute);
+  }
+
+  /* 3 lines at most, the rest cut off (no ellipsis) */
+  .pl-title {
+    max-height: 3lh;
+    overflow: hidden;
+    margin-top: calc(12 * var(--p-u));
+    font-family: var(--font-family-display);
+    font-size: calc(20 * var(--p-u));
+    font-weight: var(--font-weight-medium);
+    line-height: calc(28 / 20);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--pl-ink);
+
+    @media (width >= 900px) {
+      margin-top: calc(9 * var(--p-u));
+      font-size: calc(28 * var(--p-u));
+      line-height: calc(36 / 28);
+    }
+  }
+
+  /* 5 lines at most (8 on desktop), then an ellipsis */
+  .pl-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    margin-top: calc(18 * var(--p-u));
+    font-family: var(--font-family-base);
+    font-size: calc(16 * var(--p-u));
+    font-weight: var(--font-weight-medium);
+    line-height: calc(22 / 16);
+    color: var(--pl-mute);
+
+    @media (width >= 900px) {
+      margin-top: calc(40.5 * var(--p-u));
+      -webkit-line-clamp: 8;
+    }
+
+    /* the bold opening words are dark, the rest muted */
+    strong,
+    b {
+      font-weight: inherit;
+      color: var(--pl-text);
+    }
+  }
+
+  /* static: a plain list (reduced motion, Universal Editor) */
+  &.is-static {
+    padding: calc(80 * var(--p-u)) calc(20 * var(--p-u));
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: calc(64 * var(--p-u));
+    }
+
+    .card {
+      display: grid;
+      gap: calc(32 * var(--p-u));
+
+      @media (width >= 900px) {
+        grid-template-columns: calc(564 * var(--p-u)) calc(390 * var(--p-u));
+        gap: calc(108 * var(--p-u));
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .card-image {
+      overflow: hidden;
+      aspect-ratio: 1;
+      border-radius: calc(24 * var(--p-u));
+    }
+
+    /* a video or other file instead of a JPG/PNG (Universal Editor only) */
+    .card-image.is-invalid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--spacing-12);
+      padding: var(--spacing-16);
+      border: 2px dashed var(--color-accent);
+      overflow-wrap: anywhere;
+    }
+  }
+
+  /* author warnings (Universal Editor only) */
+  .pl-note {
+    margin: 0 0 var(--spacing-16);
+    padding: var(--spacing-12) var(--spacing-16);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius-4);
+    font-family: var(--font-family-base);
+    font-size: var(--body-font-size-s);
+    line-height: 1.4;
+    color: var(--text-color);
+    background-color: var(--light-color);
+  }
+
+  /* stepped: the block is the design frame, one pillar showing */
+  &.is-stepped {
+    position: relative;
+    width: calc(375 * var(--p-u));
+    height: calc(815 * var(--p-u));
+    margin: 0 auto;
+
+    @media (width >= 900px) {
+      width: calc(1280 * var(--p-u));
+      height: calc(720 * var(--p-u));
+    }
+
+    .card-list,
+    .card {
+      display: contents;
+    }
+
+    .card-image,
+    .card-body {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* images stack, first on top; the current one wipes up */
+    .card-image {
+      z-index: var(--pl-z);
+      clip-path: inset(0);
+      transition: clip-path var(--pl-move) var(--pl-ease);
+      top: calc(106 * var(--p-u));
+      left: calc(20 * var(--p-u));
+      width: calc(335 * var(--p-u));
+      height: calc(335 * var(--p-u));
+      overflow: hidden;
+      border-radius: calc(24 * var(--p-u));
+
+      @media (width >= 900px) {
+        top: calc(128.5 * var(--p-u));
+        left: calc(102 * var(--p-u));
+        width: calc(564 * var(--p-u));
+        height: calc(564 * var(--p-u));
+        border-radius: calc(28 * var(--p-u));
+      }
+
+      picture {
+        display: block;
+        height: 100%;
+      }
+
+      .card-img {
+        transition: transform var(--pl-move) var(--pl-ease);
+      }
+    }
+
+    /* text crossfades with the image */
+    .card-body {
+      margin: 0;
+      top: calc(511 * var(--p-u));
+      left: calc(20 * var(--p-u));
+      width: calc(335 * var(--p-u));
+      opacity: 0;
+      transition: opacity var(--pl-move) var(--pl-ease);
+
+      /* Figma's text boxes start at the capitals: the label's line box sits
+         above them by its half-leading */
+      @media (width >= 900px) {
+        top: calc(250.6 * var(--p-u));
+        left: calc(799.6 * var(--p-u));
+        width: calc(390 * var(--p-u));
+      }
+    }
+
+    /* desktop: description stays three heading lines down */
+    .pl-title {
+      @media (width >= 900px) {
+        min-height: calc(3 * 36 * var(--p-u));
+      }
+    }
+
+    .card {
+      &.is-before .card-image {
+        clip-path: inset(0 0 100% 0);
+      }
+
+      &.is-next .card-img {
+        transform: scale(var(--pl-zoom-next));
+      }
+
+      &.is-active {
+        .card-img {
+          transform: scale(var(--pl-zoom-on));
+        }
+
+        .card-body {
+          opacity: 1;
+          pointer-events: auto;
+        }
+      }
+    }
+  }
+
+  /* corner marks around the text */
+  .pl-frame {
+    --c: var(--pl-mark);
+    --t: calc(1.2 * var(--p-u));
+    --l: calc(6 * var(--p-u));
+
+    position: absolute;
+    top: calc(473 * var(--p-u));
+    left: calc(20 * var(--p-u));
+    width: calc(335 * var(--p-u));
+    height: calc(311 * var(--p-u));
+    pointer-events: none;
+    background:
+      linear-gradient(var(--c), var(--c)) top left / var(--l) var(--t) no-repeat,
+      linear-gradient(var(--c), var(--c)) top left / var(--t) var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / var(--l) var(--t) no-repeat,
+      linear-gradient(var(--c), var(--c)) top right / var(--t) var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / var(--l) var(--t) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom left / var(--t) var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / var(--l) var(--t) no-repeat,
+      linear-gradient(var(--c), var(--c)) bottom right / var(--t) var(--l) no-repeat;
+
+    @media (width >= 900px) {
+      top: calc(128.5 * var(--p-u));
+      left: calc(774 * var(--p-u));
+      width: calc(441 * var(--p-u));
+      height: calc(555 * var(--p-u));
+    }
+  }
+
+  /* progress rail: on the image (mobile), beside it (desktop) */
+  .pl-rail {
+    --mark: calc(6 * var(--p-u));
+    --mark-on: calc(54 * var(--p-u));
+
+    position: absolute;
+    z-index: 100; /* above the stacked images */
+    top: calc(127 * var(--p-u));
+    left: calc(40 * var(--p-u));
+    display: flex;
+    flex-direction: column;
+    gap: calc(4 * var(--p-u));
+
+    @media (width >= 900px) {
+      --mark-on: calc(50 * var(--p-u));
+
+      top: calc(554.7 * var(--p-u));
+      left: calc(53 * var(--p-u));
+      gap: calc(16 * var(--p-u));
+      padding: 0 calc(12 * var(--p-u));
+    }
+  }
+
+  /* rail mark; the current one is a track that fills */
+  .pl-mark {
+    --track: rgb(255 255 255 / 60%);
+    --fill: var(--color-white);
+
+    position: relative;
+    overflow: hidden;
+    width: var(--mark);
+    height: var(--mark);
+    padding: 0;
+    border: 0;
+    border-radius: var(--mark);
+    background-color: var(--track);
+    cursor: pointer;
+    transition: height var(--pl-move) var(--pl-ease);
+
+    @media (width >= 900px) {
+      --track: #d9d9d9;
+      --fill: var(--color-black);
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 0;
+      border-radius: inherit;
+      background-color: var(--fill);
+    }
+
+    &[aria-current='step'] {
+      height: var(--mark-on);
+
+      @media (width < 900px) {
+        --track: rgb(255 255 255 / 40%);
+      }
+
+      &::before {
+        height: 78%;
+        animation: pl-fill calc(var(--pl-move) * 2) var(--pl-ease) both;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-white);
+      outline-offset: 2px;
+
+      @media (width >= 900px) {
+        outline-color: var(--color-black);
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-image,
+    .card-body,
+    .card-img {
+      transition: none;
+    }
+
+    .pl-mark {
+      transition: none;
+
+      &::before {
+        animation: none;
+      }
+    }
+  }
+}
+
+/* rail fill, 8 to 39 of 50px as in Figma (keyframes can't be nested) */
+@keyframes pl-fill {
+  from { height: 16%; }
+  to { height: 78%; }
+}

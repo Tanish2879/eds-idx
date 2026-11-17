@@ -259,6 +259,39 @@
     ]
   },
   {
+    "id": "cards",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Carousel",
+            "value": "carousel"
+          },
+          {
+            "name": "Timeline",
+            "value": "timeline"
+          },
+          {
+            "name": "Pillars",
+            "value": "pillars"
+          },
+          {
+            "name": "Roller",
+            "value": "roller"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -266,13 +299,22 @@
         "valueType": "string",
         "name": "image",
         "label": "Image",
+        "required": true,
         "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "value": ""
       },
       {
         "component": "richtext",
         "name": "text",
         "value": "",
         "label": "Text",
+        "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description",
         "valueType": "string"
       }
     ]

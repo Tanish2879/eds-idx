@@ -1,27 +1,348 @@
-.cards > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+/* Carousel section */
+main > .section.cards-container:has(.cards.carousel) {
+  --nav-space: calc((44 + 50) * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
+  --c-u: clamp(0.6px, min(100vw / 402, (100svh - 2 * var(--nav-space)) / (874 - 2 * 94)), 1px);
+  --carousel-title-color: #1a1a1a;
+
+  justify-content: center;
+  justify-content: safe center;
+
+  /* the content is centred in the space below the fixed header, so the white
+     space between the header and the title matches the space below the
+     arrows; --c-u still sizes it as if --nav-space were kept at both ends */
+  padding-block: var(--nav-space) 0;
+  background-color: var(--color-white);
+
+  @media (width >= 900px) {
+    --nav-space: calc((40 + 55) * clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px));
+    --c-u: clamp(0.4px, min(100vw / 1728, (100svh - 2 * var(--nav-space)) / (1117 - 2 * 95)), 1px);
+  }
+
+  .default-content-wrapper {
+    margin: 0 auto;
+  }
+
+  .cards-wrapper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .carousel-title {
+    max-width: calc(362 * var(--c-u));
+    margin: 0 auto calc(88 * var(--c-u));
+    font-family: var(--font-family-display);
+    font-size: max(20px, calc(24 * var(--c-u)));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+    letter-spacing: -0.045em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--carousel-title-color);
+    opacity: 0.7;
+
+    @media (width >= 900px) {
+      max-width: calc(954 * var(--c-u));
+      margin-bottom: calc(135 * var(--c-u));
+      font-size: max(24px, calc(48 * var(--c-u)));
+      font-weight: var(--font-weight-medium);
+      line-height: calc(64 / 48);
+      letter-spacing: 0;
+      text-box: trim-both cap alphabetic;
+    }
+  }
 }
 
-.cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
-}
+/* Cards (default grid) */
+.cards {
+  .card-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-24);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 
-.cards .cards-card-body {
-  margin: 16px;
-}
+  .card {
+    flex: 1 1 257px;
+    border: 1px solid var(--color-gray-20);
+    background-color: var(--background-color);
+  }
 
-.cards .cards-card-image {
-  line-height: 0;
-}
+  .card-body {
+    margin: var(--spacing-16);
+  }
 
-.cards > ul > li img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  .card-image {
+    line-height: 0;
+  }
+
+  .card-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  /* Carousel */
+  &.carousel {
+    --card-size: calc(285 * var(--c-u));
+    --card-gap: calc(23 * var(--c-u));
+    --card-radius: calc(15.2 * var(--c-u));
+    --carousel-btn-bg: rgb(0 0 0 / 20%);
+    --carousel-btn-hover-bg: rgb(0 0 0 / 30%);
+    --carousel-icon-color: var(--color-white);
+    --carousel-wash: var(--color-white);
+    --carousel-move: 1.2s;
+    --carousel-ease: cubic-bezier(0.37, 0, 0.63, 1);
+
+    padding: 0;
+
+    @media (width >= 900px) {
+      --card-size: calc(400 * var(--c-u));
+      --card-gap: calc(32 * var(--c-u));
+      --card-radius: calc(21.33 * var(--c-u));
+    }
+
+    &.is-rushing {
+      --carousel-move: 0.45s;
+    }
+
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      outline: none;
+      touch-action: pan-y;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    .card {
+      position: relative;
+      flex: 0 0 var(--card-size);
+      width: var(--card-size);
+      height: var(--card-size);
+      border: 0;
+      background: transparent;
+    }
+
+    .carousel-track {
+      position: relative;
+      height: var(--card-size);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      perspective: calc(1600 * var(--c-u));
+
+      @media (width >= 900px) {
+        perspective: calc(4600 * var(--c-u));
+      }
+
+      .card {
+        --x: calc(560 * var(--c-u));
+        --ry: 80deg;
+        --s: 0.8;
+        --wash: 1;
+        --blur: 0px;
+
+        position: absolute;
+        top: 0;
+        left: calc(50% - var(--card-size) / 2);
+        cursor: pointer;
+        transform:
+          translateX(calc(var(--dir, 0) * var(--x)))
+          rotateY(calc(var(--dir, 0) * var(--ry)))
+          scale(var(--s));
+        filter: blur(var(--blur));
+        transition:
+          transform var(--carousel-move) var(--carousel-ease),
+          opacity var(--carousel-move) var(--carousel-ease),
+          filter var(--carousel-move) var(--carousel-ease),
+          z-index var(--carousel-move) var(--carousel-ease);
+
+        @media (width >= 900px) {
+          --x: calc(820 * var(--c-u));
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: var(--card-radius);
+          background-color: var(--carousel-wash);
+          opacity: var(--wash);
+          pointer-events: none;
+          transition: opacity var(--carousel-move) var(--carousel-ease);
+        }
+
+        &.is-active {
+          --x: 0px;
+          --ry: 0deg;
+          --s: 1;
+          --wash: 0;
+
+          z-index: 3;
+          cursor: default;
+        }
+
+        &.is-near {
+          --x: calc(292 * var(--c-u));
+          --ry: 27deg;
+          --s: 0.95;
+          --wash: 0.45;
+
+          z-index: 2;
+
+          @media (width >= 900px) {
+            --x: calc(424 * var(--c-u));
+          }
+        }
+
+        &.is-far {
+          --x: calc(500 * var(--c-u));
+          --ry: 60deg;
+          --s: 0.88;
+          --wash: 0.7;
+          --blur: 2px;
+
+          z-index: 1;
+
+          @media (width >= 900px) {
+            --x: calc(688 * var(--c-u));
+          }
+        }
+
+        &.is-hidden {
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        &.is-jumping,
+        &.is-jumping::after {
+          transition: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          &,
+          &::after {
+            transition: none;
+          }
+        }
+      }
+    }
+
+    .card-img {
+      aspect-ratio: 1 / 1;
+      border-radius: var(--card-radius);
+    }
+
+    .card-body {
+      position: absolute;
+      inset: auto 0 calc(16 * var(--c-u));
+      margin: 0;
+      padding: 0 calc(16 * var(--c-u));
+      font-family: var(--font-family-display);
+      font-size: max(12px, calc(15.2 * var(--c-u)));
+      font-weight: var(--font-weight-medium);
+      line-height: calc(18 / 15.2);
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--color-white);
+
+      @media (width >= 900px) {
+        bottom: calc(22 * var(--c-u));
+        font-size: max(12px, calc(21.33 * var(--c-u)));
+        line-height: calc(26 / 21.33);
+      }
+    }
+
+    .card-text {
+      margin: 0;
+    }
+
+    .carousel-nav {
+      display: flex;
+      justify-content: center;
+      gap: calc(8 * var(--c-u));
+      margin-top: calc(77 * var(--c-u));
+
+      @media (width >= 900px) {
+        gap: calc(9.2 * var(--c-u));
+        margin-top: calc(89 * var(--c-u));
+      }
+    }
+
+    .carousel-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: calc(48 * var(--c-u));
+      height: calc(48 * var(--c-u));
+      padding: 0;
+      border: 0;
+      border-radius: calc(12.3 * var(--c-u));
+      background-color: var(--carousel-btn-bg);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+
+      &:active {
+        background-color: var(--carousel-btn-hover-bg);
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: var(--carousel-btn-hover-bg);
+        }
+      }
+
+      @media (width >= 900px) {
+        width: calc(62.4 * var(--c-u));
+        height: calc(62.4 * var(--c-u));
+        border-radius: calc(16 * var(--c-u));
+      }
+    }
+
+    .carousel-icon {
+      display: inline-flex;
+      width: calc(18.5 * var(--c-u));
+      height: calc(18.5 * var(--c-u));
+      background-color: var(--carousel-icon-color);
+      mask: url('../../icons/arrow-right.svg') center / contain no-repeat;
+
+      @media (width >= 900px) {
+        width: calc(24 * var(--c-u));
+        height: calc(24 * var(--c-u));
+      }
+    }
+
+    .carousel-prev .carousel-icon {
+      transform: scaleX(-1);
+    }
+
+    &.is-static {
+      .limit {
+        margin: 0 0 var(--spacing-16);
+        padding: var(--spacing-12) var(--spacing-16);
+        border-left: 4px solid var(--color-accent);
+        border-radius: var(--radius-4);
+        font-family: var(--font-family-base);
+        font-size: var(--body-font-size-s);
+        line-height: 1.4;
+        text-align: center;
+        color: var(--text-color);
+        background-color: var(--light-color);
+      }
+
+      .card-list {
+        justify-content: center;
+        gap: var(--card-gap);
+      }
+
+      .card-body {
+        min-height: calc(18 * var(--c-u));
+      }
+    }
+  }
 }
