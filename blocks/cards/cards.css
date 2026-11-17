@@ -1,60 +1,45 @@
-/* Carousel section */
-main > .section.cards-container:has(.cards.carousel) {
-  --nav-space: calc((44 + 50) * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
-  --c-u: clamp(0.6px, min(100vw / 402, (100svh - 2 * var(--nav-space)) / (874 - 2 * 94)), 1px);
-  --carousel-title-color: #1a1a1a;
+/* Cards: every rule nested in the block's root (a style's section context, e.g. the carousel's
+   title, as .section:has(> .cards-wrapper > :where(&).style): the root adding no specificity
+   there, so the Timeline's and Roller's own section rules still win). The Default grid, the Carousel (--c-u: one design pixel,
+   scaled to the screen) and Pillars (below); Timeline and Roller have their own stylesheets,
+   loaded with them. */
 
-  justify-content: center;
-  justify-content: safe center;
-
-  /* the content is centred in the space below the fixed header, so the white
-     space between the header and the title matches the space below the
-     arrows; --c-u still sizes it as if --nav-space were kept at both ends */
-  padding-block: var(--nav-space) 0;
-  background-color: var(--color-white);
+main > .section > .cards-wrapper > .block {
+  /* Pillars: the design's colours (dark text on white), its motion, its corner marks and its
+     measures (rem; the image and the frame fit the screen below the nav) */
+  --pl-text: #232323;
+  --pl-ink: rgb(0 12 16 / 80%);
+  --pl-mute: rgb(35 35 35 / 50%);
+  --pl-mark: rgb(0 0 0 / 50%);
+  --pl-move: 1.2s;
+  --pl-ease: cubic-bezier(0.37, 0, 0.63, 1);
+  --pl-zoom-on: 1;
+  --pl-zoom-next: 1;
+  --pl-corner: 0.6875rem;
+  --pl-corner-line: 0.0625rem;
+  --pl-corners:
+    linear-gradient(var(--pl-mark), var(--pl-mark)) top left / var(--pl-corner) var(--pl-corner-line) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) top left / var(--pl-corner-line) var(--pl-corner) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) top right / var(--pl-corner) var(--pl-corner-line) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) top right / var(--pl-corner-line) var(--pl-corner) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom left / var(--pl-corner) var(--pl-corner-line) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom left / var(--pl-corner-line) var(--pl-corner) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom right / var(--pl-corner) var(--pl-corner-line) no-repeat,
+    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom right / var(--pl-corner-line) var(--pl-corner) no-repeat;
+  --pl-image: min(100vw - 2.5rem, 100svh - 22rem);
+  --pl-frame: 100%;
+  --pl-gap: 2rem;
 
   @media (width >= 900px) {
-    --nav-space: calc((40 + 55) * clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px));
-    --c-u: clamp(0.4px, min(100vw / 1728, (100svh - 2 * var(--nav-space)) / (1117 - 2 * 95)), 1px);
+    --pl-zoom-on: 1.08;
+    --pl-zoom-next: 1.6;
+    --pl-image: min(35.25rem, 100svh - 9.75rem, 44vw);
+    --pl-frame: min(27.5625rem, 34.5vw);
+    --pl-gap: min(6.75rem, 8.4vw);
   }
 
-  .default-content-wrapper {
-    margin: 0 auto;
-  }
+  /* ---- Default: a grid of cards ---- */
 
-  .cards-wrapper {
-    max-width: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .carousel-title {
-    max-width: calc(362 * var(--c-u));
-    margin: 0 auto calc(88 * var(--c-u));
-    font-family: var(--font-family-display);
-    font-size: max(20px, calc(24 * var(--c-u)));
-    font-weight: var(--font-weight-regular);
-    line-height: 1.5;
-    letter-spacing: -0.045em;
-    text-align: center;
-    text-transform: uppercase;
-    color: var(--carousel-title-color);
-    opacity: 0.7;
-
-    @media (width >= 900px) {
-      max-width: calc(954 * var(--c-u));
-      margin-bottom: calc(135 * var(--c-u));
-      font-size: max(24px, calc(48 * var(--c-u)));
-      font-weight: var(--font-weight-medium);
-      line-height: calc(64 / 48);
-      letter-spacing: 0;
-      text-box: trim-both cap alphabetic;
-    }
-  }
-}
-
-/* Cards (default grid) */
-.cards {
   .card-list {
     display: flex;
     flex-wrap: wrap;
@@ -84,7 +69,61 @@ main > .section.cards-container:has(.cards.carousel) {
     object-fit: cover;
   }
 
-  /* Carousel */
+  /* ---- Carousel ---- */
+
+  /* its section: the content centred in the space below the fixed header, so the white space
+     between the header and the title matches the space below the arrows; --c-u still sizes it
+     as if --nav-space were kept at both ends */
+  main > .section:has(> .cards-wrapper > :where(&).carousel) {
+    --nav-space: calc((44 + 50) * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
+    --c-u: clamp(0.6px, min(100vw / 402, (100svh - 2 * var(--nav-space)) / (874 - 2 * 94)), 1px);
+    --carousel-title-color: #1a1a1a;
+
+    justify-content: center;
+    justify-content: safe center;
+    padding-block: var(--nav-space) 0;
+    background-color: var(--color-white);
+
+    @media (width >= 900px) {
+      --nav-space: calc((40 + 55) * clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px));
+      --c-u: clamp(0.4px, min(100vw / 1728, (100svh - 2 * var(--nav-space)) / (1117 - 2 * 95)), 1px);
+    }
+
+    .default-content-wrapper {
+      margin: 0 auto;
+    }
+
+    .cards-wrapper {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .carousel-title {
+      max-width: calc(362 * var(--c-u));
+      margin: 0 auto calc(88 * var(--c-u));
+      font-family: var(--font-family-display);
+      font-size: max(20px, calc(24 * var(--c-u)));
+      font-weight: var(--font-weight-regular);
+      line-height: 1.5;
+      letter-spacing: -0.045em;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--carousel-title-color);
+      opacity: 0.7;
+
+      @media (width >= 900px) {
+        max-width: calc(954 * var(--c-u));
+        margin-bottom: calc(135 * var(--c-u));
+        font-size: max(24px, calc(48 * var(--c-u)));
+        font-weight: var(--font-weight-medium);
+        line-height: calc(64 / 48);
+        letter-spacing: 0;
+        text-box: trim-both cap alphabetic;
+      }
+    }
+  }
+
   &.carousel {
     --card-size: calc(285 * var(--c-u));
     --card-gap: calc(23 * var(--c-u));
@@ -345,4 +384,338 @@ main > .section.cards-container:has(.cards.carousel) {
       }
     }
   }
+
+  /* ---- Pillars: each card an image and its text in a corner-marked frame beside it (stacked on
+     phones); on the site pinned to the screen, one card per scroll step ---- */
+
+  main > .section:has(> .cards-wrapper > :where(&).pillars) {
+    padding: 0;
+    background-color: var(--color-white);
+
+    .cards-wrapper {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  &.pillars {
+    color: var(--pl-text);
+
+    .list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    /* (a different style from the carousel's cards: no overlap) */
+    /* stylelint-disable-next-line no-descending-specificity */
+    .card {
+      flex: none;
+      border: 0;
+      background: none;
+    }
+
+    .image {
+      position: relative;
+      overflow: hidden;
+      width: var(--pl-image);
+      aspect-ratio: 1;
+      border-radius: 1.5rem;
+      background-color: var(--color-gray-10);
+
+      & picture {
+        display: block;
+        height: 100%;
+      }
+    }
+
+    .img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 70%;
+    }
+
+    /* the text: label, heading, description, in the frame's corner marks */
+    .content {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      width: var(--pl-frame);
+      min-height: 19.4375rem;
+      padding: 2.375rem 1.25rem;
+      background: var(--pl-corners);
+
+      @media (width >= 900px) {
+        min-height: 0;
+        padding: calc(var(--pl-image) * 0.216) 1.6rem 1.5rem;
+      }
+    }
+
+    .label,
+    .heading,
+    .description {
+      margin: 0;
+    }
+
+    /* (the texts' guardrails: the label one line, the heading 3, the description 5, 8 on
+       desktop, the rest cut off) */
+    .label {
+      max-height: 1lh;
+      overflow: hidden;
+      font-family: var(--font-family-base);
+      font-size: 0.875rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.375rem;
+      text-transform: uppercase;
+      color: var(--pl-mute);
+    }
+
+    .heading {
+      max-height: 3lh;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      font-family: var(--font-family-display);
+      font-size: 1.25rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.75rem;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      color: var(--pl-ink);
+
+      @media (width >= 900px) {
+        min-height: 3lh;
+        margin-top: 0.5625rem;
+        font-size: min(1.75rem, 2.2vw);
+        line-height: 1.2857;
+      }
+    }
+
+    .description {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 5;
+      margin-top: 1.125rem;
+      font-family: var(--font-family-base);
+      font-size: 1rem;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.375rem;
+      color: var(--pl-mute);
+
+      @media (width >= 900px) {
+        -webkit-line-clamp: 8;
+        margin-top: 2.53rem;
+      }
+
+      /* the bold opening words dark, the rest muted */
+      & strong,
+      & b {
+        font-weight: inherit;
+        color: var(--pl-text);
+      }
+    }
+
+    /* author warnings (Universal Editor only) */
+    .note {
+      margin: 0 0 var(--spacing-16);
+      padding: var(--spacing-12) var(--spacing-16);
+      border-left: 0.25rem solid var(--color-accent);
+      border-radius: var(--radius-4);
+      font-family: var(--font-family-base);
+      font-size: var(--body-font-size-s);
+      line-height: 1.4;
+      color: var(--text-color);
+      background-color: var(--light-color);
+    }
+
+    /* a video or other file instead of a JPG/PNG (Universal Editor only) */
+    .image.is-invalid {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--spacing-12);
+      padding: var(--spacing-16);
+      border: 0.125rem dashed var(--color-accent);
+      overflow-wrap: anywhere;
+    }
+
+    /* static (the editor, reduced motion): a plain list, every card its own row */
+    &.is-static {
+      padding: 6.625rem 1.25rem 4rem;
+
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+      }
+
+      .card {
+        display: grid;
+        grid-template-columns: minmax(0, 35.25rem);
+        justify-content: center;
+        gap: var(--pl-gap);
+
+        @media (width >= 900px) {
+          grid-template-columns: var(--pl-image) var(--pl-frame);
+        }
+      }
+
+      .image,
+      .content {
+        width: auto;
+      }
+    }
+
+    /* stepped (the site): the block one screen per card, its stage pinned meanwhile; the images
+       stack (the first on top) and the current one wipes up to the next, the texts crossfade */
+    &.is-stepped {
+      height: calc(var(--count, 1) * 100svh);
+
+      .stage {
+        position: sticky;
+        top: 0;
+        display: grid;
+        grid-template:
+          'image' var(--pl-image)
+          'frame' minmax(0, 1fr)
+          / var(--pl-image);
+        row-gap: var(--pl-gap);
+        justify-content: center;
+        box-sizing: border-box;
+        height: 100svh;
+        padding: 6.625rem 1.25rem 2rem;
+
+        @media (width >= 900px) {
+          grid-template: 'image frame' var(--pl-image) / var(--pl-image) var(--pl-frame);
+          column-gap: var(--pl-gap);
+          align-content: end;
+          padding: 0 2rem 1.75rem;
+        }
+      }
+
+      .list,
+      .card {
+        display: contents;
+      }
+
+      .image {
+        z-index: var(--z);
+        grid-area: image;
+        width: auto;
+        clip-path: inset(0 round 1.5rem);
+        pointer-events: none;
+        transition: clip-path var(--pl-move) var(--pl-ease);
+      }
+
+      .img {
+        transition: transform var(--pl-move) var(--pl-ease);
+      }
+
+      .content {
+        grid-area: frame;
+        width: auto;
+        min-height: 0;
+        background: none;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--pl-move) var(--pl-ease);
+      }
+
+      .frame {
+        grid-area: frame;
+        background: var(--pl-corners);
+        pointer-events: none;
+      }
+
+      .card.is-before .image {
+        clip-path: inset(0 0 100% 0 round 1.5rem);
+      }
+
+      .card.is-next .img {
+        transform: scale(var(--pl-zoom-next));
+      }
+
+      .card.is-active {
+        .img {
+          transform: scale(var(--pl-zoom-on));
+        }
+
+        .content {
+          opacity: 1;
+          pointer-events: auto;
+        }
+      }
+    }
+
+    /* the rail: on the image, at its bottom left, one mark per card; the current one a track that
+       fills */
+    .rail {
+      z-index: 100; /* (above the stacked images) */
+      display: flex;
+      grid-area: image;
+      align-items: center;
+      place-self: end start;
+      gap: 1rem;
+      margin: 0 0 1.5rem 1.5rem;
+    }
+
+    .mark {
+      position: relative;
+      overflow: hidden;
+      width: 0.375rem;
+      height: 0.375rem;
+      padding: 0;
+      border: 0;
+      border-radius: 0.375rem;
+      background-color: rgb(255 255 255 / 60%);
+      cursor: pointer;
+      transition: width var(--pl-move) var(--pl-ease);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0;
+        border-radius: inherit;
+        background-color: var(--color-white);
+      }
+
+      &[aria-current='step'] {
+        width: 1.625rem;
+        background-color: rgb(255 255 255 / 40%);
+
+        &::before {
+          width: 78%;
+          animation: cards-mark-fill calc(var(--pl-move) * 2) var(--pl-ease) both;
+        }
+      }
+
+      &:focus-visible {
+        outline: 0.125rem solid var(--color-white);
+        outline-offset: 0.125rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .image,
+      .content,
+      .img,
+      .mark {
+        transition: none;
+      }
+
+      .mark::before {
+        animation: none;
+      }
+    }
+  }
+}
+
+/* the rail's fill (keyframes can't be nested) */
+@keyframes cards-mark-fill {
+  from { width: 16%; }
+  to { width: 78%; }
 }

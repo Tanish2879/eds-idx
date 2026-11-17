@@ -8,11 +8,21 @@
   <meta name="theme" content="jsw">
 </head>
 <body>
-  <!-- Design source for /jsw/cards (tools/importer/import-cards.js): the Timeline cards (the
-       Default and Carousel sections removed; Pillars and Roller need
+  <!-- Design source for /jsw/cards (tools/importer/import-cards.js): the Pillars cards, then the
+       Timeline (the Default and Carousel sections removed; Roller needs
        scripts/utils/gesture-stepper.js). Each section: its heading (default content), then the
        cards block in that style (data-style, the block's Style option), one card per .card: its
        image and its text (rich text, in each style's shape). Images: the JSW placeholders. -->
+
+  <!-- Pillars: up to 6 cards (JPG or PNG images); each text: the label, the heading, the
+       description (its opening words in bold). The design's first card; the others authored in
+       the editor -->
+  <section class="cards-source" data-style="pillars">
+    <div class="card">
+      <img src="/drafts/jsw/cards/engineering.jpg" alt="The rear of a grey JSW Motors SUV against a pale blue backdrop">
+      <div class="text"><p>Engineering</p><h3>Built to move bold ideas into something real</h3><p><strong>We turn ambitious ideas</strong> into meaningful mobility, bringing together precision, performance and craft to build what moves us forward.</p></div>
+    </div>
+  </section>
 
   <!-- Timeline: 6 to 10 chapter cards; each text: the year, the chapter (bold), the title (a
        heading), the description and the location (italic) -->
