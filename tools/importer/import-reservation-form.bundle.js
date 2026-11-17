@@ -130,7 +130,7 @@ var CustomImportScript = (() => {
       document.body.append(main);
       return [{
         element: document.body,
-        path: "/reservation-form",
+        path: "/jsw/reservation-form",
         report: { title: document.title, template: "reservation-form", blocks: ["reservation-form"] }
       }];
     }

@@ -1,0 +1,11 @@
+{
+  "url": "https://www.mgselect.co.in/dealer/hyderabad-pearl-select",
+  "timestamp": "2026-10-06T09:24:22.830Z",
+  "error": {
+    "message": "page.evaluate: Target page, context or browser has been closed",
+    "stack": "page.evaluate: Target page, context or browser has been closed\n    at removeKnownChrome (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-catalog-pages/scripts/catalog-fingerprint.js:67:16)\n    at runFingerprintPhase (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-catalog-pages/scripts/catalog-fingerprint-phase.js:57:9)\n    at async analyzePage (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-catalog-pages/scripts/catalog-analyze-page.js:324:9)\n    at async analyzeUrl (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-catalog-pages/scripts/catalog-batch-analyze.js:177:22)\n    at async analyzeFn (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-catalog-pages/scripts/catalog-batch-analyze.js:847:24)\n    at async processUrlEntry (/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-catalog-pages/scripts/catalog-analysis-engine.js:297:18)"
+  },
+  "cleanup": null,
+  "template": null,
+  "blocks": []
+}

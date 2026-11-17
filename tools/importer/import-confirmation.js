@@ -2,10 +2,11 @@
 /* global WebImporter */
 
 /**
- * Importer for the confirmation pages (design sources: drafts/confirmation/source-variant-*.html).
- * Builds one confirmation block in the source's layout (its variant: the block option / Layout)
+ * Importer for the confirmation pages (design sources: drafts/jsw/confirmation/source-variant-*.html).
+ * Builds one confirmation block (the payment failure source: its replica, a payment-failed
+ * block, the source's data-block) in the source's layout (its variant: the block option / Layout)
  * with xwalk field hints + page metadata (JSW nav, no footer). Each source names the page it
- * becomes (meta target-path): /confirmation (Variant A), /confirmation-all-set (Variant B).
+ * becomes (meta target-path): /jsw/confirmation (Variant A), /jsw/confirmation-all-set (Variant B).
  * Writes ONLY those pages — no other page is created or modified.
  *
  * Block rows (every property in its own cell): 1. displayWord  2. heading  3. description
@@ -54,6 +55,8 @@ export default {
     const main = document.createElement('main');
     const value = (sel) => clean(src.querySelector(sel)?.textContent);
     const variant = src.dataset.variant || 'variant-a';
+    // the block: the confirmation, or its replica the source names (data-block, payment-failed)
+    const block = src.dataset.block || 'confirmation';
 
     const cells = [];
     cells.push([textCell(document, 'displayWord', value('.word'))]);
@@ -70,7 +73,7 @@ export default {
       p.append(a);
       cells.push([hinted(document, 'ctaLink', p)]);
     } else cells.push([hinted(document, 'ctaLink')]);
-    main.append(WebImporter.Blocks.createBlock(document, { name: 'confirmation', variants: [variant], cells }));
+    main.append(WebImporter.Blocks.createBlock(document, { name: block, variants: [variant], cells }));
 
     main.append(WebImporter.Blocks.getMetadataBlock(document, {
       Title: clean(document.title),
@@ -79,13 +82,13 @@ export default {
       footer: clean(document.querySelector('meta[name="footer"]')?.getAttribute('content')),
     }));
 
-    const path = clean(document.querySelector('meta[name="target-path"]')?.getAttribute('content')) || '/confirmation';
+    const path = clean(document.querySelector('meta[name="target-path"]')?.getAttribute('content')) || '/jsw/confirmation';
     document.body.innerHTML = '';
     document.body.append(main);
     return [{
       element: document.body,
       path,
-      report: { title: document.title, template: 'confirmation', variant, blocks: ['confirmation'] },
+      report: { title: document.title, template: 'confirmation', variant, blocks: [block] },
     }];
   },
 };

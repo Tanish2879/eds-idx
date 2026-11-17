@@ -14,6 +14,10 @@ import { moveInstrumentation, takeRichtext } from '../../scripts/scripts.js';
  * covers it), which frees the CPU / GPU for scrolling on phones.
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const VIDEO_FILE = /\.(mp4|webm|mov|m4v)$/i;
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const VIDEO_TYPES = {
@@ -29,7 +33,7 @@ const pathOf = (href) => new URL(href, window.location).pathname;
 function mediaUrl(href) {
   const path = pathOf(href);
   const drafts = path.indexOf('/drafts/');
-  return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${path.slice(drafts)}` : href;
+  return drafts > 0 ? `${window.hlx?.codeBasePath || ''}${path.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : href;
 }
 
 function el(tag, attrs = {}, ...children) {

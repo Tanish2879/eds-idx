@@ -63,6 +63,7 @@ var CustomImportScript = (() => {
         return clean((_a2 = src.querySelector(sel)) == null ? void 0 : _a2.textContent);
       };
       const variant = src.dataset.variant || "variant-a";
+      const block = src.dataset.block || "confirmation";
       const cells = [];
       cells.push([textCell(document, "displayWord", value(".word"))]);
       cells.push([textCell(document, "heading", value("h1"))]);
@@ -78,20 +79,20 @@ var CustomImportScript = (() => {
         p.append(a);
         cells.push([hinted(document, "ctaLink", p)]);
       } else cells.push([hinted(document, "ctaLink")]);
-      main.append(WebImporter.Blocks.createBlock(document, { name: "confirmation", variants: [variant], cells }));
+      main.append(WebImporter.Blocks.createBlock(document, { name: block, variants: [variant], cells }));
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
         Description: clean((_a = document.querySelector('meta[name="description"]')) == null ? void 0 : _a.getAttribute("content")),
         nav: clean((_b = document.querySelector('meta[name="nav"]')) == null ? void 0 : _b.getAttribute("content")),
         footer: clean((_c = document.querySelector('meta[name="footer"]')) == null ? void 0 : _c.getAttribute("content"))
       }));
-      const path = clean((_d = document.querySelector('meta[name="target-path"]')) == null ? void 0 : _d.getAttribute("content")) || "/confirmation";
+      const path = clean((_d = document.querySelector('meta[name="target-path"]')) == null ? void 0 : _d.getAttribute("content")) || "/jsw/confirmation";
       document.body.innerHTML = "";
       document.body.append(main);
       return [{
         element: document.body,
         path,
-        report: { title: document.title, template: "confirmation", variant, blocks: ["confirmation"] }
+        report: { title: document.title, template: "confirmation", variant, blocks: [block] }
       }];
     }
   };

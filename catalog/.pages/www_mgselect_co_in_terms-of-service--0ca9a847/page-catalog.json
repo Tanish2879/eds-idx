@@ -1,0 +1,876 @@
+{
+  "url": "https://www.mgselect.co.in/terms-of-service",
+  "title": "Terms of Service | MG Select",
+  "timestamp": "2026-10-06T09:49:12.241Z",
+  "duration": "191.0s",
+  "cleanup": {
+    "elementsRemoved": 11,
+    "types": [
+      "popup"
+    ],
+    "cookieConsentDismissed": false
+  },
+  "fingerprints": {
+    "urlPattern": "/terms-of-service",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 100,
+      "width": 1440,
+      "height": 225
+    },
+    "topSectionStrategy": "title",
+    "topSectionPlaceholders": [
+      {
+        "type": "text",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 126,
+        "width": 1210,
+        "height": 135
+      },
+      {
+        "type": "text",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "h1",
+        "fontSize": 60,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 80,
+        "y": 126,
+        "width": 1280,
+        "height": 198,
+        "textLength": 38
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43,
+        "textLength": 23
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 110,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#606060",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43,
+        "textLength": 30
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 170,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 324,
+    "topSectionTitleRect": {
+      "x": 80,
+      "y": 126,
+      "width": 1280,
+      "height": 198,
+      "text": "END USER LICENSE AND SERVICE AGREEMENT",
+      "fontWeight": 700,
+      "color": "rgb(0, 0, 0)"
+    },
+    "bodyBounds": {
+      "x": 0,
+      "y": 325,
+      "width": 1440,
+      "height": 5071
+    },
+    "bodyStartY": 325,
+    "bodyPlaceholders": [
+      {
+        "type": "text",
+        "x": 80,
+        "y": 325,
+        "width": 193,
+        "height": 26
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 377,
+        "width": 1277,
+        "height": 141
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 544,
+        "width": 150,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 597,
+        "width": 741,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 644,
+        "width": 427,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 697,
+        "width": 1270,
+        "height": 165
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 888,
+        "width": 159,
+        "height": 27
+      },
+      {
+        "type": "image",
+        "x": 362,
+        "y": 920,
+        "width": 10,
+        "height": 10
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 941,
+        "width": 1270,
+        "height": 333
+      },
+      {
+        "type": "text",
+        "x": 48,
+        "y": 952,
+        "width": 274,
+        "height": 26
+      },
+      {
+        "type": "text",
+        "x": 48,
+        "y": 1006,
+        "width": 317,
+        "height": 120
+      },
+      {
+        "type": "text",
+        "x": 170,
+        "y": 1176,
+        "width": 80,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 170,
+        "y": 1243,
+        "width": 80,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1300,
+        "width": 276,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1353,
+        "width": 114,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1401,
+        "width": 489,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1425,
+        "width": 587,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1449,
+        "width": 1152,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1473,
+        "width": 911,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1497,
+        "width": 278,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1521,
+        "width": 1046,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1545,
+        "width": 914,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1569,
+        "width": 650,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1593,
+        "width": 309,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1641,
+        "width": 406,
+        "height": 69
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1736,
+        "width": 143,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1789,
+        "width": 1272,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1861,
+        "width": 641,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1885,
+        "width": 1234,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 1932,
+        "width": 1280,
+        "height": 72
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2005,
+        "width": 1254,
+        "height": 69
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2077,
+        "width": 1100,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2101,
+        "width": 750,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2125,
+        "width": 1277,
+        "height": 165
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2316,
+        "width": 557,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2369,
+        "width": 683,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2417,
+        "width": 780,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2441,
+        "width": 797,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2489,
+        "width": 149,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2537,
+        "width": 505,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2561,
+        "width": 1222,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2609,
+        "width": 1091,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2633,
+        "width": 1238,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2681,
+        "width": 1205,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2729,
+        "width": 342,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2776,
+        "width": 122,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2829,
+        "width": 1271,
+        "height": 69
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2924,
+        "width": 102,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 2977,
+        "width": 1270,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3048,
+        "width": 411,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3101,
+        "width": 1276,
+        "height": 117
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3244,
+        "width": 401,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3297,
+        "width": 1269,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3368,
+        "width": 275,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3421,
+        "width": 1219,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3445,
+        "width": 513,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3469,
+        "width": 842,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3493,
+        "width": 688,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3517,
+        "width": 807,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3541,
+        "width": 560,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3588,
+        "width": 560,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3641,
+        "width": 1262,
+        "height": 93
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3761,
+        "width": 595,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3785,
+        "width": 765,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3809,
+        "width": 716,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3856,
+        "width": 583,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 3909,
+        "width": 1274,
+        "height": 285
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4220,
+        "width": 237,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4273,
+        "width": 1015,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4320,
+        "width": 323,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4373,
+        "width": 1263,
+        "height": 117
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4516,
+        "width": 248,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4569,
+        "width": 1268,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4641,
+        "width": 238,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4665,
+        "width": 918,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4689,
+        "width": 1259,
+        "height": 45
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4760,
+        "width": 238,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4813,
+        "width": 1061,
+        "height": 21
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4836,
+        "width": 1280,
+        "height": 144
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 4981,
+        "width": 1260,
+        "height": 69
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 5076,
+        "width": 324,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 5129,
+        "width": 1274,
+        "height": 69
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 5224,
+        "width": 218,
+        "height": 27
+      },
+      {
+        "type": "text",
+        "x": 80,
+        "y": 5277,
+        "width": 1265,
+        "height": 69
+      }
+    ]
+  },
+  "skeleton": {
+    "signature": "sB(s(sB(s,s),sB),sB(sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB,sB),s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--header > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-header.aem-GridColumn.aem-GridColumn--default--12 > section.header-section.header-new-section > div.header__main.position-fixed.z-10.top-0.start-0.end-0.mx-md-4.mx-xxl-6.mt-md-8",
+      "rc1c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--header > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-header.aem-GridColumn.aem-GridColumn--default--12 > section.header-section.header-new-section > div.header__main.position-fixed.z-10.top-0.start-0.end-0.mx-md-4.mx-xxl-6.mt-md-8 > div.header__main--container.px-4.px-xl-6.px-xxl-14.bg-white.d-flex.flex-column > ul.header__main--tabs.list-style-none.d-flex.flex-md-row.flex-column.align-items-lg-center.mb-md-4.mb-xl-8.pt-8.pt-md-0.mt-3.mt-md-0",
+      "rc1c1c2": "#header-maintabpanel-0",
+      "rc1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--header > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-header.aem-GridColumn.aem-GridColumn--default--12 > section.header-section.header-new-section > div.header__placeholder.bg-white",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(1)",
+      "rc2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(2)",
+      "rc2c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(3)",
+      "rc2c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(4)",
+      "rc2c5": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(5)",
+      "rc2c6": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(6)",
+      "rc2c7": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(7)",
+      "rc2c8": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(8)",
+      "rc2c9": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(9)",
+      "rc2c10": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(10)",
+      "rc2c11": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(11)",
+      "rc2c12": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(12)",
+      "rc2c13": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(13)",
+      "rc2c14": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(14)",
+      "rc2c15": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(15)",
+      "rc2c16": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(16)",
+      "rc2c17": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(17)",
+      "rc2c18": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(18)",
+      "rc2c19": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(19)",
+      "rc2c20": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(20)",
+      "rc2c21": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(21)",
+      "rc2c22": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(22)",
+      "rc2c23": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(23)",
+      "rc2c24": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(24)",
+      "rc2c25": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(25)",
+      "rc2c26": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(26)",
+      "rc2c27": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(27)",
+      "rc2c28": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(28)",
+      "rc2c29": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(29)",
+      "rc2c30": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(30)",
+      "rc2c31": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(31)",
+      "rc2c32": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(32)",
+      "rc2c33": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(33)",
+      "rc2c34": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(34)",
+      "rc2c35": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(35)",
+      "rc2c36": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(36)",
+      "rc2c37": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(37)",
+      "rc2c38": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(38)",
+      "rc2c39": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(39)",
+      "rc2c40": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(40)",
+      "rc2c41": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(41)",
+      "rc2c42": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(42)",
+      "rc2c43": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(43)",
+      "rc2c44": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(44)",
+      "rc2c45": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(45)",
+      "rc2c46": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(46)",
+      "rc2c47": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(47)",
+      "rc2c48": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(48)",
+      "rc2c49": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(49)",
+      "rc2c50": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(50)",
+      "rc2c51": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(51)",
+      "rc2c52": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(52)",
+      "rc2c53": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(53)",
+      "rc2c54": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(54)",
+      "rc2c55": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(55)",
+      "rc2c56": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(56)",
+      "rc2c57": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(57)",
+      "rc2c58": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(58)",
+      "rc2c59": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(59)",
+      "rc2c60": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(60)",
+      "rc2c61": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(61)",
+      "rc2c62": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(62)",
+      "rc2c63": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(63)",
+      "rc2c64": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(64)",
+      "rc2c65": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(65)",
+      "rc2c66": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(66)",
+      "rc2c67": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(67)",
+      "rc2c68": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(68)",
+      "rc2c69": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(69)",
+      "rc2c70": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(70)",
+      "rc2c71": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(71)",
+      "rc2c72": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(72)",
+      "rc2c73": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(73)",
+      "rc2c74": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(74)",
+      "rc2c75": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(75)",
+      "rc2c76": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(76)",
+      "rc2c77": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(77)",
+      "rc2c78": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(78)",
+      "rc2c79": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(79)",
+      "rc2c80": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mgrte.text.aem-GridColumn.aem-GridColumn--default--12 > div.mgrte__container.text-black.w-100 > div > div:nth-of-type(80)",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "44ee60b",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 9 CTAs + 1 paragraph block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 1,
+        "imageCount": 0,
+        "buttonCount": 9,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "heading + text + 9 CTAs"
+      },
+      "selector": "div.cookieConsent.aem-GridColumn",
+      "bounds": {
+        "x": 0,
+        "y": 5396,
+        "width": 1440,
+        "height": 0
+      },
+      "screenshot": null,
+      "error": "Element not visible"
+    }
+  ]
+}

@@ -213,7 +213,10 @@
         "valueType": "string",
         "name": "link",
         "label": "Link",
-        "description": "The blog post the READ MORE bar opens."
+        "description": "The blog post the READ MORE bar opens.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -700,7 +703,10 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "Optional: a button under the description."
+        "description": "Optional: a button under the description.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -926,7 +932,10 @@
         "component": "aem-content",
         "valueType": "string",
         "name": "link",
-        "label": "Button link"
+        "label": "Button link",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1188,7 +1197,10 @@
         "name": "applyLink",
         "label": "Apply button link",
         "description": "A page, URL or mailto: address.",
-        "required": true
+        "required": true,
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1249,7 +1261,10 @@
         "valueType": "string",
         "name": "logoLink",
         "label": "Logo link",
-        "description": "Where the logo leads, e.g. the home page."
+        "description": "Where the logo leads, e.g. the home page.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1289,14 +1304,20 @@
         "valueType": "string",
         "name": "ctaLink",
         "label": "Button link",
-        "description": "A page, URL or mailto: address; without a link the button is not shown."
+        "description": "A page, URL or mailto: address; without a link the button is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "legalLink",
         "label": "Legal link",
-        "description": "E.g. the privacy policy."
+        "description": "E.g. the privacy policy.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1377,7 +1398,10 @@
         "name": "link1",
         "label": "Link 1",
         "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
-        "required": true
+        "required": true,
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1396,7 +1420,10 @@
         "valueType": "string",
         "name": "link2",
         "label": "Link 2",
-        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown."
+        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1414,7 +1441,10 @@
         "valueType": "string",
         "name": "link3",
         "label": "Link 3",
-        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown."
+        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1432,7 +1462,10 @@
         "valueType": "string",
         "name": "link4",
         "label": "Link 4",
-        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown."
+        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1492,6 +1525,166 @@
     ]
   },
   {
+    "id": "jsw-nav-brand",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logo",
+        "label": "Logo",
+        "description": "The JSW mark only, shown left of the brand name.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoAlt",
+        "label": "Logo alt text",
+        "description": "Describes the mark for screen readers when there is no brand name. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "brandName",
+        "label": "Brand name",
+        "description": "Shown as text right of the mark. Max 24 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 24
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "logoLink",
+        "label": "Logo link",
+        "description": "Where the logo leads.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-links",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link1",
+        "label": "Link 1 target",
+        "description": "Optional: a page or URL; Link 1 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link1Text",
+        "label": "Link 1 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link2",
+        "label": "Link 2 target",
+        "description": "Optional: a page or URL; Link 2 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link2Text",
+        "label": "Link 2 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link3",
+        "label": "Link 3 target",
+        "description": "Optional: a page or URL; Link 3 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link3Text",
+        "label": "Link 3 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link4",
+        "label": "Link 4 target",
+        "description": "Optional: a page or URL; Link 4 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link4Text",
+        "label": "Link 4 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-button",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "cta",
+        "label": "Button target",
+        "description": "Optional: a page or URL; the button is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaText",
+        "label": "Button text",
+        "description": "Optional; shown only with its target. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      }
+    ]
+  },
+  {
     "id": "parallax-collage",
     "fields": [
       {
@@ -1527,6 +1720,112 @@
         "label": "Position (optional)",
         "description": "Optional. \"large\" marks the hero image that shrinks to the top (default: the first image). Images then fill screen 1 (4 cards) and screen 2 (4 cards) in order.",
         "value": ""
+      }
+    ]
+  },
+  {
+    "id": "payment-failed",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Spotlight (word and car)",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – Image beside the text",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "displayWord",
+        "label": "Background word",
+        "description": "Variant A only: the large word behind the car. Max 12 characters.",
+        "value": "FAILED",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Status heading",
+        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
+        "value": "PAYMENT FAILED, {name}.",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form, {failureReason} with the payment's failure reason. Variant A: one line per sentence. Max 200 characters.",
+        "value": "{failureReason|Your payment didn’t go through.} If any amount was deducted, it will be refunded automatically.",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describes the image for screen readers. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "Optional: a button under the description, back to the reservation form by default.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        },
+        "value": "/content/uet-eds/jsw/reservation-form"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLinkText",
+        "label": "Button text",
+        "description": "The button's text. Max 30 characters.",
+        "value": "TRY AGAIN",
+        "validation": {
+          "maxLength": 30
+        }
       }
     ]
   },
@@ -1632,7 +1931,10 @@
         "valueType": "string",
         "name": "privacyLink",
         "label": "Privacy notice link",
-        "description": "The privacy notice page."
+        "description": "The privacy notice page.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -1723,14 +2025,20 @@
         "valueType": "string",
         "name": "successPage",
         "label": "Page after the form is sent",
-        "description": "Opens once the form is sent and its payment confirmed (default: /confirmation)."
+        "description": "Opens once the form is sent and its payment confirmed (default: /jsw/confirmation).",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "aem-content",
         "valueType": "string",
         "name": "failurePage",
         "label": "Page after a failed payment",
-        "description": "Opens after a failed payment (default: /payment-failed)."
+        "description": "Opens after a failed payment (default: /jsw/payment-failed).",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "tab",

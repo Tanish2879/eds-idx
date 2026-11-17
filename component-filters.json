@@ -28,10 +28,12 @@
       "blog-carousel",
       "reservation-form",
       "confirmation",
+      "payment-failed",
       "careers-hero",
       "job-board",
       "careers-perks",
-      "jsw-footer"
+      "jsw-footer",
+      "jsw-nav"
     ]
   },
   {
@@ -120,6 +122,14 @@
     "components": [
       "jsw-footer-column",
       "jsw-footer-social-link"
+    ]
+  },
+  {
+    "id": "jsw-nav",
+    "components": [
+      "jsw-nav-brand",
+      "jsw-nav-links",
+      "jsw-nav-button"
     ]
   },
   {

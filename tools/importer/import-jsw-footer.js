@@ -2,9 +2,9 @@
 /* global WebImporter */
 
 /**
- * Importer for the JSW pages' footer document /jsw-footer (source: drafts/jsw-footer/source.html).
+ * Importer for the JSW pages' footer document /jsw/jsw-footer (source: drafts/jsw/jsw-footer/source.html).
  * One block, jsw-footer, holding everything: its properties, then its children (columns and their
- * links, social links), + page metadata (no header, no footer). Writes ONLY /jsw-footer — no
+ * links, social links), + page metadata (no header, no footer). Writes ONLY /jsw/jsw-footer — no
  * other page is created or modified.
  *
  * jsw-footer rows (every property in its own cell): 1. logo (+ logoAlt)   2. logoLink
@@ -125,7 +125,7 @@ export default {
     document.body.append(main);
     return [{
       element: document.body,
-      path: '/jsw-footer',
+      path: '/jsw/jsw-footer',
       report: { title: document.title, template: 'jsw-footer', blocks: ['jsw-footer'] },
     }];
   },

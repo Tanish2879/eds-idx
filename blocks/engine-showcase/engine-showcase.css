@@ -6,7 +6,7 @@
 
 /* Engine Showcase: headline + switching text + thumbnails (left, bottom-anchored), large engine
    image with glass '+' hotspots filling the right half. Values from the reference walkthrough
-   (Figma frame 1280 wide; drafts/new-energy/jsw_walkthrough.mp4).
+   (Figma frame 1280 wide; drafts/jsw/new-energy/jsw_walkthrough.mp4).
    Mobile-first: base = phones (stacked), >= 768px = two columns. */
 
 /* the rise is set on the section on every frame while it rises: registered as not inherited, so a

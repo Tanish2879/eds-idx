@@ -202,7 +202,7 @@ var CustomImportScript = (() => {
       document.body.append(main);
       return [{
         element: document.body,
-        path: "/new-energy",
+        path: "/jsw/new-energy",
         report: { title: document.title, template: "new-energy", blocks: ["hero-video", "engine-showcase", "parallax-collage", "blog-carousel"] }
       }];
     }

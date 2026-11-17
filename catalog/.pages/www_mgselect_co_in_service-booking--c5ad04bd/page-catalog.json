@@ -1,0 +1,338 @@
+{
+  "url": "https://www.mgselect.co.in/service-booking",
+  "title": "Service Booking",
+  "timestamp": "2026-10-06T10:05:17.280Z",
+  "duration": "190.0s",
+  "cleanup": {
+    "elementsRemoved": 21,
+    "types": [
+      "popup"
+    ],
+    "cookieConsentDismissed": false
+  },
+  "fingerprints": {
+    "urlPattern": "/service-booking",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 900
+    },
+    "topSectionStrategy": "title+placeholder",
+    "topSectionPlaceholders": [
+      {
+        "type": "image",
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "type": "form",
+        "x": 688,
+        "y": 102,
+        "width": 652,
+        "height": 798
+      },
+      {
+        "type": "text",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "h2",
+        "fontSize": 20,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 738,
+        "y": 126,
+        "width": 552,
+        "height": 24,
+        "textLength": 14
+      },
+      {
+        "tag": "p",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 738,
+        "y": 158,
+        "width": 552,
+        "height": 16,
+        "textLength": 54
+      },
+      {
+        "tag": "span",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#f00000",
+        "backgroundColor": "#f0f0f0",
+        "x": 843,
+        "y": 206,
+        "width": 7,
+        "height": 16,
+        "textLength": 1
+      },
+      {
+        "tag": "span",
+        "fontSize": 12,
+        "fontWeight": 400,
+        "fontFamily": "roboto",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1203,
+        "y": 238,
+        "width": 49,
+        "height": 26,
+        "textLength": 7
+      },
+      {
+        "tag": "span",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#f00000",
+        "backgroundColor": "#f0f0f0",
+        "x": 808,
+        "y": 306,
+        "width": 7,
+        "height": 16,
+        "textLength": 1
+      },
+      {
+        "tag": "h2",
+        "fontSize": 20,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 738,
+        "y": 831,
+        "width": 552,
+        "height": 22,
+        "textLength": 15
+      },
+      {
+        "tag": "label",
+        "fontSize": 12,
+        "fontWeight": 400,
+        "fontFamily": "inter",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 760,
+        "y": 842,
+        "width": 406,
+        "height": 28,
+        "textLength": 83
+      },
+      {
+        "tag": "span",
+        "fontSize": 12,
+        "fontWeight": 400,
+        "fontFamily": "roboto",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1218,
+        "y": 852,
+        "width": 28,
+        "height": 24,
+        "textLength": 4
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43,
+        "textLength": 23
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 110,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#606060",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43,
+        "textLength": 30
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 170,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 900,
+    "topSectionTitleRect": {
+      "x": 738,
+      "y": 126,
+      "width": 552,
+      "height": 24,
+      "text": "BOOK A SERVICE",
+      "fontWeight": 700,
+      "color": "rgb(0, 0, 0)"
+    },
+    "bodyBounds": null,
+    "bodyStartY": null,
+    "bodyPlaceholders": []
+  },
+  "skeleton": {
+    "signature": "sB(s,s(sB,s),s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.serviceBooking.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.service-booking.position-relative > div.service-booking__bg.position-absolute.start-0.end-0.top-0.bottom-0.d-flex",
+      "rc2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.serviceBooking.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.service-booking.position-relative > div.service-booking__confetti.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.serviceBooking.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.service-booking.position-relative > div.service-booking__bg.position-absolute.start-0.end-0.top-0.bottom-0.d-flex",
+        "layout": null,
+        "hasBg": true,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.serviceBooking.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.service-booking.position-relative > div.service-booking__confetti.position-absolute.start-0.end-0.top-0.bottom-0",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      },
+      {
+        "id": "rc4",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "54a78d9c",
+      "type": "form",
+      "confidence": "high",
+      "description": "13 headings + 1 image + 20 CTAs + form block",
+      "content": {
+        "headingCount": 13,
+        "paragraphCount": 40,
+        "imageCount": 1,
+        "buttonCount": 20,
+        "linkCount": 1,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "large",
+        "structure": "heading + text + 20 CTAs + image"
+      },
+      "selector": "div.root.mg-container > div:nth-child(1) > div:nth-child(2)",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "screenshot": "blocks/54a78d9c.jpg"
+    },
+    {
+      "id": "44ee60b",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 9 CTAs + 1 paragraph block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 1,
+        "imageCount": 0,
+        "buttonCount": 9,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "heading + text + 9 CTAs"
+      },
+      "selector": "div.cookieConsent.aem-GridColumn",
+      "bounds": {
+        "x": 0,
+        "y": 900,
+        "width": 1440,
+        "height": 0
+      },
+      "screenshot": null,
+      "error": "Element not visible"
+    }
+  ]
+}

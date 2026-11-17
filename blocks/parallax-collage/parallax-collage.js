@@ -26,6 +26,10 @@ import {
 
 // the window size for the per-frame scroll code, kept from resize events (reading innerWidth /
 // innerHeight there would force a layout after the frame's style writes)
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const view = { w: window.innerWidth, h: window.innerHeight };
 window.addEventListener('resize', () => {
   view.w = window.innerWidth;
@@ -50,7 +54,7 @@ function rowImage(row) {
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
   return {
-    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+    src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href,
     alt: link.textContent.trim(),
     source: link,
   };

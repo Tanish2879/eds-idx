@@ -25,6 +25,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
 // and the longest text a field takes, by kind (the editor warns above it, its fields' maxLength;
 // longer texts are cut with "…"): headings, titles and other short texts; button labels;
 // descriptions and messages
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 export const MAX_JOBS = 15;
 export const MAX_CHARS = 64;
 export const MAX_LABEL_CHARS = 30;
@@ -125,7 +129,7 @@ function rowImage(row, field) {
     const drafts = pathname.indexOf('/drafts/');
     const label = link.textContent.trim();
     image = {
-      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href,
       alt: label && !label.includes('/') ? label : '',
       source: link,
     };

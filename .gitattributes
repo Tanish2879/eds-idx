@@ -1,3 +1,4 @@
 # Set default behavior to automatically normalize line endings to LF on commit
 * text=auto eol=lf
 
+catalog/**/*.jpg filter=lfs diff=lfs merge=lfs -text

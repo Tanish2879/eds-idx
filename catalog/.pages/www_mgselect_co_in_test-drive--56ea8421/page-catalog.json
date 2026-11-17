@@ -1,0 +1,617 @@
+{
+  "url": "https://www.mgselect.co.in/test-drive",
+  "title": "Book a Test Drive – Luxury MG Cars Near You | MG Select",
+  "timestamp": "2026-10-06T09:58:51.301Z",
+  "duration": "190.9s",
+  "cleanup": {
+    "elementsRemoved": 21,
+    "types": [
+      "popup"
+    ],
+    "cookieConsentDismissed": false
+  },
+  "fingerprints": {
+    "urlPattern": "/test-drive",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 100,
+      "width": 1440,
+      "height": 100
+    },
+    "topSectionStrategy": "title",
+    "topSectionPlaceholders": [
+      {
+        "type": "text",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 140,
+        "y": 142,
+        "width": 360,
+        "height": 35
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "h2",
+        "fontSize": 30,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 140,
+        "y": 142,
+        "width": 579,
+        "height": 35,
+        "textLength": 20
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43,
+        "textLength": 23
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 110,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 170,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 177,
+    "topSectionTitleRect": {
+      "x": 140,
+      "y": 142,
+      "width": 579,
+      "height": 35,
+      "text": "Experience the Drive",
+      "fontWeight": 700,
+      "color": "rgb(0, 0, 0)"
+    },
+    "bodyBounds": {
+      "x": 0,
+      "y": 200,
+      "width": 1440,
+      "height": 1299
+    },
+    "bodyStartY": 200,
+    "bodyPlaceholders": [
+      {
+        "type": "image",
+        "x": 779,
+        "y": 200,
+        "width": 581,
+        "height": 1299
+      },
+      {
+        "type": "text",
+        "x": 1081,
+        "y": 200,
+        "width": 339,
+        "height": 23
+      },
+      {
+        "type": "text",
+        "x": 140,
+        "y": 201,
+        "width": 484,
+        "height": 20
+      },
+      {
+        "type": "form",
+        "x": 140,
+        "y": 221,
+        "width": 579,
+        "height": 1206
+      },
+      {
+        "type": "image",
+        "x": 362,
+        "y": 920,
+        "width": 10,
+        "height": 10
+      },
+      {
+        "type": "text",
+        "x": 48,
+        "y": 952,
+        "width": 274,
+        "height": 26
+      },
+      {
+        "type": "text",
+        "x": 48,
+        "y": 1006,
+        "width": 317,
+        "height": 120
+      },
+      {
+        "type": "text",
+        "x": 170,
+        "y": 1176,
+        "width": 80,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 170,
+        "y": 1243,
+        "width": 80,
+        "height": 19
+      }
+    ]
+  },
+  "skeleton": {
+    "signature": "sB(sB,2x1B,s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": "2x1",
+        "hasBg": true,
+        "hint": "block"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "66238c6c",
+      "type": "form",
+      "confidence": "high",
+      "description": "form + 2-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 2,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "selector": "div.d-flex.column-gap-3",
+      "bounds": {
+        "x": 140,
+        "y": 253,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/66238c6c.jpg"
+    },
+    {
+      "id": "5a05a6dc",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 3-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 3,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 3,
+      "selector": "form.test-drive__form > div:nth-child(2)",
+      "bounds": {
+        "x": 140,
+        "y": 365,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a6dc.jpg"
+    },
+    {
+      "id": "5a05a6fb",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 3-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 3,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 3,
+      "selector": "form.test-drive__form > div:nth-child(3)",
+      "bounds": {
+        "x": 140,
+        "y": 477,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a6fb.jpg"
+    },
+    {
+      "id": "5a05a71a",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 3-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 3,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 3,
+      "selector": "form.test-drive__form > div:nth-child(4)",
+      "bounds": {
+        "x": 140,
+        "y": 589,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a71a.jpg"
+    },
+    {
+      "id": "5a05a739",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 4-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 4,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "moderate",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 4,
+      "selector": "form.test-drive__form > div:nth-child(5)",
+      "bounds": {
+        "x": 140,
+        "y": 701,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a739.jpg"
+    },
+    {
+      "id": "5a05a758",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 3-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 3,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 3,
+      "selector": "form.test-drive__form > div:nth-child(6)",
+      "bounds": {
+        "x": 140,
+        "y": 813,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a758.jpg"
+    },
+    {
+      "id": "5a05a777",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 3-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 3,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 3,
+      "selector": "form.test-drive__form > div:nth-child(7)",
+      "bounds": {
+        "x": 140,
+        "y": 925,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a777.jpg"
+    },
+    {
+      "id": "5a05a796",
+      "type": "columns",
+      "confidence": "medium",
+      "description": "form + 3-item layout block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 3,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": true,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "columnCount": 3,
+      "selector": "form.test-drive__form > div:nth-child(8)",
+      "bounds": {
+        "x": 140,
+        "y": 1037,
+        "width": 579,
+        "height": 104
+      },
+      "screenshot": "blocks/5a05a796.jpg"
+    },
+    {
+      "id": "39ad3692",
+      "type": "form",
+      "confidence": "high",
+      "description": "3 CTAs + form block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 3,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 2,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "3 CTAs"
+      },
+      "selector": "fieldset.mt-2",
+      "bounds": {
+        "x": 140,
+        "y": 1149,
+        "width": 579,
+        "height": 124
+      },
+      "screenshot": "blocks/39ad3692.jpg"
+    },
+    {
+      "id": "39ad3696",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "form block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 2,
+        "hasForm": true,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "selector": "fieldset.mt-6",
+      "bounds": {
+        "x": 140,
+        "y": 1297,
+        "width": 579,
+        "height": 82
+      },
+      "screenshot": "blocks/39ad3696.jpg"
+    },
+    {
+      "id": "625a0a7a",
+      "type": "hero",
+      "confidence": "high",
+      "description": "w",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 0,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 0,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "content"
+      },
+      "selector": "div.test-drive__right.d-none > picture:nth-child(1) > img:nth-child(1)",
+      "bounds": {
+        "x": 779,
+        "y": 102,
+        "width": 581,
+        "height": 1397
+      },
+      "screenshot": "blocks/625a0a7a.jpg"
+    },
+    {
+      "id": "44ee60b",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 heading + 9 CTAs + 1 paragraph block",
+      "content": {
+        "headingCount": 1,
+        "paragraphCount": 1,
+        "imageCount": 0,
+        "buttonCount": 9,
+        "linkCount": 0,
+        "listCount": 0,
+        "childCount": 1,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "heading + text + 9 CTAs"
+      },
+      "selector": "div.cookieConsent.aem-GridColumn",
+      "bounds": {
+        "x": 0,
+        "y": 1499,
+        "width": 1440,
+        "height": 0
+      },
+      "screenshot": null,
+      "error": "Element not visible"
+    }
+  ]
+}

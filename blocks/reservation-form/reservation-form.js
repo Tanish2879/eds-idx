@@ -27,9 +27,14 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * payment stays on the form. The pages read the values from this tab's storage.
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const BLOCK_ROWS = 18;
-const SUCCESS_PAGE = '/confirmation';
-const FAILURE_PAGE = '/payment-failed';
+// (the next pages without authored ones: the JSW pages', under /jsw)
+const SUCCESS_PAGE = '/jsw/confirmation';
+const FAILURE_PAGE = '/jsw/payment-failed';
 const KEY_ID = /^rzp_(test|live)_[A-Za-z0-9]+$/; // Razorpay's public Key ID
 const CONFIG = '/blocks/reservation-form/config.json'; // the block's configuration (the Key ID)
 const STORED = 'jsw-reservation'; // the form's data for the next pages (sessionStorage)
@@ -154,7 +159,7 @@ function rowImage(row) {
   if (!link) return null;
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href, alt: '', source: link };
+  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href, alt: '', source: link };
 }
 
 // "First Name" → "firstName"

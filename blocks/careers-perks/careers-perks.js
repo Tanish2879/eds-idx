@@ -12,6 +12,10 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  */
 
 // the most perks the block shows (the first ones in the content tree; the editor marks the others)
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 export const MAX_PERKS = 6;
 
 const BLOCK_ROWS = 2;
@@ -69,7 +73,7 @@ function cellImage(cell, field) {
     const { pathname } = new URL(link.href, window.location);
     const drafts = pathname.indexOf('/drafts/');
     image = {
-      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href,
       source: link,
     };
   }

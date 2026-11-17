@@ -63,10 +63,12 @@
         "blog-carousel",
         "reservation-form",
         "confirmation",
+        "payment-failed",
         "careers-hero",
         "job-board",
         "careers-perks",
-        "jsw-footer"
+        "jsw-footer",
+        "jsw-nav"
       ]
     }
   ]

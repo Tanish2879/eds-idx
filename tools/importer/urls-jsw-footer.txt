@@ -1,1 +1,1 @@
-http://localhost:3000/drafts/jsw-footer/source.html
+http://localhost:3000/drafts/jsw/jsw-footer/source.html

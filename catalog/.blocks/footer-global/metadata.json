@@ -1,0 +1,27 @@
+{
+  "id": "footer-global",
+  "name": "footer",
+  "type": "footer",
+  "canonicalModel": "configuration",
+  "version": "1.0.0",
+  "created": "2026-10-06T09:39:30.859Z",
+  "sourceContext": {
+    "originUrl": "https://www.mgselect.co.in/m9",
+    "discoveredDuring": "global-footer-capture"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "mixed",
+    "density": "moderate",
+    "complexity": "complex"
+  },
+  "usage": {
+    "pagesUsing": [
+      {
+        "url": "https://www.mgselect.co.in/m9",
+        "instanceId": "footer-global",
+        "screenshot": ".pages/_global/footer.jpg"
+      }
+    ],
+    "reuseCount": 1
+  }
+}

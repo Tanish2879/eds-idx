@@ -18,6 +18,11 @@ import { moveInstrumentation, isAuthoring } from '../../scripts/scripts.js';
  * the text is shown as written.
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
+const BLOCK = 'confirmation'; // (the block's name in its warnings; see decorateStatus)
 const VARIANTS = ['variant-a', 'variant-b'];
 const TOKEN = /(,?\s*)\{(\w+)(?:\|([^}]*))?\}/g;
 const STORED = 'jsw-reservation'; // the reservation form's last sent data (sessionStorage)
@@ -34,10 +39,10 @@ const MAX_LONG = 200;
  * in the editor it stays whole (edited in place: a cut text would be saved cut) and only the CSS
  * shortens what doesn't fit
  */
-function fit(value, limit, field, authoring) {
+function fit(value, limit, field, authoring, name = BLOCK) {
   if (!value || value.length <= limit) return value;
   // eslint-disable-next-line no-console
-  console.warn(`confirmation: the ${field} has ${value.length} characters, more than its ${limit}${authoring ? '' : ': cut with "…"'}`);
+  console.warn(`${name}: the ${field} has ${value.length} characters, more than its ${limit}${authoring ? '' : ': cut with "…"'}`);
   if (authoring) return value;
   return `${value.slice(0, limit - 1).replace(/\{[^}]*$/, '').trimEnd()}…`;
 }
@@ -74,19 +79,19 @@ function extensionOf(src) {
  * the code host (in the Universal Editor the page itself comes from AEM author). Only in an
  * accepted format (IMAGE_EXTENSIONS).
  */
-function rowImage(row, field) {
+function rowImage(row, field, name = BLOCK) {
   const img = row?.querySelector('img');
   const link = img ? null : row?.querySelector('a[href]');
   if (!img && !link) return null;
   let image;
   if (img) {
-    image = { src: img.src, alt: fit(img.alt, MAX_SHORT, `${field}'s alt text`, isAuthoring()), source: img };
+    image = { src: img.src, alt: fit(img.alt, MAX_SHORT, `${field}'s alt text`, isAuthoring(), name), source: img };
   } else {
     const { pathname } = new URL(link.href, window.location);
     const drafts = pathname.indexOf('/drafts/');
     const label = link.textContent.trim();
     image = {
-      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts)}` : link.href,
+      src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href,
       alt: label && !label.includes('/') ? label : '',
       source: link,
     };
@@ -94,7 +99,7 @@ function rowImage(row, field) {
   const extension = extensionOf(image.src);
   if (!IMAGE_EXTENSIONS.includes(extension)) {
     // eslint-disable-next-line no-console
-    console.warn(`confirmation: the ${field} "${image.src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't an accepted image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
+    console.warn(`${name}: the ${field} "${image.src}" is not shown: ${extension ? `.${extension}` : 'a file without an extension'} isn't an accepted image format (${IMAGE_EXTENSIONS.map((x) => `.${x}`).join(', ')})`);
     return null;
   }
   return image;
@@ -155,7 +160,11 @@ function picture(image, eager, breakpoints, className) {
   return pic;
 }
 
-export default function decorate(block) {
+/*
+ * Decorates a status page block (this one, or another sharing its fields and its DOM, e.g. the
+ * payment failure's): name, the block's name in its warnings
+ */
+export function decorateStatus(block, name = BLOCK) {
   const authoring = isAuthoring();
   // the Layout (default: Variant A)
   const variant = VARIANTS.find((v) => block.classList.contains(v)) || VARIANTS[0];
@@ -169,12 +178,12 @@ export default function decorate(block) {
   // the text: heading, description, optional button
   const copy = el('div', { class: 'content' });
   if (text(headingRow)) {
-    const heading = el('h1', { class: 'heading' }, ...content(fit(text(headingRow), MAX_SHORT, 'heading', authoring)));
+    const heading = el('h1', { class: 'heading' }, ...content(fit(text(headingRow), MAX_SHORT, 'heading', authoring, name)));
     if (authoring) editable(heading, 'heading', 'text', 'Status heading');
     copy.append(heading);
   }
   if (text(descriptionRow)) {
-    const parts = content(fit(text(descriptionRow), MAX_LONG, 'description', authoring));
+    const parts = content(fit(text(descriptionRow), MAX_LONG, 'description', authoring, name));
     const p = el('p', { class: 'description' }, ...(variant === 'variant-a' && !authoring ? bySentence(parts) : parts));
     if (authoring) editable(p, 'description', 'text', 'Description');
     copy.append(p);
@@ -182,22 +191,22 @@ export default function decorate(block) {
   const link = ctaRow?.querySelector('a[href]');
   if (link) {
     // (the text in its own span: cut with "…" when it doesn't fit)
-    const label = el('span', { class: 'cta-label' }, fit(text(link), MAX_LABEL, 'button text', authoring) || link.getAttribute('href'));
+    const label = el('span', { class: 'cta-label' }, fit(text(link), MAX_LABEL, 'button text', authoring, name) || link.getAttribute('href'));
     const cta = el('a', { class: 'cta', href: link.getAttribute('href') }, label);
     moveInstrumentation(link, cta);
     if (authoring) editable(label, 'ctaLinkText', 'text', 'Button text');
     copy.append(cta);
   }
 
-  const image = rowImage(imageRow, 'image');
+  const image = rowImage(imageRow, 'image', name);
   if (variant === 'variant-a') {
     // background (decorative, the largest element: loaded first), the word, the car in front
-    const background = rowImage(backgroundRow, 'background image');
+    const background = rowImage(backgroundRow, 'background image', name);
     if (background) background.alt = '';
     const bg = picture(background, true, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }], 'background');
     if (bg && authoring) editable(bg.querySelector('img'), 'background', 'media', 'Background image');
     const word = text(wordRow)
-      ? el('p', { class: 'word', 'aria-hidden': authoring ? undefined : 'true' }, fit(text(wordRow), MAX_WORD, 'background word', authoring))
+      ? el('p', { class: 'word', 'aria-hidden': authoring ? undefined : 'true' }, fit(text(wordRow), MAX_WORD, 'background word', authoring, name))
       : null;
     if (authoring) editable(word, 'displayWord', 'text', 'Background word');
     const car = picture(image, true, [{ media: '(min-width: 900px)', width: '1600' }, { width: '900' }], 'image');
@@ -211,4 +220,8 @@ export default function decorate(block) {
     const stage = el('div', { class: 'stage' }, photo, copy);
     block.replaceChildren(stage);
   }
+}
+
+export default function decorate(block) {
+  decorateStatus(block);
 }

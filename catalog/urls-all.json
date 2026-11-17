@@ -1,0 +1,163 @@
+{
+  "analysis-urls-all": {
+    "captured": "2026-10-06T09:14:47.046Z",
+    "totalUrls": 49,
+    "totalDocuments": 0,
+    "method": "sitemap",
+    "sitemapURL": "/sitemap.xml",
+    "robotsTxtFound": false,
+    "robotsTxtRulesApplied": false,
+    "limitations": "Sitemap lists AEM content paths; mapped /content/mgselect/in/en/<path>.html to public https://www.mgselect.co.in/<path>. Excluded errors.html container and errors/500.",
+    "confidence": "95%",
+    "urls": [
+      {
+        "url": "https://www.mgselect.co.in/"
+      },
+      {
+        "url": "https://www.mgselect.co.in/privacy"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/kmi"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/pre-reserve/post-payment"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/pre-reserve/choose-your-color"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/pre-reserve/book-your-slot"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/gallery"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/e-booking"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/service"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/e-book-couture-edition"
+      },
+      {
+        "url": "https://www.mgselect.co.in/cyberster/request-callback-couture-edition"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9/kmi"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9/gallery"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9/e-booking"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9/service"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9/e-book-couture-edition"
+      },
+      {
+        "url": "https://www.mgselect.co.in/m9/request-callback-couture-edition"
+      },
+      {
+        "url": "https://www.mgselect.co.in/errors/404"
+      },
+      {
+        "url": "https://www.mgselect.co.in/terms-of-service"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer-referral"
+      },
+      {
+        "url": "https://www.mgselect.co.in/about-us"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/hyderabad-pearl-select"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/delhi-shiva-motorcorp"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/mumbai-krishiv-auto"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/chandigarh-krishna-motor"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/chennai-fpl-mobility"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/gurugram-jubilant-motorworks"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/pune-nova-select"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/ahmedabad-aeromark-cars"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/surat-opulent-auto"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/kolkata-aeromark-cars"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/thane-tejpal-motors"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/cochin-coastal-select"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/bengaluru-jubilant-motorworks"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/bengaluru-aiconic-automobiles"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/showroom-locator"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/service-center-locator"
+      },
+      {
+        "url": "https://www.mgselect.co.in/dealer/partnership"
+      },
+      {
+        "url": "https://www.mgselect.co.in/test-drive"
+      },
+      {
+        "url": "https://www.mgselect.co.in/mg-refferal-program"
+      },
+      {
+        "url": "https://www.mgselect.co.in/brand-collaboration"
+      },
+      {
+        "url": "https://www.mgselect.co.in/brand-collaboration/jwc"
+      },
+      {
+        "url": "https://www.mgselect.co.in/brand-collaboration/callaway"
+      },
+      {
+        "url": "https://www.mgselect.co.in/brand-collaboration/blue-tokai-coffee-roasters"
+      },
+      {
+        "url": "https://www.mgselect.co.in/brand-collaboration/san-cha-tea-boutique"
+      },
+      {
+        "url": "https://www.mgselect.co.in/brand-collaboration/mg-select-x-gaurav-gupta"
+      },
+      {
+        "url": "https://www.mgselect.co.in/service-booking"
+      }
+    ],
+    "documents": []
+  }
+}

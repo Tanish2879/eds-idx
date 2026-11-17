@@ -1,0 +1,347 @@
+{
+  "url": "https://www.mgselect.co.in/",
+  "title": "MG Latest Luxury & Electric Cars in India - Prices & Models",
+  "timestamp": "2026-10-06T10:07:36.160Z",
+  "duration": "138.5s",
+  "cleanup": {
+    "elementsRemoved": 11,
+    "types": [
+      "popup"
+    ],
+    "cookieConsentDismissed": true
+  },
+  "fingerprints": {
+    "urlPattern": "/",
+    "topSectionBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 900
+    },
+    "topSectionStrategy": "hero",
+    "topSectionPlaceholders": [
+      {
+        "type": "image",
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      {
+        "type": "text",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43
+      },
+      {
+        "type": "text",
+        "x": 496,
+        "y": 707,
+        "width": 448,
+        "height": 32
+      },
+      {
+        "type": "text",
+        "x": 664,
+        "y": 798,
+        "width": 57,
+        "height": 19
+      },
+      {
+        "type": "text",
+        "x": 598,
+        "y": 800,
+        "width": 245,
+        "height": 35
+      },
+      {
+        "type": "image",
+        "x": 754,
+        "y": 801,
+        "width": 14,
+        "height": 14
+      },
+      {
+        "type": "image",
+        "x": 593,
+        "y": 851,
+        "width": 254,
+        "height": 49
+      }
+    ],
+    "topSectionTextElements": [
+      {
+        "tag": "h5",
+        "fontSize": 25,
+        "fontWeight": 700,
+        "fontFamily": "sequel",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 496,
+        "y": 707,
+        "width": 448,
+        "height": 32,
+        "textLength": 24
+      },
+      {
+        "tag": "span",
+        "fontSize": 14,
+        "fontWeight": 400,
+        "fontFamily": "roboto",
+        "color": "#f0f0f0",
+        "backgroundColor": "#f0f0f0",
+        "x": 663,
+        "y": 792,
+        "width": 57,
+        "height": 32,
+        "textLength": 7
+      },
+      {
+        "tag": "p",
+        "fontSize": 30,
+        "fontWeight": 400,
+        "fontFamily": "sequel",
+        "color": "#000000",
+        "backgroundColor": "#f0f0f0",
+        "x": 598,
+        "y": 800,
+        "width": 245,
+        "height": 35,
+        "textLength": 10
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#909090",
+        "x": 1144,
+        "y": 120,
+        "width": 276,
+        "height": 43,
+        "textLength": 23
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 110,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      },
+      {
+        "tag": "a",
+        "fontSize": 16,
+        "fontWeight": 700,
+        "fontFamily": "dienstag",
+        "color": "#f0f0f0",
+        "backgroundColor": "#606060",
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43,
+        "textLength": 30
+      },
+      {
+        "tag": "span",
+        "fontSize": 10,
+        "fontWeight": 800,
+        "fontFamily": "inter",
+        "color": "#f0f0f0",
+        "backgroundColor": "#000000",
+        "x": 1410,
+        "y": 170,
+        "width": 20,
+        "height": 20,
+        "textLength": 1
+      }
+    ],
+    "topSectionCropBottomY": 900,
+    "topSectionTitleRect": null,
+    "bodyBounds": null,
+    "bodyStartY": null,
+    "bodyPlaceholders": []
+  },
+  "skeleton": {
+    "signature": "4x1B(s,5x1(s(sB,s),s(sB,2x1(sB,sB)),sB(sB,20x1),14x1(s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB),s(sB,sB)),s(sB,sB(sB,s(,))),s),s(s,s,s,s))",
+    "nodeMap": {
+      "r": "body",
+      "rc1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c1c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.hero__banner--wrapper.position-relative > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100 > div.hero__banner__dm__img--container.h-100",
+      "rc2c1c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.banner.mg-select-scroller.light-header.aem-GridColumn.aem-GridColumn--default--12 > section.hero__banner--wrapper.position-relative > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100 > div.hero__banner__content--container-align.position-absolute.d-flex.flex-column.align-center.align-center-md.align-bottom.align-bottom-md.light",
+      "rc2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.productShowcase.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.productShowcase.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.product-showcase.position-relative > div.product-showcase__background.position-absolute.top-0.start-0.bottom-0.end-0",
+      "rc2c2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.productShowcase.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.product-showcase.position-relative > div.product-showcase__main.position-absolute.top-0.bottom-0.start-0.end-0",
+      "rc2c2c2c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.productShowcase.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.product-showcase.position-relative > div.product-showcase__main.position-absolute.top-0.bottom-0.start-0.end-0 > div.product-showcase__swiper.swiper.w-100.h-100.swiper-initialized.swiper-horizontal.swiper-backface-hidden > div.swiper-wrapper.w-100.h-100 > div.swiper-slide.w-100.h-100.position-relative.swiper-slide-active",
+      "rc2c2c2c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.productShowcase.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12 > section.product-showcase.position-relative > div.product-showcase__main.position-absolute.top-0.bottom-0.start-0.end-0 > div.product-showcase__swiper.swiper.w-100.h-100.swiper-initialized.swiper-horizontal.swiper-backface-hidden > div.swiper-wrapper.w-100.h-100 > div.swiper-slide.w-100.h-100.position-relative.swiper-slide-next",
+      "rc2c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.brandManifesto.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.brandManifesto.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > section.brand-manifesto.bg-white.hide-header.d-flex.flex-column > div.brand-manifesto__content.flex-fill.position-relative",
+      "rc2c3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.brandManifesto.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > section.brand-manifesto.bg-white.hide-header.d-flex.flex-column > div.brand-manifesto__gallery.d-flex",
+      "rc2c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.carousel.panelcontainer.mg-select-scroller.dark-header.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c4c1": "#carousel-cfe51e0893-item-088392d09e-tabpanel",
+      "rc2c4c1c1": "#carousel-cfe51e0893-item-088392d09e-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c1c2": "#carousel-cfe51e0893-item-088392d09e-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c2": "#carousel-cfe51e0893-item-069bad39f0-tabpanel",
+      "rc2c4c2c1": "#carousel-cfe51e0893-item-069bad39f0-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c2c2": "#carousel-cfe51e0893-item-069bad39f0-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c3": "#carousel-cfe51e0893-item-d557d7c18a-tabpanel",
+      "rc2c4c3c1": "#carousel-cfe51e0893-item-d557d7c18a-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c3c2": "#carousel-cfe51e0893-item-d557d7c18a-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c4": "#carousel-cfe51e0893-item-14d6d3a79f-tabpanel",
+      "rc2c4c4c1": "#carousel-cfe51e0893-item-14d6d3a79f-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c4c2": "#carousel-cfe51e0893-item-14d6d3a79f-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c5": "#carousel-cfe51e0893-item-22216424bf-tabpanel",
+      "rc2c4c5c1": "#carousel-cfe51e0893-item-22216424bf-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c5c2": "#carousel-cfe51e0893-item-22216424bf-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c6": "#carousel-cfe51e0893-item-cccd738849-tabpanel",
+      "rc2c4c6c1": "#carousel-cfe51e0893-item-cccd738849-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c6c2": "#carousel-cfe51e0893-item-cccd738849-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c7": "#carousel-cfe51e0893-item-661777ac8f-tabpanel",
+      "rc2c4c7c1": "#carousel-cfe51e0893-item-661777ac8f-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c7c2": "#carousel-cfe51e0893-item-661777ac8f-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c8": "#carousel-cfe51e0893-item-9c9f7bdd2b-tabpanel",
+      "rc2c4c8c1": "#carousel-cfe51e0893-item-9c9f7bdd2b-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c8c2": "#carousel-cfe51e0893-item-9c9f7bdd2b-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c9": "#carousel-cfe51e0893-item-b968e576ca-tabpanel",
+      "rc2c4c9c1": "#carousel-cfe51e0893-item-b968e576ca-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c9c2": "#carousel-cfe51e0893-item-b968e576ca-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c10": "#carousel-cfe51e0893-item-f5f65318ec-tabpanel",
+      "rc2c4c10c1": "#carousel-cfe51e0893-item-f5f65318ec-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c10c2": "#carousel-cfe51e0893-item-f5f65318ec-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c11": "#carousel-cfe51e0893-item-0c33cc03bc-tabpanel",
+      "rc2c4c11c1": "#carousel-cfe51e0893-item-0c33cc03bc-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c11c2": "#carousel-cfe51e0893-item-0c33cc03bc-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c12": "#carousel-cfe51e0893-item-87aeefedf3-tabpanel",
+      "rc2c4c12c1": "#carousel-cfe51e0893-item-87aeefedf3-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c12c2": "#carousel-cfe51e0893-item-87aeefedf3-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c13": "#carousel-cfe51e0893-item-208046f300-tabpanel",
+      "rc2c4c13c1": "#carousel-cfe51e0893-item-208046f300-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c13c2": "#carousel-cfe51e0893-item-208046f300-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c4c14": "#carousel-cfe51e0893-item-c83f37a9ac-tabpanel",
+      "rc2c4c14c1": "#carousel-cfe51e0893-item-c83f37a9ac-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.position-absolute.start-0.end-0.top-0.bottom-0",
+      "rc2c4c14c2": "#carousel-cfe51e0893-item-c83f37a9ac-tabpanel > div.banner.dark-header > section.hero__banner--wrapper.position-relative.hero__banner__image-fit > div.hero__banner--container.position-relative.z-3.overflow-hidden.vw-100.vh-100",
+      "rc2c5": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.tabs.panelcontainer.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc2c5c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.tabs.panelcontainer.mg-header-white.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-tabs.mg-select-tabs > div.mg-select-tabs__container.d-flex.align-items-center.h-100.bg-white.gap-8",
+      "rc2c5c2": "#tabs-155971f0e2-item-80ddd77fbf-tabpanel",
+      "rc2c5c2c1": "#tabs-155971f0e2-item-80ddd77fbf-tabpanel > div.timeline > section.timeline-container.height-vh.with-tab > div.timeline-container__container.d-flex.flex-column.justify-content-start.px-4.px-md-15 > div.d-flex.flex-column.flex-lg-row.justify-content-between.align-items-lg-center.gap-5.gap-md-10",
+      "rc2c5c2c2": "#tabs-155971f0e2-item-80ddd77fbf-tabpanel > div.timeline > section.timeline-container.height-vh.with-tab > div.timeline-container__container.d-flex.flex-column.justify-content-start.px-4.px-md-15 > div.timeline-swiper-container.swiper.overflow-hidden.handle-vh.swiper-initialized.swiper-horizontal",
+      "rc2c5c2c2c1": "#tabs-155971f0e2-item-80ddd77fbf-tabpanel > div.timeline > section.timeline-container.height-vh.with-tab > div.timeline-container__container.d-flex.flex-column.justify-content-start.px-4.px-md-15 > div.timeline-swiper-container.swiper.overflow-hidden.handle-vh.swiper-initialized.swiper-horizontal > div.swiper-wrapper.timeline-container__wrapper",
+      "rc2c5c2c2c2": "#tabs-155971f0e2-item-80ddd77fbf-tabpanel > div.timeline > section.timeline-container.height-vh.with-tab > div.timeline-container__container.d-flex.flex-column.justify-content-start.px-4.px-md-15 > div.timeline-swiper-container.swiper.overflow-hidden.handle-vh.swiper-initialized.swiper-horizontal > div.timeline-scales.mt-10.d-none.d-lg-block",
+      "rc2c6": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12 > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c1": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.cookieConsent.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c2": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.loader.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c3": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-footer.mg-select-scroller.aem-GridColumn.aem-GridColumn--default--12",
+      "rc3c4": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12 > div.cmp-experiencefragment.cmp-experiencefragment--footer > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.popUpModal.aem-GridColumn.aem-GridColumn--default--12"
+    },
+    "sections": [
+      {
+        "id": "rc1",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > header.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc2",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.mg-container.responsivegrid.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": "5x1",
+        "hasBg": false,
+        "hint": "block"
+      },
+      {
+        "id": "rc3",
+        "selector": "body > main > div.root.mg-container.responsivegrid > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > footer.experiencefragment.aem-GridColumn.aem-GridColumn--default--12",
+        "layout": null,
+        "hasBg": false,
+        "hint": "default-content"
+      }
+    ]
+  },
+  "blocks": [
+    {
+      "id": "2433b568",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 CTA block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 1,
+        "linkCount": 1,
+        "listCount": 0,
+        "childCount": 2,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "1 CTAs"
+      },
+      "selector": "#sticky-cta-cyber-wrapper-v2",
+      "bounds": {
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43
+      },
+      "screenshot": null,
+      "error": "Element not visible"
+    },
+    {
+      "id": "6a2d259f",
+      "type": "unknown",
+      "confidence": "low",
+      "description": "1 CTA block",
+      "content": {
+        "headingCount": 0,
+        "paragraphCount": 0,
+        "imageCount": 0,
+        "buttonCount": 1,
+        "linkCount": 1,
+        "listCount": 0,
+        "childCount": 2,
+        "hasForm": false,
+        "hasVideo": false
+      },
+      "visualChars": {
+        "colorScheme": "dark",
+        "density": "minimal",
+        "hasBackgroundImage": false,
+        "hasGrid": false,
+        "imagePattern": "noimg",
+        "structure": "1 CTAs"
+      },
+      "selector": "#sticky-cta-cyber-wrapper",
+      "bounds": {
+        "x": 1081,
+        "y": 180,
+        "width": 339,
+        "height": 43
+      },
+      "screenshot": null,
+      "error": "Element not found"
+    }
+  ]
+}

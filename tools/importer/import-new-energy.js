@@ -2,11 +2,11 @@
 /* global WebImporter */
 
 /**
- * Importer for the /new-energy page (design source: drafts/new-energy/source.html).
- * Builds a hero-video block, an engine-showcase block, (merged from /sustainable-future) a
+ * Importer for the /jsw/new-energy page (design source: drafts/jsw/new-energy/source.html).
+ * Builds a hero-video block, an engine-showcase block, (merged from /jsw/sustainable-future) a
  * parallax-collage block and a blog-carousel block, with xwalk field hints, + page metadata
  * (JSW nav, no footer).
- * Writes ONLY /new-energy — no other page is created or modified.
+ * Writes ONLY /jsw/new-energy — no other page is created or modified.
  *
  * Block rows:
  *   1. media (video link + poster image, grouped)   2. text (heading + paragraph)
@@ -135,7 +135,7 @@ export default {
       main.append(WebImporter.Blocks.createBlock(document, { name: 'engine-showcase', cells }));
     }
 
-    // section 3 (merged from /sustainable-future): parallax-collage
+    // section 3 (merged from /jsw/sustainable-future): parallax-collage
     // (row 1 heading + subtitle, rows 2+ image | position modifier)
     const collage = document.querySelector('.parallax-collage-source');
     if (collage) {
@@ -210,7 +210,7 @@ export default {
     document.body.append(main);
     return [{
       element: document.body,
-      path: '/new-energy',
+      path: '/jsw/new-energy',
       report: { title: document.title, template: 'new-energy', blocks: ['hero-video', 'engine-showcase', 'parallax-collage', 'blog-carousel'] },
     }];
   },

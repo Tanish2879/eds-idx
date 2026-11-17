@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Payment Failed | JSW Motors</title>
+  <meta name="description" content="Your JSW Motors reservation payment didn't go through. You can try again.">
+  <meta name="nav" content="/jsw/jsw-nav">
+  <meta name="footer" content="off">
+  <!-- the page this source becomes -->
+  <meta name="target-path" content="/jsw/payment-failed">
+</head>
+<body>
+  <!-- Payment Failed block (the confirmation block's replica), Variant A: the payment failure
+       page (the reservation form goes here when Razorpay declines a payment or it can't be
+       verified), the "Reserved" page's layout. {name} comes from the reservation form's data;
+       {failureReason|…} is Razorpay's reason, or the fallback. -->
+  <section class="confirmation-source" data-block="payment-failed" data-variant="variant-a">
+    <p class="word">FAILED</p>
+    <h1>PAYMENT FAILED, {name}.</h1>
+    <p class="description">{failureReason|Your payment didn’t go through.} If any amount was deducted, it will be refunded automatically.</p>
+    <img class="image" src="/drafts/jsw/confirmation/reserved-car.png" alt="A JSW Motors SUV in silhouette">
+    <img class="background" src="/drafts/jsw/confirmation/reserved-spotlight.jpg" alt="">
+    <a class="cta" href="/jsw/reservation-form">TRY AGAIN</a>
+  </section>
+</body>
+</html>
