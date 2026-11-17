@@ -98,6 +98,29 @@
   --nav-height: 0px;
 }
 
+/* the JSW theme (a page's "theme" metadata jsw: a class on the body): the page's base type and
+   the design tokens the blocks made for the JSW sites read (the cards block): the New Science
+   faces of the site's Adobe Fonts kit (styles/fonts.css; until they load, Sequel / Inter; the
+   kit's heaviest weight Medium 500), sizes in rem */
+body.jsw {
+  --body-font-family: new-science, inter, inter-fallback, arial, sans-serif;
+  --heading-font-family: new-science-extended, sequel, sequel-fallback, arial, sans-serif;
+  --heading-font-weight: 500;
+  --font-family-display: var(--heading-font-family);
+  --font-family-base: var(--body-font-family);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --spacing-12: 0.75rem;
+  --spacing-16: 1rem;
+  --spacing-24: 1.5rem;
+  --spacing-64: 4rem;
+  --radius-4: 0.25rem;
+  --color-gray-10: #f2f2f2;
+  --color-gray-20: #e0e0e0;
+  --color-gray-60: #737373;
+  --color-accent: #f0b866; /* (the editor's notices: the JSW bronze) */
+}
+
 /* fallback fonts (metric-matched to reduce CLS while web fonts load) */
 @font-face {
   font-family: sequel-fallback;

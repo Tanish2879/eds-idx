@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/cards/source.html",
+  "path": "jsw/cards",
+  "timestamp": "2026-11-17T05:50:57.579Z",
+  "title": "Cards | JSW Motors",
+  "template": "cards",
+  "blocks": [
+    "cards"
+  ],
+  "styles": [
+    "default",
+    "carousel",
+    "timeline"
+  ],
+  "importScript": "3f6a44c75eaa"
+}

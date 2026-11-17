@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cards | JSW Motors</title>
+  <meta name="description" content="The JSW Motors cards: highlights, a carousel of the range and the story so far.">
+  <meta name="nav" content="/jsw/jsw-nav">
+  <meta name="footer" content="/jsw/jsw-footer">
+  <meta name="theme" content="jsw">
+</head>
+<body>
+  <!-- Design source for /jsw/cards (tools/importer/import-cards.js): one section per cards style
+       that runs today (Default, Carousel, Timeline; Pillars and Roller need
+       scripts/utils/gesture-stepper.js). Each section: its heading (default content), then the
+       cards block in that style (data-style, the block's Style option), one card per .card: its
+       image and its text (rich text, in each style's shape). Images: the JSW placeholders. -->
+
+  <!-- Default: a grid of cards (image, heading, text) -->
+  <section class="cards-source" data-style="">
+    <h2>Built for India</h2>
+    <div class="card">
+      <img src="/drafts/jsw/sustainable-future/charger.jpg" alt="An electric vehicle charging at a public charger">
+      <div class="text"><h3>Charging made simple</h3><p>A growing public network and home charging that fits a daily routine.</p></div>
+    </div>
+    <div class="card">
+      <img src="/drafts/jsw/sustainable-future/road.jpg" alt="An open highway at dusk">
+      <div class="text"><h3>Made for the distance</h3><p>Range planned around Indian roads, cities and long highway runs.</p></div>
+    </div>
+    <div class="card">
+      <img src="/drafts/jsw/sustainable-future/warehouse.jpg" alt="A vehicle assembly hall">
+      <div class="text"><h3>Built here</h3><p>Engineered and assembled in India, with local suppliers and service.</p></div>
+    </div>
+  </section>
+
+  <!-- Carousel: 6 to 12 square cards, the section's heading as the carousel's title -->
+  <section class="cards-source" data-style="carousel">
+    <h2>The new energy range</h2>
+    <div class="card"><img src="/drafts/jsw/sustainable-future/jetour.jpg" alt="A JSW Motors SUV on a city street"><div class="text"><p>Everyday SUV</p></div></div>
+    <div class="card"><img src="/drafts/jsw/sustainable-future/chassis.jpg" alt="An EV chassis with its battery pack"><div class="text"><p>Battery platform</p></div></div>
+    <div class="card"><img src="/drafts/jsw/sustainable-future/engine.jpg" alt="An electric drive unit"><div class="text"><p>Electric drive</p></div></div>
+    <div class="card"><img src="/drafts/jsw/sustainable-future/phone.jpg" alt="The companion app on a phone"><div class="text"><p>Connected app</p></div></div>
+    <div class="card"><img src="/drafts/jsw/sustainable-future/spring.jpg" alt="A suspension spring close up"><div class="text"><p>Ride comfort</p></div></div>
+    <div class="card"><img src="/drafts/jsw/sustainable-future/launch-event.jpg" alt="A vehicle unveiled on stage"><div class="text"><p>Launch events</p></div></div>
+  </section>
+
+  <!-- Timeline: 6 to 10 chapter cards; each text: the year, the chapter (bold), the title (a
+       heading), the description and the location (italic) -->
+  <section class="cards-source" data-style="timeline">
+    <h2>The story so far</h2>
+    <div class="card"><img src="/drafts/jsw/new-energy/slide-warm.jpg" alt="Steel being rolled at a mill"><div class="text"><p>1982</p><p><strong>The origin</strong></p><h3>Into steel</h3><p>The group's first steel plant opens, the start of an industrial journey.</p><p><em>Tarapur, Maharashtra</em></p></div></div>
+    <div class="card"><img src="/drafts/jsw/new-energy/slide-mono.jpg" alt="A large integrated steel works"><div class="text"><p>1994</p><p><strong>Scale</strong></p><h3>Integrated works</h3><p>An integrated steel works sets the pace for growth across the country.</p><p><em>Toranagallu, Karnataka</em></p></div></div>
+    <div class="card"><img src="/drafts/jsw/new-energy/slide-cool.jpg" alt="Wind turbines on a ridge"><div class="text"><p>2000</p><p><strong>Energy</strong></p><h3>Power for industry</h3><p>The energy business begins, building capacity for a cleaner grid.</p><p><em>Vijayanagar, Karnataka</em></p></div></div>
+    <div class="card"><img src="/drafts/jsw/new-energy/engine-bev.jpg" alt="A battery electric drivetrain"><div class="text"><p>2021</p><p><strong>New energy</strong></p><h3>Going electric</h3><p>Work starts on batteries and electric drives for the vehicles to come.</p><p><em>Mumbai, Maharashtra</em></p></div></div>
+    <div class="card"><img src="/drafts/jsw/new-energy/engine-phev.jpg" alt="A plug-in hybrid drivetrain"><div class="text"><p>2024</p><p><strong>Motors</strong></p><h3>JSW Motors</h3><p>A vehicle company of its own, with a range planned for Indian roads.</p><p><em>Mumbai, Maharashtra</em></p></div></div>
+    <div class="card"><img src="/drafts/jsw/new-energy/engine-erev.jpg" alt="A range-extended electric drivetrain"><div class="text"><p>2026</p><p><strong>Launch</strong></p><h3>On the road</h3><p>The first JSW Motors vehicles reach customers across the country.</p><p><em>India</em></p></div></div>
+  </section>
+</body>
+</html>
