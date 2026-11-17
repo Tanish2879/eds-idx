@@ -657,6 +657,70 @@
     ]
   },
   {
+    "id": "collage",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "Shown below the collage. Max 60 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 60
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "Shown under the heading. Max 280 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 280
+        }
+      }
+    ]
+  },
+  {
+    "id": "collage-image",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "The first image is the centre tile; the next four fill the top left, bottom left, top right and bottom right. JPG, PNG, WebP or AVIF only.",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describes the image for screen readers. Max 125 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 125
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "caption",
+        "label": "Caption",
+        "description": "Optional; shown with the image when it is opened large. Max 40 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 40
+        }
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {

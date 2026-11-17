@@ -76,7 +76,7 @@ var CustomImportScript = (() => {
   }
   var import_interactive_showcase_default = {
     transform: (payload) => {
-      var _a, _b, _c, _d, _e;
+      var _a, _b, _c, _d, _e, _f, _g;
       const { document } = payload;
       const src = document.querySelector(".interactive-showcase-source");
       const main = document.createElement("main");
@@ -91,19 +91,36 @@ var CustomImportScript = (() => {
         ]);
       });
       main.append(WebImporter.Blocks.createBlock(document, { name: "interactive-showcase", cells }));
+      const collage = document.querySelector(".collage-source");
+      if (collage) {
+        main.append(document.createElement("hr"));
+        const collageCells = [
+          [textCell(document, "heading", clean((_b = collage.querySelector(":scope > h2")) == null ? void 0 : _b.textContent))],
+          [textCell(document, "description", clean((_c = collage.querySelector(":scope > .description")) == null ? void 0 : _c.textContent))]
+        ];
+        [...collage.querySelectorAll(":scope > figure")].slice(0, 5).forEach((figure) => {
+          var _a2;
+          const img = figure.querySelector("img");
+          collageCells.push([
+            img ? hinted(document, "image", picture(document, img)) : hinted(document, "image"),
+            textCell(document, "caption", clean((_a2 = figure.querySelector("figcaption")) == null ? void 0 : _a2.textContent))
+          ]);
+        });
+        main.append(WebImporter.Blocks.createBlock(document, { name: "collage", cells: collageCells }));
+      }
       main.append(WebImporter.Blocks.getMetadataBlock(document, {
         Title: clean(document.title),
-        Description: clean((_b = document.querySelector('meta[name="description"]')) == null ? void 0 : _b.getAttribute("content")),
-        nav: clean((_c = document.querySelector('meta[name="nav"]')) == null ? void 0 : _c.getAttribute("content")),
-        footer: clean((_d = document.querySelector('meta[name="footer"]')) == null ? void 0 : _d.getAttribute("content")),
-        Theme: clean((_e = document.querySelector('meta[name="theme"]')) == null ? void 0 : _e.getAttribute("content"))
+        Description: clean((_d = document.querySelector('meta[name="description"]')) == null ? void 0 : _d.getAttribute("content")),
+        nav: clean((_e = document.querySelector('meta[name="nav"]')) == null ? void 0 : _e.getAttribute("content")),
+        footer: clean((_f = document.querySelector('meta[name="footer"]')) == null ? void 0 : _f.getAttribute("content")),
+        Theme: clean((_g = document.querySelector('meta[name="theme"]')) == null ? void 0 : _g.getAttribute("content"))
       }));
       document.body.innerHTML = "";
       document.body.append(main);
       return [{
         element: document.body,
         path: "/jsw/interactive-showcase",
-        report: { title: document.title, template: "interactive-showcase", blocks: ["interactive-showcase"] }
+        report: { title: document.title, template: "interactive-showcase", blocks: ["interactive-showcase", "collage"] }
       }];
     }
   };

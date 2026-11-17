@@ -412,8 +412,11 @@ function decorateCarousel(block, ul, options = {}) {
  * @returns {string}
  */
 function fallbackAlt(li, src) {
-  const heading = li.querySelector('h1, h2, h3, h4, h5, h6')?.textContent.trim();
-  const line = [...li.querySelectorAll('p')].map((p) => p.textContent.trim()).find(Boolean);
+  // (a text's words: its line breaks spaces)
+  const words = (node) => [...(node?.childNodes || [])]
+    .map((n) => (n.nodeName === 'BR' ? ' ' : n.textContent)).join('').replace(/\s+/g, ' ').trim();
+  const heading = words(li.querySelector('h1, h2, h3, h4, h5, h6'));
+  const line = [...li.querySelectorAll('p')].map(words).find(Boolean);
   if (heading || line) return heading || line;
   let name = '';
   try {

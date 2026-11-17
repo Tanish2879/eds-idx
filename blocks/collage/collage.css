@@ -1,0 +1,400 @@
+/* Collage: up to five image tiles around a tall centre one (the design's 1270 × 714 walkthrough:
+   an 807 × 360 composition, 9px between the columns, 15px between a column's two tiles), then
+   the heading and text, centred in the next screen. Sizes in rem, the composition's measured in
+   --u: 1rem at the design's size, smaller where the screen is (its whole width or height kept).
+   On the site the collage plays in while its stage is pinned (collage.js); a tile opens large in
+   the overlay (.overlay > .expanded-view). Every rule nested in the block's root. */
+
+main > .section > .collage-wrapper {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+main > .section > .collage-wrapper > .block {
+  --u: min(1rem, (100vw - 2rem) / 50.4375, (100svh - 8rem) / 22.5);
+  --run: 100svh; /* (the play-in's scroll: one screen) */
+  --gap-x: calc(0.5625 * var(--u));
+  --gap-y: calc(0.9375 * var(--u));
+  --radius: calc(0.625 * var(--u));
+  --ink: #111;
+  --muted: #666;
+  --card-light: #f2f2f2;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* type: the New Science faces of the site's Adobe Fonts kit (styles/fonts.css): the heading
+     New Science Extended, the text New Science; until they load, Sequel / Inter */
+  --display-font: new-science-extended, var(--display-font-family);
+  --body-font: new-science, var(--body-font-family);
+
+  position: relative;
+  background-color: var(--color-white);
+  color: var(--ink);
+
+  /* (its section: the collage edge to edge, no padding) */
+  main > .section:has(> .collage-wrapper > :where(&)) {
+    padding: 0;
+  }
+
+  .track {
+    position: relative;
+  }
+
+  .stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    height: 100svh;
+    overflow: clip;
+  }
+
+  /* the composition: each tile in its place, as the design measures it */
+  .gallery {
+    position: relative;
+    width: calc(50.4375 * var(--u));
+    height: calc(22.5 * var(--u));
+    transform-origin: 50% 50%;
+  }
+
+  .gallery-item {
+    position: absolute;
+    display: block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background-color: #000;
+    cursor: zoom-in;
+
+    &[data-slot='centre'] {
+      top: 0;
+      left: calc(16.25 * var(--u));
+      width: calc(17.75 * var(--u));
+      height: calc(22.5 * var(--u));
+    }
+
+    &[data-slot='top-left'] {
+      top: 0;
+      left: calc(8.125 * var(--u));
+      width: calc(7.5625 * var(--u));
+      height: calc(9.4375 * var(--u));
+    }
+
+    &[data-slot='bottom-left'] {
+      top: calc(10.375 * var(--u));
+      left: 0;
+      width: calc(15.6875 * var(--u));
+      height: calc(12.125 * var(--u));
+    }
+
+    &[data-slot='top-right'] {
+      top: 0;
+      left: calc(34.5625 * var(--u));
+      width: calc(15.875 * var(--u));
+      height: calc(12.3125 * var(--u));
+    }
+
+    &[data-slot='bottom-right'] {
+      top: calc(13.25 * var(--u));
+      left: calc(34.5625 * var(--u));
+      width: calc(7.5625 * var(--u));
+      height: calc(9.25 * var(--u));
+    }
+
+    & picture {
+      display: block;
+      height: 100%;
+    }
+
+    &:focus-visible {
+      outline: 0.125rem solid var(--ink);
+      outline-offset: 0.1875rem;
+    }
+  }
+
+  .image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease), filter 0.6s var(--ease);
+  }
+
+  /* (the centre tile's image whole on the black: the design's cut-out engine) */
+  [data-slot='centre'] .image {
+    object-fit: contain;
+  }
+
+  /* hover: the tile's image leans in, brighter */
+  @media (hover: hover) {
+    .gallery-item:hover .image {
+      transform: scale(1.04);
+      filter: brightness(1.08);
+    }
+  }
+
+  /* the play-in (the site): the stage pinned for the track's extra screen; the hero, the centre
+     tile's image on a full-screen card, clipped down into the centre slot (collage.js sets its
+     clip, its colour mix and its image's box and transform), the centre tile itself shown once
+     landed */
+  &.is-animated {
+    .track {
+      height: calc(100svh + var(--run));
+    }
+
+    .stage {
+      position: sticky;
+      top: 0;
+    }
+
+    .gallery,
+    .gallery-item {
+      will-change: transform;
+    }
+
+    &:not(.is-landed) .gallery-item[data-slot='centre'] {
+      visibility: hidden;
+    }
+  }
+
+  .hero {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background-color: color-mix(in srgb, #000 var(--mix, 0%), var(--card-light));
+    pointer-events: none;
+
+    & picture {
+      display: contents;
+    }
+
+    .image {
+      position: absolute;
+      object-fit: contain;
+      transform-origin: 50% 50%;
+      transition: none;
+      will-change: transform;
+    }
+  }
+
+  &.is-landed .hero {
+    visibility: hidden;
+  }
+
+  /* the heading and text: centred in the screen after the collage */
+  .copy {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    box-sizing: border-box;
+    min-height: 100svh;
+    padding: 4rem 1.5rem;
+    text-align: center;
+  }
+
+  .heading {
+    max-width: 36rem;
+    margin: 0;
+    font-family: var(--display-font);
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
+
+    @media (width >= 600px) {
+      font-size: 1.5rem;
+    }
+
+    /* (the walkthrough's 30px heading) */
+    @media (width >= 900px) {
+      font-size: 1.875rem;
+    }
+  }
+
+  .description {
+    max-width: 43.5rem;
+    margin: 1.25rem 0 0;
+    font-family: var(--body-font);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  /* the editor: a tile's caption shown on it (edited in place), a note on a file it doesn't
+     show, an image past the five dimmed */
+  .gallery-item .caption {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 0.25rem 0.5rem;
+    font-family: var(--body-font);
+    font-size: 0.75rem;
+    color: var(--color-white);
+    background-color: rgb(0 0 0 / 50%);
+  }
+
+  .note {
+    margin: 0;
+    padding: 0.75rem;
+    font-family: var(--body-font);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--color-white);
+  }
+
+  .extra {
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: 0;
+    padding: 0.25rem 0.5rem;
+    font-family: var(--body-font);
+    font-size: 0.75rem;
+    opacity: 0.5;
+    outline: 0.0625rem dashed currentcolor;
+  }
+
+  /* the expanded view: the image large over a dark overlay, its caption under it, the close
+     button above; it grows out of its tile (collage.js) */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    padding: 4rem 1rem 3rem;
+    background-color: rgb(0 0 0 / 0%);
+    cursor: zoom-out;
+    transition: background-color 0.5s var(--ease);
+
+    &[hidden] {
+      display: none;
+    }
+
+    &.is-open {
+      background-color: rgb(0 0 0 / 85%);
+    }
+  }
+
+  .expanded-view {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    outline: none;
+    cursor: default;
+    transform-origin: 0 0;
+    transition: transform 0.55s var(--ease);
+
+    & picture {
+      display: block;
+    }
+
+    .image {
+      width: auto;
+      height: auto;
+      max-width: min(90vw, 75rem);
+      max-height: calc(100svh - 9rem);
+      border-radius: 0.75rem;
+      object-fit: contain;
+      transition: none;
+    }
+
+    .caption {
+      font-family: var(--body-font);
+      font-size: 0.875rem;
+      line-height: 1.4;
+      color: var(--color-white);
+      opacity: 0;
+      transition: opacity 0.3s ease 0.25s;
+    }
+
+    .close {
+      position: absolute;
+      top: -3rem;
+      right: 0;
+      width: 2.25rem;
+      height: 2.25rem;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background-color: rgb(255 255 255 / 16%);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s ease 0.25s, background-color 0.2s ease;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1rem;
+        height: 0.125rem;
+        border-radius: 0.0625rem;
+        background-color: var(--color-white);
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      &::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+
+      &:hover {
+        background-color: rgb(255 255 255 / 28%);
+      }
+
+      &:focus-visible {
+        outline: 0.125rem solid var(--color-white);
+        outline-offset: 0.125rem;
+      }
+    }
+  }
+
+  .overlay.is-open .expanded-view {
+    .caption,
+    .close {
+      opacity: 1;
+    }
+  }
+
+  .overlay.is-closing .expanded-view {
+    .caption,
+    .close {
+      opacity: 0;
+      transition-delay: 0s;
+    }
+  }
+
+  /* (an image open: the page behind doesn't scroll) */
+  :root:has(& .overlay:not([hidden])) {
+    overflow: hidden;
+  }
+
+  /* static (the editor, reduced motion): the collage in place, the text under it */
+  &.is-static {
+    .stage {
+      height: auto;
+      padding: 8rem 1rem 2rem;
+    }
+
+    .copy {
+      min-height: 0;
+      padding-top: 2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .image,
+    .overlay,
+    .expanded-view {
+      transition: none;
+    }
+  }
+}
