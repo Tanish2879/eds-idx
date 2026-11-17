@@ -667,13 +667,13 @@ main > .section > .cards-wrapper > .block {
       }
     }
 
-    /* horizontal (the default): tied to the scroll, the current image wipes off from its left
-       edge to its right as the page scrolls down (right to left back up), the next one's zoom
-       settling, the texts crossfading as they drift left to right; each card's place in that set
+    /* horizontal (the default): tied to the scroll, the current image wipes off from its right
+       edge to its left as the page scrolls down (left to right back up), the next one's zoom
+       settling, the texts crossfading as they drift right to left; each card's place in that set
        by the script (--wipe, --near, --seen, --shift, see track in cards.js) */
     &.horizontal.is-stepped {
       .image {
-        clip-path: inset(0 0 0 var(--wipe, 0%) round 1.5rem);
+        clip-path: inset(0 var(--wipe, 0%) 0 0 round 1.5rem);
       }
 
       .img {
@@ -683,7 +683,7 @@ main > .section > .cards-wrapper > .block {
 
       .content {
         opacity: var(--seen, 0);
-        transform: translateX(calc(var(--shift, 0) * 3rem));
+        transform: translateX(calc(var(--shift, 0) * -3rem));
       }
     }
     /* stylelint-enable no-descending-specificity */
