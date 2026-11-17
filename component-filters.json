@@ -110,6 +110,16 @@
     ]
   },
   {
+    "id": "interactive-showcase",
+    "components": [
+      "interactive-showcase-item"
+    ]
+  },
+  {
+    "id": "interactive-showcase-full",
+    "components": []
+  },
+  {
     "id": "job-board",
     "components": [
       "job-board-search",

@@ -1,0 +1,1254 @@
+/*
+ * interactive-showcase: white rounded card, 2 columns.
+ * Left: heading, then counter, powertrain title + copy and the thumbnail tray.
+ * Right: showcase image (cut out, straight on the card) with "+" hotspots and a frosted tooltip.
+ * Values from the "NEV / Tech 1-3 1280x720" frames.
+ */
+
+/* the card spans the page, inset 8px on every side (not the site's 1200px content column) */
+main > .section > .interactive-showcase-wrapper {
+  max-width: none;
+  padding: 8px;
+}
+
+.interactive-showcase {
+  /* design tokens, as on the JSW NEV page; a page can override any of them */
+  --interactive-showcase-ink: #0d0d0d;
+  --interactive-showcase-white: #fff;
+  --interactive-showcase-text-dark: var(--color-black, #000);
+  --interactive-showcase-text-muted-dark: var(--color-gray-70, #4d4d4d);
+  --interactive-showcase-text-counter: var(--color-gray-60, #666);
+
+  /* every text in the block is New Science, the project's own text font: its --text-font-family
+     (with its metric-matched fallback) where the project defines one, else New Science itself;
+     the main title is New Science Extended. The Adobe Fonts kit is loaded by head.html */
+  --interactive-showcase-font: var(--text-font-family, new-science, 'Helvetica Neue', arial, sans-serif);
+  --interactive-showcase-font-display: var(--font-family-display, new-science-extended, var(--interactive-showcase-font));
+  --interactive-showcase-font-body: var(--interactive-showcase-font);
+  --interactive-showcase-radius-card: 24px;
+  --interactive-showcase-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* a tooltip growing out of its hotspot and shrinking back: the same time and an even curve
+     (slow - fast - slow) both ways, so closing is opening played backwards */
+  --interactive-showcase-grow-time: 0.75s;
+  --interactive-showcase-grow-ease: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* the motor images sliding from one item to the next when a thumbnail is picked (.panel):
+     how long it takes (change this one value to make it slower or faster) and its curve, a
+     gentle ease-out, so the image glides in rather than shooting in and stopping */
+  --interactive-showcase-slide-time: 0.6s;
+  --interactive-showcase-slide-ease: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* the closed hotspot's box: its tooltip starts as exactly this box and closes back into it */
+  --interactive-showcase-spot: 60px;
+  --interactive-showcase-spot-radius: 12px;
+
+  /* one colour for the closed hotspot and its open tooltip (40% black, the open module's), so the
+     box never changes colour as it opens and closes */
+  --interactive-showcase-spot-bg: rgb(0 0 0 / 20%);
+  --interactive-showcase-edge: 20px;
+
+  /* one hundredth of the screen's height (vh / svh, svh falling back to vh): every size taken
+     from the screen's height goes through these, so the editor can fix them (see below) */
+  --interactive-showcase-vh: 1vh;
+  --interactive-showcase-svh: 1vh;
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 16px));
+  overflow: hidden;
+  border-radius: var(--interactive-showcase-radius-card, 24px);
+  color: var(--interactive-showcase-text-dark, #111);
+  background:
+    linear-gradient(291.69deg, rgb(0 0 0 / 18.24%) 0.96%, rgb(246 246 246 / 38%) 48.73%, rgb(255 255 255 / 38%) 62.61%),
+    #fff;
+  font-family: var(--interactive-showcase-font-body);
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 1.35;
+
+  @media (width >= 900px) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
+    /* 48px of the 1280px frame: 3.75% of the card's width (the screen's, less the card's 8px
+       inset on each side) */
+    --interactive-showcase-edge: calc((100vw - 16px) * 0.0375);
+  }
+
+  /* the site's default heading and paragraph margins do not apply in the card: every gap in it
+     is set below */
+  & :is(h1, h2, h3, h4, p) {
+    margin: 0;
+  }
+
+  @supports (height: 1svh) {
+    --interactive-showcase-svh: 1svh;
+  }
+
+  /* Universal Editor sizes its frame to the page's height, so a card sized from the screen's
+     height would make the page taller, the frame taller and the card taller again, without end.
+     In the editor the card is laid out for a screen of the Figma frame's shape at the editor's
+     width (interactive-showcase.js sets these from the width); 800px tall until then. */
+  &.editing {
+    --interactive-showcase-vh: 8px;
+    --interactive-showcase-svh: 8px;
+    --interactive-showcase-panel-height: calc(100 * var(--interactive-showcase-svh) - 16px);
+  }
+
+  .copy {
+    display: contents;
+  }
+
+  .heading {
+    order: 1;
+    padding: 92px var(--interactive-showcase-edge, 20px) 24px;
+
+    /* never under the site's header where it stays over the page: 16px clear of it
+       (--interactive-showcase-header-cover, measured by interactive-showcase.js) */
+    padding-top: max(92px, var(--interactive-showcase-header-cover, 0px) + 16px);
+  }
+
+  .title {
+    --interactive-showcase-lines: 3;
+
+    /* room for "A NEW WAY TO MOVE" in New Science Extended, not for the next word */
+    max-width: 16.5em;
+
+    /* "A NEW WAY TO MOVE" / "POWERED BY TECH": Figma's 30px from 1280px wide up, smaller below
+       (the copy column narrows with the screen) */
+    color: var(--interactive-showcase-text-dark, #000);
+    font-family: var(--interactive-showcase-font-display);
+    font-size: clamp(19px, 2.3438vw, 30px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+  }
+
+  .description p {
+    max-width: 416px;
+    color: var(--interactive-showcase-text-muted-dark, #4d4d4d);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* the most lines each text may take on any screen: within its character limit
+     (interactive-showcase.js) a text never reaches them; one saved longer before the limits
+     ends there with an ellipsis rather than pushing the card apart */
+  .title,
+  .item-title,
+  .description,
+  .tooltip-title,
+  .tooltip-text {
+    /* stylelint-disable-next-line value-no-vendor-prefix */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--interactive-showcase-lines);
+    overflow: hidden;
+  }
+
+  .item-title,
+  .tooltip-title {
+    --interactive-showcase-lines: 2;
+  }
+
+  .description,
+  .tooltip-text {
+    --interactive-showcase-lines: 5;
+  }
+
+  .detail {
+    order: 3;
+    padding: 24px var(--interactive-showcase-edge, 20px) 32px;
+  }
+
+  /* Figma: a 416 x 15 text box, Medium 14px / 110%, uppercase, #666 */
+  .counter {
+    max-width: 416px;
+    margin-bottom: 11px;
+    color: var(--interactive-showcase-text-counter, #666);
+    font-family: var(--interactive-showcase-font-body);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  /* Figma's 18px from 1280px wide up, smaller below */
+  .item-title {
+    margin-bottom: 9px;
+    color: var(--interactive-showcase-text-dark, #000);
+    font-family: var(--interactive-showcase-font-body);
+    font-size: clamp(15px, 1.4063vw, 18px);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .text[hidden] {
+    display: none;
+  }
+
+  .figure picture,
+  .figure img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .figure img {
+    object-fit: contain;
+  }
+
+  /* thumbnail tray: inactive thumbnails are greyscale */
+  .thumbs {
+    display: flex;
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  .thumb {
+    position: relative;
+    flex: none;
+    width: clamp(84px, 9.92vw, 127px);
+    aspect-ratio: 127 / 157;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: var(--interactive-showcase-ink, #0d0d0d);
+  }
+
+  .thumb picture,
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* the frames' corner shading: blurred near-black patches over the thumbnail's corners */
+  .thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 0 0, rgb(0 0 0 / 85%), transparent 26%),
+      radial-gradient(circle at 100% 0, rgb(0 0 0 / 85%), transparent 26%),
+      radial-gradient(circle at 0 100%, rgb(0 0 0 / 80%), transparent 22%),
+      radial-gradient(circle at 100% 100%, rgb(0 0 0 / 80%), transparent 22%);
+  }
+
+  .thumb img {
+    width: calc(100% * 157 / 127);
+    max-width: none;
+    margin-left: calc(-100% * 15 / 127);
+    object-fit: cover;
+    filter: grayscale(1) brightness(0.78);
+    transition: filter 0.5s var(--interactive-showcase-ease);
+  }
+
+  .thumb:hover img {
+    filter: grayscale(0.6) brightness(0.92);
+  }
+
+  .thumb[aria-selected='true'] img {
+    filter: none;
+  }
+
+  /* "NEV / Tech 2": the Rotax engine is black and grey in the frame; the photo's blue cast is
+     taken out and it is darkened to the frame's tones (parallax-collage carries this over
+     when it flies the image on) */
+  .panel:nth-child(2) .figure img {
+    filter: grayscale(1) brightness(0.7) contrast(1.2);
+  }
+
+  /* stage: holds the showcase images; they are cut out, so they sit straight on the light card */
+  .stage {
+    position: relative;
+    order: 2;
+    height: min(calc(64 * var(--interactive-showcase-svh)), 118vw);
+    margin: 0 12px;
+    overflow: hidden;
+    container-type: size;
+  }
+
+  /* upright tablets (600-899px wide; wider ones and landscape use the two columns below): the
+     card is exactly one screen and the image takes the room the heading and copy leave, so the
+     thumbnails stay on the screen (and can be tapped) instead of running past its bottom */
+  @media (width >= 600px) and (width <= 899.98px) and (orientation: portrait) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
+    height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-vh) - 16px));
+
+    .stage {
+      flex: 1 1 0;
+      height: auto;
+      min-height: 0;
+    }
+  }
+
+  /* picking a thumbnail (interactive-showcase.js): a vertical carousel inside the card. To the
+     right, the current image slides up and out while the new one rises from the bottom edge;
+     to the left, the current one slides down while the new one comes in from the top. The
+     outgoing image fades out as it slides, in step with its movement. */
+  .panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(100%);
+    transition:
+      transform var(--interactive-showcase-slide-time) var(--interactive-showcase-slide-ease),
+      opacity var(--interactive-showcase-slide-time) var(--interactive-showcase-slide-ease);
+  }
+
+  .panel.is-active {
+    z-index: 1;
+    opacity: 1;
+    transform: none;
+    transition: transform var(--interactive-showcase-slide-time) var(--interactive-showcase-slide-ease);
+  }
+
+  /* where each image sits in the desktop frame (1280 x 720): its left (--fx) and top (--fy)
+     edge and its height (--fh), in px of the frame (the desktop layout places it by them below;
+     the mobile layout shows the same part of it across). Every image starts from where the
+     "NEV / Tech 3" engine shows in that frame. Not the Figma image layers' boxes (image 1560 is
+     849 x 700 at 605, 52): those hold background-removed copies with empty space around each
+     engine, while the DAM photos are cut tight to it. The figure has the image's own ratio, so
+     hotspot percentages stay on the artwork */
+  .figure {
+    --fx: 670;
+    --fy: 110;
+    --fh: 592;
+
+    position: relative;
+    width: min(100cqw, 100cqh * var(--interactive-showcase-ratio, 0.8));
+    aspect-ratio: var(--interactive-showcase-ratio, 0.8);
+  }
+
+  /* "NEV / Tech 2": Rotax engine, cut off by the right and bottom edges (:where, so this sets
+     only its frame values, as weighty as the rule above) */
+  :where(.panel:nth-child(2)) .figure {
+    --fx: 660;
+    --fy: 133;
+    --fh: 650;
+  }
+
+  .hotspot-source {
+    display: none;
+  }
+
+  /* hotspots */
+  .hotspot {
+    /* the plus's icon size and place (see .hotspot::before) */
+    --interactive-showcase-icon: 22.5px;
+    --interactive-showcase-icon-at:
+      translate(
+        calc(-50% + var(--interactive-showcase-icon-x, 0px)),
+        calc(-50% + var(--interactive-showcase-icon-y, 0px))
+      );
+
+    position: absolute;
+    top: var(--interactive-showcase-y);
+    left: var(--interactive-showcase-x);
+    z-index: 2;
+    width: var(--interactive-showcase-spot);
+    height: var(--interactive-showcase-spot);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--interactive-showcase-spot-radius);
+    cursor: pointer;
+    color: var(--interactive-showcase-white, #fff);
+    background-color: var(--interactive-showcase-spot-bg);
+
+    /* the same glass as the open module */
+    backdrop-filter: blur(3px);
+    transform: translate(-50%, -50%);
+    transition: background-color 0.3s var(--interactive-showcase-ease);
+  }
+
+  /* the plus: Figma's 22.5px icon (16px on phones), its bars 70.32% of the icon long and
+     7.42% thick. Open, it is the minus of a 17px icon, which sits where the open module has it:
+     24.5px in from the module's side and 26px down from its top (--interactive-showcase-icon-x /
+     -y, set by interactive-showcase.js, move it there from the + 's centre) */
+  .hotspot::before,
+  .hotspot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(var(--interactive-showcase-icon) * 0.7032);
+    height: calc(var(--interactive-showcase-icon) * 0.0742);
+    background-color: currentcolor;
+    transform: var(--interactive-showcase-icon-at);
+    transition: transform 0.3s var(--interactive-showcase-ease);
+  }
+
+  .hotspot::after {
+    transform: var(--interactive-showcase-icon-at) rotate(90deg);
+  }
+
+  /* open: the plus folds into a plain minus inside its tooltip's corner, over the tooltip. Its
+     box is then the tooltip's, which grows out of exactly this box and, closing (.is-closing),
+     shrinks back into it: the hotspot's own glass goes at once, so there is only ever one box */
+  .hotspot[aria-expanded='true'],
+  .hotspot.is-closing {
+    z-index: 4;
+    background-color: transparent;
+    backdrop-filter: none;
+    transition: none;
+  }
+
+  /* the frame's minus: a 17px icon */
+  .hotspot[aria-expanded='true'] {
+    --interactive-showcase-icon: 17px;
+  }
+
+  /* ...except beside a tooltip opened below / above it: then it keeps its own box */
+  .hotspot.hotspot-apart[aria-expanded='true'],
+  .hotspot.hotspot-apart.is-closing {
+    background-color: rgb(0 0 0 / 40%);
+    backdrop-filter: blur(3px);
+  }
+
+  .hotspot[aria-expanded='true']::after {
+    transform: var(--interactive-showcase-icon-at) rotate(0deg);
+  }
+
+  /* the plus turns into the minus as its tooltip grows, and back as it shrinks */
+  .hotspot[aria-expanded='true']::before,
+  .hotspot[aria-expanded='true']::after,
+  .hotspot.is-closing::before,
+  .hotspot.is-closing::after {
+    transition-property: transform, width, height;
+    transition-duration: var(--interactive-showcase-grow-time);
+    transition-timing-function: var(--interactive-showcase-grow-ease);
+  }
+
+  /* tooltip ("Additional info" in NEV / Tech 1, 272 x 120). Its corner is its hotspot's corner:
+     the hotspot's box is the tooltip's corner, the minus (the hotspot's own icon) centred in it.
+     interactive-showcase.js opens it to the side and up or down by the hotspot's quadrant
+     (data-side, data-align) and nudges it across / up or down (--interactive-showcase-sx / -sy)
+     so it always stays inside the card and the screen, clear of the copy column */
+  .tooltip {
+    --interactive-showcase-tx: calc(-100% + var(--interactive-showcase-spot) / 2);
+    --interactive-showcase-ty: calc(var(--interactive-showcase-spot) / -2);
+
+    /* where the minus sits: its centre this far in from the module's side and down from its top
+       (interactive-showcase.js moves the + 's icon there) */
+    --interactive-showcase-minus-x: 24.5px;
+    --interactive-showcase-minus-y: 26px;
+
+    /* what it grows out of and shrinks back into: exactly its hotspot's box, in its corner (only
+       a tooltip nudged off that corner starts moved back onto it) */
+    --interactive-showcase-grow-from: inset(0 0 calc(100% - var(--interactive-showcase-spot)) calc(100% - var(--interactive-showcase-spot)) round var(--interactive-showcase-spot-radius));
+
+    position: absolute;
+    top: var(--interactive-showcase-y);
+    left: var(--interactive-showcase-x);
+    z-index: 3;
+    box-sizing: border-box;
+    width: min(272px, calc(100cqw - 16px));
+
+    /* the title and the minus share a 20px row (at the top opening down, at the bottom opening
+       up), 20px from the description, which runs the full width so its lines break as in the
+       frame */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+    border-radius: 12px;
+    color: var(--interactive-showcase-white, #fff);
+    background-color: rgb(0 0 0 / 40%);
+
+    /* the open module's glass: what is behind it is frosted */
+    backdrop-filter: blur(3px);
+    transform:
+      translate(
+        calc(var(--interactive-showcase-tx) + var(--interactive-showcase-sx, 0px)),
+        calc(var(--interactive-showcase-ty) + var(--interactive-showcase-sy, 0px))
+      );
+  }
+
+  /* opening (interactive-showcase.js adds .is-opening) it grows out of its hotspot's box: the
+     two edges at the hotspot's corner do not move at all while the other two move out (opening
+     down and to the left: top and right stay, bottom and left move). Closing (.is-closing) it
+     shrinks back into the hotspot the same way, backwards. Nothing fades: the text is simply
+     uncovered as the box grows and covered as it shrinks */
+  .tooltip.is-opening {
+    animation: interactive-showcase-tooltip-in var(--interactive-showcase-grow-time) var(--interactive-showcase-grow-ease);
+  }
+
+  .tooltip.is-closing {
+    pointer-events: none;
+    animation: interactive-showcase-tooltip-out var(--interactive-showcase-grow-time) var(--interactive-showcase-grow-ease) forwards;
+  }
+
+  .tooltip[data-side='right'] {
+    --interactive-showcase-tx: calc(var(--interactive-showcase-spot) / -2);
+    --interactive-showcase-grow-from: inset(0 calc(100% - var(--interactive-showcase-spot)) calc(100% - var(--interactive-showcase-spot)) 0 round var(--interactive-showcase-spot-radius));
+  }
+
+  /* opening upwards (only where there is no room below), the minus sits in the bottom corner:
+     the title stays on top, and the minus has the bottom row to itself (20px, 20px below the
+     description) */
+  .tooltip[data-align='bottom'] {
+    --interactive-showcase-ty: calc(-100% + var(--interactive-showcase-spot) / 2);
+    --interactive-showcase-grow-from: inset(calc(100% - var(--interactive-showcase-spot)) 0 0 calc(100% - var(--interactive-showcase-spot)) round var(--interactive-showcase-spot-radius));
+
+    padding-bottom: 56px;
+  }
+
+  .tooltip[data-side='right'][data-align='bottom'] {
+    --interactive-showcase-grow-from: inset(calc(100% - var(--interactive-showcase-spot)) calc(100% - var(--interactive-showcase-spot)) 0 0 round var(--interactive-showcase-spot-radius));
+  }
+
+  /* narrow screens: just below / above the hotspot (6px apart), centred on it, the hotspot
+     keeping its own box; it grows down / up from its edge by the hotspot, as wide as the
+     hotspot to start with */
+  .tooltip[data-side='center'] {
+    --interactive-showcase-tx: -50%;
+  }
+
+  .tooltip[data-align='below'] {
+    --interactive-showcase-ty: 36px;
+    --interactive-showcase-grow-from: inset(0 calc(50% - var(--interactive-showcase-spot) / 2) 100% round var(--interactive-showcase-spot-radius));
+  }
+
+  .tooltip[data-align='above'] {
+    --interactive-showcase-ty: calc(-100% - 36px);
+    --interactive-showcase-grow-from: inset(100% calc(50% - var(--interactive-showcase-spot) / 2) 0 round var(--interactive-showcase-spot-radius));
+  }
+
+  .tooltip[hidden] {
+    display: none;
+  }
+
+  /* the title shares its 20px row with the minus (the 17px icon, 16px after it): its first
+     line's centre 10px into the row, on the minus (its last line's, opening up) */
+  .tooltip-title {
+    margin-top: calc(10px - 0.7em);
+    padding-right: 33px;
+    font-family: var(--interactive-showcase-font-body);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  .tooltip[data-side='right'] .tooltip-title {
+    padding: 0 0 0 33px;
+  }
+
+  /* opening upwards the title has its row to itself, the whole width */
+  .tooltip[data-align='bottom'] .tooltip-title {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* no minus beside the title: the module is apart from its + (centred below / above it) */
+  .tooltip[data-side='center'] .tooltip-title {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* the open module's description: white at 80% */
+  .tooltip-text {
+    color: var(--interactive-showcase-white, #fff);
+    opacity: 0.8;
+    font-size: 12px;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+  }
+
+  /* the close button lies under the hotspot's minus, in the same corner (for keyboard users;
+     the minus is the visible control) */
+  .tooltip-close {
+    position: absolute;
+    top: 8px;
+    right: 6.5px;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    color: inherit;
+    background: none;
+  }
+
+  .tooltip[data-side='right'] .tooltip-close {
+    right: auto;
+    left: 6.5px;
+  }
+
+  .tooltip[data-align='bottom'] .tooltip-close {
+    top: auto;
+    bottom: 8px;
+  }
+
+  /* side by side from 900px, and on any landscape screen from 600px (a desktop zoomed far in,
+     a phone or tablet held sideways), where the stacked layout would push the copy off screen;
+     not on touch screens held upright (phones and tablets), which have the mobile design */
+  @media ((width >= 900px) or ((orientation: landscape) and (width >= 600px))) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
+    height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 16px));
+
+    /* the heading's top 152px and the copy's bottom 68px of the 720px frame, as shares of the
+       card's height */
+    .copy {
+      --card-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-svh) - 16px));
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+      padding: 0 0 calc(var(--card-height) * 68 / 720);
+    }
+
+    .heading {
+      padding: 0 24px 0 var(--interactive-showcase-edge);
+      padding-top: max(calc(var(--card-height) * 152 / 720), var(--interactive-showcase-header-cover, 0px) + 16px);
+    }
+
+    /* Figma sets the title as two 36px lines (30px at 120%) 2px apart, at 152 and 190: 38px
+       from line to line, nudged up 1px so each line sits where Figma's does */
+    .title {
+      margin-top: calc(-1em / 30);
+      line-height: calc(38 / 30);
+    }
+
+    .detail {
+      padding: 0 24px 0 var(--interactive-showcase-edge);
+    }
+
+    /* 127 x 157 of the 720px-tall frame: smaller with a shorter card, never bigger */
+    .thumb {
+      width: clamp(72px, calc(var(--card-height) * 127 / 720), 127px);
+    }
+
+    /* the stage covers the whole card, so each image can sit where its frame has it: partly
+       cut off by the card's right (and bottom) edge; only the hotspots take clicks */
+    .stage {
+      position: absolute;
+      inset: 0;
+      height: auto;
+      margin: 0;
+      pointer-events: none;
+    }
+
+    .panel {
+      display: block;
+    }
+
+    /* --fx / --fy: the image's left / top edge and --fh its height, in px of the 1280x720 frame;
+       on other screens it scales with the card (height first, never wider than the frame allows),
+       keeping its distance from the card's right edge. Every image starts from the "NEV / Tech 3"
+       frame (the engine section 3 starts with, cut off by the right edge), so the third item and
+       any added after it share that placement; the first two have their own frames below */
+    .figure {
+      --u: min(calc(100cqh / 720), calc(100cqw / 1280));
+
+      position: absolute;
+      top: calc((100cqh - 720 * var(--u)) / 2 + var(--fy) * var(--u));
+      left: calc(100cqw - (1280 - var(--fx)) * var(--u));
+      width: auto;
+      height: calc(var(--fh) * var(--u));
+    }
+
+    /* "NEV / Tech 1": the chassis in its Figma box, 609 x 605 at 671, 95, its right edge the
+       card's right edge on every screen; the photo fills the box (cropped by under 1% across) */
+    .panel:nth-child(1) .figure {
+      --fy: 95;
+      --fh: 605;
+
+      right: 0;
+      left: auto;
+      width: calc(609 * var(--u));
+    }
+
+    .panel:nth-child(1) .figure img {
+      object-fit: cover;
+    }
+
+    .hotspot,
+    .tooltip {
+      pointer-events: auto;
+    }
+  }
+
+  /* the desktop + and its open module, on desktop and on touch tablets held upright (600px
+     wide and up: iPad, Surface), whose screens are as large; phones have their own below */
+  @media ((width >= 900px) or ((orientation: landscape) and (width >= 600px))) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))), (hover: none) and (pointer: coarse) and (orientation: portrait) and (width >= 600px) {
+    /* the open module beside its + : always the design's 272 x 120 (16px padding, a 20px row for
+       the title and the minus, 20px, the description's 48px: three 16px lines), a shorter
+       description leaving room below it; one line of title and three of description fit it, as
+       their character limits keep them (interactive-showcase.js) */
+    .tooltip {
+      min-height: 120px;
+    }
+
+    .tooltip-title {
+      --interactive-showcase-lines: 1;
+
+      margin-top: 0;
+      line-height: 20px;
+    }
+
+    .tooltip-text {
+      --interactive-showcase-lines: 3;
+
+      line-height: 16px;
+    }
+
+    /* opening upwards (no room below), 120 too: the minus sits in the bottom corner, beside the
+       description's last line, which stops short of it (a float shaped to that line alone) */
+    .tooltip[data-align='bottom'] {
+      padding-bottom: 16px;
+    }
+
+    .tooltip[data-align='bottom'] .tooltip-text {
+      height: 48px;
+      overflow: hidden;
+    }
+
+    .tooltip[data-align='bottom'] .tooltip-text::before {
+      content: '';
+      float: right;
+      width: 24px;
+      height: 48px;
+      shape-outside: inset(32px 0 0);
+    }
+
+    .tooltip[data-side='right'][data-align='bottom'] .tooltip-text::before {
+      float: left;
+    }
+  }
+
+  @media ((width >= 900px) or ((orientation: landscape) and (width >= 600px))) and (height <= 679.98px) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
+    .thumb {
+      width: clamp(72px, calc(15 * var(--interactive-showcase-svh)), 120px);
+    }
+
+    /* short screens: the copy's 24px gap tightens, so the thumbnails stay inside the card
+       (e.g. a phone held sideways, 812 x 375) */
+    .thumbs {
+      margin-top: 12px;
+    }
+  }
+
+  /* phones ("M / What is NEV 375x815", the frame being the card): one screen, top to bottom:
+     heading; "1/3" beside the powertrain's name, its copy and the thumbnails; then the
+     showcase image filling the rest of the card, running off its right edge (tablets keep the
+     layout above). The copy (20px in) starts 80px down: title; 36px; "1/3" and the item title
+     in a row, 12px apart; 12px; description; 44px; thumbnails. Vertical gaps follow the screen
+     height (frame values at 815px tall) */
+  @media (width <= 599.98px), (hover: none) and (pointer: coarse) and (orientation: portrait) {
+    /* the mobile frame's fill: a radial gradient (the linter does not know its two-size form) */
+    /* stylelint-disable declaration-property-value-no-unknown */
+    background:
+      radial-gradient(184.52% 73.28% at 100% 95.71%, rgb(0 0 0 / 18.24%) 0%, rgb(246 246 246 / 38%) 76.69%, rgb(255 255 255 / 38%) 100%),
+      #fff;
+    /* stylelint-enable declaration-property-value-no-unknown */
+
+    /* phones: the card is one screen tall, the screen with the browser's bars tucked away (vh;
+       as they are once the page is scrolled), not with them showing (svh), which on a phone
+       leaves the image a fraction of its size; never taller, so a page that snaps one card per
+       screen shows all of it */
+    @media (width <= 599.98px) {
+      min-height: var(--interactive-showcase-panel-height, calc(100 * var(--interactive-showcase-vh) - 16px));
+    }
+
+    /* New Science Medium Extended 24px / 135%, -1% (narrower phones scale it down); the card's
+       width breaks it "A NEW WAY TO" / "MOVE POWERED" / "BY TECH" */
+    .title {
+      max-width: none;
+      font-size: min(24px, 6.4vw);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    /* the counter and the powertrain's name share the first row */
+    .detail {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: baseline;
+      column-gap: 12px;
+      order: 2;
+
+      /* 24px below the main title: the heading's own bottom padding (base heading rule) */
+      padding: 0 20px;
+    }
+
+    .texts,
+    .text:not([hidden]) {
+      display: contents;
+    }
+
+    /* every item's title and description stay in the layout, one over the other in the same
+       place, only the selected one seen: the copy is always as tall as the longest item's, so
+       the thumbnails and the image below it stay where they are whichever item is picked (each
+       item's own title-to-description distance as before; a subgrid keeps the title beside the
+       counter and the description under both) */
+    @supports (grid-template-columns: subgrid) {
+      &:not(.editing) {
+        .text,
+        .text[hidden] {
+          display: grid;
+          grid-template-columns: subgrid;
+          grid-row: 1;
+          grid-column: 1 / -1;
+        }
+
+        .text[hidden] {
+          visibility: hidden;
+        }
+
+        /* every title wraps in the room beside the widest counter ("2/3"), whichever is shown */
+        .item-title {
+          margin-right: var(--interactive-showcase-counter-slack, 0);
+        }
+
+        .counter {
+          grid-row: 1;
+        }
+
+        .thumbs {
+          grid-row: 2;
+        }
+      }
+    }
+
+    /* New Science Medium 16px / 140% */
+    .counter {
+      grid-column: 1;
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    /* New Science Regular 16px / 150% */
+    .item-title {
+      grid-column: 2;
+      margin: 0 0 12px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    /* the description (its own cell, title and description being separate fields) spans the
+       row below the counter and the title */
+    .description {
+      grid-column: 1 / -1;
+    }
+
+    /* New Science Regular 14px / 135%, -2% */
+    .description p {
+      max-width: none;
+      font-size: 14px;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+    }
+
+    /* the tray 200 x 79: three 64 x 79 thumbnails, 4px apart */
+    .thumbs {
+      grid-column: 1 / -1;
+      gap: 4px;
+      margin-top: 44px;
+    }
+
+    .thumb {
+      width: 64px;
+    }
+
+    /* phones (under 600px; touch tablets have the desktop ones, above) */
+    @media (width <= 599.98px) {
+      /* the + : 36 x 36, radius 8, 40% black (the mobile frame's) with the same glass */
+      --interactive-showcase-spot: 36px;
+      --interactive-showcase-spot-radius: 8px;
+      --interactive-showcase-spot-bg: rgb(0 0 0 / 40%);
+
+      .hotspot {
+        --interactive-showcase-icon: 16px;
+      }
+
+      /* a tooltip just below / above its + : half of it (18px) and 6px apart */
+      .tooltip[data-align='below'] {
+        --interactive-showcase-ty: 24px;
+      }
+
+      .tooltip[data-align='above'] {
+        --interactive-showcase-ty: calc(-100% - 24px);
+      }
+
+      /* the open module: 150 x 92 at the least (12px padding, the 14px title row with the minus,
+         12px, three 14px lines of description); a longer title or description makes it taller
+         (150 wide still, so it stays beside its + ), never cut. Title New Science Medium
+         10px / 140%, text New Science Regular 10px / 140%, -1%. Its corner is its + 's, the minus in
+         the + 's middle, level with the title's first line (18px in from the side, 19px down) */
+      .tooltip {
+        --interactive-showcase-minus-x: 18px;
+        --interactive-showcase-minus-y: 19px;
+
+        width: 150px;
+        min-height: 92px;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .tooltip-title {
+        --interactive-showcase-lines: 2;
+
+        margin-top: 0;
+        padding-right: 18px;
+        font-size: 10px;
+        line-height: 14px;
+      }
+
+      .tooltip[data-side='right'] .tooltip-title {
+        padding: 0 0 0 18px;
+      }
+
+      .tooltip-text {
+        --interactive-showcase-lines: 8;
+
+        font-size: 10px;
+        line-height: 14px;
+        letter-spacing: -0.01em;
+      }
+
+      /* the close button under the minus */
+      .tooltip-close {
+        top: 1px;
+        right: 0;
+      }
+
+      .tooltip[data-side='right'] .tooltip-close {
+        left: 0;
+      }
+
+      .tooltip[data-align='bottom'] .tooltip-close {
+        bottom: 1px;
+      }
+
+      /* opening upwards: the minus in the bottom corner, beside the description's last line; the
+         description keeps clear of it all down that side, however long it is */
+      .tooltip[data-align='bottom'] {
+        padding-bottom: 12px;
+      }
+
+      .tooltip[data-align='bottom'] .tooltip-text {
+        padding-right: 18px;
+      }
+
+      .tooltip[data-side='right'][data-align='bottom'] .tooltip-text {
+        padding-right: 0;
+        padding-left: 18px;
+      }
+    }
+
+    /* the image sits in what is left of the screen: as on the 375x815 frame (339 x 330 at 36,
+       440), 90.4% of the card's width, its right edge on the card's right edge, 12px below the
+       thumbnails and 45px clear of the card's bottom; on shorter phones that bottom gap narrows
+       first, then the image shrinks */
+    .stage {
+      flex: 1 0 170px;
+      order: 3;
+      height: auto;
+      margin: 12px 0 0;
+    }
+
+    .panel {
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+
+    /* an image the desktop frame cuts off at the card's right edge (the Rotax engine: two thirds
+       of it seen across) is cut off at the same place here: the part seen
+       (--interactive-showcase-vx of its width) fills the image box, the rest runs off the card's
+       right edge, as there. --interactive-showcase-shown is that part's width */
+    .figure {
+      --interactive-showcase-shown: min(90.4cqw, (100cqh - clamp(16px, 100cqh - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
+
+      flex: none;
+      width: calc(var(--interactive-showcase-shown) / var(--interactive-showcase-vx, 1));
+      height: auto;
+      margin-right: calc(var(--interactive-showcase-shown) * (1 - 1 / var(--interactive-showcase-vx, 1)));
+    }
+
+    /* the share of its width the desktop frame shows: from its left edge to the frame's right
+       edge, of its width there (its height there times its ratio); all of it for the chassis */
+    .panel:not(:nth-child(1)) .figure {
+      --interactive-showcase-vx: min(1, (1280 - var(--fx)) / (var(--fh) * var(--interactive-showcase-ratio, 0.8)));
+    }
+
+    /* the chassis in its Figma box, 339 x 330 (the photo fills it, cropped by under 1%) */
+    .panel:nth-child(1) .figure {
+      --interactive-showcase-box-ratio: calc(339 / 330);
+
+      aspect-ratio: 339 / 330;
+    }
+
+    .panel:nth-child(1) .figure img {
+      object-fit: cover;
+    }
+  }
+
+  /* short phones (under 700px tall, e.g. the iPhone SE's 667): the gaps around the copy
+     tighten, so the image keeps more of the card (taller phones keep the frame's gaps): 64px
+     above the title (still clear of a site header over the page), 24px above the thumbnails,
+     8px between them and the image, at least 8px below it */
+  @media (width <= 599.98px) and (height <= 699.98px) {
+    .heading {
+      padding-top: max(64px, var(--interactive-showcase-header-cover, 0px) + 16px);
+    }
+
+    .thumbs {
+      margin-top: 24px;
+    }
+
+    .stage {
+      margin-top: 8px;
+    }
+
+    .figure {
+      --interactive-showcase-shown: min(90.4cqw, (100cqh - clamp(8px, 100cqh - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
+    }
+  }
+
+  /* very short phones (e.g. 320x568): the image gives up a little room so the card still fits
+     the screen (the + buttons are kept whole inside it by interactive-showcase.js) */
+  @media ((width <= 599.98px) or ((hover: none) and (pointer: coarse) and (orientation: portrait))) and (height <= 600px) {
+    .stage {
+      flex-basis: 140px;
+    }
+  }
+
+  /* touch tablets held upright (600px wide and up: iPad, Surface): the phones' layout, but its
+     copy, sized for a 375px screen, would be lost beside an image three times the width. The
+     copy grows with the screen (title "A NEW WAY TO MOVE" / "POWERED BY TECH" as on desktop,
+     the description at a readable measure, larger thumbnails) and the image stays within 80%
+     of the card's width, so the two balance */
+  @media (hover: none) and (pointer: coarse) and (orientation: portrait) and (width >= 600px) {
+    .heading {
+      padding: max(clamp(92px, 10vw, 112px), var(--interactive-showcase-header-cover, 0px) + 16px) clamp(32px, 4.7vw, 48px) 32px;
+    }
+
+    .title {
+      max-width: 16.5em;
+      font-size: clamp(34px, 4.3vw, 44px);
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+
+    .detail {
+      column-gap: 16px;
+      padding: 0 clamp(32px, 4.7vw, 48px);
+    }
+
+    .counter {
+      font-size: clamp(20px, 2.2vw, 22px);
+    }
+
+    .item-title {
+      margin-bottom: 16px;
+      font-size: clamp(20px, 2.2vw, 22px);
+    }
+
+    .description p {
+      max-width: 600px;
+      font-size: clamp(17px, 1.9vw, 19px);
+      line-height: 1.45;
+    }
+
+    .thumbs {
+      gap: 8px;
+      margin-top: 40px;
+    }
+
+    .thumb {
+      width: clamp(96px, 11vw, 120px);
+    }
+
+    .stage {
+      margin-top: 24px;
+    }
+
+    .figure {
+      --interactive-showcase-shown: min(80cqw, (100cqh - clamp(16px, 100cqh - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)) * var(--interactive-showcase-vx, 1));
+    }
+  }
+
+  /* browsers without container units: the same sizes, from the stage's size as measured by
+     interactive-showcase.js (--interactive-showcase-cq-w / --interactive-showcase-cq-h in place of 100cqw / 100cqh) */
+  @supports not (container-type: size) {
+    .figure {
+      width: min(var(--interactive-showcase-cq-w), var(--interactive-showcase-cq-h) * var(--interactive-showcase-ratio, 0.8));
+    }
+
+    .tooltip {
+      width: min(272px, calc(var(--interactive-showcase-cq-w) - 16px));
+    }
+
+    @media ((width >= 900px) or ((orientation: landscape) and (width >= 600px))) and (not ((hover: none) and (pointer: coarse) and (orientation: portrait))) {
+      .figure {
+        --u: min(calc(var(--interactive-showcase-cq-h) / 720), calc(var(--interactive-showcase-cq-w) / 1280));
+
+        top: calc((var(--interactive-showcase-cq-h) - 720 * var(--u)) / 2 + var(--fy) * var(--u));
+        left: calc(var(--interactive-showcase-cq-w) - (1280 - var(--fx)) * var(--u));
+        width: auto;
+      }
+    }
+
+    @media (width <= 599.98px), (hover: none) and (pointer: coarse) and (orientation: portrait) {
+      .figure {
+        width: min(var(--interactive-showcase-cq-w) * 0.904, (var(--interactive-showcase-cq-h) - clamp(16px, var(--interactive-showcase-cq-h) - 250px, 45px)) * var(--interactive-showcase-box-ratio, var(--interactive-showcase-ratio, 0.8)));
+      }
+    }
+  }
+
+  /* "white curtain" entrance (interactive-showcase.js): the card glides up empty over the
+     section before (1.8s, curtainGlide), then its content slides up from 80px lower once it
+     fills the screen; it fades in sooner than it slides, so the slide, longer and gentler, is
+     seen almost all the way. Gliding back up to the section before, the content fades and
+     drops away. The times are the JSW NEV page's. */
+  &.curtain {
+    --interactive-showcase-reveal-time: 1.2s;
+    --interactive-showcase-reveal-fade: 0.45s;
+    --interactive-showcase-veil-time: 0.3s;
+  }
+
+  &.curtain :is(.heading, .detail, .stage) {
+    opacity: 0;
+    transform: translateY(80px);
+    transition:
+      opacity var(--interactive-showcase-veil-time) ease,
+      transform var(--interactive-showcase-veil-time) ease;
+  }
+
+  &.curtain.revealed :is(.heading, .detail, .stage) {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--interactive-showcase-reveal-fade) ease-out 0.1s,
+      transform var(--interactive-showcase-reveal-time) cubic-bezier(0.33, 1, 0.68, 1) 0.1s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel,
+    .thumb,
+    .thumb img,
+    .hotspot,
+    .hotspot::before,
+    .hotspot::after,
+    .hotspot[aria-expanded='true']::before,
+    .hotspot[aria-expanded='true']::after,
+    .hotspot.is-closing::before,
+    .hotspot.is-closing::after {
+      transition: none;
+    }
+
+    .tooltip.is-opening,
+    .tooltip.is-closing {
+      animation: none;
+    }
+  }
+
+  /* Universal Editor (hotspot-editor.js): the + points can be dragged; clicking the image
+     anywhere else reads the x, y of that spot; a badge shows x, y and the save status */
+  &.editing .figure {
+    pointer-events: auto;
+    cursor: crosshair;
+  }
+
+  .hotspot-draggable {
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .hotspot-draggable.is-dragging {
+    cursor: grabbing;
+    outline: 2px dashed var(--interactive-showcase-white, #fff);
+    outline-offset: 2px;
+  }
+
+  /* a + authored in the part of the image the card cuts off: drawn at the nearest visible edge,
+     outlined, until it is moved in (hotspot-editor.js) */
+  .hotspot-draggable.is-outside {
+    outline: 2px dashed #ff5a52;
+    outline-offset: 2px;
+  }
+
+  .hotspot-coords {
+    position: absolute;
+    top: var(--interactive-showcase-y);
+    left: var(--interactive-showcase-x);
+    z-index: 5;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--interactive-showcase-white, #fff);
+    background-color: rgb(0 0 0 / 82%);
+    font-family: var(--interactive-showcase-font-body);
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, calc(-100% - 30px));
+  }
+
+  /* near the image's top edge the badge goes below the point, so it is not cut off */
+  .hotspot-coords.is-below {
+    transform: translate(-50%, 30px);
+  }
+
+  .hotspot-coords[hidden] {
+    display: none;
+  }
+
+  /* Universal Editor: items after the 3rd are not shown, and texts over their character limit
+     are shortened; these notes say so (interactive-showcase.js) */
+  .limit-note {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #5c3b00;
+    background-color: #fff3d6;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+/* the tooltip growing out of its hotspot's box and back into it (.tooltip.is-opening /
+   .is-closing): only its shape changes (a tooltip nudged off its hotspot's corner also starts
+   moved back onto it). "out" is "in" backwards (its own name, so that switching from one to the
+   other always starts it afresh). Keyframes cannot be nested in the block rule */
+@keyframes interactive-showcase-tooltip-in {
+  0% {
+    clip-path: var(--interactive-showcase-grow-from);
+    translate: calc(0px - var(--interactive-showcase-sx, 0px)) calc(0px - var(--interactive-showcase-sy, 0px));
+    background-color: var(--interactive-showcase-spot-bg);
+  }
+
+  100% {
+    clip-path: inset(0 round 12px);
+  }
+}
+
+@keyframes interactive-showcase-tooltip-out {
+  0% {
+    clip-path: inset(0 round 12px);
+  }
+
+  100% {
+    clip-path: var(--interactive-showcase-grow-from);
+    translate: calc(0px - var(--interactive-showcase-sx, 0px)) calc(0px - var(--interactive-showcase-sy, 0px));
+    background-color: var(--interactive-showcase-spot-bg);
+  }
+}
