@@ -470,8 +470,8 @@ function pillarImage(cell) {
 }
 
 /**
- * A pillar's text: the paragraphs before the heading its label, the heading, the paragraphs after
- * it the description (its opening words in bold).
+ * A pillar's text: the paragraphs before the heading its label, the heading its title, the
+ * paragraphs after it the description (its opening words in bold).
  * @param {Element} content the card's text cell
  */
 function pillarText(content) {
@@ -481,7 +481,7 @@ function pillarText(content) {
     if (node.tagName !== 'P') {
       if (!heading) {
         heading = node;
-        node.classList.add('heading');
+        node.classList.add('title');
       }
       return;
     }

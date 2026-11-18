@@ -10,7 +10,7 @@ main > .section > .cards-wrapper > .block {
   --pl-font: new-science, var(--body-font-family);
   --pl-font-extended: new-science-extended, var(--display-font-family);
   --pl-text: #232323;
-  --pl-ink: rgb(0 12 16 / 80%);
+  --pl-title: rgb(0 12 16); /* (the design's 80%: the title's opacity) */
   --pl-mute: rgb(35 35 35 / 50%);
   --pl-mark: rgb(0 0 0 / 50%);
   --pl-move: 1.2s;
@@ -28,16 +28,24 @@ main > .section > .cards-wrapper > .block {
     linear-gradient(var(--pl-mark), var(--pl-mark)) bottom left / var(--pl-corner-line) var(--pl-corner) no-repeat,
     linear-gradient(var(--pl-mark), var(--pl-mark)) bottom right / var(--pl-corner) var(--pl-corner-line) no-repeat,
     linear-gradient(var(--pl-mark), var(--pl-mark)) bottom right / var(--pl-corner-line) var(--pl-corner) no-repeat;
-  --pl-image: min(100vw - 2.5rem, 100svh - 22rem);
+
+  /* (the phone design, 375 × 815: the image 335px square, 106px down; a shorter screen keeps
+     the frame's 311px under it, the image no smaller than 15rem) */
+  --pl-image: min(100vw - 2.5rem, max(15rem, 100svh - 30rem));
   --pl-frame: 100%;
   --pl-gap: 2rem;
+  --pl-radius: 1.5rem; /* 24px */
 
   @media (width >= 900px) {
     --pl-zoom-on: 1.08;
     --pl-zoom-next: 1.6;
-    --pl-image: min(35.25rem, 100svh - 9.75rem, 44vw);
+    --pl-image: min(35.25rem, 100svh - 9.75rem, 44.0625vw); /* (564px at the design's 1280px) */
     --pl-frame: min(27.5625rem, 34.5vw);
     --pl-gap: min(6.75rem, 8.4vw);
+  }
+
+  @media (width >= 1200px) {
+    --pl-radius: 1.75rem; /* 28px */
   }
 
   /* ---- Default: a grid of cards ---- */
@@ -423,8 +431,9 @@ main > .section > .cards-wrapper > .block {
       overflow: hidden;
       width: var(--pl-image);
       aspect-ratio: 1;
-      border-radius: 1.5rem;
+      border-radius: var(--pl-radius);
       background-color: var(--color-gray-10);
+      opacity: 1;
 
       & picture {
         display: block;
@@ -440,24 +449,28 @@ main > .section > .cards-wrapper > .block {
       object-position: 50% 70%;
     }
 
-    /* the text: label, heading, description, in the frame's corner marks */
+    /* the text: label, title and description, in the frame's corner marks (the design's
+       375 × 815 phone: the frame 335 × 311, the texts as wide, 38px down, 32px apart; from 900px
+       beside the image, 25.6px in and 21px apart, at 1200px and over 390px wide) */
     .content {
       display: flex;
       flex-direction: column;
+      gap: 2rem; /* 32px */
       box-sizing: border-box;
       width: var(--pl-frame);
-      min-height: 19.4375rem;
-      padding: 2.375rem 1.25rem;
+      min-height: 19.4375rem; /* 311px */
+      padding: 2.375rem 0 0;
       background: var(--pl-corners);
 
       @media (width >= 900px) {
+        gap: 1.3125rem; /* 21px */
         min-height: 0;
         padding: calc(var(--pl-image) * 0.216) 1.6rem 1.5rem;
       }
     }
 
     .label,
-    .heading,
+    .title,
     .description {
       margin: 0;
     }
@@ -465,28 +478,30 @@ main > .section > .cards-wrapper > .block {
     /* the type: the design's New Science faces, the site's Adobe Fonts kit (styles/fonts.css, its
        families new-science and new-science-extended: the family picks the width, font-stretch
        as the design names it); until they load, Inter / Sequel. Sizes in rem, line heights
-       unitless (the design's px over the size); the design trims each line box to its capitals
-       (leading-trim, not yet in CSS): the gaps between the texts are set to match instead.
-       (The guardrails: the label one line, the heading 3, the description 5, 8 on desktop, the
-       rest cut off.) */
+       unitless (the design's px over the size). The design's text boxes are trimmed to the
+       capitals (its heights: the label's 10px one line, the title's three lines, the
+       description's four): text-box does the same where the browser has it, the boxes then at
+       least the design's heights (a longer text, the authors', grows into the frame's room);
+       without it, each box as tall as its lines. */
     .label {
-      max-height: 1lh;
-      overflow: hidden;
+      width: fit-content; /* (as wide as its text, as the design's: 101px for ENGINEERING) */
+      max-width: 100%;
+      overflow: clip;
       font-family: var(--pl-font);
       font-size: 0.875rem; /* 14px */
       font-weight: 500; /* (Medium) */
       line-height: 1.5714; /* 22px */
       letter-spacing: 0;
+      white-space: nowrap;
       text-transform: uppercase;
       color: var(--pl-mute);
     }
 
-    /* (phones: smaller, the frame narrower; from 900px the design's 28px, from its 1280px width
-       on: narrower desktops scale it with the frame, so its three lines still hold it) */
-    .heading {
-      max-height: 3lh;
-      overflow: hidden;
-      margin-top: 0.75rem;
+    /* (phones: 20px, the frame narrower; from 900px the design's 28px, scaled with the frame
+       below its 1280px width, so its lines break as there) */
+    .title {
+      width: 100%;
+      overflow: clip;
       font-family: var(--pl-font-extended);
       font-size: 1.25rem; /* 20px */
       font-weight: 500;
@@ -494,32 +509,29 @@ main > .section > .cards-wrapper > .block {
       line-height: 1.4; /* 28px */
       letter-spacing: 0;
       text-transform: uppercase;
-      color: var(--pl-ink);
+      color: var(--pl-title);
+      opacity: 0.8;
 
       @media (width >= 900px) {
-        min-height: 3lh;
-        margin-top: 0.5625rem;
-        font-size: min(1.75rem, 2.1875vw); /* 28px (at 1280px wide and over) */
+        /* (28px in the design's 390px: its lines break alike in a narrower frame) */
+        font-size: min(1.75rem, (var(--pl-frame) - 3.2rem) * 0.0718);
         line-height: 1.2857; /* 36px */
       }
     }
 
     .description {
-      display: -webkit-box;
-      overflow: hidden;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 5;
-      margin-top: 1.125rem;
+      width: 100%;
+      overflow: clip;
       font-family: var(--pl-font);
       font-size: 1rem; /* 16px */
       font-weight: 500; /* (Medium) */
       line-height: 1.375; /* 22px */
       letter-spacing: 0;
       color: var(--pl-mute);
+      opacity: 1;
 
       @media (width >= 900px) {
-        -webkit-line-clamp: 8;
-        margin-top: 2.53rem;
+        opacity: 0.8;
       }
 
       /* the bold opening words dark, the rest muted */
@@ -527,6 +539,44 @@ main > .section > .cards-wrapper > .block {
       & b {
         font-weight: inherit;
         color: var(--pl-text);
+      }
+    }
+
+    @supports (text-box: trim-both cap alphabetic) {
+      .label,
+      .title,
+      .description {
+        overflow-clip-margin: 0.375rem;
+        text-box: trim-both cap alphabetic;
+      }
+
+      .label {
+        height: 0.625rem; /* 10px */
+      }
+
+      .title {
+        min-height: 4.375rem; /* 70px */
+
+        @media (width >= 900px) {
+          min-height: 5.75rem; /* 92px */
+        }
+      }
+
+      .description {
+        min-height: 4.875rem; /* 78px */
+
+        @media (width >= 900px) {
+          min-height: 5.75rem; /* 92px */
+        }
+      }
+    }
+
+    /* the web design (1280 × 720): the texts 390px wide */
+    @media (width >= 1200px) {
+      .label,
+      .title,
+      .description {
+        width: 24.375rem; /* 390px */
       }
     }
 
@@ -599,13 +649,20 @@ main > .section > .cards-wrapper > .block {
         justify-content: center;
         box-sizing: border-box;
         height: 100svh;
-        padding: 6.625rem 1.25rem 2rem;
+        padding: 6.625rem 1.25rem 1.9375rem; /* (the image 106px down, the frame 311px tall) */
 
         @media (width >= 900px) {
           grid-template: 'image frame' var(--pl-image) / var(--pl-image) var(--pl-frame);
           column-gap: var(--pl-gap);
           align-content: end;
           padding: 0 2rem 1.75rem;
+        }
+
+        /* the web design (1280 × 720): the image 82.77px in (from the design's 1280px column,
+           centred) and 128px down */
+        @media (width >= 1200px) {
+          place-content: start start;
+          padding: 8rem 2rem 0 max(2rem, 50vw - 40rem + 5.17rem);
         }
       }
 
@@ -618,7 +675,7 @@ main > .section > .cards-wrapper > .block {
         z-index: var(--z);
         grid-area: image;
         width: auto;
-        clip-path: inset(0 round 1.5rem);
+        clip-path: inset(0 round var(--pl-radius));
         pointer-events: none;
       }
 
@@ -661,7 +718,7 @@ main > .section > .cards-wrapper > .block {
       }
 
       .card.is-before .image {
-        clip-path: inset(0 0 100% 0 round 1.5rem);
+        clip-path: inset(0 0 100% 0 round var(--pl-radius));
       }
 
       .card.is-next .img {
@@ -685,7 +742,7 @@ main > .section > .cards-wrapper > .block {
        by the script (--wipe, --near, --seen, --shift, see track in cards.js) */
     &.horizontal.is-stepped {
       .image {
-        clip-path: inset(0 var(--wipe, 0%) 0 0 round 1.5rem);
+        clip-path: inset(0 var(--wipe, 0%) 0 0 round var(--pl-radius));
       }
 
       .img {
