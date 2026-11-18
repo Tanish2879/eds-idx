@@ -7,6 +7,8 @@
 main > .section > .cards-wrapper > .block {
   /* Pillars: the design's colours (dark text on white), its motion, its corner marks and its
      measures (rem; the image and the frame fit the screen below the nav) */
+  --pl-font: new-science, var(--body-font-family);
+  --pl-font-extended: new-science-extended, var(--display-font-family);
   --pl-text: #232323;
   --pl-ink: rgb(0 12 16 / 80%);
   --pl-mute: rgb(35 35 35 / 50%);
@@ -460,27 +462,36 @@ main > .section > .cards-wrapper > .block {
       margin: 0;
     }
 
-    /* (the texts' guardrails: the label one line, the heading 3, the description 5, 8 on
-       desktop, the rest cut off) */
+    /* the type: the design's New Science faces, the site's Adobe Fonts kit (styles/fonts.css, its
+       families new-science and new-science-extended: the family picks the width, font-stretch
+       as the design names it); until they load, Inter / Sequel. Sizes in rem, line heights
+       unitless (the design's px over the size); the design trims each line box to its capitals
+       (leading-trim, not yet in CSS): the gaps between the texts are set to match instead.
+       (The guardrails: the label one line, the heading 3, the description 5, 8 on desktop, the
+       rest cut off.) */
     .label {
       max-height: 1lh;
       overflow: hidden;
-      font-family: var(--font-family-base);
-      font-size: 0.875rem;
-      font-weight: var(--font-weight-medium);
-      line-height: 1.375rem;
+      font-family: var(--pl-font);
+      font-size: 0.875rem; /* 14px */
+      font-weight: 500; /* (Medium) */
+      line-height: 1.5714; /* 22px */
+      letter-spacing: 0;
       text-transform: uppercase;
       color: var(--pl-mute);
     }
 
+    /* (phones: smaller, the frame narrower; from 900px the design's 28px, from its 1280px width
+       on: narrower desktops scale it with the frame, so its three lines still hold it) */
     .heading {
       max-height: 3lh;
       overflow: hidden;
       margin-top: 0.75rem;
-      font-family: var(--font-family-display);
-      font-size: 1.25rem;
-      font-weight: var(--font-weight-medium);
-      line-height: 1.75rem;
+      font-family: var(--pl-font-extended);
+      font-size: 1.25rem; /* 20px */
+      font-weight: 500;
+      font-stretch: expanded; /* (Medium Extended) */
+      line-height: 1.4; /* 28px */
       letter-spacing: 0;
       text-transform: uppercase;
       color: var(--pl-ink);
@@ -488,8 +499,8 @@ main > .section > .cards-wrapper > .block {
       @media (width >= 900px) {
         min-height: 3lh;
         margin-top: 0.5625rem;
-        font-size: min(1.75rem, 2.2vw);
-        line-height: 1.2857;
+        font-size: min(1.75rem, 2.1875vw); /* 28px (at 1280px wide and over) */
+        line-height: 1.2857; /* 36px */
       }
     }
 
@@ -499,10 +510,11 @@ main > .section > .cards-wrapper > .block {
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 5;
       margin-top: 1.125rem;
-      font-family: var(--font-family-base);
-      font-size: 1rem;
-      font-weight: var(--font-weight-medium);
-      line-height: 1.375rem;
+      font-family: var(--pl-font);
+      font-size: 1rem; /* 16px */
+      font-weight: 500; /* (Medium) */
+      line-height: 1.375; /* 22px */
+      letter-spacing: 0;
       color: var(--pl-mute);
 
       @media (width >= 900px) {

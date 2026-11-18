@@ -38,6 +38,7 @@
       "fields": [
         {
           "component": "select",
+          "valueType": "string",
           "name": "classes",
           "label": "Style",
           "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
@@ -51,10 +52,12 @@
         },
         {
           "component": "select",
+          "valueType": "string",
           "name": "classes_animation",
           "label": "Animation Direction",
           "description": "Select the scroll animation direction for the cards.",
           "value": "horizontal",
+          "condition": { "===": [{ "var": "classes" }, "pillars"] },
           "options": [
             { "name": "Horizontal", "value": "horizontal" },
             { "name": "Vertical", "value": "vertical" }
