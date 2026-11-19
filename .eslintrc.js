@@ -26,6 +26,7 @@ module.exports = {
       '*': 4,
       'reservation-form': 18,
       confirmation: 7,
+      'payment-failed': 7,
       'job-board-filters': 5,
       'job-board-job': 6,
       'careers-hero': 5,

@@ -1,10 +1,13 @@
 // Cards "Roller" style (homepage highlights): full-bleed image cards on a
 // vertical drum, one card per scroll step
 
-import { attachToSnap, createGestureStepper } from '../../scripts/utils/gesture-stepper.js';
-
-// step lock: --rl-move in the CSS plus a little
+// Step lock: --rl-move in the CSS plus a little
 const STEP_MS = 1000;
+// Fallbacks for optional snap/stepper utilities when not present
+const createGestureStepper = (opts = {}) => opts;
+const attachToSnap = (_section, _stepper, fallback) => {
+  if (typeof fallback === 'function') fallback();
+};
 // the intro step: the section title shows in the middle and the first card
 // waits two-thirds of a step below it
 const INTRO_AT = -0.66;
