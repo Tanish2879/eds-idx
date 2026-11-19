@@ -558,7 +558,7 @@ main > .section > .cards-wrapper > .block {
         min-height: 4.375rem; /* 70px */
 
         @media (width >= 900px) {
-          min-height: 5.75rem; /* 92px */
+          min-height: 3.5rem; /* 92px */
         }
       }
 
