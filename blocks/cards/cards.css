@@ -450,12 +450,13 @@ main > .section > .cards-wrapper > .block {
     }
 
     /* the text: label, title and description, in the frame's corner marks (the design's
-       375 × 815 phone: the frame 335 × 311, the texts as wide, 38px down, 32px apart; from 900px
-       beside the image, 25.6px in and 21px apart, at 1200px and over 390px wide) */
+       375 × 815 phone: the frame 335 × 311, the texts as wide, 38px down; from 900px beside the
+       image, 25.6px in, at 1200px and over 390px wide). The space between them is each text's
+       own top margin (the title's from the label, the description's from the title), so each
+       pair is set on its own: 32px apart on phones, 21px from 900px. */
     .content {
       display: flex;
       flex-direction: column;
-      gap: 2rem; /* 32px */
       box-sizing: border-box;
       width: var(--pl-frame);
       min-height: 19.4375rem; /* 311px */
@@ -463,7 +464,6 @@ main > .section > .cards-wrapper > .block {
       background: var(--pl-corners);
 
       @media (width >= 900px) {
-        gap: 1.3125rem; /* 21px */
         min-height: 0;
         padding: calc(var(--pl-image) * 0.216) 1.6rem 1.5rem;
       }
@@ -501,6 +501,7 @@ main > .section > .cards-wrapper > .block {
        below its 1280px width, so its lines break as there) */
     .title {
       width: 100%;
+      margin-top: 2rem; /* (from the label: 32px; 21px from 900px) */
       overflow: clip;
       font-family: var(--pl-font-extended);
       font-size: 1.25rem; /* 20px */
@@ -514,6 +515,7 @@ main > .section > .cards-wrapper > .block {
 
       @media (width >= 900px) {
         /* (28px in the design's 390px: its lines break alike in a narrower frame) */
+        margin-top: 1.3125rem; /* 21px */
         font-size: min(1.75rem, (var(--pl-frame) - 3.2rem) * 0.0718);
         line-height: 1.2857; /* 36px */
       }
@@ -521,6 +523,7 @@ main > .section > .cards-wrapper > .block {
 
     .description {
       width: 100%;
+      margin-top: 2rem; /* (from the title: 32px; 21px from 900px) */
       overflow: clip;
       font-family: var(--pl-font);
       font-size: 1rem; /* 16px */
@@ -529,9 +532,9 @@ main > .section > .cards-wrapper > .block {
       letter-spacing: 0;
       color: var(--pl-mute);
       opacity: 1;
-      margin-top: 2rem; 
 
       @media (width >= 900px) {
+        margin-top: 1.3125rem; /* 21px */
         opacity: 0.8;
       }
 
@@ -559,7 +562,7 @@ main > .section > .cards-wrapper > .block {
         min-height: 4.375rem; /* 70px */
 
         @media (width >= 900px) {
-          min-height: 3.5rem; /* 92px */
+          min-height: 3.5rem; /* 56px */
         }
       }
 
