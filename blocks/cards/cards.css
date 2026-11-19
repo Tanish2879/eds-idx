@@ -575,12 +575,16 @@ main > .section > .cards-wrapper > .block {
       }
     }
 
-    /* the web design (1280 × 720): the texts 390px wide */
+    /* the web design (1280 × 720): the texts 390px wide, the description 53px below the title */
     @media (width >= 1200px) {
       .label,
       .title,
       .description {
         width: 24.375rem; /* 390px */
+      }
+
+      .description {
+        margin-top: 3.3125rem; /* 53px */
       }
     }
 
