@@ -529,6 +529,7 @@ main > .section > .cards-wrapper > .block {
       letter-spacing: 0;
       color: var(--pl-mute);
       opacity: 1;
+      margin-top: 2rem
 
       @media (width >= 900px) {
         opacity: 0.8;
