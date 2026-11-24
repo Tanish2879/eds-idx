@@ -169,5 +169,15 @@
       "reservation-form-field",
       "reservation-form-dropdown"
     ]
+  },
+  {
+    "id": "social-deck",
+    "components": [
+      "social-card"
+    ]
+  },
+  {
+    "id": "social-deck-full",
+    "components": []
   }
 ]

@@ -1,0 +1,524 @@
+/* Social Deck "Strip" style: a flat row of portrait cards that scrolls
+   sideways, with prev/next below it. The section's default content (eyebrow,
+   heading, social icon list) is laid out here too. */
+
+/* ---------- the strip ---------- */
+.social-deck.block.strip {
+  --sd-card-radius: calc(32 * var(--sd-u, 1px));
+  --sd-fade-in: 0.5825;
+
+  overflow: visible;
+  text-align: start;
+
+  & .social-deck-stage {
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    touch-action: auto;
+    cursor: auto;
+  }
+
+  & .social-deck-cards.social-deck-strip-track {
+    position: static;
+    display: flex;
+    gap: calc(24 * var(--sd-u, 1px));
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0 var(--sd-side, 20px);
+    overflow: auto hidden;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+
+    --sd-fade-w: calc(333 * var(--sd-u, 1px) * var(--sd-fade-in));
+
+    mask-image: linear-gradient(
+      to right,
+      rgb(0 0 0 / 12%) 0,
+      #000 max(40px, var(--sd-side, 20px)),
+      #000 calc(100% - var(--sd-fade-w)),
+      rgb(0 0 0 / 78%) calc(100% - var(--sd-fade-w) / 2),
+      rgb(0 0 0 / 12%) 100%
+    );
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-white, #fff);
+      outline-offset: 4px;
+    }
+
+    &.is-drag {
+      cursor: grabbing;
+    }
+
+    &.is-drag a {
+      pointer-events: none;
+    }
+  }
+
+  & .social-deck-strip-card {
+    position: relative;
+    flex: 0 0 auto;
+    width: calc(333 * var(--sd-u, 1px));
+    height: calc(451 * var(--sd-u, 1px));
+    list-style: none;
+  }
+
+  & .social-deck-strip-card .social-deck-card-link {
+    height: 100%;
+  }
+
+  & .social-deck-strip-card .social-deck-card-media {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    overflow: hidden;
+    border-radius: var(--sd-card-radius);
+    background: #111;
+  }
+
+  & .social-deck-strip-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    transition: scale 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  & .social-deck-strip-card:hover img {
+    scale: 1.04;
+  }
+
+  /* bottom shade under the caption */
+  & .social-deck-strip-card .social-deck-card-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgb(0 0 0 / 72%) 0%, rgb(0 0 0 / 38%) 22%, rgb(0 0 0 / 0%) 46%);
+    pointer-events: none;
+  }
+
+  & .social-deck-strip-card .social-deck-card-body {
+    z-index: 1;
+    inset: auto calc(20 * var(--sd-u, 1px)) calc(20 * var(--sd-u, 1px));
+    padding: 0;
+    background: none;
+  }
+
+  & .social-deck-cards .social-deck-card-media .social-deck-card-body p {
+    margin: 0;
+    color: rgb(230 230 230);
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-regular, 400);
+    font-size: max(13px, calc(14 * var(--sd-u, 1px)));
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  /* arrow tile, top right of every card; decorative, so it never takes the
+     pointer */
+  & .social-deck-strip-card::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    top: calc(20 * var(--sd-u, 1px));
+    right: calc(20 * var(--sd-u, 1px));
+    width: max(28px, calc(32 * var(--sd-u, 1px)));
+    height: max(28px, calc(32 * var(--sd-u, 1px)));
+    border-radius: calc(8 * var(--sd-u, 1px));
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 12 12 4M5.5 4H12v6.5' stroke='%23f2f2f2' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / max(14px, calc(16 * var(--sd-u, 1px))) no-repeat,
+      rgb(255 255 255 / 20%);
+    transition: background-color 0.25s;
+  }
+
+  & .social-deck-strip-card:hover::after {
+    background-color: rgb(255 255 255 / 32%);
+  }
+
+  /* prev / next, left-aligned under the row */
+  & .social-deck-strip-nav {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    margin-top: 43.9px;
+    padding: 0 var(--sd-side, 20px);
+
+    /* fast repeated taps (also on a disabled arrow) must not double-tap zoom */
+    touch-action: manipulation;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  & .social-deck-strip-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 20%);
+    color: var(--color-white, #fff);
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.3s;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover,
+    &:focus-visible {
+      background: rgb(255 255 255 / 30%);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      background: rgb(255 255 255 / 20%);
+      cursor: default;
+    }
+  }
+
+  /* Phosphor arrow-right */
+  & .social-deck-strip-icon {
+    width: 16px;
+    height: 16px;
+    background: currentcolor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M2.5 8h11M9 3.5 13.5 8 9 12.5' stroke='%23000' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  & .social-deck-strip-prev .social-deck-strip-icon {
+    transform: scaleX(-1);
+  }
+
+  @media (width >= 1200px), (width >= 900px) and (not ((hover: none) and (pointer: coarse))) {
+    --sd-card-radius: calc(24 * var(--sd-u, 1px));
+    --sd-fade-in: 0.85;
+
+    & .social-deck-strip-card {
+      height: calc(421 * var(--sd-u, 1px));
+    }
+
+    & .social-deck-cards.social-deck-strip-track {
+      cursor: grab;
+    }
+
+    & .social-deck-cards .social-deck-card-media .social-deck-card-body p {
+      font-size: max(12px, calc(14 * var(--sd-u, 1px)));
+    }
+
+    & .social-deck-strip-nav {
+      gap: calc(11 * var(--sd-u, 1px));
+      margin-top: calc(32 * var(--sd-u, 1px));
+    }
+
+    & .social-deck-strip-btn {
+      width: max(40px, calc(44 * var(--sd-u, 1px)));
+      height: max(40px, calc(44 * var(--sd-u, 1px)));
+      border-radius: calc(12 * var(--sd-u, 1px));
+    }
+
+    & .social-deck-strip-icon {
+      width: max(14px, calc(16 * var(--sd-u, 1px)));
+      height: max(14px, calc(16 * var(--sd-u, 1px)));
+    }
+  }
+}
+
+/* ---------- section: one dark fold, head + strip + arrows ---------- */
+main .section.social-deck-container:has(.social-deck.strip) {
+  /* mobile frame (375×815) */
+  --sd-side: clamp(20px, 5.2vw, 44px);
+  --sd-h-size: clamp(20px, 5.8667vw, 36px);
+  --sd-top: clamp(100px, 13.25svh, 140px);
+
+  /* head (eyebrow 14, 7, heading 27, 20, socials 40), then 50.8 to the cards */
+  --sd-h-row: calc(var(--sd-h-size) * 27 / 22);
+  --sd-head-h: calc(131.8px + var(--sd-h-row));
+
+  /* 43.9 to the arrows, 44 arrows, at least 16 below */
+  --sd-u: min(calc(100vw / 420), calc((100svh - var(--sd-top) - var(--sd-head-h) - 103.9px) / 451));
+
+  justify-content: flex-start;
+  min-height: 100svh;
+  padding: var(--sd-top) 0 0;
+  background-color: var(--section-bg, #0a0a0a);
+  background-image: none;
+  color: rgb(230 230 230);
+
+  /* head: a fixed-height band above the row, 2px left of the cards */
+  & .default-content-wrapper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 14px auto auto;
+    align-content: start;
+    box-sizing: border-box;
+    height: var(--sd-head-h);
+    padding: 0 var(--sd-side) 0 calc(var(--sd-side) - 2px);
+    text-align: start;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
+  & .default-content-wrapper > :is(p, h2) {
+    max-width: none;
+    margin: 0;
+    color: var(--color-white, #fff);
+    line-height: var(--sd-lh);
+    text-transform: uppercase;
+    text-align: start;
+
+    /* one line; longer text ends in "…" */
+    overflow-x: clip;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* eyebrow */
+  /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
+  & .default-content-wrapper > p {
+    --sd-lh: 13.2px;
+
+    opacity: 0.6;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium, 500);
+    font-size: 14px;
+    letter-spacing: -0.12px;
+  }
+
+  & .default-content-wrapper > h2 {
+    --sd-lh: calc(26.7 / 22);
+
+    min-height: var(--sd-h-row);
+    margin-top: 7px;
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-medium, 500);
+    font-size: var(--sd-h-size);
+    letter-spacing: calc(-0.81em / 22);
+  }
+
+  /* social icon links */
+  & .default-content-wrapper > ul {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .default-content-wrapper > ul li {
+    margin: 0;
+  }
+
+  & .default-content-wrapper > ul a:any-link {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 9.09px;
+    background: rgb(255 255 255 / 10%);
+    color: var(--color-white, #fff);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  & .default-content-wrapper > ul a:any-link:hover,
+  & .default-content-wrapper > ul a:any-link:focus-visible {
+    background: rgb(255 255 255 / 22%);
+  }
+
+  /* 16.67 glyph */
+  & .default-content-wrapper > ul .icon {
+    display: block;
+    width: calc(100% - 23.33px);
+    height: calc(100% - 23.33px);
+  }
+
+  & .default-content-wrapper > ul .icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* desktop frame (1280×720) */
+  @media (width >= 1200px), (width >= 900px) and (not ((hover: none) and (pointer: coarse))) {
+    --sd-u: min(calc(100vw / 1280), calc(100svh / 720));
+    --sd-side: calc(64 * var(--sd-u));
+
+    height: 100svh;
+    min-height: 0;
+    justify-content: center;
+    padding: calc(104 * var(--sd-u)) 0 calc(29 * var(--sd-u));
+    background-color: var(--section-bg, #000);
+
+    & .default-content-wrapper {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: calc(9 * var(--sd-u)) calc(29 * var(--sd-u));
+      gap: calc(20 * var(--sd-u)) 24px;
+      height: calc(90 * var(--sd-u));
+      padding: 0 var(--sd-side);
+    }
+
+    & .default-content-wrapper > :is(p, h2) {
+      margin: 0;
+      text-box: trim-both cap alphabetic;
+    }
+
+    @supports not (text-box: trim-both cap alphabetic) {
+      /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
+      & .default-content-wrapper > :is(p, h2) {
+        margin: calc((var(--sd-cap-top) - var(--sd-lh) / 2) * 1em) 0
+          calc((var(--sd-cap-bottom) - var(--sd-lh) / 2) * 1em);
+      }
+    }
+
+    & .default-content-wrapper > p {
+      --sd-lh: 1.1;
+      --sd-cap-top: 0.29;
+      --sd-cap-bottom: 0.43;
+
+      opacity: 0.7;
+      font-size: max(11px, calc(12 * var(--sd-u)));
+      letter-spacing: -0.01em;
+    }
+
+    & .default-content-wrapper > h2 {
+      --sd-lh: 1.2;
+      --sd-cap-top: 0.28;
+      --sd-cap-bottom: 0.44;
+
+      grid-row: 2;
+      min-height: 0;
+      font-weight: var(--font-weight-regular, 400);
+      font-size: calc(40 * var(--sd-u));
+      letter-spacing: -0.04em;
+    }
+
+    & .default-content-wrapper > ul {
+      grid-row: 1 / span 2;
+      grid-column: 2;
+      align-self: end;
+      gap: calc(4 * var(--sd-u));
+      margin: 0;
+    }
+
+    & .default-content-wrapper > ul a:any-link {
+      width: calc(40 * var(--sd-u));
+      height: calc(40 * var(--sd-u));
+      border-radius: calc(8 * var(--sd-u));
+    }
+
+    /* 16.67 glyph */
+    & .default-content-wrapper > ul .icon {
+      width: calc(100% - 23.33 * var(--sd-u));
+      height: calc(100% - 23.33 * var(--sd-u));
+    }
+  }
+}
+
+/* ---------- Light section (section style "light", styles/section-light.css) ----------
+   Colours only, measured from the source's light Socials panel: eyebrow #666,
+   heading #121212, social tiles and arrows rgb(0 0 0 / 7%) with a #121212 /
+   #000 glyph, 12% on hover / focus, card fill #222. The photo cards keep their
+   dark caption shade, caption and arrow tile, as the source does. The section
+   background is the light section's own --section-bg. */
+.section.light .social-deck.block.strip {
+  & .social-deck-cards.social-deck-strip-track:focus-visible {
+    outline-color: rgb(18 18 18);
+  }
+
+  & .social-deck-strip-card .social-deck-card-media {
+    background: rgb(34 34 34);
+  }
+
+  & .social-deck-strip-btn {
+    background: rgb(0 0 0 / 7%);
+    color: rgb(18 18 18);
+
+    &:hover,
+    &:focus-visible {
+      background: rgb(0 0 0 / 12%);
+    }
+
+    &:disabled {
+      background: rgb(0 0 0 / 7%);
+    }
+  }
+}
+
+main .section.light.social-deck-container:has(.social-deck.strip) {
+  color: rgb(18 18 18);
+
+  /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
+  & .default-content-wrapper > p {
+    opacity: 1;
+    color: rgb(102 102 102);
+  }
+
+  & .default-content-wrapper > h2 {
+    color: rgb(18 18 18);
+  }
+
+  /* social text links in one paragraph: a row of small tiles like the icons */
+  /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
+  & .default-content-wrapper > p:has(> a) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  & .default-content-wrapper > p > a:any-link {
+    display: grid;
+    place-items: center;
+    height: 40px;
+    padding: 0 calc(23.33px / 2);
+    border-radius: 9.09px;
+    transition: background-color 0.2s;
+  }
+
+  @media (width >= 1200px), (width >= 900px) and (not ((hover: none) and (pointer: coarse))) {
+    /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
+    & .default-content-wrapper > p:has(> a) {
+      gap: calc(4 * var(--sd-u));
+    }
+
+    & .default-content-wrapper > p > a:any-link {
+      height: calc(40 * var(--sd-u));
+      padding: 0 calc(23.33 * var(--sd-u) / 2);
+      border-radius: calc(8 * var(--sd-u));
+    }
+  }
+
+  /* social tiles: icon list or text links (white icon glyphs are inverted to
+     black, as on the source) */
+  & .default-content-wrapper > ul a:any-link,
+  & .default-content-wrapper > p > a:any-link {
+    background: rgb(0 0 0 / 7%);
+    color: rgb(0 0 0);
+  }
+
+  & .default-content-wrapper > ul a:any-link:hover,
+  & .default-content-wrapper > ul a:any-link:focus-visible,
+  & .default-content-wrapper > p > a:any-link:hover,
+  & .default-content-wrapper > p > a:any-link:focus-visible {
+    background: rgb(0 0 0 / 12%);
+    color: rgb(0 0 0);
+    text-decoration-color: transparent;
+  }
+
+  & .default-content-wrapper > ul .icon img {
+    filter: invert(1);
+  }
+}
