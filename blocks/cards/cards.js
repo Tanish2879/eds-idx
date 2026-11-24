@@ -557,7 +557,6 @@ function decoratePillars(block, ul) {
   if (cards.length > 1) stage.append(rail);
   block.replaceChildren(stage);
   block.classList.add('is-stepped');
-  block.style.setProperty('--count', cards.length);
   // the Animation Direction (a class of the block): vertical, or else horizontal (the default)
   const horizontal = !block.classList.contains('vertical');
   if (horizontal) block.classList.add('horizontal');
@@ -597,38 +596,99 @@ function decoratePillars(block, ul) {
     li.style.setProperty('--shift', clamp(d, -1, 1).toFixed(4));
   });
 
-  // a step: one screen of the block's scroll (its height: one screen per card); the stops: each
-  // card, then the next section's top. Measured once the block is laid out (its section is shown
-  // after loading) and again whenever its size changes; the scroll read and painted at most once
-  // a frame.
-  let step = 0;
-  let frameRequest = 0;
-  const paint = () => {
-    frameRequest = 0;
-    if (!step) return;
-    const position = clamp(-block.getBoundingClientRect().top / step, 0, cards.length - 1);
-    show(Math.round(position));
-    if (horizontal) track(position);
+  /*
+   * The cards change only for a scroll over the image: one gesture there (a wheel or trackpad
+   * scroll, or a vertical swipe on touch screens) moves one card on, or back; anywhere else the
+   * page scrolls as usual (the block is one screen). Over the first card scrolling up, or the
+   * last scrolling down, the page scrolls on. The move plays a position from the card to the next
+   * over STEP_GLIDE (the page's scroll-stop glide: 1.8s, power2.inOut), painted once a frame:
+   * horizontal maps it (track), vertical switches the cards (show) and lets the CSS play its
+   * transitions. Meanwhile, and until the gesture's own trail of events (trackpad momentum) has
+   * stopped, further scrolls over the image are held, not passed to the page.
+   */
+  const STEP_GLIDE = 1800;
+  const GESTURE_GAP = 150; // ms without a scroll event: the gesture is over
+  const MIN_GESTURE = 24; // px of movement before a gesture counts (light touches ignored)
+  const glide = (t) => (t < 0.5 ? 2 * t * t : 1 - ((-2 * t + 2) ** 2) / 2);
+  let position = 0;
+  let moving = 0;
+  const goTo = (to) => {
+    const target = clamp(to, 0, cards.length - 1);
+    if (target === position && !moving) return;
+    cancelAnimationFrame(moving);
+    const from = position;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / STEP_GLIDE);
+      position = from + (target - from) * glide(t);
+      show(Math.round(position));
+      if (horizontal) track(position);
+      if (t < 1) moving = requestAnimationFrame(tick);
+      else {
+        moving = 0;
+        position = target;
+      }
+    };
+    moving = requestAnimationFrame(tick);
   };
-  window.addEventListener('scroll', () => {
-    if (!frameRequest) frameRequest = requestAnimationFrame(paint);
-  }, { passive: true });
-  new ResizeObserver(() => {
-    step = block.offsetHeight / cards.length;
-    if (!step) return;
-    block.dataset.scrollStops = cards.map((li, i) => Math.round(i * step))
-      .concat(Math.round(cards.length * step)).join(' ');
-    paint();
-  }).observe(block);
   show(0);
   if (horizontal) track(0);
 
-  marks.forEach((mark, i) => mark.addEventListener('click', async () => {
-    const top = block.getBoundingClientRect().top + window.scrollY + i * step;
-    const { glideTo } = await import('../../scripts/scroll-stops.js');
-    glideTo(top);
-  }));
-  import('../../scripts/scroll-stops.js').then(({ default: init }) => init());
+  // over the image: the images' box (the current one's: they are stacked; their own pointer
+  // events off, so the stage hears the gesture)
+  const overImage = (x, y) => {
+    const r = cards[active].querySelector('.image').getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  };
+  let lastEvent = 0;
+  let travel = 0;
+  // a gesture's delta: moves a card on (1), back (-1), or not yet (0); false: the page's (no card
+  // that way, and none moving)
+  const gesture = (delta) => {
+    const now = performance.now();
+    const fresh = now - lastEvent > GESTURE_GAP;
+    lastEvent = now;
+    if (fresh) travel = 0;
+    const way = Math.sign(delta);
+    const next = Math.round(moving ? clamp(position, 0, cards.length - 1) : position) + way;
+    if (!moving && (next < 0 || next > cards.length - 1)) return false;
+    if (moving || travel === null) return 0;
+    travel += delta;
+    if (Math.abs(travel) < MIN_GESTURE) return 0;
+    travel = null; // (this gesture has moved its card)
+    return way;
+  };
+  stage.addEventListener('wheel', (e) => {
+    if (!overImage(e.clientX, e.clientY) || e.ctrlKey) return;
+    const delta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    const way = gesture(delta);
+    if (way === false) return;
+    e.preventDefault();
+    if (way) goTo(Math.round(position) + way);
+  }, { passive: false });
+  let touch = null;
+  stage.addEventListener('touchstart', (e) => {
+    const t = e.touches[0];
+    const onImage = e.touches.length === 1 && overImage(t.clientX, t.clientY);
+    touch = onImage ? { y: t.clientY, x: t.clientX } : null;
+    lastEvent = 0;
+  }, { passive: true });
+  stage.addEventListener('touchmove', (e) => {
+    if (!touch) return;
+    const t = e.touches[0];
+    const dy = touch.y - t.clientY;
+    if (Math.abs(dy) < Math.abs(touch.x - t.clientX)) return; // (a sideways swipe: not ours)
+    const way = gesture(dy - (touch.moved || 0));
+    touch.moved = dy;
+    if (way === false) {
+      touch = null; // (no card that way: the page scrolls)
+      return;
+    }
+    e.preventDefault();
+    if (way) goTo(Math.round(position) + way);
+  }, { passive: false });
+
+  marks.forEach((mark, i) => mark.addEventListener('click', () => goTo(i)));
 }
 
 export default async function decorate(block) {

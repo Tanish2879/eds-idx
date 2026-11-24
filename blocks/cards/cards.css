@@ -639,11 +639,11 @@ main > .section > .cards-wrapper > .block {
       }
     }
 
-    /* stepped (the site): the block one screen per card, its stage pinned meanwhile; the images
-       stack (the first on top) and the current one wipes off to the next, the texts crossfade,
-       in the Animation Direction (a class: horizontal or vertical) */
+    /* stepped (the site): the block one screen, the cards changed by a scroll over the image
+       (cards.js); the images stack (the first on top) and the current one wipes off to the next,
+       the texts crossfade, in the Animation Direction (a class: horizontal or vertical) */
     &.is-stepped {
-      height: calc(var(--count, 1) * 100svh);
+      height: 100svh;
 
       .stage {
         position: sticky;
