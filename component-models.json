@@ -156,6 +156,41 @@
     ]
   },
   {
+    "id": "accordion",
+    "fields": [
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "classes_dark",
+        "label": "Dark theme",
+        "description": "White text on a black band across the page"
+      }
+    ]
+  },
+  {
+    "id": "accordion-item",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "summary",
+        "label": "Title",
+        "description": "Up to 120 characters, the line that opens and closes the item.",
+        "validation": {
+          "maxLength": 120,
+          "customErrorMsg": "Keep the title to 120 characters at most."
+        }
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Content",
+        "description": "Up to 600 characters, shown when the item is open. Longer content is shortened on the page."
+      }
+    ]
+  },
+  {
     "id": "blog-carousel",
     "fields": [
       {
