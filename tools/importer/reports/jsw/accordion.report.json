@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/accordion/source.html",
+  "path": "jsw/accordion",
+  "timestamp": "2026-11-24T07:47:14.516Z",
+  "title": "Frequently asked questions | JSW Motors",
+  "template": "accordion",
+  "blocks": [
+    "accordion"
+  ],
+  "importScript": "466c352318b6"
+}

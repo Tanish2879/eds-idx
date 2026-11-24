@@ -70,7 +70,8 @@
         "jsw-footer",
         "jsw-nav",
         "interactive-showcase",
-        "collage"
+        "collage",
+        "accordion"
       ]
     }
   ]

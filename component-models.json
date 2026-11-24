@@ -163,7 +163,7 @@
         "valueType": "boolean",
         "name": "classes_dark",
         "label": "Dark theme",
-        "description": "White text on a black band across the page"
+        "description": "White text on a black band across the page."
       }
     ]
   },
@@ -175,7 +175,7 @@
         "valueType": "string",
         "name": "summary",
         "label": "Title",
-        "description": "Up to 120 characters, the line that opens and closes the item.",
+        "description": "The line that opens and closes the item. Max 120 characters.",
         "validation": {
           "maxLength": 120,
           "customErrorMsg": "Keep the title to 120 characters at most."
@@ -186,7 +186,7 @@
         "valueType": "string",
         "name": "text",
         "label": "Content",
-        "description": "Up to 600 characters, shown when the item is open. Longer content is shortened on the page."
+        "description": "Shown when the item is open. Max 600 characters; longer content is shortened on the page."
       }
     ]
   },

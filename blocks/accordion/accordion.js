@@ -65,24 +65,24 @@ function buildItem(row, i) {
   const [label, body] = row.children;
 
   const summary = document.createElement('summary');
-  summary.className = 'accordion-item-label';
+  summary.className = 'label';
   const number = document.createElement('span');
-  number.className = 'accordion-item-number';
+  number.className = 'number';
   number.textContent = String(i + 1).padStart(2, '0');
   number.setAttribute('aria-hidden', 'true');
   const question = document.createElement('span');
-  question.className = 'accordion-item-question';
+  question.className = 'question';
   if (label) question.append(...label.childNodes);
   const icon = document.createElement('span');
-  icon.className = 'accordion-item-icon';
+  icon.className = 'icon';
   icon.setAttribute('aria-hidden', 'true');
   summary.append(number, question, icon);
 
   const answer = body || document.createElement('div');
-  answer.className = 'accordion-item-body';
+  answer.className = 'answer';
 
   const details = document.createElement('details');
-  details.className = 'accordion-item';
+  details.className = 'item';
   moveInstrumentation(row, details);
   details.append(summary, answer);
 
@@ -105,8 +105,8 @@ function buildItem(row, i) {
 function wireCtaGlitch(block) {
   const link = block.closest('.section:is(.faq-columns, .faq-center)')
     ?.querySelector(':scope > .default-content-wrapper > p > a:only-child');
-  if (!link || link.classList.contains('accordion-cta-glitch')) return;
-  link.classList.add('accordion-cta-glitch');
+  if (!link || link.classList.contains('cta-glitch')) return;
+  link.classList.add('cta-glitch');
   link.setAttribute('aria-label', link.textContent.trim());
   // every text in the link (also inside a span or strong it may hold) split into letters
   const walker = document.createTreeWalker(link, NodeFilter.SHOW_TEXT);
@@ -184,7 +184,7 @@ function wireCombatMotion(block, items) {
   /** eases an item open or closed from where it is (also part way, when interrupted) */
   const animate = (details, open) => {
     const summary = details.querySelector('summary');
-    const answer = details.querySelector('.accordion-item-body');
+    const answer = details.querySelector('.answer');
     // border-box heights (the item is border-box while it animates, accordion.css)
     const { height } = details.getBoundingClientRect();
     const fade = answer ? getComputedStyle(answer) : null;
@@ -249,9 +249,9 @@ export default function decorate(block) {
   // texts over their limit (MAX_CHARS): shortened, and listed for the author in the editor
   const tooLong = [];
   items.forEach((details, i) => {
-    const titleLength = clipContent(details.querySelector('.accordion-item-question'), MAX_CHARS.title);
+    const titleLength = clipContent(details.querySelector('.question'), MAX_CHARS.title);
     if (titleLength) tooLong.push(`item ${i + 1}: its title (${titleLength} of ${MAX_CHARS.title} characters)`);
-    const contentLength = clipContent(details.querySelector('.accordion-item-body'), MAX_CHARS.content);
+    const contentLength = clipContent(details.querySelector('.answer'), MAX_CHARS.content);
     if (contentLength) tooLong.push(`item ${i + 1}: its content (${contentLength} of ${MAX_CHARS.content} characters)`);
   });
 
@@ -287,7 +287,7 @@ export default function decorate(block) {
   const content = [...items];
   if (editing && tooLong.length) {
     const note = document.createElement('p');
-    note.className = 'accordion-limit-note';
+    note.className = 'limit-note';
     note.textContent = `Too long, so shortened on the page: ${tooLong.join('; ')}. `
       + 'Shorten them in the properties.';
     content.unshift(note);
