@@ -1,0 +1,79 @@
+/* Borders and stripes are mixed from the text colour, so the table reads on
+   both light and dark sections. */
+.table {
+  --table-border-color: color-mix(in srgb, currentcolor 20%, transparent);
+  --table-stripe-color: color-mix(in srgb, currentcolor 6%, transparent);
+
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.table table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  color: inherit;
+  font-family: var(--text-font-family);
+  font-size: var(--body-font-size-xs);
+}
+
+@media (width >= 600px) {
+  .table table {
+    font-size: var(--body-font-size-s);
+  }
+}
+
+@media (width >= 900px) {
+  .table table {
+    font-size: var(--body-font-size-m);
+  }
+}
+
+.table table thead tr {
+  border-top: 2px solid var(--table-border-color);
+  border-bottom: 2px solid var(--table-border-color);
+}
+
+.table table tbody tr {
+  border-bottom: 1px solid var(--table-border-color);
+}
+
+.table table th {
+  font-weight: 700;
+}
+
+.table table th,
+.table table td {
+  padding: var(--spacing-8);
+  text-align: left;
+}
+
+.table table th p,
+.table table td p {
+  margin: 0;
+}
+
+.table table td p + p {
+  margin-top: var(--spacing-4);
+}
+
+/* no header variant */
+.table.no-header table tbody tr {
+  border-top: 1px solid var(--table-border-color);
+}
+
+/* striped variant */
+.table.striped tbody tr:nth-child(odd) {
+  background-color: var(--table-stripe-color);
+}
+
+/* bordered variant */
+.table.bordered table th,
+.table.bordered table td {
+  border: 1px solid var(--table-border-color);
+}

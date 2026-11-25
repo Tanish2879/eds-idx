@@ -1,0 +1,400 @@
+/* Sized and styled like the Embed block, so videos look the same whichever block holds them. */
+.video {
+  --video-ratio: 16 / 9;
+
+  width: 100%;
+  max-width: 960px;
+  margin: 32px auto;
+}
+
+.video.ratio-4-3 {
+  --video-ratio: 4 / 3;
+}
+
+.video.ratio-1-1 {
+  --video-ratio: 1;
+}
+
+/* vertical video: keep it phone-sized on desktop */
+.video.ratio-9-16 {
+  --video-ratio: 9 / 16;
+
+  max-width: 405px;
+}
+
+.video .video-frame,
+.video .video-placeholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--video-ratio);
+  overflow: hidden;
+  background-color: var(--color-black);
+}
+
+.video .video-frame video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: contain;
+}
+
+.video .video-placeholder {
+  cursor: pointer;
+}
+
+.video .video-placeholder picture,
+.video .video-placeholder img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* big play button on the poster (same as the Embed block's) */
+.video .video-play {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* play triangle: centred on its box, nudged 2px right so it also looks centred (a triangle's
+   weight sits on its left side) */
+.video .video-play::before {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border-block: 12px solid transparent;
+  border-inline-start: 20px solid currentcolor;
+  transform: translate(calc(-50% + 2px), -50%);
+}
+
+.video .video-play:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 4px;
+}
+
+.video .video-play:focus-visible,
+.video .video-placeholder:hover .video-play {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+/* Hide Controls: the big play button shows only while the video is paused (video.js) */
+.video .video-frame:not(.is-paused) .video-play {
+  display: none;
+}
+
+.video .video-frame.is-paused .video-play {
+  z-index: 1;
+}
+
+.video .video-frame:hover .video-play {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.video.no-controls .video-frame video {
+  cursor: pointer;
+}
+
+/* Hide Controls: the video itself takes keyboard focus */
+.video .video-frame video:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* Full bleed (and Fill Screen): edge to edge across the screen, past the section's gutters
+   and max width (same technique as the Columns "Thank You" layout) */
+main .video:is(.full-bleed, .fill-screen) {
+  width: 100vw;
+  max-width: none;
+  margin-inline: calc(50% - 50vw);
+}
+
+/* a full-width video fills its frame (cropped if needed) rather than letterboxing */
+.video:is(.full-bleed, .fill-screen) .video-frame video {
+  object-fit: cover;
+}
+
+/* not a video file: hidden on the page; in Universal Editor a note for the author (video.js) */
+.video.video-empty {
+  display: none;
+}
+
+.video.video-empty[data-aue-resource] {
+  display: block;
+  padding: var(--spacing-16);
+  border: 1px dashed currentcolor;
+  font-size: var(--body-font-size-s);
+}
+
+/* Even space above the video, as for the Embed block (see embed.css) */
+main > .section:has(.video) {
+  --video-gap: 24px;
+}
+
+main > .section:has(.video) > div {
+  margin-block: 0;
+}
+
+main > .section:has(.video) > .default-content-wrapper > :last-child {
+  margin-bottom: 0;
+}
+
+main > .section:has(.video) .video {
+  margin-block: var(--video-gap) 0;
+}
+
+/* nothing above the video in its section: no gap above it either */
+main > .section > .video-wrapper:first-child .video {
+  margin-top: 0;
+}
+
+@media (width >= 900px) {
+  main > .section:has(.video) {
+    --video-gap: 32px;
+  }
+}
+
+/* full bleed: 100vw includes a desktop scrollbar, so clip the sliver instead of scrolling
+   sideways */
+main > .section:has(.video:is(.full-bleed, .fill-screen)) {
+  overflow-x: clip;
+}
+
+/* Snapped section: fit the video to the screen (video.js fitToSection sets --video-room; in
+   Universal Editor from a 900px desktop screen, as sections there have no screen height) */
+body:not(.free-scroll) main > .section:not(.no-snap) .video {
+  --video-wph: 1.7778;
+  --video-max: 960px;
+  --video-room: max(180px, calc(100svh - 300px));
+
+  max-width: min(var(--video-max), calc(var(--video-room) * var(--video-wph)));
+
+  &.ratio-4-3 {
+    --video-wph: 1.3333;
+  }
+
+  &.ratio-1-1 {
+    --video-wph: 1;
+  }
+
+  &.ratio-9-16 {
+    --video-wph: 0.5625;
+    --video-max: 405px;
+  }
+
+  /* full bleed keeps the full width; the height is capped to the room on screen instead */
+  &.full-bleed {
+    max-width: none;
+
+    .video-frame,
+    .video-placeholder {
+      max-height: var(--video-room);
+    }
+  }
+}
+
+/* Fill Screen: as tall as the section too.
+   - Snapped section: the room the heading and text above leave (video.js fitToSection; all of
+     it when the video is alone). In Universal Editor that room is taken from a 900px screen.
+   - Elsewhere: one screen; in Universal Editor 900px, since screen units there resolve
+     against the editor's tall canvas (styles.css) - the height the site's other full-screen
+     blocks (e.g. Hero) are given in the editor. */
+main .video.fill-screen {
+  height: 100vh;
+  height: 100svh;
+}
+
+main .video.fill-screen[data-aue-resource] {
+  height: 900px;
+}
+
+body:not(.free-scroll) main > .section:not(.no-snap) .video.fill-screen {
+  max-width: none;
+  height: var(--video-room);
+}
+
+.video.fill-screen :is(.video-frame, .video-placeholder) {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+/* Universal Editor, until video.js has measured: never the screen-unit default above */
+body:not(.free-scroll) main > .section:not(.no-snap) .video[data-aue-resource] {
+  --video-room: 600px;
+}
+
+/* Caption (optional 4th row): under the video */
+.video .video-caption {
+  margin-top: 12px;
+  font-size: var(--body-font-size-s);
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+   Combat theme (body.combat): the PHEV film card. Over the split (Columns,
+   split) the video is a glass pill: the poster a small thumbnail with a
+   play badge, the caption beside it (its first paragraph the tag line, the
+   rest the text), as on the prototype (#phevFilm). The whole pill is the
+   play button; the film plays full screen (video.js). Its place over the
+   split is set in blocks/columns/columns.css (Combat theme).
+   ========================================================================== */
+
+body.combat main > .section:has(.columns.split) .video {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 8px 20px 8px 8px;
+  border-radius: 18px;
+  background-color: rgb(12 12 12 / 20%);
+  box-shadow: rgb(255 255 255 / 12%) 0 0 0 1px inset;
+  backdrop-filter: blur(24px) saturate(1.2);
+  color: var(--color-white);
+  cursor: pointer;
+
+  :is(.video-placeholder, .video-frame) {
+    position: static;
+    flex: 0 0 auto;
+    width: 72px;
+    height: 52px;
+    aspect-ratio: auto;
+    border-radius: 10px;
+    background-color: #222;
+  }
+
+  /* the thumbnail clips itself (the play button below spans the pill) */
+  .video-placeholder picture {
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
+  .video-frame {
+    position: relative;
+  }
+
+  /* the play button covers the whole pill; it draws the badge on the thumbnail */
+  .video-placeholder .video-play {
+    inset: 0;
+    z-index: 1;
+    width: auto;
+    height: auto;
+    border-radius: inherit;
+    background-color: transparent;
+    transform: none;
+
+    &::before {
+      inset: 50% auto auto 50%;
+      width: 28px;
+      height: 28px;
+      box-sizing: border-box;
+      border: 0;
+      border-radius: 50%;
+      background: rgb(255 255 255 / 12%);
+      box-shadow: rgb(255 255 255 / 22%) 0 0 0 1px inset;
+      backdrop-filter: blur(3px);
+      transform: translate(-50%, -50%);
+      transition: background-color 0.25s;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 50% auto auto 50%;
+      border-block: 3.5px solid transparent;
+      border-inline-start: 6px solid var(--color-white);
+      transform: translate(calc(-50% + 1px), -50%);
+    }
+  }
+
+  /* the badge sits on the thumbnail's centre: 8px padding + half of the thumbnail */
+  .video-placeholder .video-play::before,
+  .video-placeholder .video-play::after {
+    left: 44px;
+  }
+
+  .video-placeholder:hover .video-play,
+  .video-placeholder .video-play:focus-visible {
+    background-color: transparent;
+  }
+
+  .video-placeholder:hover .video-play::before {
+    background: rgb(255 255 255 / 26%);
+  }
+
+  .video-placeholder .video-play:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 3px;
+  }
+
+  .video-caption {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    margin: 0;
+
+    > * {
+      margin: 0;
+      color: rgb(255 255 255 / 92%);
+      font-family: var(--font-family-base);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    > :first-child:not(:only-child) {
+      color: rgb(255 255 255 / 72%);
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+  }
+
+  @media (width >= 900px) and (width <= 1440px) {
+    gap: 14px;
+    padding: 8px 16px 8px 8px;
+
+    :is(.video-placeholder, .video-frame) {
+      width: 64px;
+      height: 48px;
+    }
+
+    .video-placeholder .video-play::before,
+    .video-placeholder .video-play::after {
+      left: 40px;
+    }
+
+    .video-caption > :last-child:not(:only-child) {
+      font-size: 12px;
+    }
+  }
+}

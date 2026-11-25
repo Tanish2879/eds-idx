@@ -1,0 +1,426 @@
+/* Article Carousel — Figma "Opt 52" (3038:11312): category tabs + View All,
+   a horizontal carousel of article cards and progress bars.
+   Class names below still say "article-listing" (the block's original name);
+   article-carousel.js aliases that class onto the block so these keep working. */
+
+/* full-bleed: the carousel slides edge to edge. The section/wrapper classes
+   come from the block name (article-carousel), not the aliased class */
+.article-carousel-container .article-carousel-wrapper {
+  container-type: inline-size;
+  max-width: unset;
+  margin: 0;
+  padding: 0;
+}
+
+/* desktop: the block starts just below the fixed header (Figma gap below the
+   nav pill) instead of being centred in the section, which slid the tabs up
+   under the header on shorter screens */
+main > .section.article-carousel-container {
+  @media (width >= 900px) {
+    justify-content: flex-start;
+  }
+}
+
+.article-listing {
+  --al-accent: var(--color-accent);
+  --al-card-bg: var(--color-gray-90);
+  --al-muted: var(--color-gray-40); /* #999: #808080 was 4.45:1 on the card, below the 4.5:1 AA minimum */
+  --al-title: var(--color-gray-10);
+  --al-bar: rgb(255 255 255 / 20%);
+
+  /* design pixel: Figma sizes scale down so the block fits one viewport
+     (sections are exactly one screen tall). Mobile: 402x874 reference */
+  --al-u: min(calc(100vw / 402), calc(100svh / 874));
+
+  /* left edge of the carousel / head. Mobile: the site's side padding */
+  --al-gutter: clamp(20px, 5vw, 48px);
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: var(--color-white);
+
+  /* entrance (newsroom prototype, Opt 65 → 66) */
+  --al-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  @media (width >= 900px) {
+    /* Figma frame 1728x1000 */
+    --al-u: min(calc(100vw / 1728), calc(100svh / 1000));
+
+    /* line up with the featured story above (featured-intro): 64 of 1728,
+       a centred 1600 design-pixel column that stops growing at 1px each */
+    --al-gutter: calc(50cqw - 800 * clamp(0.45px, min(100vw / 1728, 100svh / 1000), 1px));
+
+    /* Figma: the head sits 35px below the nav pill in the 1280 frame (47 design px) */
+    padding-top: calc(var(--nav-offset) + 47 * var(--al-u));
+  }
+
+  /* ---- head: tabs centred, View All on the right (desktop). On mobile the
+     head's own box is dropped so the tabs and View All join the block's
+     column, which puts View All under the carousel as in Figma ---- */
+  .article-listing-head {
+    display: contents;
+
+    @media (width >= 900px) {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: calc(16 * var(--al-u));
+      padding: 0 var(--al-gutter);
+      margin-bottom: calc(62 * var(--al-u));
+    }
+  }
+
+  /* mobile, Figma 375 frame: 12px tabs 22px apart (tracking 0.36px), so three
+     tabs fit and the next peeks in; sized from the screen width like the cards */
+  .article-listing-tabs {
+    display: flex;
+    gap: calc(22 / 375 * 100cqw);
+    min-width: 0;
+    padding: 0 var(--al-gutter);
+    margin-bottom: calc(32 * var(--al-u));
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (width >= 900px) {
+      grid-column: 2;
+      gap: calc(32 * var(--al-u));
+      padding: 0;
+      margin-bottom: 0;
+      overflow: visible;
+    }
+
+    /* one tab needs no tab bar on the site; keep it selectable in the editor */
+    &.is-single {
+      visibility: hidden;
+    }
+  }
+
+  .article-listing-tab {
+    flex: 0 0 auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--mono-font-family);
+    font-size: max(11px, calc(12 / 375 * 100cqw));
+    line-height: 1.333;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-white);
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.2s ease, color 0.2s ease;
+
+    @media (width >= 900px) {
+      font-size: max(12px, calc(18 * var(--al-u)));
+      line-height: 1.167;
+      letter-spacing: -0.02em;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &[aria-selected="true"] {
+      color: var(--al-accent);
+      opacity: 1;
+
+      /* decorative brackets, kept out of the accessible name */
+      &::before {
+        content: '[' / '';
+      }
+
+      &::after {
+        content: ']' / '';
+      }
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--al-accent);
+      outline-offset: 4px;
+    }
+  }
+
+  /* mobile, Figma 375 frame: a 291x52 button centred 36px under the cards
+     (x 402/375 for the block's 402 design pixel: 312 x 56, 39 below) */
+  a.article-listing-viewall:any-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    order: 1;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: calc(312 * var(--al-u));
+    height: calc(56 * var(--al-u));
+    margin-top: calc(39 * var(--al-u));
+    padding: 0 max(16px, calc(26 * var(--al-u)));
+    border: 1px solid var(--color-white);
+    border-radius: var(--radius-8);
+    font-family: var(--mono-font-family);
+    font-size: max(11px, calc(15 * var(--al-u)));
+    line-height: 1.43;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-white);
+    transition: background-color 0.2s ease;
+
+    @media (width >= 900px) {
+      grid-column: 3;
+      order: 0;
+      justify-self: end;
+      width: auto;
+      height: max(32px, calc(39 * var(--al-u)));
+      margin-top: 0;
+      font-size: max(11px, calc(14 * var(--al-u)));
+      letter-spacing: normal;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--button-outlined-hover-bg-on-dark);
+    }
+  }
+
+  /* ---- carousel ----
+     mobile, Figma 375 frame: 309px cards 22px apart, so the next card peeks
+     in at the right edge. Widths follow the screen width (cqw of the wrapper),
+     not --al-u, which is capped by the screen height and made the cards
+     narrower on shorter phones, showing far more of the next card */
+  .article-listing-track {
+    display: flex;
+    gap: calc(22 / 375 * 100cqw);
+    margin: 0;
+    padding: 0 var(--al-gutter);
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--al-gutter);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (width >= 900px) {
+      gap: calc(48 * var(--al-u));
+    }
+  }
+
+  .article-listing-card {
+    flex: 0 0 calc(309 / 375 * 100cqw);
+    margin: 0;
+    scroll-snap-align: start;
+
+    @media (width >= 900px) {
+      flex-basis: calc(450 * var(--al-u));
+    }
+  }
+
+  .article-listing-card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: var(--radius-24);
+    overflow: hidden;
+    background-color: var(--al-card-bg);
+    text-decoration: none;
+    color: inherit;
+
+    &:focus-visible {
+      outline: 2px solid var(--al-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .article-listing-card-media {
+    height: calc(200 * var(--al-u));
+    overflow: hidden;
+
+    @media (width >= 900px) {
+      height: calc(299 * var(--al-u));
+    }
+
+    picture {
+      display: block;
+      height: 100%;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+  }
+
+  .article-listing-card-link:hover .article-listing-card-media img {
+    transform: scale(1.03);
+  }
+
+  .article-listing-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: calc(24 * var(--al-u));
+    box-sizing: border-box;
+    min-height: calc(240 * var(--al-u));
+    padding: calc(24 * var(--al-u));
+
+    @media (width >= 900px) {
+      gap: calc(32 * var(--al-u));
+      min-height: calc(310 * var(--al-u));
+      padding: calc(32 * var(--al-u));
+    }
+  }
+
+  .article-listing-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: calc(16 * var(--al-u));
+
+    @media (width >= 900px) {
+      gap: calc(24 * var(--al-u));
+    }
+  }
+
+  .article-listing-card-category,
+  .article-listing-card-date {
+    font-family: var(--mono-font-family);
+    font-size: max(10px, calc(14 * var(--al-u)));
+    line-height: 1.43;
+    text-transform: uppercase;
+    color: var(--al-muted);
+  }
+
+  .article-listing-card-title {
+    margin: 0;
+    font-family: var(--heading-font-family);
+    font-size: max(16px, calc(20 * var(--al-u)));
+    font-weight: var(--font-weight-regular);
+    letter-spacing: var(--heading-tracking-headline); /* was inherited from the h3 rule */
+    line-height: 1.4;
+    color: var(--al-title);
+
+    @media (width >= 900px) {
+      font-size: max(16px, calc(24 * var(--al-u)));
+      line-height: 1.333;
+    }
+  }
+
+  .article-listing-card-date {
+    display: flex;
+    align-items: center;
+    gap: calc(10 * var(--al-u));
+  }
+
+  .article-listing-card-date-sep {
+    flex: 0 0 auto;
+    width: max(6px, calc(8 * var(--al-u)));
+    height: max(6px, calc(8 * var(--al-u)));
+    background-color: var(--al-accent);
+  }
+
+  /* ---- progress bars ---- */
+  .article-listing-progress {
+    display: flex;
+    gap: calc(14 * var(--al-u));
+    padding: 0 var(--al-gutter);
+    margin-top: calc(32 * var(--al-u));
+
+    @media (width >= 900px) {
+      margin-top: calc(40 * var(--al-u));
+    }
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .article-listing-bar {
+    width: calc(61.5 * var(--al-u));
+    height: 18px;
+    padding: 8px 0;
+    border: 0;
+    background-color: var(--al-bar);
+    background-clip: content-box;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &.is-active {
+      background-color: var(--color-white);
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--al-accent);
+      outline-offset: 2px;
+    }
+  }
+
+  .article-listing-empty {
+    padding: 0 var(--al-gutter);
+    color: var(--al-muted);
+  }
+
+  /* ---- entrance: the block rises with the page; on top of that the tabs
+     fade in and rise, the cards drift right onto the edge and the bars slide
+     out from under the cards. .is-parked is the "before" state: lifted so the
+     top of the cards peeks 37 design px below the section's top edge (the
+     section clips the rest), which is what shows under the featured story ---- */
+  &.is-animated {
+    transition: translate 1s var(--al-ease);
+
+    .article-listing-track {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* the tabs and View All rather than the head, which has no box on mobile */
+    .article-listing-tabs,
+    a.article-listing-viewall:any-link {
+      transition: opacity 0.8s var(--al-ease), transform 1s var(--al-ease), background-color 0.2s ease;
+    }
+
+    .article-listing-card {
+      transition: transform 1s var(--al-ease);
+    }
+
+    .article-listing-progress {
+      transition: opacity 0.6s ease 0.2s, transform 1s var(--al-ease) 0.1s;
+    }
+  }
+
+  &.is-animated.is-parked {
+    translate: 0 min(0px, calc(37 * var(--al-u) - var(--al-cards-top, 0px)));
+
+    .article-listing-tabs,
+    a.article-listing-viewall:any-link {
+      opacity: 0;
+      transform: translateY(calc(55 * var(--al-u)));
+    }
+
+    .article-listing-card {
+      transform: translateX(calc(-16 * var(--al-u)));
+    }
+
+    .article-listing-progress {
+      opacity: 0;
+      transform: translateY(calc(-100 * var(--al-u)));
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-listing .article-listing-card-media img {
+    transition: none;
+  }
+}

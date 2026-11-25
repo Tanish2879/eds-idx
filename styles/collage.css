@@ -1,0 +1,593 @@
+/* Collage section style (scripts/collage.js); Figma 3940:3992, 3940:4026, 3940:4209, 3940:4265 */
+
+/* all rules share one scope, so specificity order doesn't matter */
+/* stylelint-disable no-descending-specificity */
+
+/* placed in Figma frame px (--x/--y/--w/--h): sizes scale by --c-u to fit the screen; across,
+   the side cards keep their place from their own edge of the screen (so their crop) and the copy
+   its share of the width (--c-ux); down, the places span the screen's height (--c-uy), so a
+   screen of another shape (e.g. iPad) keeps the off-screen cards off screen. On the frame's own
+   shape all three are equal */
+main > .section.collage {
+  --c-u: min(100vw / 375, 100svh / 815);
+  --c-ux: calc(100vw / var(--stage-w));
+  --c-uy: calc(100svh / var(--stage-h));
+  --stage-w: 375;
+  --stage-h: 815;
+
+  /* how far the cards travel up in the last step */
+  --collage-shift: 815;
+  --collage-duration: 0.9s;
+  --collage-ease: cubic-bezier(0.65, 0, 0.35, 1);
+
+  position: relative;
+
+  /* full-screen stage: ignore the section's authored Padding Top / Bottom */
+  padding-block: 0 !important;
+  color: var(--color-black);
+
+  /* white, except with a showcase: its card sits on the page's dark section background */
+  &:not(:has(.interactive-showcase)) {
+    background-color: var(--color-white);
+  }
+
+  @media (width >= 900px) {
+    --c-u: min(100vw / 1280, 100svh / 720);
+    --stage-w: 1280;
+    --stage-h: 720;
+    --collage-shift: 654;
+  }
+
+  > .default-content-wrapper {
+    /* copy offset below centre: mobile 30.5 (4.5 from step 1), desktop 6 */
+    --copy-dy: 30.5;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: calc(36 * var(--c-u));
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: clip;
+    text-align: center;
+
+    @media (width >= 900px) {
+      --copy-dy: 6;
+
+      gap: calc(24 * var(--c-u));
+    }
+
+    > :not(.collage-image) {
+      transform: translateY(calc(var(--copy-dy) * var(--c-uy)));
+      transition: transform var(--collage-duration) var(--collage-ease);
+    }
+  }
+
+  /* Title + Text: the centred copy, cut off with an ellipsis past the lines the space between
+     the cards allows (longer copy would run into them) */
+  > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6),
+  > .default-content-wrapper p:not(.collage-image) {
+    /* stylelint-disable-next-line value-no-vendor-prefix */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--collage-lines);
+    overflow: hidden;
+  }
+
+  > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    --collage-lines: 4;
+
+    position: relative;
+    z-index: 1;
+    max-width: calc(335 * var(--c-ux));
+    margin: 0;
+    color: var(--color-black);
+    font-size: max(20px, calc(24 * var(--c-u)));
+    font-weight: var(--font-weight-medium);
+    line-height: calc(32 / 24);
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+
+    @media (width >= 900px) {
+      --collage-lines: 3;
+
+      max-width: calc(544 * var(--c-u));
+      line-height: calc(26 / 24);
+    }
+  }
+
+  > .default-content-wrapper p:not(.collage-image) {
+    --collage-lines: 6;
+
+    position: relative;
+    z-index: 1;
+    max-width: calc(335 * var(--c-ux));
+    margin: 0;
+    color: var(--color-gray-40);
+    font-size: max(14px, calc(16 * var(--c-u)));
+    line-height: calc(24 / 16);
+
+    @media (width >= 900px) {
+      --collage-lines: 4;
+
+      max-width: calc(544 * var(--c-u));
+      line-height: calc(22 / 16);
+    }
+  }
+
+  /* the images: cards and the feature. Down, each one's middle is placed, so size and place
+     scale apart; across, --side -1 / 1 holds a card to the left / right edge, 0 centres it */
+  .collage-image {
+    position: absolute;
+    top: calc(50% + (var(--y) + var(--h) / 2 - var(--stage-h) / 2) * var(--c-uy) - var(--h) / 2 * var(--c-u));
+    left: calc(50% + (var(--x) - var(--stage-w) / 2) * var(--c-u) + var(--side, 0) * (100% - var(--stage-w) * var(--c-u)) / 2);
+    z-index: 1;
+    width: calc(var(--w) * var(--c-u));
+    height: calc(var(--h) * var(--c-u));
+    margin: 0;
+    overflow: hidden;
+    border-radius: calc(12 * var(--c-u));
+    background-color: var(--color-black);
+    transform: translateY(calc((var(--dy, 0) + var(--dy1, 0)) * var(--c-uy)));
+    transition:
+      top var(--collage-duration) var(--collage-ease),
+      left var(--collage-duration) var(--collage-ease),
+      width var(--collage-duration) var(--collage-ease),
+      height var(--collage-duration) var(--collage-ease),
+      border-radius var(--collage-duration) var(--collage-ease),
+      transform var(--collage-duration) var(--collage-ease);
+
+    picture,
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .collage-extra {
+    display: none;
+  }
+
+  /* the cards sit in a left and a right column, on mobile and desktop alike */
+  :is([data-slot="2"], [data-slot="4"], [data-slot="6"], [data-slot="8"]) {
+    --side: -1;
+  }
+
+  :is([data-slot="3"], [data-slot="5"], [data-slot="7"], [data-slot="9"]) {
+    --side: 1;
+  }
+
+  /* --- cards (mobile 120×155: two per row, partly off the sides) --- */
+  .collage-card {
+    --w: 120;
+    --h: 155;
+
+    border-radius: calc(10 * var(--c-u));
+
+    @media (width >= 900px) {
+      --w: 163;
+      --h: 211;
+
+      border-radius: calc(12 * var(--c-u));
+    }
+  }
+
+  /* the first four, around the copy */
+  [data-slot="2"] {
+    --x: -37;
+    --y: 109;
+  }
+
+  [data-slot="3"] {
+    --x: 292;
+    --y: 109;
+  }
+
+  [data-slot="4"] {
+    --x: 18;
+    --y: 561;
+  }
+
+  [data-slot="5"] {
+    --x: 235;
+    --y: 561;
+  }
+
+  /* the next four wait one shift below, and take the same places */
+  [data-slot="6"] {
+    --x: -37;
+    --y: 924;
+  }
+
+  [data-slot="7"] {
+    --x: 292;
+    --y: 924;
+  }
+
+  [data-slot="8"] {
+    --x: 18;
+    --y: 1376;
+  }
+
+  [data-slot="9"] {
+    --x: 235;
+    --y: 1376;
+  }
+
+  @media (width >= 900px) {
+    [data-slot="2"] {
+      --x: 62;
+      --y: 133;
+    }
+
+    [data-slot="3"] {
+      --x: 1054;
+      --y: 133;
+    }
+
+    [data-slot="4"] {
+      --x: 167;
+      --y: 415;
+    }
+
+    [data-slot="5"] {
+      --x: 949;
+      --y: 415;
+    }
+
+    /* these two peek in at the bottom, then move in to the inner places */
+    [data-slot="6"] {
+      --x: 52;
+      --y: 709;
+    }
+
+    [data-slot="7"] {
+      --x: 1054;
+      --y: 709;
+    }
+
+    [data-slot="8"] {
+      --x: 52;
+      --y: 973;
+    }
+
+    [data-slot="9"] {
+      --x: 1064;
+      --y: 973;
+    }
+  }
+
+  /* --- the feature card: over the copy, then up out of the way --- */
+  .collage-feature {
+    /* step 0: mobile 350×480 in the middle */
+    --x: 12;
+    --y: 176;
+    --w: 350;
+    --h: 480;
+
+    /* the cut-out image sits on the dark card, wider than it, not cropped to fill */
+    --img-w: 126%;
+    --img-x: -6%;
+    --img-y: 9.6%;
+
+    z-index: 2;
+    border-radius: calc(32 * var(--c-u));
+    background: radial-gradient(circle at 50% 115%, #0a5b67 0%, var(--color-black) 77%);
+
+    @media (width >= 900px) {
+      --x: 470;
+      --y: 155;
+      --w: 340;
+      --h: 442;
+      --img-w: 127.4%;
+      --img-x: -2.6%;
+      --img-y: 14.6%;
+
+      border-radius: calc(24 * var(--c-u));
+      background: var(--color-black);
+    }
+
+    img {
+      position: absolute;
+      top: var(--img-y);
+      left: var(--img-x);
+      width: var(--img-w);
+      max-width: none;
+      height: auto;
+      transition:
+        top var(--collage-duration) var(--collage-ease),
+        left var(--collage-duration) var(--collage-ease),
+        width var(--collage-duration) var(--collage-ease);
+    }
+  }
+
+
+  /* steps 1 and 2: the feature is a small card at the top centre */
+  &:is([data-collage-step="1"], [data-collage-step="2"]) {
+    .collage-feature {
+      --x: 132;
+      --y: -30;
+      --w: 120;
+      --h: 158;
+      --img-w: 106%;
+      --img-x: -1%;
+      --img-y: 15%;
+
+      border-radius: calc(10 * var(--c-u));
+
+      /* desktop: half the centre card, its middle 236px higher (the reference walkthrough) */
+      @media (width >= 900px) {
+        --x: 555;
+        --y: 29.5;
+        --w: 170;
+        --h: 221;
+
+        border-radius: calc(12 * var(--c-u));
+      }
+    }
+
+    /* mobile: the lower cards drop a little and the copy centres between the two rows (top row
+       ends at 264, bottom row starts at 592). Where the copy is taller than that band allows
+       (short screens, the minimum font sizes), the rows move apart by the excess (--collage-spread):
+       half each, but the top row only as far as it stays clear of the header (--collage-clear,
+       script), the bottom row taking the rest; the copy stays centred between them */
+    @media (width < 900px) {
+      --collage-copy-gap: 16px;
+      --collage-spread: max(0px, var(--collage-copy-h, 0px) + 2 * var(--collage-copy-gap) - (483 * var(--c-uy) - 155 * var(--c-u)));
+      --collage-room: max(0px, 50svh - 221 * var(--c-uy) - 77.5 * var(--c-u) - var(--collage-clear, 0px) - 12px);
+      --collage-up: min(var(--collage-spread) / 2, var(--collage-room));
+      --collage-down: calc(var(--collage-spread) - var(--collage-up));
+
+      > .default-content-wrapper {
+        --copy-dy: 20.5;
+
+        > :not(.collage-image) {
+          transform: translateY(calc(var(--copy-dy) * var(--c-uy) + (var(--collage-down) - var(--collage-up)) / 2));
+        }
+      }
+
+      :is([data-slot="4"], [data-slot="5"], [data-slot="8"], [data-slot="9"]) {
+        --dy1: 31;
+      }
+    }
+  }
+
+  @media (width < 900px) {
+    /* the rows either side of the copy: 2–3 over 4–5 on step 1, 6–7 over 8–9 on step 2 */
+    &[data-collage-step="1"] :is([data-slot="2"], [data-slot="3"]),
+    &[data-collage-step="2"] :is([data-slot="6"], [data-slot="7"]) {
+      transform: translateY(calc((var(--dy, 0) + var(--dy1, 0)) * var(--c-uy) - var(--collage-up)));
+    }
+
+    &[data-collage-step="1"] :is([data-slot="4"], [data-slot="5"]),
+    &[data-collage-step="2"] :is([data-slot="8"], [data-slot="9"]) {
+      transform: translateY(calc((var(--dy, 0) + var(--dy1, 0)) * var(--c-uy) + var(--collage-down)));
+    }
+
+    /* before step 1 the copy is under the feature card (Figma), which can be narrower than the
+       copy on short screens: it hides once the card has grown back over it */
+    &:not([data-collage-step="1"], [data-collage-step="2"]) > .default-content-wrapper > :not(.collage-image) {
+      visibility: hidden;
+      transition:
+        transform var(--collage-duration) var(--collage-ease),
+        visibility 0s linear var(--collage-duration);
+    }
+
+    &.is-tweened:not([data-collage-step="1"], [data-collage-step="2"]) > .default-content-wrapper > :not(.collage-image) {
+      transition: visibility 0s linear var(--collage-duration);
+    }
+  }
+
+
+  /* step 2: everything placed moves up one shift */
+  &[data-collage-step="2"] {
+    .collage-image {
+      --dy: calc(-1 * var(--collage-shift));
+    }
+
+    @media (width >= 900px) {
+      /* the incoming cards (top row at 55, 211 high) move down to clear the header
+         (--collage-clear, script) */
+      --collage-push: max(0px, var(--collage-clear, 0px) + 12px - 50svh - (55 + 211 / 2 - var(--stage-h) / 2) * var(--c-uy) + 211 / 2 * var(--c-u));
+
+      :is([data-slot="6"], [data-slot="7"], [data-slot="8"], [data-slot="9"]) {
+        transform: translateY(calc((var(--dy, 0) + var(--dy1, 0)) * var(--c-uy) + var(--collage-push)));
+      }
+
+      [data-slot="6"] {
+        --x: 167;
+      }
+
+      [data-slot="7"] {
+        --x: 949;
+      }
+    }
+  }
+
+  /* no snap engine: a tall runway with the stage pinned; the scroll position picks the step */
+  &.is-runway {
+    /* section height in screens: step 0, then one per step */
+    --collage-runway: 3;
+
+    display: block;
+    height: calc(var(--collage-runway) * 100svh);
+    overflow: clip;
+
+    @media (width >= 900px) {
+      --collage-runway: 2;
+    }
+
+    > .default-content-wrapper {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+    }
+  }
+
+  /* with a showcase: both share one screen, the collage hidden on top until the scene change */
+  &.has-showcase {
+    display: grid;
+    grid-template-columns: 100%;
+
+    > * {
+      grid-area: 1 / 1;
+    }
+
+    /* never taller than the screen, even where the showcase is (short phones), so the collage
+       is laid out on the screen it shows on */
+    > .default-content-wrapper {
+      z-index: 1;
+      height: auto;
+      max-height: 100svh;
+      background-color: var(--color-white);
+    }
+
+    &[data-collage-step="showcase"]:not(.is-flying) > .default-content-wrapper {
+      visibility: hidden;
+    }
+
+    /* each showcase engine framed in the card as in the Figma collage frame (Engines, 3940:4009) */
+    .collage-feature[data-engine="1"] {
+      --img-x: 16.2%;
+      --img-y: 24.4%;
+      --img-w: 83.8%;
+    }
+
+    .collage-feature[data-engine="2"] {
+      --img-x: -8.2%;
+      --img-y: 15.8%;
+      --img-w: 159.1%;
+    }
+
+    .collage-feature[data-engine="3"] {
+      --img-x: -2.6%;
+      --img-y: 14.7%;
+      --img-w: 127.4%;
+    }
+  }
+
+  &.is-runway.has-showcase > * {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100svh;
+  }
+
+  /* only the first set of cards (collage.js is-single-set): no step 2, so one screen less on mobile */
+  &.is-runway.is-single-set {
+    --collage-runway: 2;
+  }
+
+  /* without a showcase: the cards around the copy, then the next set (none with only one) */
+  &.is-runway:not(.has-showcase) {
+    --collage-runway: 2;
+
+    &.is-single-set {
+      --collage-runway: 1;
+    }
+  }
+
+  /* GSAP takes over the moves; the transitions only stand in until it loads */
+  &.is-tweened {
+    .collage-image,
+    .collage-feature img,
+    > .default-content-wrapper > :not(.collage-image) {
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collage-image,
+    .collage-feature img,
+    > .default-content-wrapper > :not(.collage-image),
+    > .default-content-wrapper,
+    > .featured-blogs-wrapper,
+    .featured-blogs.dissolve .featured-blogs-card {
+      transition: none;
+    }
+  }
+}
+
+/* the engine in flight, in a frame becoming the card (scripts/collage.js), under the header (10) */
+.collage-flyer {
+  position: fixed;
+  z-index: 9;
+  overflow: hidden;
+  pointer-events: none;
+
+  .collage-flyer-card {
+    position: absolute;
+    inset: 0;
+  }
+
+  img {
+    position: absolute;
+    display: block;
+    max-width: none;
+    margin: 0;
+  }
+}
+
+/* Universal Editor: a plain layout so every image can be selected */
+body:has([data-aue-resource]) main > .section.collage {
+  padding: 48px 20px !important;
+  background-color: var(--color-white);
+
+  > .default-content-wrapper {
+    flex-flow: row wrap;
+    gap: 24px 16px;
+    height: auto;
+
+    /* the whole copy, not cut off, so it can be edited */
+    > :not(.collage-image) {
+      display: block;
+      flex-basis: 100%;
+      overflow: visible;
+      transform: none;
+    }
+  }
+
+  .collage-image {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 120px;
+    height: 155px;
+    transform: none;
+    transition: none;
+  }
+
+  .collage-extra {
+    display: block;
+    outline: 3px dashed #d32f2f;
+    outline-offset: 2px;
+    opacity: 0.4;
+  }
+
+  /* how many images are authored against the 8 the collage needs (scripts/collage.js) */
+  > .collage-notice {
+    max-width: none;
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    border-left: 4px solid #2e7d32;
+    border-radius: 4px;
+    background-color: #edf7ee;
+    color: var(--color-black);
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.4;
+    text-align: left;
+
+    &.is-invalid {
+      border-left-color: #d32f2f;
+      background-color: #fdecea;
+    }
+  }
+}

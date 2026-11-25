@@ -1,0 +1,497 @@
+/* Modal: a page under /modals/ shown in a native <dialog>, in the site's default dark theme
+   (AEM Block Collection pattern). body.modal-preview is that page opened on its own (in the
+   Universal Editor or preview): it is shown as the same panel, so authors see the popup's look. */
+
+/* a modal is open: the page behind it stays put, No Snap sections included */
+html.is-modal-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.modal dialog {
+  --modal-gap: var(--spacing-16);
+  --modal-padding: var(--spacing-24);
+  --modal-close-size: 44px;
+
+  /* dark surface: solid CTAs use the on-dark tokens (white with dark text) */
+  --button-solid-bg: var(--button-solid-bg-on-dark);
+  --button-solid-color: var(--button-solid-color-on-dark);
+  --button-solid-hover-bg: var(--button-solid-hover-bg-on-dark);
+
+  box-sizing: border-box;
+  width: calc(100vw - 2 * var(--modal-gap));
+  max-width: none;
+  max-height: calc(100vh - 2 * var(--modal-gap));
+  max-height: calc(100svh - 2 * var(--modal-gap));
+  margin: auto;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: var(--radius-16);
+  background-color: var(--section-bg);
+  color: var(--color-white);
+  font-family: var(--font-family-base);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 60%);
+
+  /* the panel stays put; .modal-content scrolls inside it */
+  overflow: hidden;
+}
+
+.modal dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: modal-in 200ms ease-out;
+}
+
+.modal dialog::backdrop {
+  background-color: rgb(0 0 0 / 70%);
+  backdrop-filter: blur(8px);
+  animation: modal-backdrop-in 200ms ease-out;
+}
+
+.modal dialog:focus-visible,
+.modal dialog :focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* close button: 44px hit area, X drawn in CSS */
+.modal .close-button {
+  position: absolute;
+  top: var(--spacing-8);
+  right: var(--spacing-8);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--modal-close-size);
+  height: var(--modal-close-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.modal .close-button:hover {
+  background-color: rgb(255 255 255 / 10%);
+}
+
+.modal .close-icon,
+.modal .close-icon::before {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: currentcolor;
+}
+
+.modal .close-icon {
+  transform: rotate(45deg);
+}
+
+.modal .close-icon::before {
+  content: '';
+  transform: rotate(90deg);
+}
+
+.modal .modal-content {
+  box-sizing: border-box;
+  min-height: 0;
+  padding: calc(var(--modal-close-size) + var(--spacing-8)) var(--modal-padding) var(--modal-padding);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 30%) transparent;
+}
+
+/* a /modals/ page opened on its own: the popup panel, below the fixed site header */
+body.modal-preview main {
+  --button-solid-bg: var(--button-solid-bg-on-dark);
+  --button-solid-color: var(--button-solid-color-on-dark);
+  --button-solid-hover-bg: var(--button-solid-hover-bg-on-dark);
+
+  box-sizing: border-box;
+  width: calc(100vw - 2 * var(--spacing-16));
+  max-width: 880px;
+  margin: var(--spacing-128) auto var(--spacing-48);
+  padding: var(--spacing-24);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: var(--radius-16);
+  background-color: var(--section-bg);
+  color: var(--color-white);
+  font-family: var(--font-family-base);
+}
+
+/* fragment sections inside the panel: content height, no snap-section chrome */
+:is(.modal .modal-content, body.modal-preview main) .section {
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  color: inherit;
+}
+
+:is(.modal .modal-content, body.modal-preview main) .section + .section {
+  margin-top: var(--spacing-32);
+}
+
+:is(.modal .modal-content, body.modal-preview main) .section > div {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+:is(.modal .modal-content, body.modal-preview main) h1,
+:is(.modal .modal-content, body.modal-preview main) h2,
+:is(.modal .modal-content, body.modal-preview main) h3,
+:is(.modal .modal-content, body.modal-preview main) h4,
+:is(.modal .modal-content, body.modal-preview main) h5,
+:is(.modal .modal-content, body.modal-preview main) h6 {
+  color: var(--color-white);
+}
+
+:is(.modal .modal-content, body.modal-preview main) h1,
+:is(.modal .modal-content, body.modal-preview main) h2 {
+  font-size: var(--type-heading-m-size);
+  line-height: var(--type-heading-m-line-height);
+  letter-spacing: var(--type-heading-m-tracking);
+}
+
+:is(.modal .modal-content, body.modal-preview main) p,
+:is(.modal .modal-content, body.modal-preview main) li {
+  color: var(--color-gray-30);
+  font-size: var(--type-body-m-size);
+  line-height: var(--type-body-m-line-height);
+}
+
+:is(.modal .modal-content, body.modal-preview main) a:not(.button) {
+  color: var(--color-white);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+:is(.modal .modal-content, body.modal-preview main) img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-16);
+}
+
+:is(.modal .modal-content, body.modal-preview main) .section > div > :first-child {
+  margin-top: 0;
+}
+
+:is(.modal .modal-content, body.modal-preview main) > :last-child > :last-child > :last-child {
+  margin-bottom: 0;
+}
+
+@media (width >= 600px) {
+  .modal dialog {
+    --modal-gap: var(--spacing-32);
+    --modal-padding: var(--spacing-40);
+
+    width: min(720px, 100vw - 2 * var(--modal-gap));
+  }
+
+  body.modal-preview main {
+    padding: var(--spacing-40);
+  }
+}
+
+@media (width >= 900px) {
+  .modal dialog {
+    --modal-gap: var(--spacing-48);
+    --modal-padding: var(--spacing-48);
+
+    width: min(880px, 100vw - 2 * var(--modal-gap));
+  }
+
+  body.modal-preview main {
+    padding: var(--spacing-48);
+  }
+
+  .modal .close-button {
+    top: var(--spacing-16);
+    right: var(--spacing-16);
+  }
+
+  :is(.modal .modal-content, body.modal-preview main) h1,
+  :is(.modal .modal-content, body.modal-preview main) h2 {
+    font-size: var(--type-heading-l-size);
+    line-height: var(--type-heading-l-line-height);
+    letter-spacing: var(--type-heading-l-tracking);
+  }
+
+  :is(.modal .modal-content, body.modal-preview main) p,
+  :is(.modal .modal-content, body.modal-preview main) li {
+    font-size: var(--type-body-20-size);
+    line-height: var(--type-body-20-line-height);
+    letter-spacing: var(--type-body-20-tracking);
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal dialog[open],
+  .modal dialog::backdrop {
+    animation: none;
+  }
+
+  .modal .close-button {
+    transition: none;
+  }
+}
+
+/* ---------- Side panel: a modal page whose section has the Side Panel style ----------
+   The popup slides in from the right edge and runs full height, as a sheet beside the
+   page instead of a centred card. Colours stay the default dark theme; page themes
+   (e.g. body.combat) can restyle it. */
+.modal dialog.side-panel {
+  --modal-side-width: 640px;
+
+  width: min(var(--modal-side-width), 100vw);
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  margin: 0 0 0 auto;
+  border-width: 0 0 0 1px;
+  border-radius: 0;
+  box-shadow: -30px 0 80px rgb(0 0 0 / 40%);
+}
+
+.modal dialog.side-panel[open] {
+  animation: modal-side-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modal-side-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal dialog.side-panel[open] {
+    animation: none;
+  }
+}
+
+/* ---------- Combat theme: the side panel as the prototype's light Specifications sheet ----------
+   On Combat pages (body.combat), and on a Side Panel page whose section is also Light. A light sheet with the page's ink colours; the title and
+   tab bar stay put and only the open tab panel scrolls (tabs.css, Combat theme section, styles
+   the tabs inside). Phone/tablet: full width, the close button inside the top right corner.
+   900px+: a sheet of half the window (512px to 720px), the close button floating on the backdrop
+   16px left of it. */
+
+/* outside the Combat theme (theme-combat.css), the sheet brings the theme's colours itself */
+.modal dialog.side-panel:has(.section.side-panel.light) {
+  --combat-light: #fcfdfc;
+  --combat-ink: #2e2e2e;
+  --combat-line: #111;
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) {
+  width: 100vw;
+  padding: 72px 20px 20px;
+  border: 0;
+  background-color: var(--combat-light);
+  color: #232323;
+  box-shadow: -30px 0 80px rgb(0 0 0 / 14%);
+
+  /* the close button sits outside the sheet at 900px+; the tab panel scrolls instead */
+  overflow: visible;
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))::backdrop {
+  background-color: rgb(10 10 10 / 32%);
+  backdrop-filter: blur(3px);
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)):focus-visible,
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) :focus-visible {
+  outline-color: var(--combat-line);
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .close-button {
+  top: 16px;
+  right: 16px;
+  border-radius: 12px;
+  background-color: rgb(252 253 252 / 82%);
+  color: #000;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 12%);
+  backdrop-filter: blur(20px) saturate(1.3);
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .close-button:hover {
+  background-color: var(--combat-light);
+}
+
+/* a 14px X, as the prototype's icon */
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .close-icon,
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .close-icon::before {
+  width: 12px;
+  height: 1px;
+}
+
+/* title, then the tabs filling the rest of the height */
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .modal-content {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .modal-content > .section.side-panel {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .section.side-panel > .default-content-wrapper {
+  flex: none;
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .section.side-panel > .tabs-wrapper {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* page metadata is never shown (the local preview serves it with the fragment) */
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .modal-content > .section.metadata-container {
+  display: none;
+}
+
+:is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .modal-content h2 {
+  max-width: 17ch;
+  margin: 4px 0 32px;
+  color: var(--combat-ink);
+  font-family: var(--font-family-display);
+  font-size: clamp(24px, 2.2vw, 36px);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.02;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+@media (width >= 600px) {
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) {
+    padding: 72px 32px 32px;
+  }
+}
+
+@media (width >= 900px) {
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) {
+    width: min(720px, max(512px, 50vw));
+    padding: 32px;
+  }
+
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)) .close-button {
+    top: 32px;
+    right: calc(100% + 16px);
+  }
+}
+
+/* closing a side panel: it slides back out and the backdrop fades (modal.js waits for this
+   before closing the dialog) */
+@media (prefers-reduced-motion: no-preference) {
+  .modal dialog.side-panel.is-closing {
+    animation: modal-side-out 0.55s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+  }
+
+  .modal dialog.side-panel.is-closing::backdrop {
+    animation: modal-backdrop-out 0.4s 0.1s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+  }
+}
+
+@keyframes modal-side-out {
+  from { transform: none; }
+  to { transform: translateX(104%); }
+}
+
+@keyframes modal-backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Combat theme: the prototype sheet's timing. The sheet glides in (0.8s, expo out) while the
+   backdrop fades (0.45s); the title and tab bar rise in at 0.25s and 0.31s, the close button
+   slides in at 0.45s, the rows follow (tabs.css). Closing: the close button leaves first. */
+@media (prefers-reduced-motion: no-preference) {
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))[open]:not(.is-closing) {
+    animation: modal-side-in 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))[open]:not(.is-closing)::backdrop {
+    animation: modal-backdrop-in 0.45s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))[open] .modal-content h2:first-of-type {
+    animation: combat-sheet-rise 0.5s 0.25s cubic-bezier(0.25, 1, 0.5, 1) both;
+  }
+
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))[open] .tabs.specs > .tabs-list {
+    animation: combat-sheet-rise 0.5s 0.31s cubic-bezier(0.25, 1, 0.5, 1) both;
+  }
+
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))[open] .close-button {
+    animation: combat-sheet-close-in 0.45s 0.45s cubic-bezier(0.25, 1, 0.5, 1) both;
+  }
+
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light)).is-closing .close-button {
+    animation: combat-sheet-close-out 0.2s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+  }
+}
+
+@keyframes combat-sheet-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes combat-sheet-close-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes combat-sheet-close-out {
+  to {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+}

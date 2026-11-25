@@ -1,0 +1,542 @@
+/* Footer "Dealer" style (page metadata Footer Style: Dealer), loaded by footer.js only then:
+   the dealer prototype's footer (meridian-motors-dealer #garage footer parts, the mobile
+   prototype's #gCol footer) on the garage's near-black. No logo, no CTA, no photo.
+   Phones: the link columns two by two, every list open, then a rule over the legal lines
+   and Privacy policy. Desktop: a rule, the three link columns on the left and Connect on
+   the right, the legal lines bottom left and Privacy policy bottom right.
+   One design px is --dealer-u (375 frame on phones, 1280 x 720 frame on desktop).
+   On a page ending on the Visit fold (Columns, Reach Us Photo) footer.js moves the block into
+   that fold (main, below): the same look over the fold's backdrop, revealed with its content. */
+:is(footer, main) .footer.dealer {
+  --dealer-u: min(100vw / 375, 100svh / 640, 1.6px);
+  --dealer-bg: #0b0b0b;
+  --dealer-rule: rgb(255 255 255 / 30%);
+  --dealer-heading: rgb(255 255 255 / 70%);
+  --dealer-link: rgb(255 255 255 / 92%);
+  --dealer-legal: rgb(255 255 255 / 70%);
+  --dealer-tile: rgb(255 255 255 / 10%);
+  --dealer-tile-hover: rgb(255 255 255 / 20%);
+  --dealer-focus: #4aadd1;
+
+  min-height: 0;
+  padding: 0;
+
+  /* clip, not hidden: no scroll container, so the reveal follows the page's scroll */
+  overflow: clip;
+  color: var(--color-white);
+  background: var(--dealer-bg);
+
+  @media (width >= 900px) {
+    --dealer-u: min(100vw / 1280, 100vh / 720);
+    --dealer-tile: rgb(255 255 255 / 12%);
+    --dealer-tile-hover: rgb(255 255 255 / 22%);
+
+    min-height: 0;
+    background: var(--dealer-bg);
+  }
+
+  /* phones: a 375 column, centred on wider screens */
+  .inner {
+    position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    gap: 0;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: calc(375 * var(--dealer-u));
+    min-height: 0;
+    margin: 0 auto;
+    padding: calc(40 * var(--dealer-u)) calc(16 * var(--dealer-u)) calc(40 * var(--dealer-u) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* the link columns and Connect, two by two */
+  .end {
+    display: grid;
+    grid-template-columns: calc(178 * var(--dealer-u)) minmax(0, 1fr);
+    flex-direction: initial;
+    gap: calc(43 * var(--dealer-u)) 0;
+    order: 1;
+    margin: 0;
+  }
+
+  .links {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+    margin: 0;
+    border: 0;
+
+    .title {
+      margin: 0;
+      font-family: var(--font-family-base);
+      font-size: calc(14 * var(--dealer-u));
+      font-weight: var(--font-weight-medium);
+      line-height: normal;
+      letter-spacing: normal;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--dealer-heading);
+      text-box: trim-both cap alphabetic;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: calc(14 * var(--dealer-u));
+      margin: calc(14 * var(--dealer-u)) 0 0;
+
+      &::after {
+        content: none;
+      }
+    }
+
+    .item {
+      padding: 0;
+      font-family: var(--font-family-base);
+      font-size: calc(14 * var(--dealer-u));
+      font-weight: var(--font-weight-regular);
+      line-height: normal;
+      letter-spacing: normal;
+      white-space: nowrap;
+      text-decoration: none;
+      color: var(--dealer-link);
+      transition: color 0.2s;
+
+      &.is-link:focus-visible {
+        color: var(--color-white);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      @media (hover: hover) {
+        &.is-link:hover {
+          color: var(--color-white);
+          text-decoration: underline;
+          text-underline-offset: 3px;
+        }
+      }
+    }
+  }
+
+  /* Connect: its heading over the icon tiles */
+  .connect {
+    margin: 0;
+    border: 0;
+
+    .title {
+      display: block;
+    }
+  }
+
+  .social {
+    display: flex;
+    gap: calc(3 * var(--dealer-u));
+    margin: calc(14 * var(--dealer-u)) 0 0;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  .channel {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: calc(32 * var(--dealer-u));
+    height: calc(32 * var(--dealer-u));
+
+    /* also when the published page made the link a button */
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: calc(7 * var(--dealer-u));
+    background: var(--dealer-tile);
+    transition: background-color 0.2s;
+
+    @media (hover: hover) {
+      &:hover {
+        background: var(--dealer-tile-hover);
+      }
+    }
+
+    .icon,
+    .symbol {
+      width: calc(13 * var(--dealer-u));
+      height: calc(13 * var(--dealer-u));
+    }
+  }
+
+  /* the legal lines under a rule, then Privacy policy */
+  .start {
+    display: block;
+    order: 2;
+    margin-top: calc(40 * var(--dealer-u));
+    padding-top: calc(25 * var(--dealer-u));
+    border-top: 1px solid var(--dealer-rule);
+  }
+
+  .meta {
+    order: 0;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  .copyright {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 0;
+    font-family: var(--font-family-base);
+    font-size: calc(12 * var(--dealer-u));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.45;
+    letter-spacing: normal;
+    color: var(--dealer-legal);
+
+    .line {
+      white-space: normal;
+      text-box: none;
+    }
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  .legal {
+    display: flex;
+    flex: none;
+    flex-flow: row wrap;
+    align-items: flex-start;
+    gap: calc(8 * var(--dealer-u)) calc(24 * var(--dealer-u));
+    order: 3;
+    margin: calc(24 * var(--dealer-u)) 0 0;
+    padding: 0;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  .privacy {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family-base);
+    font-size: calc(12 * var(--dealer-u));
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    letter-spacing: normal;
+    white-space: nowrap;
+    text-align: left;
+    text-transform: none;
+    text-decoration: none;
+    color: var(--color-white);
+    transition: color 0.2s;
+
+    &:focus-visible {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        color: var(--color-white);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+    }
+  }
+
+  /* the prototype's focus ring */
+  .item:focus-visible,
+  .channel:focus-visible,
+  .privacy:focus-visible {
+    outline: 2px solid var(--dealer-focus);
+    outline-offset: 3px;
+  }
+
+  /* desktop: the prototype's 1280 x 720 frame, its footer parts from the rule (y 460) down,
+     64 in from either edge of the screen */
+  @media (width >= 900px) {
+    .inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto;
+      align-items: end;
+      row-gap: calc(41 * var(--dealer-u));
+      max-width: none;
+      min-height: 0;
+      margin: 0 calc(64 * var(--dealer-u));
+      width: auto;
+      padding: calc(22 * var(--dealer-u)) 0 calc(43 * var(--dealer-u));
+    }
+
+    /* the rule along the top */
+    .inner::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 1px;
+      background: var(--dealer-rule);
+      transform-origin: left center;
+    }
+
+    /* the three columns (213 and 260 wide), Connect at the right edge */
+    .end {
+      display: flex;
+      flex-direction: row;
+      grid-area: 1 / 1 / 2 / 3;
+      align-self: start;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0;
+    }
+
+    .links {
+      .title {
+        font-size: max(10px, calc(12 * var(--dealer-u)));
+        line-height: 1.25;
+        text-box: none;
+      }
+
+      .list {
+        gap: calc(10 * var(--dealer-u));
+        margin-top: calc(13 * var(--dealer-u));
+      }
+
+      .item {
+        font-size: max(12px, calc(14 * var(--dealer-u)));
+        line-height: 1.25;
+      }
+    }
+
+    .links:first-child {
+      width: calc(213 * var(--dealer-u));
+    }
+
+    .links:nth-child(2) {
+      width: calc(260 * var(--dealer-u));
+    }
+
+    .connect {
+      margin-left: auto;
+    }
+
+    .social {
+      gap: calc(4 * var(--dealer-u));
+      margin-top: calc(22 * var(--dealer-u));
+    }
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    .channel {
+      width: calc(40 * var(--dealer-u));
+      height: calc(40 * var(--dealer-u));
+      border-radius: calc(9 * var(--dealer-u));
+
+      .icon,
+      .symbol {
+        width: calc(17 * var(--dealer-u));
+        height: calc(17 * var(--dealer-u));
+      }
+    }
+
+    .start {
+      grid-area: 2 / 1;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .copyright {
+      gap: calc(1 * var(--dealer-u));
+      font-size: max(10px, calc(10 * var(--dealer-u)));
+      line-height: 1.25;
+    }
+
+    .legal {
+      grid-area: 2 / 2;
+      justify-content: flex-end;
+      margin: 0;
+    }
+
+    .privacy {
+      font-size: max(10px, calc(10 * var(--dealer-u)));
+      line-height: 1.25;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .links .item,
+    .channel,
+    .privacy {
+      transition: none;
+    }
+  }
+}
+
+/* the site footer band: the prototype's reveal, the rule drawing in from the left and the
+   parts fading in as the footer scrolls into view (scroll-driven, so nothing waits on a timer) */
+footer .footer.dealer {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .inner {
+        view-timeline: --footer-dealer block;
+      }
+
+      .end,
+      .start,
+      .legal {
+        animation: footer-dealer-fade linear both;
+        animation-timeline: view();
+        animation-range: entry 20% entry 100%;
+      }
+
+      @media (width >= 900px) {
+        .inner::before {
+          animation: footer-dealer-rule linear both;
+          animation-timeline: --footer-dealer;
+          animation-range: entry 0% entry 70%;
+        }
+      }
+    }
+  }
+}
+
+/* in the Visit fold (footer.js, columns-reach-us-photo.css): over the fold's backdrop, on the
+   fold's own scale (--reach-us-photo-u, --ru), so the footer and the Visit content size
+   together; the parts come in with the Visit content (.reach-us-photo-item) and the rule draws
+   0.12s after the Visit rule, as the prototype's gTl */
+main .footer.dealer {
+  --dealer-u: var(--reach-us-photo-u, min(100vw / 375, 100svh / 640, 1.6px));
+
+  overflow: visible;
+  background: none;
+
+  @media (width >= 900px) {
+    --dealer-u: var(--ru, min(100vw / 1280, 100vh / 720));
+
+    background: none;
+
+    /* the Connect tiles 19 under its heading (#vfConnect .soc) */
+    .social {
+      margin-top: calc(19 * var(--dealer-u));
+    }
+  }
+
+  /* footer.css's icon tiles, which only reach the band */
+  /* stylelint-disable-next-line no-descending-specificity */
+  .channel {
+    justify-content: center;
+  }
+
+  .channel .icon {
+    display: inline-flex;
+  }
+
+  .channel .symbol {
+    display: block;
+  }
+
+  @media (width < 900px) {
+    /* the headings' caps 40 under the last Visit value's baseline (#gCol .fcols), which sits
+       0.17em (of its 14) above its box's foot (columns-reach-us-photo.css) */
+    .inner {
+      padding-top: calc(37.62 * var(--dealer-u));
+    }
+
+    .links {
+      order: 1;
+    }
+
+    .social {
+      order: 2;
+    }
+  }
+}
+
+/* the fold's Reach Us link styles (columns-reach-us.css, a:any-link) stop at the footer: its
+   links keep the band's colours, underline and focus ring. As specific as those (and less than
+   the dealer hover and focus rules above, which still apply) */
+main .section .footer.dealer {
+  .item:any-link {
+    color: var(--dealer-link);
+    text-underline-offset: auto;
+    transition: color 0.2s;
+  }
+
+  .channel:any-link {
+    text-underline-offset: auto;
+    transition: background-color 0.2s;
+  }
+
+  .channel:any-link:focus {
+    background: rgb(255 255 255 / 20%);
+  }
+
+  .privacy:any-link {
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+  }
+
+  .privacy:any-link:focus-visible {
+    text-underline-offset: 3px;
+  }
+
+  :is(.item, .channel, .privacy):any-link:focus-visible {
+    outline: 2px solid var(--dealer-focus);
+    outline-offset: 3px;
+  }
+
+  @media (hover: hover) {
+    .privacy:any-link:hover {
+      text-underline-offset: 3px;
+    }
+  }
+
+  /* touch: no hover look, as in the band */
+  @media not (hover: hover) {
+    .item:any-link:hover {
+      color: var(--dealer-link);
+      text-decoration: none;
+    }
+
+    .privacy:any-link:hover {
+      text-decoration: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :is(.item, .channel, .privacy):any-link {
+      transition: none;
+    }
+  }
+}
+
+/* its rule in the fold's state 0 (.reach-us-photo-arrival) and as the state changes */
+@media (prefers-reduced-motion: no-preference) and (width >= 900px) {
+  main .footer.dealer .inner::before {
+    transition: transform 0.9s var(--reach-us-photo-ease-rule) calc(var(--reach-us-photo-rule-delay, 0.7s) + 0.12s);
+  }
+
+  main .reach-us-photo-arrival .footer.dealer .inner::before {
+    transform: scaleX(0);
+    transition: transform 0.5s var(--reach-us-photo-ease-rule-back);
+  }
+
+  main .reach-us-photo-instant .footer.dealer .inner::before {
+    transition: none;
+  }
+}
+
+@keyframes footer-dealer-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes footer-dealer-rule {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}

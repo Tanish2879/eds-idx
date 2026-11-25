@@ -1,0 +1,72 @@
+/* Spec: Figma article detail — mobile 375 (4547:7510), desktop 1280 (4547:8619).
+   Its position in the hero is set by the "Article Hero" section style
+   (styles/article-detail.css). */
+.article-info {
+  font-family: var(--text-font-family);
+  text-transform: uppercase;
+  color: var(--color-gray-50);
+}
+
+.article-info p {
+  margin: 0;
+}
+
+.article-info .article-info-byline {
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+  letter-spacing: 0.03em;
+}
+
+.article-info .article-info-byline > span {
+  display: block;
+}
+
+.article-info .article-info-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 11px;
+  font-size: var(--body-font-size-s);
+  line-height: 19px;
+  letter-spacing: -0.02em;
+}
+
+.article-info .article-info-date {
+  margin-inline-start: auto;
+}
+
+.article-info .article-info-date time {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.article-info .article-info-date-sep {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-accent);
+}
+
+.article-info .article-info-empty {
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+  text-transform: none;
+}
+
+@media (width >= 900px) {
+  .article-info .article-info-meta {
+    font-size: var(--body-font-size-xs);
+    line-height: 16px;
+    letter-spacing: 0.03em;
+  }
+
+  .article-info .article-info-date time {
+    gap: 7px;
+  }
+
+  .article-info .article-info-date-sep {
+    width: 6px;
+    height: 6px;
+  }
+}

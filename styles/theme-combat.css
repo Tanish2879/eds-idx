@@ -1,0 +1,825 @@
+/*
+ * Combat theme: page-level styling for the JSW Combat model page.
+ * Loaded only on pages whose "Theme" page property is Combat (body.combat).
+ * Block styling for this theme lives in each block's CSS under body.combat.
+ *
+ * Values from the source prototype (codet-design-prototype.vercel.app): every fold is one
+ * screen, either a light stage (#fcfdfc, ink #2e2e2e) or a dark one (#000, or #2d3a3b for
+ * performance). Sections are matched by the blocks they hold; only default content
+ * (headings, eyebrows, intro text, links) is styled here, never block internals.
+ */
+
+/* stylelint-disable no-descending-specificity */
+
+body.combat {
+  --combat-light: #fcfdfc;
+  --combat-ink: #2e2e2e;
+  --combat-line: #111;
+  --combat-muted: rgb(0 0 0 / 55%);
+  --combat-gutter: 20px;
+  --combat-radius: 8px;
+
+  /* phones: where a fold's content starts, the prototype's 84px, or lower when the site header's
+     bar (shown again on a move up) reaches further down */
+  --combat-fold-top: max(84px, var(--nav-offset) + 6px);
+}
+
+/* ---------- section surfaces ---------- */
+
+/* light stages: narrative, feature cards, tech, comfort, safety, specs, FAQ.
+   --section-bg also feeds the blocks' edge fades (cards rail) */
+body.combat main > .section:is(
+    :has(.hero.carousel),
+    :has(.cards.carousel),
+    :has(.cards.rail),
+    :has(.tabs.vertical),
+    :has(.spec-table),
+    .split
+  ) {
+  --section-bg: var(--combat-light);
+  --accordion-section-background: var(--combat-light);
+
+  background-color: var(--combat-light);
+  color: var(--combat-ink);
+}
+
+/* dark stages */
+body.combat main > .section:is(:has(.interactive-showcase), :has(.columns.split)) {
+  --section-bg: #000;
+
+  background-color: #000;
+  color: var(--color-white);
+}
+
+body.combat main > .section:has(.stats-production) {
+  --section-bg: #2d3a3b;
+
+  background-color: #2d3a3b;
+  color: var(--color-white);
+}
+
+/* ---------- shared default-content patterns ---------- */
+
+/* light-stage headings */
+body.combat main > .section > .default-content-wrapper h2 {
+  margin: 0;
+  color: var(--combat-ink);
+  font-family: var(--font-family-display);
+  font-size: clamp(21px, 6.3vw, 26px);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: uppercase;
+}
+
+/* eyebrow: a short line right above a heading */
+body.combat main > .section > .default-content-wrapper p:has(+ h2) {
+  margin: 0;
+  color: var(--combat-muted);
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+/* intro text under a heading */
+body.combat main > .section > .default-content-wrapper h2 + p:not(:has(> a:only-child)) {
+  margin: 10px 0 0;
+  max-width: 540px;
+  color: var(--combat-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* a paragraph that only holds a link: a call to action */
+body.combat main > .section > .default-content-wrapper p:has(> a:only-child) {
+  margin: 0;
+}
+
+/* buttons: outline on light stages, white on dark ones */
+body.combat main > .section > .default-content-wrapper p > a:only-child:any-link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 24px;
+  border: 1px solid var(--combat-line);
+  border-radius: var(--combat-radius);
+  background: transparent;
+  color: var(--combat-line);
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: var(--font-weight-regular);
+  line-height: normal;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+body.combat main > .section > .default-content-wrapper p > a:only-child:hover {
+  background-color: rgb(0 0 0 / 6%);
+  color: var(--combat-line);
+  text-decoration: none;
+}
+
+body.combat main > .section > .default-content-wrapper p > a:only-child:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* brochure: a small text link with a download icon */
+body.combat main > .section > .default-content-wrapper p > a[href*="brochure"]:only-child:any-link {
+  gap: 6px;
+  height: auto;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+}
+
+body.combat main > .section > .default-content-wrapper p > a[href*="brochure"]:only-child::before {
+  content: '';
+  flex: none;
+  width: 14px;
+  height: 14px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12m0 0 5-5m-5 5-5-5M4 21h16'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+body.combat main > .section > .default-content-wrapper p > a[href*="brochure"]:only-child:hover {
+  background-color: transparent;
+  opacity: 0.7;
+}
+
+/* ---------- narrative: four-line statement over the drive clips ---------- */
+
+body.combat main > .section:has(.hero.carousel) > .default-content-wrapper {
+  max-width: none;
+  padding: 24px var(--combat-gutter);
+}
+
+body.combat main > .section:has(.hero.carousel) > .default-content-wrapper h2 {
+  color: #010101;
+  font-size: clamp(19px, 5.4vw, 24px);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- feature cards: brochure link under the carousel ---------- */
+
+body.combat main > .section:has(.cards.carousel) > .default-content-wrapper {
+  max-width: none;
+  margin: 0;
+  padding: 0 var(--combat-gutter);
+}
+
+/* ---------- exterior: "Build your own" pinned bottom right ---------- */
+
+body.combat main > .section:has(.interactive-showcase) {
+  position: relative;
+}
+
+body.combat main > .section:has(.interactive-showcase) > .default-content-wrapper {
+  position: absolute;
+  right: var(--combat-gutter);
+  bottom: 72px;
+  left: var(--combat-gutter);
+  z-index: 4;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.combat main > .section:has(.interactive-showcase) > .default-content-wrapper p > a:only-child:any-link {
+  width: 100%;
+  border: 0;
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+body.combat main > .section:has(.interactive-showcase) > .default-content-wrapper p > a:only-child:hover {
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+/* ---------- tech and safety: heading and intro above the rail ----------
+   As the prototype's .rail-wrap: on phones from 84px (--combat-fold-top) down to 82px above the
+   foot of the screen (the dashes at its foot), from 900px 104px down to 51px; the cards take
+   the height left under the heading (blocks/cards/cards.css, Combat theme: Rail), the rail
+   starting at the gutter. The header is tucked away on the way down, and on the way up its bar
+   ends above where the heading starts, so it never covers it. */
+
+body.combat main > .section:has(.cards.rail) {
+  justify-content: flex-start;
+  gap: 20px;
+  padding: var(--combat-fold-top) 0 82px;
+}
+
+body.combat main > .section:has(.cards.rail) > .cards-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding: 0 var(--combat-gutter);
+}
+
+/* the wrappers' auto margins would push the heading to the top of the screen */
+body.combat main > .section:is(:has(.cards.rail), :has(.tabs.vertical)) > div {
+  margin-block: 0;
+}
+
+body.combat main > .section:has(.cards.rail) > .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: none;
+  margin: 0;
+  padding: 0 var(--combat-gutter);
+}
+
+body.combat main > .section:has(.cards.rail) > .default-content-wrapper h2 {
+  text-wrap: balance;
+}
+
+body.combat main > .section:has(.cards.rail) > .default-content-wrapper h2 + p {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+/* ---------- comfort: heading, then the showcase (blocks/tabs/tabs.css, Combat theme: Comfort) ----------
+   As the prototype's #comfortShow: phones and tablets stack the heading, the image, the open
+   feature and the thumbnails from 84px (--combat-fold-top) down to 72px above the foot of the
+   screen, the image taking the height left. From 900px the showcase is
+   1312 x 692 at 1440 x 900: 104px from the top and the bottom, between the 64px gutters, the
+   heading at the top of the list's ruled column. */
+
+body.combat main > .section:has(.tabs.vertical) {
+  justify-content: flex-start;
+  gap: 14px;
+  padding: var(--combat-fold-top) var(--combat-gutter) 72px;
+}
+
+body.combat main > .section:has(.tabs.vertical) > .default-content-wrapper {
+  flex: none;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.combat main > .section:has(.tabs.vertical) > .default-content-wrapper h2 {
+  font-size: 24px;
+  line-height: 1.05;
+}
+
+body.combat main > .section:has(.tabs.vertical) > .tabs-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding: 0;
+}
+
+/* ---------- specs: marks, title, top view, two groups, closing title and links ---------- */
+
+body.combat main > .section:has(.spec-table) {
+  --combat-specs-car-w: max(240px, min(118vw, 880px, (100svh - 600px) * 2.5));
+
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: safe center;
+  justify-items: center;
+  padding: var(--nav-offset) var(--combat-gutter) 20px;
+}
+
+body.combat main > .section:has(.spec-table) > div {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* the wrappers' children become grid items, so the groups can sit side by side */
+body.combat main > .section:has(.spec-table) > .default-content-wrapper {
+  display: contents;
+}
+
+/* side marks: hidden on phones, as on the source */
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 + p,
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 + p + p {
+  display: none;
+}
+
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 {
+  font-size: 24px;
+  text-align: center;
+}
+
+/* the top view, big and centred as on the prototype (880 x 660 at 1440 x 900): the car fills
+   only the middle of its picture (x 10-90%, y 26-74%), so the picture's empty top and bottom
+   (23.5% of its height each) slip under the heading and the group labels, and the whole fold
+   still fits one screen with "See full specs" in view. --combat-specs-car-w is the picture's
+   width (set with the section's layout above): on phones the car spans the screen (the
+   picture 118vw), smaller on short screens */
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > p:has(picture) {
+  display: flex;
+  justify-content: center;
+  margin: calc(16px - var(--combat-specs-car-w) * 0.176) 0 calc(var(--combat-specs-car-w) * -0.176);
+  pointer-events: none;
+}
+
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > p:has(picture) img {
+  width: var(--combat-specs-car-w);
+  max-width: none;
+  height: auto;
+}
+
+/* group labels (Dimensions, Powertrain) */
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > p:last-child,
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:nth-child(3) > p {
+  justify-self: stretch;
+  margin: 18px 0 8px;
+  color: var(--combat-muted);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+/* closing title */
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > h2 {
+  width: 100%;
+  margin: 24px 0 0;
+  font-size: clamp(19px, 5.4vw, 22px);
+  line-height: 1.15;
+  text-align: center;
+  text-wrap: balance;
+}
+
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > p {
+  margin-top: 8px;
+}
+
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > p:last-child {
+  justify-self: stretch;
+}
+
+body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > p:last-child > a:only-child:any-link {
+  width: 100%;
+}
+
+/* ---------- FAQ (split): intro on the left, questions on the right ---------- */
+
+body.combat main > .section.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: start;
+  row-gap: 20px;
+  padding: 84px var(--combat-gutter) 92px;
+}
+
+body.combat main > .section.split > div {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+body.combat main > .section.split > .default-content-wrapper h2 {
+  margin-top: 10px;
+  font-size: 26px;
+}
+
+body.combat main > .section.split > .default-content-wrapper h2 + p:not(:has(> a:only-child)) {
+  max-width: 380px;
+}
+
+/* the source drops the dealer link on phones */
+body.combat main > .section.split > .default-content-wrapper p:last-child:has(> a:only-child) {
+  display: none;
+}
+
+body.combat main > .section.split > .default-content-wrapper p:last-child > a:only-child:any-link {
+  height: 40px;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- tablet and desktop ---------- */
+
+@media (width >= 900px) {
+  body.combat {
+    --combat-gutter: 64px;
+  }
+
+  body.combat main > .section > .default-content-wrapper h2 {
+    font-size: clamp(26px, 3.125vw, 44px);
+  }
+
+  body.combat main > .section > .default-content-wrapper h2 + p:not(:has(> a:only-child)) {
+    margin-top: 20px;
+    font-size: clamp(14px, 1.25vw, 16px);
+    line-height: 1.6;
+  }
+
+  body.combat main > .section:has(.hero.carousel) > .default-content-wrapper {
+    width: min(1500px, 96%);
+    margin: 0 auto;
+    padding: 36px 24px;
+  }
+
+  body.combat main > .section:has(.hero.carousel) > .default-content-wrapper h2 {
+    font-size: clamp(22px, 2.7vw, 42px);
+    line-height: 1.38;
+  }
+
+  body.combat main > .section:has(.cards.carousel) > .default-content-wrapper {
+    padding: 0 calc(var(--combat-gutter) + 6.5vw);
+  }
+
+  body.combat main > .section:has(.interactive-showcase) > .default-content-wrapper {
+    bottom: 100px;
+    left: auto;
+  }
+
+  body.combat main > .section:has(.interactive-showcase) > .default-content-wrapper p > a:only-child:any-link {
+    width: auto;
+    min-width: 206px;
+  }
+
+  body.combat main > .section:has(.cards.rail) {
+    gap: 40px;
+    padding: 104px 0 51px;
+  }
+
+  body.combat main > .section:has(.cards.rail) > .default-content-wrapper {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 64px;
+  }
+
+  body.combat main > .section:has(.cards.rail) > .default-content-wrapper h2 {
+    max-width: 22ch;
+  }
+
+  body.combat main > .section:has(.cards.rail) > .default-content-wrapper h2 + p {
+    flex: 0 1 420px;
+  }
+
+  /* comfort: the showcase's height and columns (read by blocks/tabs/tabs.css): thumbnails
+     0.78 as wide as a seventh of the height is tall, a square image (narrowed on screens too
+     small to leave the list 320px), and the heading over the list's column, inside its rule */
+  body.combat main > .section:has(.tabs.vertical) {
+    --combat-comfort-top: 104px;
+    --combat-comfort-h: calc(100svh - 2 * var(--combat-comfort-top));
+    --combat-comfort-thumb-w: calc((var(--combat-comfort-h) - 48px) / 7 * 0.78);
+    --combat-comfort-media-w: min(
+      var(--combat-comfort-h),
+      100vw - 2 * var(--combat-gutter) - 48px - var(--combat-comfort-thumb-w) - 320px
+    );
+
+    position: relative;
+    gap: 0;
+    padding: var(--combat-comfort-top) var(--combat-gutter) 0;
+  }
+
+  body.combat main > .section:has(.tabs.vertical) > .default-content-wrapper {
+    position: absolute;
+    top: var(--combat-comfort-top);
+    left: calc(var(--combat-gutter) + 25px);
+    z-index: 1;
+    width: calc(100% - 2 * var(--combat-gutter) - 25px - 48px - var(--combat-comfort-thumb-w) - var(--combat-comfort-media-w));
+  }
+
+  body.combat main > .section:has(.tabs.vertical) > .default-content-wrapper h2 {
+    font-size: clamp(26px, 2.5vw, 36px);
+    line-height: 1;
+  }
+
+  body.combat main > .section:has(.tabs.vertical) > .tabs-wrapper {
+    flex: none;
+    height: var(--combat-comfort-h);
+  }
+
+  /* specs: the two groups side by side; the heading clear of the top-corner marks */
+  body.combat main > .section:has(.spec-table) {
+    --combat-specs-car-w: max(320px, min(880px, 66vw, (100svh - 545px) * 2.5));
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    padding-top: calc(var(--nav-offset) + 26px);
+    padding-bottom: 24px;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2,
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > p:has(picture),
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > * {
+    grid-column: 1 / -1;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 {
+    font-size: clamp(26px, 3.125vw, 44px);
+    white-space: nowrap;
+  }
+
+
+  /* top-corner marks */
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 + p,
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 + p + p {
+    position: absolute;
+    top: calc(var(--nav-offset) + 8px);
+    display: block;
+    max-width: 45%;
+    margin: 0;
+
+    /* 60%, not the source's 50%: small text needs 4.5:1 on the light stage */
+    color: rgb(0 0 0 / 60%);
+    font-size: 10px;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 + p {
+    left: var(--combat-gutter);
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > h2 + p + p {
+    right: var(--combat-gutter);
+    text-align: right;
+  }
+
+  /* the second group goes in the right column, on the same rows as the first */
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:nth-child(3) > p {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:first-child > p:last-child {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  body.combat main > .section:has(.spec-table) > .spec-table-wrapper:nth-child(2) {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  body.combat main > .section:has(.spec-table) > .spec-table-wrapper:nth-child(4) {
+    grid-column: 2;
+    grid-row: 4;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > h2 {
+    width: min(700px, 80%);
+    margin-top: 32px;
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > p:last-child {
+    justify-self: center;
+    margin-top: 12px;
+  }
+
+  body.combat main > .section:has(.spec-table) > .default-content-wrapper:last-child > p:last-child > a:only-child:any-link {
+    width: auto;
+    min-width: 206px;
+  }
+
+  /* FAQ: 5 / 7 split */
+  body.combat main > .section.split {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: none;
+    gap: 0 64px;
+    align-content: start;
+    padding: 120px var(--combat-gutter) 64px;
+  }
+
+  body.combat main > .section.split > .default-content-wrapper h2 {
+    max-width: 11ch;
+    margin-top: 18px;
+    font-size: clamp(26px, 3.125vw, 44px);
+  }
+
+  body.combat main > .section.split > .default-content-wrapper p:last-child:has(> a:only-child) {
+    display: block;
+    margin-top: 32px;
+  }
+}
+
+/* short desktop screens: the prototype's tighter frame (88px from the top and the bottom) */
+@media (width >= 1024px) and (height <= 860px) {
+  body.combat main > .section:has(.tabs.vertical) {
+    --combat-comfort-top: 88px;
+  }
+
+  body.combat main > .section:has(.cards.rail) {
+    gap: 32px;
+    padding: 88px 0 43px;
+  }
+
+  body.combat main > .section:has(.cards.rail) > .default-content-wrapper h2 {
+    font-size: clamp(26px, 2.5vw, 34px);
+  }
+
+  body.combat main > .section:has(.cards.rail) > .default-content-wrapper h2 + p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+/* ---------- Combat motion ----------
+   Page motion runs only under body.combat-motion (scripts/combat-motion.js: section snap live,
+   motion allowed, not in Universal Editor); without it everything is in its final state.
+
+   Fold hand-overs: the narrative, highlights, exterior, performance and tech sections use the
+   Wave In section style (scripts/wave-cut.js), which reveals them behind a wavy edge, timed to
+   the snap move. The values below tune it as on the prototype: the covered fold's media sinks
+   and zooms (--wave-sink, --wave-sink-zoom, of the screen height), its copy fades out early
+   (--wave-fade-out, px of drift), the revealed fold's content rises (--wave-rise, px) and its
+   photo settles (--wave-settle). Wave In only reads them during a cut, so they change nothing
+   at rest. */
+
+/* hero -> narrative: the hero photo sinks 8% as the copy lifts away */
+body.combat main > .section:has(.hero.showcase) {
+  --wave-sink: 0.08;
+  --wave-fade-out: -40;
+}
+
+/* narrative -> highlights: the drive clips sink and push in; the copy fades */
+body.combat main > .section:has(.hero.carousel) {
+  --wave-sink: 0.04;
+  --wave-sink-zoom: 0.1;
+  --wave-fade-out: 0;
+  --wave-rise: 48;
+}
+
+/* highlights -> exterior: a plain wave; the exterior stage rises further */
+body.combat main > .section.wave-in:has(.interactive-showcase) {
+  --wave-rise: 40;
+}
+
+/* PHEV -> performance: both halves sink; the performance photo settles from well below */
+body.combat main > .section:has(.columns.split) {
+  --wave-sink: 0.055;
+}
+
+/* performance -> tech: the photo sinks and pushes in; the tech heading rises 70px */
+body.combat main > .section:has(> .stats-production-wrapper) {
+  --wave-settle: 0.6;
+  --wave-sink: 0.04;
+  --wave-sink-zoom: 0.06;
+}
+
+body.combat main > .section.wave-in:has(.cards.rail) {
+  --wave-rise: 70;
+}
+
+/* site header: tucked away on a move down, back on a move up (power3.out, as on the prototype) */
+body.combat-motion header .nav-wrapper {
+  transition: translate 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+body.combat-motion.header-hidden header .nav-wrapper {
+  translate: 0 -110%;
+}
+
+/* ---------- Combat motion: arrival reveals ----------
+   A section's content arrives as the snap move into it plays (prototype values). It starts at
+   snap:start, from .is-arriving, so a Wave In edge never uncovers an empty stage, and carries on
+   under .is-current: both match the same rules, so the animations run on across snap:end. A
+   section left again loses both classes and the animations, so the next move into it replays
+   them. A move up arrives at content already in place, as on the prototype, where the scrubbed
+   hand-over plays back in reverse. Without body.combat-motion, or under reduced motion, nothing
+   here applies.
+
+   --combat-arrive-at: when, after snap:start, a section's content starts arriving. A plain move
+   scrolls the section in, so its content comes a little into it; behind a Wave In edge it comes
+   once the edge is well up the screen. Shown on load (data-arrive="none"), it starts at once.
+   Blocks read it for their own parts (cards, columns, stats-production, spec-table). */
+@media (prefers-reduced-motion: no-preference) {
+  body.combat-motion main > .section[data-arrive='down'] {
+    --combat-arrive-at: 0.3s;
+  }
+
+  body.combat-motion main > .section.wave-in[data-arrive='down'] {
+    --combat-arrive-at: 0.6s;
+  }
+
+  /* PHEV: its panes settle late in the move, as the prototype's split lands */
+  body.combat-motion main > .section[data-arrive='down']:has(.columns.split) {
+    --combat-arrive-at: 0.75s;
+  }
+
+  /* tech and safety: the heading and intro rise 70-80px and fade in (power3.out); the cards
+     follow (blocks/cards/cards.css). Behind the tech fold's wave the rise is ours, not the
+     wave's */
+  body.combat-motion main > .section.wave-in:has(.cards.rail) {
+    --wave-rise: 0;
+  }
+
+  body.combat-motion main > .section:is(.is-arriving, .is-current):not([data-arrive='up']):has(.cards.rail) > .default-content-wrapper > * {
+    --combat-rise-y: 80px;
+
+    animation: theme-combat-arrive 0.48s cubic-bezier(0.25, 1, 0.5, 1) var(--combat-arrive-at, 0s) backwards;
+  }
+
+  body.combat-motion main > .section.wave-in:is(.is-arriving, .is-current):not([data-arrive='up']):has(.cards.rail) > .default-content-wrapper > * {
+    --combat-rise-y: 70px;
+
+    animation-duration: 0.45s;
+  }
+
+  body.combat-motion main > .section:is(.is-arriving, .is-current):not([data-arrive='up']):has(.cards.rail) > .default-content-wrapper > * + * {
+    animation-delay: calc(var(--combat-arrive-at, 0s) + 0.05s);
+  }
+
+  /* specs: the top view rises 40% of the screen and settles from 0.9 (power3.out), the heading
+     follows 20px up, the side marks fade in one after another, then the two groups rise 70px
+     (0.1s apart, blocks/spec-table/spec-table.css with their labels here), the closing title
+     50px and the links 30px. The prototype scrubs the second half with the scroll; here it
+     plays through on arrival */
+  body.combat-motion main > .section:is(.is-arriving, .is-current):not([data-arrive='up']):has(.spec-table) {
+    --combat-specs-group-at: 0.6s;
+
+    > .default-content-wrapper:first-child > p:has(picture) img {
+      --combat-rise-y: 40vh;
+      --combat-rise-scale: 0.9;
+
+      animation: theme-combat-arrive 0.85s cubic-bezier(0.25, 1, 0.5, 1) var(--combat-arrive-at, 0s) backwards;
+    }
+
+    > .default-content-wrapper:first-child > h2 {
+      --combat-rise-y: 20px;
+
+      animation: theme-combat-arrive 0.42s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--combat-arrive-at, 0s) + 0.36s) backwards;
+    }
+
+    > .default-content-wrapper:first-child > h2 + p,
+    > .default-content-wrapper:first-child > h2 + p + p {
+      animation: theme-combat-arrive 0.2s linear calc(var(--combat-arrive-at, 0s) + 0.5s) backwards;
+    }
+
+    > .default-content-wrapper:first-child > h2 + p + p {
+      animation-delay: calc(var(--combat-arrive-at, 0s) + 0.56s);
+    }
+
+    /* group labels, with their tables */
+    > .default-content-wrapper:first-child > p:last-child,
+    > .default-content-wrapper:nth-child(3) > p {
+      --combat-rise-y: 70px;
+
+      animation: theme-combat-arrive 0.5s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--combat-arrive-at, 0s) + var(--combat-specs-group-at)) backwards;
+    }
+
+    > .default-content-wrapper:nth-child(3) > p {
+      animation-delay: calc(var(--combat-arrive-at, 0s) + var(--combat-specs-group-at) + 0.1s);
+    }
+
+    > .default-content-wrapper:last-child > h2 {
+      --combat-rise-y: 50px;
+
+      animation: theme-combat-arrive 0.5s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--combat-arrive-at, 0s) + 0.9s) backwards;
+    }
+
+    > .default-content-wrapper:last-child > p {
+      --combat-rise-y: 30px;
+
+      animation: theme-combat-arrive 0.4s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--combat-arrive-at, 0s) + 1.08s) backwards;
+    }
+
+    > .default-content-wrapper:last-child > p + p {
+      animation-delay: calc(var(--combat-arrive-at, 0s) + 1.12s);
+    }
+  }
+}
+
+/* from a hidden, offset state into place; set per element: --combat-rise-y, --combat-rise-scale */
+@keyframes theme-combat-arrive {
+  from {
+    opacity: 0;
+    translate: 0 var(--combat-rise-y, 0);
+    scale: var(--combat-rise-scale, 1);
+  }
+
+  to {
+    opacity: 1;
+    translate: none;
+    scale: none;
+  }
+}

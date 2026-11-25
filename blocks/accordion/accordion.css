@@ -1,0 +1,941 @@
+/* Accordion: numbered titles between hairlines, a + that turns into an x when open, in black on
+   a white section (whatever the page's own background); dark theme: in white on a black
+   section.
+   Every selector is nested in .block.accordion, so nothing reaches outside the block, except the
+   background of the section it is in (at the end). */
+.block.accordion {
+  /* design tokens; a page can override any of them. The text font is the project's own
+     (--text-font-family, as the interactive-showcase uses), else New Science, whose Adobe Fonts
+     kit head.html loads. The colours are shades of the block's text colour (black, white in the
+     dark theme): the open title in that colour, the others, the content, the numbers and the
+     hairlines in lighter shades of it */
+  --accordion-font: var(--text-font-family, new-science, 'Helvetica Neue', arial, sans-serif);
+  --accordion-white: #fff;
+  --accordion-black: var(--color-black, #000);
+  --accordion-line: color-mix(in srgb, currentcolor 15%, transparent);
+
+  /* 60%: item numbers keep >= 4.5:1 contrast on white and on dark */
+  --accordion-number: color-mix(in srgb, currentcolor 60%, transparent);
+  --accordion-question: color-mix(in srgb, currentcolor 80%, transparent);
+  --accordion-question-open: currentcolor;
+  --accordion-answer: color-mix(in srgb, currentcolor 65%, transparent);
+  --accordion-gutter: 72px;
+  --accordion-ease: ease;
+
+  max-width: 940px;
+  margin: 0 auto;
+  color: var(--accordion-black);
+  color-scheme: light;
+  font-family: var(--accordion-font);
+
+  @media (width <= 599.98px) {
+    --accordion-gutter: 40px;
+  }
+
+  /* opening and closing slide where the browser can animate the details' height */
+  @supports (interpolate-size: allow-keywords) {
+    interpolate-size: allow-keywords;
+  }
+
+  /* dark theme: white text, its shades as above (the black background is on the section, below) */
+  &.dark {
+    color: var(--accordion-white);
+    color-scheme: dark;
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid var(--accordion-line);
+
+    @supports (interpolate-size: allow-keywords) {
+      &::details-content {
+        height: 0;
+        overflow: hidden;
+        transition: height 0.3s var(--accordion-ease), content-visibility 0.3s allow-discrete;
+      }
+
+      &[open]::details-content {
+        height: auto;
+      }
+    }
+  }
+
+  /* no grey or black flash on a tap (phones); the keyboard focus ring stays */
+  .accordion-item-label {
+    display: flex;
+    align-items: baseline;
+    padding: 24px 0;
+    list-style: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accordion-question-open);
+      outline-offset: 4px;
+    }
+
+    @media (width <= 599.98px) {
+      padding: 18px 0;
+    }
+  }
+
+  .accordion-item-number {
+    flex: 0 0 var(--accordion-gutter);
+    color: var(--accordion-number);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  .accordion-item-question {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: var(--accordion-question);
+    font-size: 26px;
+    line-height: 1.3;
+    transition: color 0.2s var(--accordion-ease);
+
+    p {
+      margin: 0;
+    }
+
+    @media (width <= 599.98px) {
+      font-size: 19px;
+    }
+  }
+
+  /* the + (two hairlines); open, the two lines turn 45 degrees into an x (the lines turn, not
+     the box, so the x stays inside the block) */
+  .accordion-item-icon {
+    position: relative;
+    flex: 0 0 22px;
+    align-self: center;
+    width: 22px;
+    height: 22px;
+    margin-left: 24px;
+    color: var(--accordion-question);
+    transition: color 0.2s var(--accordion-ease);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      margin-top: -1px;
+      background-color: currentcolor;
+      transition: transform 0.25s var(--accordion-ease);
+    }
+
+    &::after {
+      transform: rotate(90deg);
+    }
+
+    @media (width <= 599.98px) {
+      flex-basis: 18px;
+      width: 18px;
+      height: 18px;
+      margin-left: 16px;
+    }
+  }
+
+  .accordion-item[open] {
+    .accordion-item-question,
+    .accordion-item-icon {
+      color: var(--accordion-question-open);
+    }
+
+    .accordion-item-icon::before,
+    .accordion-item-icon::after {
+      height: 3px;
+      margin-top: -1.5px;
+    }
+
+    .accordion-item-icon::before {
+      transform: rotate(45deg);
+    }
+
+    .accordion-item-icon::after {
+      transform: rotate(135deg);
+    }
+  }
+
+  .accordion-item-body {
+    overflow-wrap: anywhere;
+    padding: 0 66px 34px var(--accordion-gutter);
+    color: var(--accordion-answer);
+    font-size: 20px;
+    line-height: 1.8;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+
+    a:any-link {
+      color: var(--accordion-question-open);
+      text-decoration: underline;
+    }
+
+    @media (width <= 599.98px) {
+      padding: 0 0 28px var(--accordion-gutter);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+  }
+
+  /* Universal Editor: the texts over their limit, listed for the author */
+  .accordion-limit-note {
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: #fff3d6;
+    color: #5c3b00;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* no sliding or turning for people who ask for less motion */
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-item-question,
+    .accordion-item-icon,
+    .accordion-item-icon::before,
+    .accordion-item-icon::after,
+    .accordion-item::details-content {
+      transition: none;
+    }
+  }
+}
+
+/* the section the accordion is in: white, so the accordion looks the same on a light or a dark
+   page; black in the dark theme. Only the page's own sections: an accordion in a Fragment (e.g.
+   in a tab) comes in its own section, which takes no band. A Light section with FAQ tabs is one
+   from the start (their accordions arrive with each tab) */
+main > .section:is(:has(.block.accordion), :has(.block.tabs.faq)) {
+  --accordion-section-background: #fff;
+
+  padding-block: 72px;
+  background-color: var(--accordion-section-background);
+
+  &:has(.block.accordion.dark) {
+    --accordion-section-background: #0d0d0d;
+  }
+
+  @media (width <= 599.98px) {
+    padding-block: 48px;
+  }
+}
+
+/* ---------- Combat theme (body.combat): the FAQ beside the intro of a "split" section ----------
+   Values from the source prototype's FAQ list: 12% hairlines, questions in 66% black (black when
+   open or hovered), 10px numbers, a 14px + that turns into an x, answers in 60% black. The numbers
+   stay at the block's 60% (not the source's 40%) to keep 4.5:1 contrast on the light stage. */
+
+/* the theme rules come after the base ones on purpose, and win by their body.combat prefix */
+/* stylelint-disable no-descending-specificity */
+body.combat .accordion {
+  /* the shades are of the block's own ink, not of currentcolor: the question row (summary) is
+     dimmed itself, and the number and question inside it must not dim again */
+  --accordion-ink: var(--accordion-black);
+  --accordion-line: color-mix(in srgb, currentcolor 12%, transparent);
+  --accordion-number: color-mix(in srgb, var(--accordion-ink) 60%, transparent);
+  --accordion-question: color-mix(in srgb, var(--accordion-ink) 66%, transparent);
+  --accordion-question-open: var(--accordion-ink);
+  --accordion-answer: color-mix(in srgb, currentcolor 60%, transparent);
+  --accordion-gutter: 22px;
+  --accordion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  max-width: none;
+  margin: 0;
+
+  &.dark {
+    --accordion-ink: var(--accordion-white);
+  }
+
+  /* the whole row is dimmed like the question (the source's .faq__q), and darkens with it on
+     hover and open; the number keeps its own 60% */
+  .accordion-item-label {
+    box-sizing: border-box;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 14px 34px 14px 0;
+    color: var(--accordion-question);
+    transition: color 0.25s;
+  }
+
+  .accordion-item[open]:not(.is-closing) > .accordion-item-label {
+    color: var(--accordion-question-open);
+  }
+
+  /* hover darkens a question with a mouse, not after a tap (touch keeps the hover), and not
+     right after it was closed with a click (is-hover-off, accordion.js, until the pointer leaves) */
+  @media (hover: hover) {
+    .accordion-item-label:not(.is-hover-off):hover,
+    .accordion-item-label:not(.is-hover-off):hover .accordion-item-question,
+    .accordion-item-label:not(.is-hover-off):hover .accordion-item-icon {
+      color: var(--accordion-question-open);
+    }
+  }
+
+  .accordion-item-number {
+    font-size: 10px;
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+  }
+
+  .accordion-item-question {
+    font-size: 15px;
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1.35;
+    text-wrap: pretty;
+    transition: color 0.25s;
+  }
+
+  .accordion-item-icon {
+    flex-basis: 14px;
+    width: 14px;
+    height: 14px;
+    margin-left: 0;
+    transition: color 0.25s;
+
+    &::before,
+    &::after {
+      height: 1.5px;
+      margin-top: -0.75px;
+      transition: transform 0.45s var(--accordion-ease);
+    }
+  }
+
+  .accordion-item[open] .accordion-item-icon::before,
+  .accordion-item[open] .accordion-item-icon::after {
+    height: 1.5px;
+    margin-top: -0.75px;
+  }
+
+  .accordion-item-body {
+    box-sizing: border-box;
+    max-width: 640px;
+    padding: 0 0 16px calc(var(--accordion-gutter) + 12px);
+    font-size: 14px;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  /* phones and tablets: the fold is one screen, so the list scrolls inside the space left under
+     the intro (as on the source) instead of running past the section, which clips it */
+  @media (width <= 899.98px) {
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* inside the scrolling list, so the outline is not cut off at the sides */
+    .accordion-item-label:focus-visible {
+      outline-offset: -2px;
+    }
+  }
+
+  @media (width >= 900px) {
+    --accordion-gutter: 28px;
+
+    .accordion-item-label {
+      gap: 20px;
+      min-height: 0;
+      padding: 20px 0;
+    }
+
+    .accordion-item-question {
+      font-size: clamp(16px, 1.4vw, 19px);
+    }
+
+    .accordion-item-body {
+      padding: 0 34px 22px calc(var(--accordion-gutter) + 20px);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  }
+
+  /* short desktop screens: tighter rows, as on the source */
+  @media (width >= 1024px) and (height <= 860px) {
+    .accordion-item-label {
+      padding: 15px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-item-label,
+    .accordion-item-question,
+    .accordion-item-icon,
+    .accordion-item-icon::before,
+    .accordion-item-icon::after {
+      transition: none;
+    }
+  }
+}
+
+/* stylelint-enable no-descending-specificity */
+
+/* Combat theme: the wrapper fills its grid row on phones and tablets, so the list can scroll */
+@media (width <= 899.98px) {
+  body.combat .accordion-wrapper {
+    align-self: stretch;
+    min-height: 0;
+  }
+}
+
+/* ---------- Combat motion (accordion.js wireCombatMotion) ----------
+   The script eases each item's height open and closed (and fades its answer), in every
+   browser, so the details' own height transition is off; an item clips its answer only while
+   it animates, so the focus ring is never cut off. */
+.accordion.combat-accordion .accordion-item::details-content {
+  transition: none;
+}
+
+.accordion.combat-accordion .accordion-item.is-animating {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* arrival (needs body.combat-motion, scripts/combat-motion.js): as the page moves down to the
+   FAQ, its intro rises 70px, one line after another (72ms apart), then the questions 60px
+   (48ms apart; power3.out, timed to the 1.2s move as on the prototype). Moving up to it, it is
+   there at once. */
+body.combat-motion main > .section:has(.accordion):not([data-arrive='up']) > .default-content-wrapper > * {
+  --combat-arrive-delay: 0.46s;
+
+  transition:
+    opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1) var(--combat-arrive-delay),
+    translate 0.5s cubic-bezier(0.25, 1, 0.5, 1) var(--combat-arrive-delay);
+}
+
+body.combat-motion main > .section:has(.accordion):not([data-arrive='up']) > .default-content-wrapper > :nth-child(2) {
+  --combat-arrive-delay: 0.53s;
+}
+
+body.combat-motion main > .section:has(.accordion):not([data-arrive='up']) > .default-content-wrapper > :nth-child(3) {
+  --combat-arrive-delay: 0.6s;
+}
+
+body.combat-motion main > .section:has(.accordion):not([data-arrive='up']) > .default-content-wrapper > :nth-child(n + 4) {
+  --combat-arrive-delay: 0.68s;
+}
+
+body.combat-motion main > .section:has(.accordion):not([data-arrive='up']) .accordion > .accordion-item {
+  transition:
+    opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1) calc(0.54s + var(--accordion-i, 0) * 0.048s),
+    translate 0.45s cubic-bezier(0.25, 1, 0.5, 1) calc(0.54s + var(--accordion-i, 0) * 0.048s);
+}
+
+/* the hidden state last, so it wins over the transitions above (no transition: it is
+   taken off screen) */
+body.combat-motion main > .section:has(.accordion):not(.is-current, .is-arriving) > .default-content-wrapper > * {
+  opacity: 0;
+  translate: 0 70px;
+  transition: none;
+}
+
+body.combat-motion main > .section:has(.accordion):not(.is-current, .is-arriving) .accordion > .accordion-item {
+  opacity: 0;
+  translate: 0 60px;
+  transition: none;
+}
+
+/* --- a section with the FAQ Columns or FAQ Center style (Code T FAQ, values from the prototype's .faq) ---
+   The section's own off-white instead of the white above, its default content (eyebrow, title,
+   sub-line, link) as the FAQ's head: above the list on phones and tablets, beside it from
+   900px. These rules sit here because they only apply to a section holding the (light)
+   accordion or FAQ tabs; without the style (and in the dark theme) the section is as above. */
+/* stylelint-disable-next-line no-descending-specificity -- a FAQ section is never dark */
+main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark)), :has(.block.tabs.faq)) {
+  /* the prototype's off-white, set here: the site's --section-bg can be the dark page colour */
+  --accordion-section-background: #fcfdfc;
+
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+  row-gap: 19.8px;
+  padding: max(84px, var(--nav-offset, 0px) + 10px) 20px 32px;
+
+  /* min-width 0: a long word (or a tab bar wider than the screen) cuts or wraps in its column,
+     it does not widen it past the screen */
+  > div {
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* the list scrolls inside the screen-tall section when it does not fit */
+  > :is(.accordion-wrapper, .tabs-wrapper) {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  > :is(.accordion-wrapper, .tabs-wrapper)::-webkit-scrollbar {
+    display: none;
+  }
+
+  > .default-content-wrapper {
+    color: #2e2e2e;
+    font-family: var(--font-family-base);
+
+    > * {
+      margin: 0;
+    }
+
+    /* the eyebrow: a paragraph right before the title; one line, then "…" */
+    > p:has(+ h2) {
+      min-height: 16px;
+      overflow: hidden;
+      color: rgb(0 0 0 / 55%);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold, 600);
+      line-height: 1.3;
+      letter-spacing: 0.045em;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* two lines, then "…" (a word longer than the line breaks, so it ends in "…" too) */
+    > h2 {
+      display: -webkit-box;
+      margin-top: 9.58px;
+      overflow: hidden;
+      color: #2e2e2e;
+      font-family: var(--font-family-display);
+      font-size: 26px;
+      font-weight: var(--font-weight-medium, 500);
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    /* two lines, then "…" */
+    > h2 + p {
+      display: -webkit-box;
+      margin-top: 10px;
+      max-width: 380px;
+      overflow: hidden;
+      color: rgb(0 0 0 / 55%);
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    /* the link: an outlined small button, from 600px (phones have the list only) */
+    > p:has(> a:only-child) {
+      display: none;
+    }
+
+    /* one line, centred in the 40 (38 inside the border); "…" past the column */
+    > p > a:only-child:any-link {
+      display: inline-block;
+      box-sizing: border-box;
+      max-width: 100%;
+      height: 40px;
+      margin: 0;
+      overflow: hidden;
+      padding: 0 24px;
+      border: 1px solid #111;
+      border-radius: 8px;
+      background: transparent;
+      color: #111;
+      font-size: 12px;
+      font-weight: var(--font-weight-regular, 400);
+      line-height: 38px;
+      letter-spacing: 0.03em;
+      text-align: center;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    /* no fill on hover (as on the prototype): the label glitches instead (accordion.js) */
+    > p > a:only-child:any-link:hover,
+    > p > a:only-child:any-link:focus {
+      background-color: transparent;
+      color: #111;
+    }
+
+    > p > a:only-child:any-link:focus-visible {
+      outline: 2px solid #111;
+      outline-offset: 2px;
+    }
+  }
+
+  /* short phones: the design drops the sub-line to leave the list room */
+  @media (width < 600px) and (height <= 720px) {
+    padding-top: max(76px, var(--nav-offset, 0px) + 10px);
+
+    > .default-content-wrapper > h2 + p {
+      display: none;
+    }
+  }
+
+  @media (width >= 600px) {
+    row-gap: 28px;
+    padding: max(96px, var(--nav-offset, 0px) + 12px) 20px 32px;
+
+    > .default-content-wrapper {
+      > h2 {
+        margin-top: 18px;
+        max-width: 11ch;
+        font-size: clamp(26px, 3.125vw, 44px);
+      }
+
+      > h2 + p {
+        margin-top: 20px;
+        font-size: clamp(14px, 1.25vw, 16px);
+      }
+
+      > p:has(> a:only-child) {
+        display: block;
+        margin-top: 32px;
+      }
+    }
+  }
+
+  /* the head at the left (5 parts), the list at the right (7 parts). The top: 32px under the
+     site header's bar (--nav-offset; the Figma's gap under its bar, 96 at least), plus half
+     of the screen's height past 720, so on taller screens the room left over is shared
+     between top and foot instead of all falling under the list (none in Universal Editor,
+     whose frame grows with the page) */
+  @media (width >= 900px) {
+    --faq-top-extra: max(0px, (100svh - 720px) / 2);
+
+    body:has([data-aue-resource]) & {
+      --faq-top-extra: 0px;
+    }
+
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: start;
+    column-gap: 64px;
+    padding: calc(max(96px, var(--nav-offset, 0px) + 32px) + var(--faq-top-extra)) 64px 64px;
+
+    > :is(.accordion-wrapper, .tabs-wrapper) {
+      max-height: 100%;
+    }
+
+    /* 17.58 from the eyebrow to the title; 31.19 from the description to the button (its
+       paragraph as tall as the button) */
+    > .default-content-wrapper {
+      > h2 {
+        margin-top: 17.58px;
+      }
+
+      > p:has(> a:only-child) {
+        display: flex;
+        margin-top: 31.19px;
+      }
+
+      > p > a:only-child:any-link {
+        padding: 0 26px;
+      }
+    }
+  }
+}
+
+/* with FAQ tabs the accordions stay after the Tabs block and only the selected tab's shows
+   (tabs.js) */
+main > .section > .accordion-wrapper[hidden] {
+  display: none;
+}
+
+/* ... and in FAQ Columns / Center: the accordion right under the bar, whose line works as its
+   first row's (line to question as between the rows: 15, 14 on phones); the head above the tabs
+   on phones (39.6 above them), beside both from 900px in FAQ Columns. The tabs row shrinks (and
+   scrolls) only when a tab's fragment overfills the screen */
+/* stylelint-disable-next-line no-descending-specificity -- a FAQ section is never dark */
+main > .section:is(.faq-columns, .faq-center):has(> .tabs-wrapper .block.tabs.faq) {
+  --faq-tabs-to-accordion: 0px;
+
+  grid-template-rows: auto minmax(0, auto) minmax(0, 1fr);
+
+  > .tabs-wrapper {
+    margin-top: 19.8px;
+  }
+
+  > .accordion-wrapper {
+    margin-top: calc(var(--faq-tabs-to-accordion) - 19.8px);
+  }
+
+  @media (width >= 600px) {
+    > .tabs-wrapper {
+      margin-top: 0;
+    }
+
+    > .accordion-wrapper {
+      margin-top: calc(var(--faq-tabs-to-accordion) - 28px);
+    }
+  }
+
+  @media (width >= 900px) {
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr);
+    row-gap: var(--faq-tabs-to-accordion);
+
+    > .default-content-wrapper {
+      grid-row: 1 / span 2;
+    }
+
+    > :is(.tabs-wrapper, .accordion-wrapper) {
+      grid-column: 2;
+      margin-top: 0;
+    }
+  }
+}
+
+/* FAQ Center, from 900px (below, the same as FAQ Columns): one column: eyebrow, title and
+   description centred (the title and description as wide as the section), then the tabs (from
+   the left) and the accordion, both full width, and the button last, centred. The head's own
+   lines become the column's items so the button can go below the accordion; the accordion
+   shrinks (and scrolls) when the section is screen-tall */
+@media (width >= 900px) {
+  main > .section.faq-center:is(:has(.block.accordion:not(.dark)), :has(> .tabs-wrapper .block.tabs.faq)) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    row-gap: 0;
+
+    > .default-content-wrapper {
+      display: contents;
+    }
+
+    > .default-content-wrapper > * {
+      flex: none;
+      text-align: center;
+    }
+
+    > .default-content-wrapper > :is(h2, h2 + p) {
+      max-width: none;
+    }
+
+    > .default-content-wrapper > p:has(> a:only-child) {
+      order: 1;
+      justify-content: center;
+    }
+
+    > :is(.tabs-wrapper, .accordion-wrapper) {
+      flex: none;
+      margin-top: 28px;
+      max-height: none;
+    }
+
+    > .accordion-wrapper {
+      flex: 0 1 auto;
+    }
+
+    > .tabs-wrapper ~ .accordion-wrapper {
+      margin-top: var(--faq-tabs-to-accordion);
+    }
+  }
+}
+
+main > .section.light .block.accordion:not(.dark) {
+  --accordion-line: rgb(0 0 0 / 12%);
+  --accordion-number: rgb(0 0 0 / 40%);
+  --accordion-question: rgb(0 0 0 / 66%);
+  --accordion-question-open: #000;
+  --accordion-answer: rgb(0 0 0 / 60%);
+  --accordion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* the question's line height (15 × 1.35 on phones; from 600px, below) */
+  --accordion-question-lh: calc(15px * 1.35);
+
+  max-width: none;
+  margin: 0;
+  font-family: var(--font-family-base);
+
+  /* the number and the icon are centred on the question's first line (their margins) */
+  .accordion-item-label {
+    align-items: flex-start;
+    gap: 12px;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 14px 34px 14px 0;
+    color: var(--accordion-question);
+    font-weight: var(--font-weight-medium, 500);
+    transition: color 0.25s;
+
+    /* with a mouse only, and not right after a click closed it (as in the Combat theme above) */
+    @media (hover: hover) {
+      &:not(.is-hover-off):hover {
+        color: var(--accordion-question-open);
+      }
+    }
+
+    &:focus-visible {
+      outline-offset: -2px;
+    }
+  }
+
+  .accordion-item-number {
+    flex: 0 0 22px;
+    margin-top: calc((var(--accordion-question-lh) - 13.5px) / 2);
+    color: var(--accordion-number);
+    font-size: 10px;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+  }
+
+  .accordion-item-question {
+    flex: 1 1 0;
+    color: inherit;
+    font-size: 15px;
+    line-height: 1.35;
+    transition: none;
+  }
+
+  /* a thin + that turns a quarter, into an x, when open */
+  .accordion-item-icon {
+    flex: 0 0 14px;
+    align-self: flex-start;
+    width: 14px;
+    height: 14px;
+    margin: calc((var(--accordion-question-lh) - 14px) / 2) 0 0;
+    color: inherit;
+    transition: transform 0.45s var(--accordion-ease);
+
+    &::before,
+    &::after {
+      transition: none;
+    }
+
+    &::before {
+      height: 1.5px;
+      margin-top: -0.75px;
+    }
+
+    &::after {
+      top: 0;
+      left: 50%;
+      width: 1.5px;
+      height: 100%;
+      margin: 0 0 0 -0.75px;
+      transform: none;
+    }
+  }
+
+  /* not while it closes (accordion.js): its question greys and the x turns back at once, as on
+     the prototype, while the answer slides shut */
+  .accordion-item[open]:not(.is-closing) {
+    .accordion-item-label {
+      color: var(--accordion-question-open);
+    }
+
+    .accordion-item-icon {
+      transform: rotate(45deg);
+    }
+  }
+
+  /* the two lines stay thin and straight while open, also while closing: only the icon turns
+     (the block's own open x, two 3px lines turned 45 and 135 degrees, must not show) */
+  .accordion-item[open] {
+    .accordion-item-icon::before {
+      height: 1.5px;
+      margin-top: -0.75px;
+      transform: none;
+    }
+
+    .accordion-item-icon::after {
+      height: 100%;
+      margin: 0 0 0 -0.75px;
+      transform: none;
+    }
+  }
+
+  /* phones: the answer 278 wide (34 in, 23 clear of the right side, where the site's page
+     scroller sits), 14 / 21.7 */
+  .accordion-item-body {
+    box-sizing: border-box;
+    max-width: 640px;
+    padding: 0 23px 16px 34px;
+    color: var(--accordion-answer);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  @media (width >= 600px) {
+    --accordion-question-lh: calc(clamp(16px, 1.4vw, 19px) * 1.35);
+
+    .accordion-item-label {
+      gap: 20px;
+      min-height: 0;
+      padding: 20px 0;
+    }
+
+    .accordion-item-number {
+      flex-basis: 28px;
+    }
+
+    .accordion-item-question {
+      font-size: clamp(16px, 1.4vw, 19px);
+    }
+
+    .accordion-item-icon {
+      flex-basis: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    .accordion-item-body {
+      padding: 0 34px 22px 48px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  }
+
+  /* phones: the question's box rounded up to whole pixels (21), 14 above it and 13.25 to the
+     answer (48.25 a row) */
+  @media (width < 600px) {
+    .accordion-item-label {
+      padding-bottom: 13.25px;
+    }
+
+    .accordion-item-question {
+      min-height: round(up, var(--accordion-question-lh), 1px);
+    }
+  }
+
+  /* the question's box rounded up to whole pixels (25), 15 above it and 14.19 to the answer */
+  @media (width >= 900px) and (height <= 860px) {
+    .accordion-item-label {
+      padding: 15px 0 14.19px;
+    }
+
+    .accordion-item-question {
+      min-height: round(up, var(--accordion-question-lh), 1px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion-item-label,
+    .accordion-item-icon {
+      transition: none;
+    }
+  }
+}

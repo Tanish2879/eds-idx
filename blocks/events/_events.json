@@ -1,0 +1,108 @@
+{
+  "definitions": [
+    {
+      "title": "Events",
+      "id": "events",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Events",
+              "model": "events",
+              "filter": "events",
+              "title": "Upcoming events"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Event",
+      "id": "event",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Event",
+              "model": "event"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "events",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Heading",
+          "value": "Upcoming events"
+        }
+      ]
+    },
+    {
+      "id": "event",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false,
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "alt",
+          "label": "ALT Text"        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "city",
+          "label": "City",
+          "required": true,
+          "valueFormat": "regexp",
+          "validation": {
+            "regExp": "^[A-Za-z]+( [A-Za-z]+)*$",
+            "customErrorMsg": "City can only contain letters and spaces."
+          }
+        },
+        {
+          "component": "date-time",
+          "valueType": "date",
+          "name": "date",
+          "label": "Event Date",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "description",
+          "label": "Event Description",
+          "description": "Recommended character limit: 35 characters."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "venue",
+          "label": "Event Venue"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "events",
+      "components": [
+        "event"
+      ]
+    }
+  ]
+}

@@ -22,18 +22,79 @@
         "label": "Keywords"
       },
       {
-        "component": "aem-content",
+        "component": "text",
         "valueType": "string",
-        "name": "nav",
-        "label": "Navigation",
-        "description": "Nav document for this page (e.g. /jsw-nav). Leave empty for the site default /nav."
+        "name": "author",
+        "label": "Article Author"
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "isFeaturedBlog",
+        "label": "Is Featured Blog",
+        "description": "Turn on to make the blog featured and to show this blog in the Featured Blogs carousel."
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "hide-header",
+        "label": "Hide Header",
+        "description": "Turn on to hide the header on this page."
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "gated-page",
+        "label": "Gated Page"
       },
       {
         "component": "text",
         "valueType": "string",
+        "name": "gated-fallback-path",
+        "label": "Gated Fallback Path"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "theme",
+        "label": "Theme",
+        "description": "Page-level look. Combat applies the JSW Combat model page styling to this page's blocks only.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Combat",
+            "value": "combat"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
         "name": "footer",
         "label": "Footer",
-        "description": "Footer document path, or \"off\" to hide the footer. Leave empty for the site default /footer."
+        "description": "Optional. The footer page this page shows, e.g. /gurgaon/meridian-motors/footer for a dealer. Empty: the site's /footer."
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "footer-style",
+        "label": "Footer Style",
+        "description": "Default: the site footer's look. Dealer: the dealer site's footer (Explore / Book / Reach us columns, Connect icons, the legal lines and Privacy policy on a dark band). Left unset, a footer with link columns but no logo shows as Dealer.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Dealer",
+            "value": "dealer"
+          }
+        ]
       }
     ]
   },
@@ -143,118 +204,339 @@
         "description": "The label shown for this section in the Content Tree"
       },
       {
+        "component": "text",
+        "valueType": "string",
+        "name": "anchor",
+        "label": "Anchor",
+        "description": "Optional. A short id such as safety, so a link to #safety scrolls to this section. Lowercase letters, numbers and dashes; use each one once per page."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "navLabel",
+        "label": "Side navigation label",
+        "description": "Optional: this section's name in the page's side navigation, e.g. Technology. The side navigation shows when at least one section has one."
+      },
+      {
         "component": "multiselect",
         "name": "style",
         "label": "Style",
+        "description": "No Snap - If enabled, removes section from the scroll-snap animation.\nHide Scroll Indicator - hides the Scroll cue in this section's hero.\nArticle Hero - add an Image, Breadcrumb, Title and Article Info.\nArticle Body - the article content.\nPrimary V2 Buttons - every primary button in this section uses the Primary V2 look.\nCollage - Add a Title, a Text and exactly 8 Images.\nImage Gradient - darkens the bottom of every image and video in this section.\nWave In - when the page scrolls to this section, it rises over the previous one behind a soft wave edge.\nSide Panel (popups) - on a page under /modals/: the popup opens as a full-height panel from the right instead of a centred card.\nProduct Page - a light (off-white) background with dark text; in it, Cards Carousel, Vertical Tabs, Accordion and Spec Table Showcase take their product page layout.\nStatement - a short line shown very large across the screen, its words rising into place, e.g. between two sections: add only a Title (a few words) to the section.\nHide Header - scrolling down to this section slides the site header away; scrolling up brings it back.\nShow Floater - shows the Floater on this section.",
         "options": [
           {
-            "name": "Highlight",
-            "value": "highlight"
+            "name": "No Snap",
+            "value": "no-snap"
+          },
+          {
+            "name": "Hide Scroll Indicator",
+            "value": "hide-scroll"
+          },
+          {
+            "name": "Article Hero",
+            "value": "article-hero"
+          },
+          {
+            "name": "Article Body",
+            "value": "article-body"
+          },
+          {
+            "name": "Primary V2 Buttons",
+            "value": "primary-v2-buttons"
+          },
+          {
+            "name": "Collage",
+            "value": "collage"
+          },
+          {
+            "name": "Image Gradient",
+            "value": "media-gradient"
+          },
+          {
+            "name": "Wave In",
+            "value": "wave-in"
+          },
+          {
+            "name": "Side Panel (popups)",
+            "value": "side-panel"
+          },
+          {
+            "name": "Product Page",
+            "value": "light"
+          },
+          {
+            "name": "Statement",
+            "value": "statement"
+          },
+          {
+            "name": "Hide Header",
+            "value": "hide-header"
+          },
+          {
+            "name": "FAQ Columns",
+            "value": "faq-columns"
+          },
+          {
+            "name": "FAQ Center",
+            "value": "faq-center"
+          },
+          {
+            "name": "Show Floater",
+            "value": "show-floater"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "padding-top",
+        "label": "Padding Top",
+        "description": "Optional. Leave on Default to keep the section's standard spacing.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "16px",
+            "value": "16px"
+          },
+          {
+            "name": "24px",
+            "value": "24px"
+          },
+          {
+            "name": "32px",
+            "value": "32px"
+          },
+          {
+            "name": "48px",
+            "value": "48px"
+          },
+          {
+            "name": "64px",
+            "value": "64px"
+          },
+          {
+            "name": "80px",
+            "value": "80px"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "padding-bottom",
+        "label": "Padding Bottom",
+        "description": "Optional. Leave on Default to keep the section's standard spacing.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "16px",
+            "value": "16px"
+          },
+          {
+            "name": "24px",
+            "value": "24px"
+          },
+          {
+            "name": "32px",
+            "value": "32px"
+          },
+          {
+            "name": "48px",
+            "value": "48px"
+          },
+          {
+            "name": "64px",
+            "value": "64px"
+          },
+          {
+            "name": "80px",
+            "value": "80px"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "text-align",
+        "label": "Text Alignment",
+        "description": "Optional. Aligns the section's titles and text. Leave on Default to keep the standard alignment.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Center",
+            "value": "center"
+          },
+          {
+            "name": "Right",
+            "value": "right"
           }
         ]
       }
     ]
   },
   {
-    "id": "blog-carousel",
+    "id": "accordion",
     "fields": [
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "description": "Shown at the top of the card, between the arrows (e.g. OUR BLOGS).",
-        "value": ""
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Background image",
-        "description": "Full-screen image behind the card; it fades in as the background turns dark. A soft, blurred image works best.",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Background image alt text",
-        "value": ""
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "classes_dark",
+        "label": "Dark theme",
+        "description": "White text on a black band across the page"
       }
     ]
   },
   {
-    "id": "blog-carousel-item",
+    "id": "accordion-item",
     "fields": [
       {
         "component": "text",
         "valueType": "string",
-        "name": "eyebrow",
-        "label": "Eyebrow",
-        "description": "Small line above the title, e.g. LEARN MORE / NEV & PHEV.",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
+        "name": "summary",
         "label": "Title",
-        "value": ""
+        "description": "Up to 120 characters, the line that opens and closes the item.",
+        "validation": {
+          "maxLength": 120,
+          "customErrorMsg": "Keep the title to 120 characters at most."
+        }
       },
       {
         "component": "richtext",
         "valueType": "string",
-        "name": "description",
-        "label": "Description",
-        "value": ""
-      },
+        "name": "text",
+        "label": "Content",
+        "description": "Up to 600 characters, shown when the item is open. Longer content is shortened on the page."
+      }
+    ]
+  },
+  {
+    "id": "article-carousel",
+    "fields": [
       {
         "component": "aem-content",
+        "name": "viewAll",
+        "label": "View All Link",
+        "description": "Page the View All button opens (e.g. the full newsroom listing).",
+        "required": true
+      },
+      {
+        "component": "text",
         "valueType": "string",
-        "name": "link",
-        "label": "Link",
-        "description": "The blog post the READ MORE bar opens.",
+        "name": "viewAllLabel",
+        "label": "View All Label",
+        "value": "View all",
+        "required": true
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "limit",
+        "label": "Max Articles per Tab",
+        "description": "How many article cards each tab shows: a whole number from 1 to 12.",
+        "value": 12,
         "validation": {
-          "rootPath": "/content/uet-eds/jsw"
+          "numberMin": 1,
+          "numberMax": 12,
+          "customErrorMsg": "Enter a whole number from 1 to 12."
         }
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "linkText",
-        "label": "Link text",
-        "value": "Read more"
+        "name": "index",
+        "label": "Query Index Path",
+        "description": "Index to read articles from (e.g. /blog-index.json).",
+        "required": true
       }
     ]
   },
   {
-    "id": "blog-list",
+    "id": "article-carousel-tab",
     "fields": [
       {
         "component": "text",
         "valueType": "string",
-        "name": "heading",
-        "label": "Heading (Optional)"
+        "name": "label",
+        "label": "Tab Label",
+        "required": true
+      },
+      {
+        "component": "aem-content",
+        "name": "root",
+        "label": "Root Path",
+        "description": "Folder the tab lists articles from (e.g. /news).",
+        "required": true
+      },
+      {
+        "component": "aem-tag",
+        "valueType": "string",
+        "name": "tags",
+        "label": "Tags Filter (Optional)"
       }
     ]
   },
   {
-    "id": "cards-timeline-card",
+    "id": "article-info",
     "fields": [
       {
-        "component": "richtext",
+        "component": "text",
         "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
+        "name": "author",
+        "label": "Author",
+        "description": "Leave empty to use the page's Article Author property."
       },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "published",
+        "label": "Published Date",
+        "description": "Leave empty to use the page's publish date."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "updated",
+        "label": "Updated Date",
+        "description": "Leave empty to use the page's last-modified date."
+      },
+      {
+        "component": "aem-tag",
+        "valueType": "string",
+        "name": "category",
+        "label": "Category",
+        "description": "Leave empty to use the page's first tag."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "date",
+        "label": "Display Date",
+        "description": "Shown beside the category. Leave empty to use the page's publish date."
+      }
+    ]
+  },
+  {
+    "id": "breadcrumb",
+    "fields": [
       {
         "component": "richtext",
         "name": "text",
         "value": "",
-        "label": "Text",
+        "label": "Breadcrumb",
         "valueType": "string",
-        "description": "First paragraph: year (e.g. 1924). Then a heading for the title, then the description."
+        "description": "Links separated by \" / \". Leave empty to hide."
       }
     ]
   },
@@ -263,10 +545,9 @@
     "fields": [
       {
         "component": "select",
-        "valueType": "string",
         "name": "classes",
         "label": "Style",
-        "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
+        "description": "Default - a grid of cards.\nCarousel - auto-rotates; recommended: 6 to 12 cards.\nTimeline - 6 to 10 cards.\nPillars - up to 6 cards, JPG or PNG images only.\nRoller - 3 to 6 cards, one per scroll step.\nRail - a horizontally scrolling row of fixed-width cards, any number.\nFeatures - cards that open their details in a pop-up, with a Next button to the next card.\n  Image cards (Technology, Safety), any number, in a sideways-scrolling row: the picture fills the card; its title shows on one line, its short line on two; the rest shows in the pop-up (title 2 lines, text 6 lines on phones, 8 on desktop).\n  Stat tiles (Performance), 1 or more: 1 to 4 tiles fill the row; with 5 or more, 4 show at a time (pages of 4, 2 x 2, on phones) and arrows move to the rest. Value in bold, up to 16 characters (e.g. 590 Nm); label up to 2 lines; in the pop-up, title up to 3 lines and description up to 250 characters. The section's figure: up to 4 digits and a 4-letter unit (e.g. 359 PS).\n  Longer texts end in … on the page (Universal Editor shows them whole). Card text order: see the card's Text field.",
         "options": [
           {
             "name": "Default",
@@ -287,32 +568,14 @@
           {
             "name": "Roller",
             "value": "roller"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "classes_animation",
-        "label": "Animation Direction",
-        "description": "Select the scroll animation direction for the cards.",
-        "value": "horizontal",
-        "condition": {
-          "===": [
-            {
-              "var": "classes"
-            },
-            "pillars"
-          ]
-        },
-        "options": [
-          {
-            "name": "Horizontal",
-            "value": "horizontal"
           },
           {
-            "name": "Vertical",
-            "value": "vertical"
+            "name": "Rail",
+            "value": "rail"
+          },
+          {
+            "name": "Features",
+            "value": "features"
           }
         ]
       }
@@ -341,392 +604,8 @@
         "name": "text",
         "value": "",
         "label": "Text",
-        "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description",
+        "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description. Carousel in a Light section: 1. Label 2. Title as a heading 3. Description 4. Link. Features: 1. Title as a heading (image card, one line), or in bold for a stat tile (up to 16 characters, e.g. 590 Nm) 2. Short line (two lines) 3. and on: the detail, shown with the image when the card is opened; a heading first is the detail title (up to 3 lines on a stat tile), and a stat tile shows up to 250 characters of the rest. Longer texts end in … on the page.",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "careers-hero",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Background image",
-        "description": "The hero photo (cropped to fit, toned). JPG, PNG, WebP or SVG; other files are not shown.",
-        "multi": false,
-        "required": true
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Background image alt text",
-        "description": "Describes the photo for screen readers; empty if decorative.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "description": "E.g. THE WORLD NEEDS PIONEERS.",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 40
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Subheading / description",
-        "description": "Optional: a short paragraph under the heading.",
-        "value": "",
-        "validation": {
-          "maxLength": 200
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLabel",
-        "label": "Button label",
-        "description": "E.g. SCROLL; empty for no button.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLink",
-        "label": "Button link",
-        "description": "#open-roles scrolls to the Job Board; a page or URL opens it.",
-        "value": "",
-        "validation": {
-          "maxLength": 256
-        }
-      }
-    ]
-  },
-  {
-    "id": "careers-perks",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "description": "E.g. OUR PERKS.",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 40
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "intro",
-        "label": "Intro",
-        "description": "Under the heading; new lines are kept.",
-        "value": "",
-        "validation": {
-          "maxLength": 200
-        }
-      }
-    ]
-  },
-  {
-    "id": "careers-perk",
-    "fields": [
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "icon",
-        "label": "Icon",
-        "description": "The line icon above the title.",
-        "value": "flag",
-        "options": [
-          {
-            "name": "Flag",
-            "value": "flag"
-          },
-          {
-            "name": "Sprout",
-            "value": "sprout"
-          },
-          {
-            "name": "Scales",
-            "value": "scale"
-          },
-          {
-            "name": "Heart (health)",
-            "value": "heart"
-          },
-          {
-            "name": "Sun",
-            "value": "sun"
-          },
-          {
-            "name": "Home",
-            "value": "home"
-          },
-          {
-            "name": "People",
-            "value": "users"
-          },
-          {
-            "name": "Globe",
-            "value": "globe"
-          },
-          {
-            "name": "Shield",
-            "value": "shield"
-          },
-          {
-            "name": "Clock",
-            "value": "clock"
-          },
-          {
-            "name": "Rocket",
-            "value": "rocket"
-          },
-          {
-            "name": "Star",
-            "value": "star"
-          }
-        ]
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "iconImage",
-        "label": "Custom icon image",
-        "description": "Optional: replaces the icon (square, ideally SVG). JPG, PNG, WebP or SVG; other files are not shown.",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Title",
-        "description": "E.g. Flexible hours. Up to 6 perks are shown.",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Description",
-        "description": "Two or three short lines.",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 150
-        }
-      }
-    ]
-  },
-  {
-    "id": "carousel-dealer-item",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "media_image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "media_imageAlt",
-        "value": "",
-        "label": "Image Alt",
-        "description": "Describe the artwork, e.g. 'New Delhi Experience Centre'"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "media_mobileImage",
-        "label": "Mobile image (portrait, below 600px)",
-        "description": "Optional. Portrait artwork (e.g. 1080x1920) shown on phones.",
-        "multi": false
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link",
-        "label": "Link"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "linkText",
-        "value": "",
-        "label": "Link Text",
-        "description": "Read by screen readers, e.g. 'New Delhi Experience Centre - Know more'"
-      }
-    ]
-  },
-  {
-    "id": "carousel-marquee-item",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "media_image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "media_imageAlt",
-        "value": "",
-        "label": "Image Alt"
-      },
-      {
-        "component": "richtext",
-        "name": "content_text",
-        "value": "",
-        "label": "Caption (optional)",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "carousel-showcase-item",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "media_image",
-        "label": "Image (day)",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "media_imageAlt",
-        "value": "",
-        "label": "Image Alt (day)"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "media_mobileImage",
-        "label": "Mobile image (day, square, below 900px)",
-        "description": "Optional. Square transparent cut-out shown on phones/tablets.",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "night_image",
-        "label": "Image (night, optional)",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "night_imageAlt",
-        "value": "",
-        "label": "Image Alt (night)"
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "night_mobileImage",
-        "label": "Mobile image (night, square, below 900px)",
-        "description": "Optional. Square transparent cut-out shown on phones/tablets.",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "content_text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "collage",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "description": "Shown below the collage. Max 60 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 60
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Description",
-        "description": "Shown under the heading. Max 280 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 280
-        }
-      }
-    ]
-  },
-  {
-    "id": "collage-image",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "description": "The first image is the centre tile; the next four fill the top left, bottom left, top right and bottom right. JPG, PNG, WebP or AVIF only.",
-        "multi": false,
-        "required": true
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Image alt text",
-        "description": "Describes the image for screen readers. Max 125 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 125
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "caption",
-        "label": "Caption",
-        "description": "Optional; shown with the image when it is opened large. Max 40 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 40
-        }
       }
     ]
   },
@@ -746,62 +625,402 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "description": "Default is a standard columns layout. Thank You is a full-bleed split (image + centered content) on a dark surface. Reach Us is the Contact Us layout (use 3 columns × 2 rows): it also styles the Title above and the Text below it in the same section and adds a live IST clock. Split is two full-screen video panes side by side (2 columns): each column a link to an MP4, a heading, bold-first stat lines (e.g. **1100+ KM** range), a heading and text for its card; an optional 2nd row is a film card (image | eyebrow, line, MP4 link, then a heading and text for the film). Reach Us (Photo) is the Reach Us layout over a dark photo instead of the gradient: put an Image (and optionally a Text with a link to an MP4, for a muted looping film) alone in one cell, e.g. the empty first cell of the second row.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Thank You",
+            "value": "thank-you"
+          },
+          {
+            "name": "Reach Us",
+            "value": "reach-us"
+          },
+          {
+            "name": "Split",
+            "value": "split"
+          },
+          {
+            "name": "Reach Us (Photo)",
+            "value": "reach-us photo"
+          }
+        ]
       }
     ]
   },
   {
-    "id": "confirmation",
+    "id": "content-listing",
     "fields": [
       {
-        "component": "select",
-        "valueType": "string",
-        "name": "classes",
-        "label": "Layout",
-        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
-        "value": "variant-a",
-        "options": [
-          {
-            "name": "Variant A – Reserved (spotlight, word and car)",
-            "value": "variant-a"
-          },
-          {
-            "name": "Variant B – All set (image beside the text)",
-            "value": "variant-b"
-          }
-        ]
+        "component": "aem-content",
+        "name": "excludePaths",
+        "multi": true,
+        "label": "Excluded Paths",
+        "description": "Pages to leave out of the listing (e.g. the listing's own landing page)."
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "displayWord",
-        "label": "Background word",
-        "description": "Variant A only: the large word behind the car. Max 12 characters.",
-        "value": "",
+        "name": "index",
+        "label": "Query Index Path",
+        "description": "Index to read articles from",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "content-listing-tab",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Tab Title",
+        "required": true,
+        "description": "Maximum character limit: 30 characters. Maximum 5 tabs per listing.",
         "validation": {
-          "maxLength": 12
+          "maxLength": 30
         }
+      },
+      {
+        "component": "aem-content",
+        "name": "root",
+        "label": "Root Path",
+        "description": "Folder to list articles from"
+      },
+      {
+        "component": "aem-tag",
+        "valueType": "string",
+        "name": "tags",
+        "label": "Tags Filter (Optional)"
+      }
+    ]
+  },
+  {
+    "id": "countdown",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Label",
+        "value": "Soon has a date now"
+      },
+      {
+        "component": "date-time",
+        "valueType": "date-time",
+        "name": "target",
+        "label": "Launch Date/Time",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background Image",
+        "description": "Blurred backdrop image. Ignored if a video is set.",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "video",
+        "label": "Background Video",
+        "description": "Looping muted video (mp4/webm). Overrides the image.",
+        "multi": false
+      }
+    ]
+  },
+  {
+    "id": "embed",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "uri",
+        "label": "URL",
+        "description": "YouTube, Vimeo or X (Twitter) link, or the address of any page that allows embedding",
+        "required": true
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "placeholder",
+        "label": "Placeholder Image",
+        "description": "Optional. Shown with a play button; the embed loads when it is clicked",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "placeholderAlt",
+        "label": "Placeholder Alt Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "accessibleName",
+        "label": "Accessible Name",
+        "description": "Describes the embed for screen readers, e.g. \"JSW MG Windsor launch film\""
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Aspect Ratio",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "16:9 (Widescreen)",
+            "value": ""
+          },
+          {
+            "name": "4:3",
+            "value": "ratio-4-3"
+          },
+          {
+            "name": "1:1 (Square)",
+            "value": "ratio-1-1"
+          },
+          {
+            "name": "9:16 (Vertical / Shorts)",
+            "value": "ratio-9-16"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "events",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Heading",
+        "value": "Upcoming events"
+      }
+    ]
+  },
+  {
+    "id": "event",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "alt",
+        "label": "ALT Text"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "city",
+        "label": "City",
+        "required": true,
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^[A-Za-z]+( [A-Za-z]+)*$",
+          "customErrorMsg": "City can only contain letters and spaces."
+        }
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "date",
+        "label": "Event Date",
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "description",
+        "label": "Event Description",
+        "description": "Recommended character limit: 35 characters."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "venue",
+        "label": "Event Venue"
+      }
+    ]
+  },
+  {
+    "id": "featured-blogs",
+    "fields": [
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "description": "Default shows featured blogs. Dissolve shows the latest blogs",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Dissolve",
+            "value": "dissolve"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "root",
+        "label": "Root Path",
+        "description": "Folder to pick blogs from, e.g. /blogs/technology."
+      },
+      {
+        "component": "aem-content",
+        "name": "excludePaths",
+        "multi": true,
+        "label": "Excluded Paths",
+        "description": "Pages to leave out, e.g. category or listing pages inside the Root Path folder."
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "heading",
-        "label": "Status heading",
-        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
-        "value": "",
+        "label": "Heading",
+        "description": "Maximum character limit: 30 characters.",
+        "valueFormat": "regexp",
         "validation": {
-          "maxLength": 64
+          "maxLength": 30,
+          "regExp": "^[\\s\\S]{0,30}$",
+          "customErrorMsg": "Heading must be 30 characters or fewer."
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "viewAll",
+        "label": "View All Link",
+        "description": "View All link path will only work with the Default Style."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "viewAllLabel",
+        "label": "View All Label",
+        "description": "View All label will only show with the Default Style.",
+        "value": "View all",
+        "validation": {
+          "maxLength": 20,
+          "customErrorMsg": "Use 20 characters or fewer."
         }
       },
       {
         "component": "text",
         "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Description",
-        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form. Variant A: one line per sentence. Max 200 characters.",
+        "name": "index",
+        "label": "Query Index Path",
+        "description": "Index to read articles from",
+        "required": true
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "maxBlogs",
+        "label": "Maximum Blogs",
+        "value": 3,
+        "validation": {
+          "numberMin": 3,
+          "numberMax": 6
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "readMoreLabel",
+        "label": "Read More Label",
         "value": "",
         "validation": {
-          "maxLength": 200
+          "maxLength": 20,
+          "customErrorMsg": "Use 20 characters or fewer."
+        }
+      }
+    ]
+  },
+  {
+    "id": "featured-intro",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "description": "Maximum character limit: 10 characters.",
+        "required": true,
+        "validation": {
+          "maxLength": 10,
+          "customErrorMsg": "Use 10 characters or fewer."
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Label",
+        "description": "Maximum character limit: 30 characters.",
+        "validation": {
+          "maxLength": 30,
+          "customErrorMsg": "Use 30 characters or fewer."
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "headline",
+        "label": "Headline",
+        "required": true,
+        "description": "Maximum character limit: 180 characters.",
+        "validation": {
+          "maxLength": 180,
+          "customErrorMsg": "Use 180 characters or fewer."
+        }
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "date",
+        "label": "Date",
+        "description": "Enter the date in MM/DD/YYYY format",
+        "validation": {
+          "customErrorMsg": "Pick a valid date from the calendar."
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Read More Link"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkText",
+        "label": "Read More Text",
+        "value": "Read more",
+        "description": "Maximum character limit: 20 characters.",
+        "validation": {
+          "maxLength": 20,
+          "customErrorMsg": "Use 20 characters or fewer."
         }
       },
       {
@@ -809,114 +1028,55 @@
         "valueType": "string",
         "name": "image",
         "label": "Image",
-        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
+        "required": true,
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "imageAlt",
-        "label": "Image alt text",
-        "description": "Describes the image for screen readers. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "background",
-        "label": "Background image",
-        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
-        "multi": false
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "ctaLink",
-        "label": "Button link",
-        "description": "Optional: a button under the description.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLinkText",
-        "label": "Button text",
-        "description": "The button's text. Max 30 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
+        "label": "Image Alt Text"
       }
     ]
   },
   {
-    "id": "engine-showcase",
+    "id": "floater",
     "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "headline",
-        "label": "Headline",
-        "description": "Stays at the top of the left column for every engine.",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "engine-showcase-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "media_image",
-        "label": "Engine image",
-        "description": "High-resolution image shown large on the right (hotspot positions are relative to it). Its alt text is generated from the engine type, e.g. \"Battery Electric Vehicle engine\".",
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "media_thumbnail",
-        "label": "Thumbnail image",
-        "description": "Shown on the thumbnail card (bottom left). Leave empty to use the engine image.",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "media_framing",
-        "label": "Image framing",
-        "description": "Optional zoom and centre, e.g. \"1.38 58% 52%\": zoom relative to showing the whole image, then the image centre as left% top% of the display; add \"flip\" to mirror the image. Default: 1 50% 50%.",
-        "value": ""
-      },
       {
         "component": "text",
         "valueType": "string",
         "name": "title",
-        "label": "Engine type",
-        "description": "E.g. Battery Electric Vehicle. Also used for the engine image alt text and the thumbnail label.",
-        "value": ""
+        "label": "Name"
       },
       {
-        "component": "textarea",
+        "component": "text",
         "valueType": "string",
-        "name": "description",
-        "label": "Description",
-        "description": "Plain text shown under the engine type.",
-        "value": ""
+        "name": "text",
+        "label": "Text"
       },
       {
         "component": "richtext",
         "valueType": "string",
-        "name": "hotspots",
-        "label": "Hotspots",
-        "description": "Up to 4 hotspots (any more are ignored), one paragraph each: position | TITLE | description, e.g. \"18% 76% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is x y in % of the engine image, measured from its bottom-left corner (\"18 76\" works too). In the editor you can also drag a + on the image to move it: its position is saved here.",
-        "value": ""
+        "name": "links",
+        "label": "Links",
+        "description": "As anywhere on the site: bold = primary button, italic = secondary, plain = text link; with no button, the last link is the primary one. Brochure: its two links on one line, then a line with the label."
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Style",
+        "value": "",
+        "options": [
+          {
+            "name": "Glass",
+            "value": ""
+          },
+          {
+            "name": "Dark",
+            "value": "dark"
+          }
+        ]
       }
     ]
   },
@@ -931,184 +1091,453 @@
     ]
   },
   {
-    "id": "hero-fullbleed",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Alt",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "mobileImage",
-        "label": "Mobile image (portrait, below 600px)",
-        "description": "Optional. Shown on phones instead of the main image.",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "text",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "hero-interactive",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "media",
-        "label": "Background media (image or video)",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "mediaAlt",
-        "label": "Background media alt text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "description",
-        "label": "Description",
-        "value": ""
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "cta",
-        "label": "Button link"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaText",
-        "label": "Button text"
-      }
-    ]
-  },
-  {
-    "id": "hero-interactive-slide",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Slide image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Slide image alt text",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "hero-video",
-    "fields": [
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "media_video",
-        "label": "Background video",
-        "description": "MP4 (H.264) or WebM file. Plays muted, looped and without controls."
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "media_poster",
-        "label": "Poster image",
-        "description": "Shown while the video loads, when it can't play, and with reduced motion.",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "media_posterAlt",
-        "label": "Poster alt text",
-        "value": ""
-      },
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Headline and description",
-        "description": "A heading (top left) followed by a paragraph (bottom left).",
-        "value": ""
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link",
-        "label": "Button link",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "linkText",
-        "label": "Button text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "scrollLabel",
-        "label": "Scroll indicator text",
-        "value": "SCROLL"
-      }
-    ]
-  },
-  {
     "id": "hero",
     "fields": [
       {
         "component": "reference",
         "valueType": "string",
         "name": "image",
-        "label": "Image",
+        "label": "Background Image or Video (Desktop)",
+        "required": true,
+        "condition": {
+          "and": [
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "carousel"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "tech-slides"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "statement"
+              ]
+            }
+          ]
+        },
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileImage",
+        "label": "Background Image or Video (Mobile)",
+        "description": "Optional. Uses the desktop one if empty.",
+        "condition": {
+          "and": [
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "carousel"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "tech-slides"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "statement"
+              ]
+            }
+          ]
+        },
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "imageAlt",
-        "label": "Alt",
+        "label": "Image Alt Text",
+        "condition": {
+          "and": [
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "carousel"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "tech-slides"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "statement"
+              ]
+            }
+          ]
+        },
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "thumbnail",
+        "label": "Video Thumbnail (Desktop)",
+        "description": "Optional. Only used for a video: the image shown until it plays. Product: the image of the Watch the film card. Dealer: the image of the product card, bottom right.",
+        "condition": {
+          "and": [
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "carousel"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "tech-slides"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "statement"
+              ]
+            }
+          ]
+        },
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileThumbnail",
+        "label": "Video Thumbnail (Mobile)",
+        "description": "Optional. Only used for a video on mobile. Uses the desktop thumbnail if empty.",
+        "condition": {
+          "and": [
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "carousel"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "tech-slides"
+              ]
+            },
+            {
+              "!==": [
+                {
+                  "var": "classes"
+                },
+                "statement"
+              ]
+            }
+          ]
+        },
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Text",
+        "description": "Heading, text and buttons. Carousel: shown on every slide without its own Text (with Opening Animation, its first two paragraphs are the animation's lines). Tech Slides: shown below every slide; key and value paragraph pairs (e.g. Battery / 26.7 kWh) become stat tiles, then the button. Product, in this order: title (Heading 1), a link to the film's MP4 (its text is the card's eyebrow, e.g. Watch the film) and the card's text in the next paragraph, the price line (amount in bold), then the button. Dealer, in this order: the status line (e.g. Closed today · Opens Monday, 10am), the dealer's name (Heading 1), the address, the two buttons in one paragraph, then the product card's paragraphs: its title (e.g. [ New ] Combat), the price line and a line of text.",
         "value": ""
       },
       {
         "component": "richtext",
-        "name": "text",
+        "valueType": "string",
+        "name": "manifesto",
+        "label": "Scroll Manifesto (Editorial and Intro)",
+        "description": "Editorial and Intro styles only. Appears on scroll.",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "backgroundImage",
+        "label": "Background Image",
+        "description": "Showcase only. Optional. A decorative layer behind the main image, e.g. a sky behind a cut-out car photo.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "showcase"
+          ]
+        },
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logo",
+        "label": "Logo (Product)",
+        "description": "Product only. The model's logo or lockup, shown above the title.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "product"
+          ]
+        },
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoAlt",
+        "label": "Logo Alt Text",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "product"
+          ]
+        },
+        "value": ""
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "description": "Hero layout. Carousel and Tech Slides take up to 3 slides. Product: a car launch hero with the logo and a big centred title, a Watch the film card and the price beside the button. Its Background Image is the whole scene (e.g. the car in its landscape); the Logo has its own field. Dealer: a dealer storefront hero with the status line, name, address and two buttons bottom left, and a product card (the Video Thumbnail and the paragraphs after the buttons) bottom right.",
         "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Editorial",
+            "value": "editorial"
+          },
+          {
+            "name": "Teaser",
+            "value": "teaser"
+          },
+          {
+            "name": "Showcase",
+            "value": "showcase"
+          },
+          {
+            "name": "Carousel",
+            "value": "carousel"
+          },
+          {
+            "name": "Intro",
+            "value": "intro"
+          },
+          {
+            "name": "Statement",
+            "value": "statement"
+          },
+          {
+            "name": "Tech Slides",
+            "value": "tech-slides"
+          },
+          {
+            "name": "Product",
+            "value": "product"
+          },
+          {
+            "name": "Dealer",
+            "value": "dealer"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "classes_opening",
+        "label": "Opening Animation",
+        "description": "Carousel only. On load the first slide plays in a small card in the middle of the screen, then grows to fill it. The first two Text paragraphs appear either side of the card, and only there (screen readers still get them).",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "carousel"
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "classes_showroom",
+        "label": "Showroom Layout",
+        "description": "Carousel only. The Text stays beside every slide: its first paragraphs are the eyebrow above the slide's heading, and each paragraph that starts with a bold label (e.g. **Address** Plot 14, Sector 54) becomes a row of the info card under the slide's text. Each slide's own Text gives its heading and description.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "carousel"
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "classes_thumbs-bottom",
+        "label": "Thumbnails at the Bottom",
+        "description": "Carousel only. Moves the thumbnails to a row at the bottom right and keeps the heading and text clear of them and of the Test Drive strip.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "carousel"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "classes_align",
+        "label": "Heading Position",
+        "description": "Where the heading sits: left, centre or right. Only the heading moves; the text and buttons stay where the style puts them. Default keeps the style's own layout.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Left",
+            "value": "align-left"
+          },
+          {
+            "name": "Center",
+            "value": "align-center"
+          },
+          {
+            "name": "Right",
+            "value": "align-right"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "hero-slide",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background Image or Video (Desktop)",
+        "required": true,
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileImage",
+        "label": "Background Image or Video (Mobile)",
+        "description": "Optional. Uses the desktop one if empty.",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "thumbnail",
+        "label": "Thumbnail (Desktop)",
+        "description": "Optional. Tech Slides: the close-up tile. Carousel: the video's poster and slide strip image.",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileThumbnail",
+        "label": "Thumbnail (Mobile)",
+        "description": "Carousel: only used for a video on mobile. Uses the desktop thumbnail if empty. Optional.",
+        "multi": false
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "videoControls",
+        "label": "Enable Video Control",
+        "description": "Shows mute and pause buttons when this slide is a video."
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
         "label": "Text",
-        "valueType": "string"
+        "description": "Optional. Heading, text and buttons for this slide. Uses the Hero's Text if empty. Tech Slides: label, heading, description, stats (e.g. Battery / 26.7 kWh) and a button.",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tilePosition",
+        "label": "Tile Position",
+        "description": "Tech Slides only. Written as: x, y (e.g. 33, 61). You can drag the tile to any position in preview mode.",
+        "value": "",
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^(\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*,\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*)?$",
+          "customErrorMsg": "Write it as x, y: two numbers from 0 to 100, e.g. 33, 61."
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tilePositionMobile",
+        "label": "Tile Position (Mobile)",
+        "description": "Tech Slides only. Optional, written as: x, y. Uses Tile Position if empty. Drag the tile at mobile size in preview mode.",
+        "value": "",
+        "valueFormat": "regexp",
+        "validation": {
+          "regExp": "^(\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*,\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*)?$",
+          "customErrorMsg": "Write it as x, y: two numbers from 0 to 100, e.g. 50, 70."
+        }
       }
     ]
   },
@@ -1121,10 +1550,96 @@
         "name": "title",
         "label": "Title",
         "value": "",
-        "description": "The card's heading. Max 40 characters.",
+        "description": "Up to 40 characters, so the title fits the card on every screen.",
         "validation": {
           "maxLength": 40,
           "customErrorMsg": "Keep the title to 40 characters at most."
+        }
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "value": "",
+        "description": "Default: the white card, with the text and thumbnails beside the image. Cover: the image fills the screen, the items become colour swatches down the left (each item's Thumbnail is its swatch, e.g. a paint colour) and the title sits at the bottom. Two Cover showcases in sections one after the other (e.g. Exterior and Interior) get a switch at the top between them: give each a View name.",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Cover",
+            "value": "cover"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "classes_view-tabs",
+        "label": "Show the Views as Tabs",
+        "description": "Cover only. Set on the first view (e.g. Exterior). The Cover sections right after it become tabs on this screen, so scrolling goes on to the next section instead of to them.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "cover"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "View name",
+        "value": "",
+        "description": "Cover only: this view's name on the switch, e.g. Exterior. Up to 16 characters.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "cover"
+          ]
+        },
+        "validation": {
+          "maxLength": 16,
+          "customErrorMsg": "Keep the view name to 16 characters at most."
+        }
+      },
+      {
+        "component": "aem-content",
+        "name": "link",
+        "label": "Button link",
+        "description": "Cover only, optional: a button at the bottom right, e.g. to the car configurator.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "cover"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "linkText",
+        "label": "Button text",
+        "value": "",
+        "description": "Cover only: the button's text, e.g. Build your own. Up to 24 characters.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "cover"
+          ]
+        },
+        "validation": {
+          "maxLength": 24,
+          "customErrorMsg": "Keep the button text to 24 characters at most."
         }
       }
     ]
@@ -1139,7 +1654,7 @@
         "label": "Thumbnail",
         "multi": false,
         "required": true,
-        "description": "Shown in the thumbnail tray. Required."
+        "description": "Required: the item needs its thumbnail."
       },
       {
         "component": "text",
@@ -1155,7 +1670,7 @@
         "label": "Showcase image",
         "multi": false,
         "required": true,
-        "description": "The image the + points sit on. Required."
+        "description": "Required: the item needs its showcase image."
       },
       {
         "component": "text",
@@ -1170,24 +1685,19 @@
         "name": "title",
         "label": "Title",
         "value": "",
-        "description": "Max 40 characters.",
+        "description": "Up to 40 characters, so the title fits the card on every screen.",
         "validation": {
           "maxLength": 40,
           "customErrorMsg": "Keep the title to 40 characters at most."
         }
       },
       {
-        "component": "text",
+        "component": "richtext",
         "valueType": "string",
-        "valueFormat": "string-multiline",
         "name": "description",
         "label": "Description",
         "value": "",
-        "description": "Max 160 characters.",
-        "validation": {
-          "maxLength": 160,
-          "customErrorMsg": "Keep the description to 160 characters at most."
-        }
+        "description": "Up to 160 characters, so the description fits the card on every screen; longer text is shortened on the page. A paragraph, or a heading where the description is the item's caption (Combat page)."
       },
       {
         "component": "richtext",
@@ -1195,1176 +1705,876 @@
         "name": "hotspots",
         "label": "Hotspots (+ points)",
         "value": "",
-        "description": "One bullet per + point, at most 6: x, y | TITLE | description (x and y: % of the image from its bottom-left corner). Drag the + points in preview mode to place them."
+        "description": "Up to 8 bullets, one per + point, written as: x, y | TITLE | description (title up to 40 characters, description up to 200). x and y are percentages of the image from its bottom-left corner, and the + is centred on that point. You can drag the + points to any position in preview mode. A maximum of 8 hotspots is allowed. Cover style: link a point's TITLE to its photo in AEM Assets and the photo shows in its detail panel; the photos linked on one colour are used for the other colours too."
       }
     ]
   },
   {
-    "id": "job-board",
+    "id": "register-form",
     "fields": [
       {
         "component": "reference",
         "valueType": "string",
-        "name": "gallery",
-        "label": "Gallery image",
-        "description": "Optional: the photo strip under the board. JPG, PNG, WebP or SVG; other files are not shown.",
+        "name": "image",
+        "label": "Decorative Image",
+        "required": true,
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "galleryAlt",
-        "label": "Gallery image alt text",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        },
-        "description": "Describes the photo strip for screen readers."
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "description": "Describe the image for screen readers and SEO.",
+        "required": true,
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading & Intro",
+        "required": true,
+        "value": "<h2>Be the first to know</h2><p>Leave your details and we'll tell you when reservations open, before anyone else hears about it.</p>"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "consent",
+        "label": "Consent Text",
+        "required": true,
+        "value": "I agree to JSW Motors storing my details and contacting me about the launch, reservations and related updates over email, SMS, WhatsApp and phone, as in the <a href=\"#privacy\">Privacy Notice.</a>"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "notice",
+        "label": "Privacy Notice",
+        "required": true,
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "redirect",
+        "label": "Thank-you Page Link",
+        "description": "Page to redirect to after a successful registration. Internal path (e.g. /thank-you) or a full URL."
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "requestSent",
+        "label": "Request Sent Pop-up",
+        "description": "Booking only (used when the Thank-you Page Link is empty). The heading is the pop-up's title (e.g. Request sent to Meridian Motors); each paragraph starting with a bold label is a row (e.g. **Dealer** Meridian Motors, Plot 14, Sector 54, Golf Course Road, Gurgaon); a plain paragraph is the status line (e.g. Waiting for Meridian Motors to call you); a link is the outlined button beside Done (e.g. Explore the Combat to #combat). The visitor's email and contact are added automatically.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "booking"
+          ]
+        }
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "emptyMessage",
-        "label": "No results message",
-        "description": "Shown when nothing matches, e.g. No roles match your search.",
-        "value": "",
-        "validation": {
-          "maxLength": 150
+        "name": "mapName",
+        "label": "Map Pop-up Name",
+        "description": "Booking only. The bold line of the pop-up over the map's pin, e.g. Meridian Motors.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "booking"
+          ]
         }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "mapAddress",
+        "label": "Map Address",
+        "description": "Booking only. The address the Google map shows and marks, e.g. Plot 14, Sector 54, Gurgaon; also the pop-up's second line. With it the map replaces the Decorative Image (which stays as the fallback); clicking the map opens the address in Google Maps.",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "booking"
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "classes",
+        "label": "Style",
+        "description": "Default: the registration form. Booking: the dealer microsite's quote request: the details (email optional, pincode as in Default), then the OTP and the Request Sent pop-ups; the lead is sent with source Dealer Microsite and channel Digital. The Decorative Image is the map beside it.",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Booking",
+            "value": "booking"
+          }
+        ]
       }
     ]
   },
   {
-    "id": "job-board-search",
+    "id": "related-blogs",
     "fields": [
       {
         "component": "text",
         "valueType": "string",
         "name": "heading",
         "label": "Heading",
-        "description": "First line, in grey, e.g. OPEN ROLES AT.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "headingEmphasis",
-        "label": "Heading (second line)",
-        "description": "Second line, in black, e.g. JSW MOTORS.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "placeholder",
-        "label": "Search input placeholder",
-        "description": "Inside the empty search box, e.g. Search Roles.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Description",
-        "description": "Under the search box.",
-        "value": "",
-        "validation": {
-          "maxLength": 150
-        }
-      }
-    ]
-  },
-  {
-    "id": "job-board-filters",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "filterLabel",
-        "label": "Filters label",
-        "description": "Above the dropdowns, e.g. Filter Roles.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "locationLabel",
-        "label": "Location dropdown label",
-        "description": "The dropdown's label, e.g. Locations.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "container",
-        "name": "locations",
-        "label": "Locations",
-        "description": "The dropdown's choices; empty: the jobs' own locations.",
-        "multi": true,
-        "fields": [
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "location",
-            "label": "Location",
-            "value": "",
-            "validation": {
-              "maxLength": 64
-            }
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "departmentLabel",
-        "label": "Department dropdown label",
-        "description": "The dropdown's label, e.g. Departments.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "container",
-        "name": "departments",
-        "label": "Departments",
-        "description": "The dropdown's choices; empty: the jobs' own departments.",
-        "multi": true,
-        "fields": [
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "department",
-            "label": "Department",
-            "value": "",
-            "validation": {
-              "maxLength": 64
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "job-board-job",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Job title",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 64
-        },
-        "description": "E.g. Embedded Software Engineer. Up to 15 jobs are shown."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "department",
-        "label": "Department",
-        "description": "One of the filter's departments, written the same way.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "location",
-        "label": "Job location",
-        "description": "E.g. Bangalore, India; separate several with semicolons.",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "description",
-        "label": "Job description",
-        "description": "A short summary under the location (searchable).",
-        "value": "",
-        "required": true,
-        "valueFormat": "string-multiline",
-        "validation": {
-          "maxLength": 150
-        }
+        "value": "More Articles"
       },
       {
         "component": "aem-content",
-        "valueType": "string",
-        "name": "applyLink",
-        "label": "Apply button link",
-        "description": "A page, URL or mailto: address.",
-        "required": true,
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
+        "name": "root",
+        "label": "Root Path (Optional)",
+        "description": "Folder to pick articles from, e.g. /blogs/technology."
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "applyLabel",
-        "label": "Apply button label",
-        "description": "E.g. APPLY NOW.",
+        "name": "index",
+        "label": "Query Index Path",
+        "description": "Index to read articles from, e.g. /news-index.json. Another site's index can be given as a full URL (e.g. https://www.jswmotors.com/news-index.json for a dealer site): its articles then link to that site. That site must allow this one to read it (CORS)."
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "show",
+        "label": "Show",
+        "description": "Current Page Tags: articles sharing this page's tags (the block is hidden when the page has no tags). Latest articles: the newest articles from the Root Path, whatever their tags.",
         "value": "",
-        "validation": {
-          "maxLength": 30
-        }
+        "options": [
+          {
+            "name": "Current Page Tags",
+            "value": ""
+          },
+          {
+            "name": "Latest articles",
+            "value": "latest"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "name": "viewAll",
+        "label": "View All Link (Optional)",
+        "description": "Page the View all button opens, e.g. /newsroom. The button shows on the right of the heading only when this and the View All Label are both filled in."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "viewAllLabel",
+        "label": "View All Label (Optional)",
+        "description": "Text of the View all button, e.g. View all news. No button when empty."
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Style",
+        "description": "Center (default): the heading centred over the cards. Left: the eyebrow and heading on the left, then title and summary under each image. In both, the View all button sits on the right of the heading.",
+        "value": "",
+        "options": [
+          {
+            "name": "Center (default)",
+            "value": ""
+          },
+          {
+            "name": "Left",
+            "value": "left"
+          }
+        ]
       }
     ]
   },
   {
-    "id": "jsw-footer",
+    "id": "social-deck",
     "fields": [
       {
         "component": "select",
         "valueType": "string",
         "name": "classes",
-        "label": "Layout",
-        "description": "Variant A: columns at the right, over the background media; Variant B: one row on a teal gradient.",
-        "value": "variant-a",
+        "label": "Auto-scroll",
+        "description": "Automatically rotate the deck at a fixed interval. Requires min. 2 cards and max. 12 cards. Strip: a flat row of cards with previous and next buttons instead of the arc (no auto-scroll).",
+        "value": "",
         "options": [
           {
-            "name": "Variant A – Standard",
-            "value": "variant-a"
+            "name": "Off",
+            "value": ""
           },
           {
-            "name": "Variant B – Alternate",
-            "value": "variant-b"
+            "name": "Auto-scroll 3s",
+            "value": "autoplay-3s"
+          },
+          {
+            "name": "Auto-scroll 5s",
+            "value": "autoplay"
+          },
+          {
+            "name": "Auto-scroll 8s",
+            "value": "autoplay-8s"
+          },
+          {
+            "name": "Strip (flat row)",
+            "value": "strip"
           }
         ]
-      },
+      }
+    ]
+  },
+  {
+    "id": "social-card",
+    "fields": [
       {
         "component": "reference",
         "valueType": "string",
-        "name": "logo",
-        "label": "Logo",
-        "description": "The JSW MOTORS wordmark (white, on transparent): SVG, PNG or JPG.",
+        "name": "image",
+        "label": "Card Image",
         "multi": false,
         "required": true
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "logoAlt",
-        "label": "Logo alt text",
-        "description": "E.g. JSW Motors.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "logoLink",
-        "label": "Logo link",
-        "description": "Where the logo leads, e.g. the home page.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "copyright",
-        "label": "Copyright",
-        "description": "E.g. © 2026 JSW Motors.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "location",
-        "label": "Location",
-        "description": "E.g. Mumbai, India.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLabel",
-        "label": "Button label",
-        "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it).",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "ctaLink",
-        "label": "Button link",
-        "description": "A page, URL or mailto: address; without a link the button is not shown.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "legalLink",
-        "label": "Legal link",
-        "description": "E.g. the privacy policy.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "legalLinkText",
-        "label": "Legal link label",
-        "description": "E.g. PRIVACY POLICY.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "backgroundMedia",
-        "label": "Background media",
-        "description": "Image, or a looping video with the image as its poster. Variant A only (ignored in Variant B).",
-        "value": "image",
-        "options": [
-          {
-            "name": "Image",
-            "value": "image"
-          },
-          {
-            "name": "Video",
-            "value": "video"
-          }
-        ]
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "background",
-        "label": "Background image",
-        "description": "JPG or PNG; also the video's poster. Variant A only (ignored in Variant B).",
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "backgroundVideo",
-        "label": "Background video",
-        "description": "MP4 or MOV, used when Background media is Video. Variant A only (ignored in Variant B).",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "socialHeading",
-        "label": "Social heading",
-        "description": "E.g. CONNECT, above the social icons (up to 4); in Variant B for screen readers only.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      }
-    ]
-  },
-  {
-    "id": "jsw-footer-column",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "title",
-        "label": "Column title",
-        "description": "E.g. TECHNOLOGY.",
-        "value": "",
-        "required": true,
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link1",
-        "label": "Link 1",
-        "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
-        "required": true,
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link1Text",
-        "label": "Link 1 text",
-        "description": "E.g. NEVs; without Link 1 the link is not shown.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        },
+        "name": "imageAlt",
+        "label": "ALT Text",
         "required": true
       },
       {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link2",
-        "label": "Link 2",
-        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
         "component": "text",
-        "valueType": "string",
-        "name": "link2Text",
-        "label": "Link 2 text",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        },
-        "description": "Without Link 2 the link is not shown."
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link3",
-        "label": "Link 3",
-        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link3Text",
-        "label": "Link 3 text",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        },
-        "description": "Without Link 3 the link is not shown."
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link4",
-        "label": "Link 4",
-        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link4Text",
-        "label": "Link 4 text",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        },
-        "description": "Without Link 4 the link is not shown."
-      }
-    ]
-  },
-  {
-    "id": "jsw-footer-social-link",
-    "fields": [
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "network",
-        "label": "Network",
-        "description": "The icon and its screen-reader name; without a profile link the icon is not shown.",
-        "value": "facebook",
-        "required": true,
-        "options": [
-          {
-            "name": "Facebook",
-            "value": "facebook"
-          },
-          {
-            "name": "Instagram",
-            "value": "instagram"
-          },
-          {
-            "name": "X",
-            "value": "x"
-          },
-          {
-            "name": "LinkedIn",
-            "value": "linkedin"
-          },
-          {
-            "name": "YouTube",
-            "value": "youtube"
-          }
-        ]
-      },
-      {
-        "component": "aem-content",
         "valueType": "string",
         "name": "link",
-        "label": "Profile link",
-        "description": "The network page URL; without a network the icon is not shown.",
-        "required": true
-      }
-    ]
-  },
-  {
-    "id": "jsw-nav-brand",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "logo",
-        "label": "Logo",
-        "description": "The JSW mark only, shown left of the brand name.",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "logoAlt",
-        "label": "Logo alt text",
-        "description": "Describes the mark for screen readers when there is no brand name. Max 64 characters.",
-        "value": "",
+        "label": "Social Link URL",
+        "placeholder": "https://www.instagram.com/p/...",
+        "required": true,
+        "valueFormat": "regexp",
         "validation": {
-          "maxLength": 64
+          "regExp": "^https?://.+",
+          "customErrorMsg": "Enter an external URL starting with http:// or https://"
         }
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "brandName",
-        "label": "Brand name",
-        "description": "Shown as text right of the mark. Max 24 characters.",
+        "name": "caption",
+        "label": "Caption",
+        "description": "Max. 60 character",
         "value": "",
+        "valueFormat": "regexp",
         "validation": {
-          "maxLength": 24
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "logoLink",
-        "label": "Logo link",
-        "description": "Where the logo leads.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
+          "maxLength": 60,
+          "regExp": "^[\\s\\S]{0,60}$",
+          "customErrorMsg": "Caption must be 60 characters or fewer."
         }
       }
     ]
   },
   {
-    "id": "jsw-nav-links",
-    "fields": [
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link1",
-        "label": "Link 1 target",
-        "description": "Optional: a page or URL; Link 1 is shown only with its text.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link1Text",
-        "label": "Link 1 text",
-        "description": "Optional; shown only with its target. Max 12 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 12
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link2",
-        "label": "Link 2 target",
-        "description": "Optional: a page or URL; Link 2 is shown only with its text.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link2Text",
-        "label": "Link 2 text",
-        "description": "Optional; shown only with its target. Max 12 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 12
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link3",
-        "label": "Link 3 target",
-        "description": "Optional: a page or URL; Link 3 is shown only with its text.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link3Text",
-        "label": "Link 3 text",
-        "description": "Optional; shown only with its target. Max 12 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 12
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "link4",
-        "label": "Link 4 target",
-        "description": "Optional: a page or URL; Link 4 is shown only with its text.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "link4Text",
-        "label": "Link 4 text",
-        "description": "Optional; shown only with its target. Max 12 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 12
-        }
-      }
-    ]
-  },
-  {
-    "id": "jsw-nav-button",
-    "fields": [
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "cta",
-        "label": "Button target",
-        "description": "Optional: a page or URL; the button is shown only with its text.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaText",
-        "label": "Button text",
-        "description": "Optional; shown only with its target. Max 30 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      }
-    ]
-  },
-  {
-    "id": "parallax-collage",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "text",
-        "label": "Heading and subtitle",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "parallax-collage-image",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "image",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "imageAlt",
-        "label": "Alt text",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "position",
-        "label": "Position (optional)",
-        "description": "Optional. \"large\" marks the hero image that shrinks to the top (default: the first image). Images then fill screen 1 (4 cards) and screen 2 (4 cards) in order.",
-        "value": ""
-      }
-    ]
-  },
-  {
-    "id": "payment-failed",
+    "id": "spec-table",
     "fields": [
       {
         "component": "select",
         "valueType": "string",
         "name": "classes",
-        "label": "Layout",
-        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
-        "value": "variant-a",
+        "label": "Style",
+        "description": "Default: a plain list. Showcase: in a Product Page section, the full-screen specs layout.",
+        "value": "",
         "options": [
           {
-            "name": "Variant A – Spotlight (word and car)",
-            "value": "variant-a"
+            "name": "Default",
+            "value": ""
           },
           {
-            "name": "Variant B – Image beside the text",
-            "value": "variant-b"
+            "name": "Showcase",
+            "value": "showcase"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "spec-row",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Label",
+        "description": "e.g. Engine"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "value",
+        "label": "Value",
+        "description": "e.g. 1.5L turbo-petrol, 154 bhp / 220 Nm"
+      }
+    ]
+  },
+  {
+    "id": "stats-production",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background Image or Video",
+        "description": "Image, or an MP4 video (plays muted on loop).",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "content",
+        "label": "Heading, Label, Badge & Location",
+        "description": "Heading, then eyebrow, badge and location lines."
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "stats",
+        "label": "Stats",
+        "description": "One per line: 'Value — Label'."
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "plantImage",
+        "label": "Plant Image",
+        "multi": false
+      }
+    ]
+  },
+  {
+    "id": "strip-teaser",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background Image",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileImage",
+        "label": "Background Image (Mobile)",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "headline",
+        "label": "Headline",
+        "description": "Maximum character limit: 90 characters.",
+        "required": true,
+        "value": "GET THE JSW MOTORS MEDIA KIT",
+        "valueFormat": "regexp",
+        "validation": {
+          "maxLength": 90,
+          "regExp": "^[\\s\\S]{0,90}$",
+          "customErrorMsg": "Enter a headline (maximum 90 characters)."
+        }
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "links",
+        "label": "Button Links",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "id": "table",
+    "fields": [
+      {
+        "component": "select",
+        "name": "filter",
+        "label": "Columns",
+        "valueType": "string",
+        "value": "table-3-columns",
+        "description": "Set before adding rows",
+        "options": [
+          {
+            "name": "2 Columns",
+            "value": "table-2-columns"
+          },
+          {
+            "name": "3 Columns",
+            "value": "table-3-columns"
+          },
+          {
+            "name": "4 Columns",
+            "value": "table-4-columns"
+          },
+          {
+            "name": "5 Columns",
+            "value": "table-5-columns"
+          },
+          {
+            "name": "6 Columns",
+            "value": "table-6-columns"
+          },
+          {
+            "name": "7 Columns",
+            "value": "table-7-columns"
           }
         ]
       },
       {
-        "component": "text",
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Style",
         "valueType": "string",
-        "name": "displayWord",
-        "label": "Background word",
-        "description": "Variant A only: the large word behind the car. Max 12 characters.",
-        "value": "FAILED",
-        "validation": {
-          "maxLength": 12
-        }
+        "description": "Row 1 is the header unless No Header is selected",
+        "options": [
+          {
+            "name": "No Header",
+            "value": "no-header"
+          },
+          {
+            "name": "Striped",
+            "value": "striped"
+          },
+          {
+            "name": "Bordered",
+            "value": "bordered"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table-col-2",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column 1"
       },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column 2"
+      }
+    ]
+  },
+  {
+    "id": "table-col-3",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column 1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column 2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column 3"
+      }
+    ]
+  },
+  {
+    "id": "table-col-4",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column 1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column 2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column 3"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column4text",
+        "label": "Column 4"
+      }
+    ]
+  },
+  {
+    "id": "table-col-5",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column 1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column 2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column 3"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column4text",
+        "label": "Column 4"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column5text",
+        "label": "Column 5"
+      }
+    ]
+  },
+  {
+    "id": "table-col-6",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column 1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column 2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column 3"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column4text",
+        "label": "Column 4"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column5text",
+        "label": "Column 5"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column6text",
+        "label": "Column 6"
+      }
+    ]
+  },
+  {
+    "id": "table-col-7",
+    "fields": [
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column1text",
+        "label": "Column 1"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column2text",
+        "label": "Column 2"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column3text",
+        "label": "Column 3"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column4text",
+        "label": "Column 4"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column5text",
+        "label": "Column 5"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column6text",
+        "label": "Column 6"
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "column7text",
+        "label": "Column 7"
+      }
+    ]
+  },
+  {
+    "id": "tabs",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Style",
+        "description": "Combine freely, e.g. Vertical + Pills. Accordion on mobile stacks the tabs below 600px. Specs lays out a spec comparison: give each tab a Fragment holding a Columns block (one column per model; row 1 the model names, every other cell a label and a value as two paragraphs). Locations shows each tab as an image tile: give each tab a city Title and one image as its Content; the open tab's image fills the section. FAQ puts text tabs above the accordions of a Light FAQ section: give each tab a Title, then add one Accordion block per tab after the Tabs block in the same section (the first accordion goes in the first tab, and so on), or give a tab a Fragment holding an Accordion. Vertical in a Product Page section: 3 to 7 tabs; at most 7, no more can be added after the 7th.",
+        "options": [
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          },
+          {
+            "name": "Pills",
+            "value": "pills"
+          },
+          {
+            "name": "Brackets",
+            "value": "brackets"
+          },
+          {
+            "name": "Accordion on mobile",
+            "value": "accordion-mobile"
+          },
+          {
+            "name": "Specs (comparison)",
+            "value": "specs"
+          },
+          {
+            "name": "Locations (image tiles)",
+            "value": "locations"
+          },
+          {
+            "name": "FAQ (accordions)",
+            "value": "faq"
+          }
+        ]
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "defaultTab",
+        "label": "Open Tab",
+        "description": "Which tab is open when the page loads (1 = first). A link to #tab-name opens that tab instead.",
+        "min": 1
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "activation",
+        "label": "Keyboard Activation",
+        "description": "Automatic opens a tab as the arrow keys reach it. Manual only moves focus, Enter or Space opens it (better when tabs load heavy content).",
+        "value": "auto",
+        "options": [
+          {
+            "name": "Automatic",
+            "value": "auto"
+          },
+          {
+            "name": "Manual",
+            "value": "manual"
+          }
+        ]
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "lightMode",
+        "label": "Light Mode",
+        "description": "On: the tabs sit on a white card with dark text. Off: they follow the section (light text on the default dark sections).",
+        "value": false
+      }
+    ]
+  },
+  {
+    "id": "tab",
+    "fields": [
       {
         "component": "text",
         "valueType": "string",
-        "name": "heading",
-        "label": "Status heading",
-        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
-        "value": "PAYMENT FAILED, {name}.",
+        "name": "title",
+        "label": "Tab Title",
+        "required": true,
+        "description": "Short label shown on the tab. Also used for the tab's link, e.g. #tab-specifications.",
         "validation": {
-          "maxLength": 64
+          "maxLength": 40
         }
       },
       {
-        "component": "text",
+        "component": "richtext",
         "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Description",
-        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form, {failureReason} with the payment's failure reason. Variant A: one line per sentence. Max 200 characters.",
-        "value": "{failureReason|Your payment didn’t go through.} If any amount was deducted, it will be refunded automatically.",
-        "validation": {
-          "maxLength": 200
-        }
+        "name": "content",
+        "label": "Content",
+        "value": ""
+      },
+      {
+        "component": "aem-content",
+        "name": "fragment",
+        "label": "Fragment (Optional)",
+        "description": "Show a fragment's content (any blocks) in this tab, below the Content. It loads when the tab is first opened."
       },
       {
         "component": "reference",
         "valueType": "string",
         "name": "image",
-        "label": "Image",
-        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
+        "label": "Image (Optional)",
+        "description": "An image shown in this tab's panel.",
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
         "name": "imageAlt",
-        "label": "Image alt text",
-        "description": "Describes the image for screen readers. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "background",
-        "label": "Background image",
-        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
-        "multi": false
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "ctaLink",
-        "label": "Button link",
-        "description": "Optional: a button under the description, back to the reservation form by default.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        },
-        "value": "/content/uet-eds/jsw/reservation-form"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "ctaLinkText",
-        "label": "Button text",
-        "description": "The button's text. Max 30 characters.",
-        "value": "TRY AGAIN",
-        "validation": {
-          "maxLength": 30
-        }
+        "label": "Image Alt Text",
+        "value": ""
       }
     ]
   },
   {
-    "id": "reservation-form",
+    "id": "video",
     "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "uri",
+        "label": "Video",
+        "required": true
+      },
       {
         "component": "reference",
         "valueType": "string",
-        "name": "background",
-        "label": "Background Image",
-        "description": "Fills the left half; a banner above the form on phones.",
+        "name": "placeholder",
+        "label": "Poster Image",
         "multi": false
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "backgroundAlt",
-        "label": "Background Image alt text",
-        "description": "Describes the image for screen readers. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
+        "name": "placeholderAlt",
+        "label": "Poster Image Alt Text"
       },
       {
         "component": "text",
         "valueType": "string",
-        "name": "heading",
-        "label": "Heading",
-        "description": "The form's heading. Max 40 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 40
-        }
+        "name": "accessibleName",
+        "label": "Accessible Name",
+        "description": "Describes the video for screen readers"
       },
       {
-        "component": "text",
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Playback",
         "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "description",
-        "label": "Description",
-        "description": "Shown under the heading. Max 200 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 200
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "submitLabel",
-        "label": "Button text",
-        "description": "The button's text. Max 30 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "submitAction",
-        "label": "Send the form to (URL)",
-        "description": "Where the data is posted as JSON; leave empty to send nothing. Max 256 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 256
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "disclaimer",
-        "label": "Privacy disclaimer",
-        "description": "Small print under the button; an email address in it becomes a link, and the privacy link follows it. Max 200 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 200
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "privacyLink",
-        "label": "Privacy notice link",
-        "description": "The privacy notice page.",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "privacyLinkText",
-        "label": "Privacy notice link text",
-        "description": "The link's text. Max 30 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "tab",
-        "name": "pricingTab",
-        "label": "Pricing"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "amountLabel",
-        "label": "Amount label",
-        "description": "The price card's label. Max 30 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "number",
-        "valueType": "number",
-        "name": "amount",
-        "label": "Reservation amount (₹)",
-        "description": "In rupees; leave empty to hide the price card. Keep it the same as the payment service's amount."
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "amountBadge",
-        "label": "Amount badge",
-        "description": "Optional tag beside the label. Max 30 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 30
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "amountNote",
-        "label": "Amount note",
-        "description": "Shown under the amount. Max 200 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 200
-        }
-      },
-      {
-        "component": "tab",
-        "name": "paymentTab",
-        "label": "Payment"
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "paymentService",
-        "label": "Payment service URL",
-        "description": "The service that creates and verifies payments; leave empty for test mode. The Key ID is in the block's configuration. Max 256 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 256
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "merchantName",
-        "label": "Name in the payment window",
-        "description": "Shown in the payment window. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "successPage",
-        "label": "Page after the form is sent",
-        "description": "Opens once the form is sent and its payment confirmed (default: /jsw/confirmation).",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "aem-content",
-        "valueType": "string",
-        "name": "failurePage",
-        "label": "Page after a failed payment",
-        "description": "Opens after a failed payment (default: /jsw/payment-failed).",
-        "validation": {
-          "rootPath": "/content/uet-eds/jsw"
-        }
-      },
-      {
-        "component": "tab",
-        "name": "pendingTab",
-        "label": "Pending"
-      },
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "name": "pendingPreview",
-        "label": "Show pending state in the editor",
-        "description": "Shows the pending state in place of the form while editing, to edit its texts in place; never on the site.",
-        "value": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "pendingHeading",
-        "label": "Pending title",
-        "description": "Shown while the payment is confirmed. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "valueFormat": "string-multiline",
-        "name": "pendingDescription",
-        "label": "Pending description",
-        "description": "Shown under the pending title. Max 200 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 200
-        }
-      }
-    ]
-  },
-  {
-    "id": "reservation-form-field",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "label",
-        "label": "Label",
-        "description": "Shown in the field; it also sets the field's kind. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "fieldName",
-        "label": "Field name",
-        "description": "The value's key in the sent data; leave empty to make it from the label. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "name": "required",
-        "label": "Required",
-        "value": false
-      }
-    ]
-  },
-  {
-    "id": "reservation-form-dropdown",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "label",
-        "label": "Label",
-        "description": "Shown until a choice is made. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "fieldName",
-        "label": "Field name",
-        "description": "The choice's key in the sent data; leave empty to make it from the label. Max 64 characters.",
-        "value": "",
-        "validation": {
-          "maxLength": 64
-        }
-      },
-      {
-        "component": "boolean",
-        "valueType": "boolean",
-        "name": "required",
-        "label": "Required",
-        "value": false
-      },
-      {
-        "component": "container",
-        "name": "options",
-        "label": "Cities",
-        "description": "The choices, one per entry.",
-        "multi": true,
-        "fields": [
+        "description": "Autoplay always starts muted. Hide Controls: no buttons; a tap, click or Space pauses",
+        "options": [
           {
-            "component": "text",
-            "valueType": "string",
-            "name": "option",
-            "label": "City",
-            "description": "Max 64 characters.",
-            "value": "",
-            "validation": {
-              "maxLength": 64
-            }
+            "name": "Autoplay",
+            "value": "autoplay"
+          },
+          {
+            "name": "Muted",
+            "value": "muted"
+          },
+          {
+            "name": "Loop",
+            "value": "loop"
+          },
+          {
+            "name": "Hide Controls",
+            "value": "no-controls"
           }
         ]
+      },
+      {
+        "component": "select",
+        "name": "classes_ratio",
+        "label": "Aspect Ratio",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "16:9 (Widescreen)",
+            "value": ""
+          },
+          {
+            "name": "4:3",
+            "value": "ratio-4-3"
+          },
+          {
+            "name": "1:1 (Square)",
+            "value": "ratio-1-1"
+          },
+          {
+            "name": "9:16 (Vertical)",
+            "value": "ratio-9-16"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "classes_width",
+        "label": "Width",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Contained",
+            "value": ""
+          },
+          {
+            "name": "Full Bleed",
+            "value": "full-bleed"
+          },
+          {
+            "name": "Fill Screen",
+            "value": "fill-screen"
+          }
+        ]
+      },
+      {
+        "component": "richtext",
+        "name": "caption",
+        "label": "Caption",
+        "valueType": "string",
+        "description": "Optional text shown with the video"
       }
     ]
   }

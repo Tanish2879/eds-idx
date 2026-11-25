@@ -1,0 +1,907 @@
+.featured-blogs {
+  --fb-u: clamp(0.7px, min(100vw / 402, 100svh / 874), 1px);
+  --featured-blogs-gutter: calc(20 * var(--fb-u));
+  --featured-blogs-gutter-end: var(--featured-blogs-gutter);
+  --featured-blogs-header-gap: calc(24 * var(--fb-u));
+  --featured-blogs-bottom-space: calc(66 * var(--fb-u));
+  --featured-blogs-dots-gap: calc(32 * var(--fb-u));
+
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+
+  /* content starts below the fixed header's nav pill (--nav-offset) */
+  padding:calc(var(--nav-offset) + var(--featured-blogs-header-gap)) var(--featured-blogs-gutter) var(--featured-blogs-bottom-space);
+  overflow: hidden;
+  color: var(--color-white);
+  background-color: var(--color-black);
+  touch-action: pan-y;
+
+  /* full-bleed: escape the section's max-width/padding */
+  width: 100vw;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
+
+
+  & .featured-blogs-bg-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+& .featured-blogs-bg-slide.is-active {
+  opacity: 1;
+}
+
+.featured-blogs-bg-slide picture,
+& .featured-blogs-bg-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+& .featured-blogs-card-pane {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--fb-u));
+  width: 100%;
+  transform: translateX(0);
+  transition: transform 0.65s cubic-bezier(0.6, 0, 0.4, 1);
+  will-change: transform;
+}
+
+& .featured-blogs-card-pane.pane-enter-left {
+  transform: translateX(calc(-100% - var(--spacing-40)));
+  transition: none;
+}
+
+& .featured-blogs-card-pane.pane-exit-right {
+  transform: translateX(calc(100% + var(--spacing-40)));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  & .featured-blogs-card-pane {
+    transition: none;
+    transform: none;
+  }
+
+.featured-blogs-intro,
+& .featured-blogs-card {
+  transform: none;
+}
+}
+
+& .featured-blogs-nav::before {
+  content: '';
+  width: calc(18 * var(--fb-u));
+  height: calc(18 * var(--fb-u));
+  background-color: currentcolor;
+  mask: url('../../icons/arrow-right.svg') center / contain no-repeat;
+}
+
+& .featured-blogs-prev::before {
+  transform: rotate(180deg);
+}
+
+& .featured-blogs-dot {
+  width: calc(61.5 * var(--fb-u));
+  height: 2px;
+  border: 0;
+  padding: 0;
+  background: rgb(255 255 255 / 30%);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+& .featured-blogs-dot.is-active {
+  background: var(--color-white);
+}
+
+/* set on the block itself when nothing is flagged as featured */
+&.featured-blogs-empty {
+  display: none;
+}
+
+}
+
+/* background layer — one slide per blog, crossfaded */
+.featured-blogs-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.featured-blogs-intro {
+  --entrance-gutter: var(--featured-blogs-gutter);
+
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(22 * var(--fb-u));
+  transform: translateX(calc((-100% - var(--entrance-gutter)) * var(--featured-blogs-offset, 1)));
+  will-change: transform;
+}
+
+.featured-blogs-heading {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-regular);
+  font-size: calc(40 * var(--fb-u));
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-white);
+}
+
+.featured-blogs a.featured-blogs-viewall:any-link,
+.featured-blogs .featured-blogs-viewall {
+  border: 1px solid var(--color-white);
+  border-radius: calc(6 * var(--fb-u));
+  padding: calc(12 * var(--fb-u)) calc(19 * var(--fb-u));
+  font-family: var(--text-font-family);
+  font-size: max(10px, calc(12 * var(--fb-u)));
+  font-weight: var(--font-weight-regular);
+  line-height: 1.3333;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-white);
+  background: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* secondary (outlined) CTA on dark, as the hero's "Discover NEV": white
+   outline and text stay, a faint white tint fills in on hover */
+.featured-blogs a.featured-blogs-viewall:hover,
+.featured-blogs a.featured-blogs-viewall:focus-visible,
+.featured-blogs .featured-blogs-viewall:hover {
+  border-color: var(--button-outlined-border-on-dark);
+  background: var(--button-outlined-hover-bg-on-dark);
+  color: var(--button-outlined-color-on-dark);
+  text-decoration: none;
+}
+
+.featured-blogs-card {
+  --entrance-gutter: var(--featured-blogs-gutter-end);
+
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: calc(24 * var(--fb-u));
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: calc(527 * var(--fb-u));
+  margin-top: calc(32 * var(--fb-u));
+  padding: calc(24 * var(--fb-u));
+  border-radius: calc(16 * var(--fb-u));
+  background: rgb(0 0 0 / 30%);
+  backdrop-filter: blur(30px);
+  transform: translateX(calc((100% + var(--entrance-gutter)) * var(--featured-blogs-offset, 1)));
+  will-change: transform;
+}
+
+/* eyebrow — New Science, uppercase, 60% white; 14/20 mobile */
+.featured-blogs-card-eyebrow {
+  margin: 0;
+  font-family: var(--text-font-family);
+  font-size: max(12px, calc(14 * var(--fb-u)));
+  font-weight: var(--font-weight-regular);
+  line-height: 1.4286;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 60%);
+}
+
+.featured-blogs-card-viewport {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+/* initial placement classes applied before transition starts */
+.featured-blogs-card-pane.pane-enter-right {
+  transform: translateX(calc(100% + var(--spacing-40)));
+  transition: none;
+}
+
+/* exit targets */
+.featured-blogs-card-pane.pane-exit-left {
+  transform: translateX(calc(-100% - var(--spacing-40)));
+}
+
+/* title — New Science, uppercase; 24/32 mobile. 3 lines at most on every
+   screen, the rest cut off (no ellipsis), as the Dissolve style's */
+.featured-blogs-card-title {
+  max-height: 3lh;
+  overflow: hidden;
+  margin: 0;
+  font-family: var(--text-font-family);
+  font-weight: var(--font-weight-medium);
+  font-size: max(18px, calc(24 * var(--fb-u)));
+  line-height: 1.3333;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-white);
+}
+
+/* body — New Science; 16/24 mobile. 9 lines at most (12 on desktop), then an
+   ellipsis, as the Dissolve style's */
+.featured-blogs-card-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 9;
+  margin: 0;
+  font-family: var(--text-font-family);
+  font-size: max(12px, calc(16 * var(--fb-u)));
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  color: rgb(255 255 255 / 80%);
+}
+
+/* controls row: prev | read more | next — pinned to the card bottom; as on
+   desktop, the arrows sit at the row's ends and READ MORE in the middle */
+.featured-blogs-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(12 * var(--fb-u));
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* label left, icon right: mobile ↗ in a 48 box, desktop "+" */
+.featured-blogs a.featured-blogs-readmore:any-link,
+.featured-blogs .featured-blogs-readmore {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 1 calc(200 * var(--fb-u));
+  box-sizing: border-box;
+  height: calc(66 * var(--fb-u));
+  padding: calc(9 * var(--fb-u)) calc(10 * var(--fb-u)) calc(9 * var(--fb-u)) calc(16 * var(--fb-u));
+  border-radius: calc(10 * var(--fb-u));
+  font-family: var(--text-font-family);
+  font-size: max(12px, calc(16 * var(--fb-u)));
+  font-weight: var(--font-weight-regular);
+  line-height: 1.375;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--color-white);
+  background: rgb(0 0 0 / 30%);
+  transition: background-color 0.3s ease;
+}
+
+.featured-blogs a.featured-blogs-readmore:hover,
+.featured-blogs a.featured-blogs-readmore:focus-visible,
+.featured-blogs .featured-blogs-readmore:hover {
+  color: var(--color-white);
+  background: rgb(0 0 0 / 50%);
+  text-decoration: none;
+}
+
+/* icon box */
+.featured-blogs .featured-blogs-readmore::after {
+  content: '';
+  flex: 0 0 auto;
+  width: calc(48 * var(--fb-u));
+  height: calc(48 * var(--fb-u));
+  border-radius: calc(12 * var(--fb-u));
+  background: rgb(0 0 0 / 60%);
+}
+
+/* 24 icon centred in the box (10 padding + 12 box inset from the right) */
+.featured-blogs .featured-blogs-readmore::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: calc(22 * var(--fb-u));
+  width: calc(24 * var(--fb-u));
+  height: calc(24 * var(--fb-u));
+  transform: translateY(-50%);
+  background-color: currentcolor;
+  mask: url('../../icons/arrow-up-right.svg') center / contain no-repeat;
+}
+
+/* Read More: the site's primary v2 button (styles.css) sized by its own
+   content in the controls row */
+.featured-blogs .featured-blogs-cta.button {
+  flex: 0 1 auto;
+}
+
+/* prev/next arrows on either side of READ MORE, on mobile and desktop */
+.featured-blogs-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: calc(36 * var(--fb-u));
+  height: calc(46 * var(--fb-u));
+  border: 0;
+  padding: 0;
+  border-radius: calc(8 * var(--fb-u));
+  background: rgb(0 0 0 / 20%);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.featured-blogs-controls-single .featured-blogs-nav {
+  visibility: hidden;
+}
+
+.featured-blogs .featured-blogs-nav:hover {
+  background: rgb(0 0 0 / 50%);
+}
+
+/* dot indicators — centred at the bottom on mobile, bottom-left on desktop */
+.featured-blogs-dots {
+  position: absolute;
+
+  /* Figma y 834 (32 below the card), or 40 from the bottom if shorter */
+  top: min(calc(834 * var(--fb-u)), calc(100% - 40 * var(--fb-u)));
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  gap: calc(14 * var(--fb-u));
+  transform: translateX(-50%);
+}
+
+/* editor-only placeholder when no articles are flagged as featured */
+.featured-blogs-empty-note {
+  margin: 0;
+  padding: var(--spacing-32) var(--spacing-24);
+  font-family: var(--text-font-family);
+  font-size: 14px;
+  color: var(--color-gray-50);
+  text-align: center;
+}
+
+@media (width < 600px), (width < 900px) and (orientation: portrait) {
+  .featured-blogs-heading {
+    width: min(calc(278 * var(--fb-u)), 100%);
+  }
+
+.featured-blogs a.featured-blogs-viewall:any-link,
+.featured-blogs .featured-blogs-viewall {
+  width: calc(99 * var(--fb-u));
+  padding-inline: 0;
+}
+
+.featured-blogs-card {
+  align-self: center;
+  width: calc(363 * var(--fb-u));
+}
+
+/* the bars share the row of three (3 × 61.5 + 2 × 14 = 212.5), so more
+   blogs make them narrower instead of running off the screen */
+.featured-blogs-dots {
+  position: static;
+  flex-shrink: 0;
+  align-self: center;
+  width: calc(212.5 * var(--fb-u));
+  margin-top: var(--featured-blogs-dots-gap);
+  transform: none;
+}
+
+.featured-blogs .featured-blogs-dot {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+.featured-blogs:has(> .featured-blogs-dots) {
+  padding-bottom: calc(var(--featured-blogs-bottom-space) - var(--featured-blogs-dots-gap) - 2px);
+}
+
+/* fixed whole-line box: title 3 lines (96), cut off after them (no ellipsis) */
+.featured-blogs-card-title {
+  overflow: hidden;
+  height: 3lh;
+}
+}
+
+@media (width >= 900px), (width >= 600px) and (orientation: landscape) {
+  .featured-blogs {
+    --fb-ux: clamp(0.35px, 100vw / 1728, 1px);
+    --fb-uy: clamp(0.35px, 100svh / 1000, 1px);
+    --fb-u: min(var(--fb-ux), var(--fb-uy));
+    --featured-blogs-gutter: calc(80 * var(--fb-ux));
+    --featured-blogs-gutter-end: calc(82 * var(--fb-ux));
+
+    display: grid;
+    grid-template-columns: minmax(0, calc(813 * var(--fb-ux))) minmax(0, calc(620 * var(--fb-ux)));
+    justify-content: space-between;
+    column-gap: calc(133 * var(--fb-ux));
+    align-items: start;
+    padding: 0 var(--featured-blogs-gutter-end) 0 var(--featured-blogs-gutter);
+  }
+
+.featured-blogs-intro {
+  grid-column: 1;
+  align-items: flex-start;
+  margin-top: calc(195 * var(--fb-uy));
+  gap: calc(65 * var(--fb-u));
+  container-type: inline-size;
+}
+
+.featured-blogs-heading {
+  font-size: min(calc(100 * var(--fb-u)), 14cqi);
+  line-height: 0.9;
+  text-align: left;
+}
+
+/* 183×68 box with the label centred */
+.featured-blogs a.featured-blogs-viewall:any-link,
+.featured-blogs .featured-blogs-viewall {
+  min-width: calc(183 * var(--fb-u));
+  min-height: calc(68 * var(--fb-u));
+  border-radius: calc(12 * var(--fb-u));
+  padding: 0 calc(24 * var(--fb-u));
+  font-size: max(12px, calc(16 * var(--fb-u)));
+  line-height: 1.375;
+}
+
+.featured-blogs-card {
+  --card-pad-block: calc(36 * var(--fb-uy));
+  --card-pad-start: calc(38 * var(--fb-ux));
+  --card-pad-end: calc(39 * var(--fb-ux));
+  --controls-inset-x: calc(20 * var(--fb-ux));
+  --controls-inset-y: calc(20 * var(--fb-uy));
+
+  grid-column: 2;
+  grid-row: 1;
+  height: calc(776 * var(--fb-uy));
+  max-height: none;
+  margin-top: calc(184 * var(--fb-uy));
+  padding:
+  var(--card-pad-block) var(--card-pad-end)
+  var(--card-pad-block) var(--card-pad-start);
+  border-radius: calc(25 * var(--fb-u));
+}
+
+/* 16/22 */
+.featured-blogs-card-eyebrow {
+  font-size: max(12px, calc(16 * var(--fb-u)));
+  line-height: 1.375;
+}
+
+.featured-blogs-controls {
+  justify-content: space-between;
+  gap: calc(121 * var(--fb-u));
+  margin:
+  auto calc(var(--controls-inset-x) - var(--card-pad-end))
+  calc(var(--controls-inset-y) - var(--card-pad-block))
+  calc(var(--controls-inset-x) - var(--card-pad-start));
+}
+
+.featured-blogs a.featured-blogs-readmore:any-link,
+.featured-blogs .featured-blogs-readmore {
+  flex: 0 1 calc(238 * var(--fb-u));
+}
+
+/* desktop icon: bare 20 "+" (no box) */
+.featured-blogs .featured-blogs-readmore::after {
+  width: calc(20 * var(--fb-u));
+  height: calc(20 * var(--fb-u));
+  border-radius: 0;
+  background: currentcolor;
+  mask: url('../../icons/plus.svg') center / contain no-repeat;
+}
+
+.featured-blogs .featured-blogs-readmore::before {
+  display: none;
+}
+
+/* 32/35 */
+.featured-blogs-card-title {
+  font-size: max(20px, calc(32 * var(--fb-u)));
+  line-height: 1.0938;
+}
+
+/* 20/28, up to 12 lines */
+.featured-blogs-card-desc {
+  -webkit-line-clamp: 12;
+  font-size: max(14px, calc(20 * var(--fb-u)));
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+/* Figma dots frame: 54 tall at y 895; the bars sit 24 below its top */
+.featured-blogs-dots {
+  box-sizing: border-box;
+  top: calc(895 * var(--fb-uy));
+  left: var(--featured-blogs-gutter);
+  align-items: flex-start;
+  height: calc(54 * var(--fb-uy));
+  padding-top: calc(24 * var(--fb-uy));
+  transform: none;
+}
+
+.featured-blogs-dots:has(> .featured-blogs-dot:nth-child(3)) {
+  left: calc(var(--featured-blogs-gutter) - 28 * var(--fb-u));
+  width: calc(260 * var(--fb-u));
+  padding-left: calc(28 * var(--fb-u));
+}
+}
+
+main .section:has(.featured-blogs) {
+  overflow-x: clip;
+}
+
+/* Dissolve: the section stacks over the previous one as it scrolls in */
+main > .section:has(.featured-blogs.dissolve) {
+  position: relative;
+  z-index: 6;
+  overflow-y: visible;
+}
+
+/* ------------------------------------------------------------------------
+   Style: Dissolve — the latest blogs in one centred glass card over a
+   blurred background: "OUR BLOGS" label, title and description, READ MORE
+   at the bottom; panes crossfade. Mobile (375×815 Figma frame "M / Blogs")
+   and desktop (media query below, 1280×720 frame "NEV / Blog"): prev |
+   READ MORE | next, plus swipe; no progress bars.
+   ------------------------------------------------------------------------ */
+.featured-blogs.dissolve {
+  --fbd-u: clamp(0.8px, min(100vw / 375, 100svh / 815), 1.2px);
+
+  /* arrow / swipe switch: the image slide, and the text crossfade near its
+     middle. Quicker on mobile; desktop 1.1s (media query
+     below). featured-blogs.js reads --fbd-slide to know when it has ended */
+  --fbd-slide: 0.65s;
+  --fbd-fade: 0.16s;
+  --fbd-fade-delay: 0.25s;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  touch-action: pan-y;
+
+  /* the card rises from the block's top edge (featured-blogs.js
+     trackRise), so only the image layer clips */
+  overflow: visible;
+
+  & .featured-blogs-bg {
+    overflow: hidden;
+  }
+
+  /* blurred background image (layer blur 36) under a black overlay:
+     20% on mobile, 60% on desktop */
+  & .featured-blogs-bg-slide img {
+    --fbd-bleed: calc(108 * var(--fbd-u));
+
+    position: absolute;
+    top: calc(-1 * var(--fbd-bleed));
+    left: calc(-1 * var(--fbd-bleed));
+    width: calc(100% + 2 * var(--fbd-bleed));
+    height: calc(100% + 2 * var(--fbd-bleed));
+    max-width: none;
+    filter: blur(calc(36 * var(--fbd-u)));
+  }
+
+  & .featured-blogs-bg::after {
+    content: '';
+    inset: 0;
+    z-index: 2;
+    background: rgb(0 0 0 / 20%);
+  }
+
+  /* arrow switch: the new blog's image slides in over the current one
+     (next from the left, moving right; previous from the right) */
+  & .featured-blogs-bg-slide {
+    transition: none;
+  }
+
+  /* a crisp square edge (clipping the blur), so the new image reads clearly
+     as a new blog sliding in */
+  & .featured-blogs-bg-slide.is-incoming {
+    z-index: 1;
+    opacity: 1;
+    overflow: hidden;
+    will-change: translate;
+  }
+
+  & .featured-blogs-bg-slide.is-incoming.from-left {
+    translate: -100% 0;
+  }
+
+  & .featured-blogs-bg-slide.is-incoming.from-right {
+    translate: 100% 0;
+  }
+
+  /* Figma prototype: Smart Animate, custom ease (slow start and end) */
+  & .featured-blogs-bg-slide.is-incoming.is-moving {
+    translate: 0 0;
+    transition: translate var(--fbd-slide) cubic-bezier(0.72, 0, 0.31, 0.99);
+  }
+
+  /* arriving: plain white over the image (the card rising on it); 0.1s
+     after the block fills the screen it fades out in 0.2s, and back in when
+     scrolled away (JS: is-glowing) */
+  & .featured-blogs-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: #fff;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  &.is-glowing .featured-blogs-glow {
+    opacity: 0;
+  }
+
+  /* 335×492 card at y 192, 22 in on every side. */
+  & .featured-blogs-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    flex: 0 0 auto;
+    align-self: center;
+    gap: 0;
+    width: calc(335 * var(--fbd-u));
+    height: calc(492 * var(--fbd-u));
+    max-height: none;
+    margin: calc(192 * var(--fbd-u)) 0 0;
+    padding: calc(22 * var(--fbd-u));
+    border-radius: calc(16 * var(--fbd-u));
+
+    /* lifted by featured-blogs.js while arriving (inline transform) */
+    transform: none;
+    will-change: transform;
+  }
+
+  & .featured-blogs-card-header {
+    display: contents;
+  }
+
+  /* the header's placeholder when there is no heading */
+  & .featured-blogs-card-header > span {
+    display: none;
+  }
+
+  /* "OUR BLOGS" label — 14/18.9, 60% white, across the top */
+  & .featured-blogs-heading {
+    grid-area: 1 / 1 / 2 / -1;
+    width: auto;
+    font-size: max(10px, calc(14 * var(--fbd-u)));
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    text-align: left;
+    color: rgb(255 255 255 / 60%);
+  }
+
+  /* the heading is the card's only label: no blog tag */
+  & .featured-blogs-card-eyebrow {
+    display: none;
+  }
+
+  /* text starts 22 below the label */
+  & .featured-blogs-card-viewport {
+    grid-area: 2 / 1 / 3 / -1;
+    margin: calc(22 * var(--fbd-u)) 0 0;
+  }
+
+  /* arrow switch / swipe: the text stays in place and only changes — the old
+     text fades out as the new text fades in, around the middle of the image
+     slide */
+  & .featured-blogs-card-pane {
+    gap: calc(22 * var(--fbd-u));
+    transform: none;
+    transition: none;
+    will-change: opacity;
+  }
+
+  & .featured-blogs-card-pane.is-incoming {
+    opacity: 0;
+  }
+
+  & .featured-blogs-card-pane.is-moving {
+    transition: opacity var(--fbd-fade) ease var(--fbd-fade-delay);
+  }
+
+  & .featured-blogs-card-pane.is-incoming.is-moving {
+    opacity: 1;
+  }
+
+  & .featured-blogs-card-pane.is-leaving.is-moving {
+    opacity: 0;
+  }
+
+  /* 24/32.4, cut off after 3 lines (no ellipsis) */
+  & .featured-blogs-card-title {
+    display: block;
+    overflow: hidden;
+    height: auto;
+    max-height: 3lh;
+    font-size: calc(24 * var(--fbd-u));
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  /* 16/24, up to 9 lines */
+  & .featured-blogs-card-desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 9;
+    overflow: hidden;
+    font-size: max(12px, calc(16 * var(--fbd-u)));
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  /* prev | READ MORE | next, as on desktop: the arrows at the row's ends,
+     READ MORE centred between them (plus swipe) */
+  & .featured-blogs-controls {
+    grid-area: 3 / 1 / 4 / -1;
+    justify-content: space-between;
+    gap: 0;
+    margin: 0;
+  }
+
+  /* 38×49 buttons, 16 arrow, 10 in from the card edge */
+  & .featured-blogs-nav {
+    display: inline-flex;
+    width: calc(38 * var(--fbd-u));
+    height: calc(49 * var(--fbd-u));
+    border-radius: calc(8 * var(--fbd-u));
+    background: rgb(0 0 0 / 20%);
+  }
+
+  & .featured-blogs-prev {
+    margin-left: calc(-12 * var(--fbd-u));
+  }
+
+  & .featured-blogs-next {
+    margin-right: calc(-12 * var(--fbd-u));
+  }
+
+  & .featured-blogs-nav::before {
+    width: calc(16 * var(--fbd-u));
+    height: calc(16 * var(--fbd-u));
+  }
+
+  /* 176×49 pill, as on desktop: label left (12/16.2), bare "+" right */
+  & a.featured-blogs-readmore:any-link {
+    flex: 0 0 auto;
+    width: calc(176 * var(--fbd-u));
+    height: calc(49 * var(--fbd-u));
+    padding: calc(7 * var(--fbd-u)) calc(7 * var(--fbd-u)) calc(7 * var(--fbd-u)) calc(12 * var(--fbd-u));
+    border-radius: calc(8 * var(--fbd-u));
+    font-size: max(10px, calc(12 * var(--fbd-u)));
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(30px);
+  }
+
+  & .featured-blogs-readmore::after {
+    width: calc(15 * var(--fbd-u));
+    height: calc(15 * var(--fbd-u));
+    border-radius: 0;
+    background: currentcolor;
+    backdrop-filter: none;
+    mask: url('../../icons/plus.svg') center / calc(13 * var(--fbd-u)) no-repeat;
+  }
+
+  & .featured-blogs-readmore::before {
+    display: none;
+  }
+}
+
+/* desktop: 459×545 card at y 105 — label and text 28 / 29 in from the card
+   edge (left / right), controls 14 / 13 in and 15 from the bottom */
+@media (width >= 900px), (width >= 600px) and (orientation: landscape) {
+  .featured-blogs.dissolve {
+    --fbd-u: clamp(0.6px, min(100vw / 1280, 100svh / 720), 1.5px);
+
+    /* a 1.1s slide (quicker than the Figma 2.6s), the text crossfading at its middle (0.55s) */
+    --fbd-slide: 1.1s;
+    --fbd-fade: 0.28s;
+    --fbd-fade-delay: 0.41s;
+
+    & .featured-blogs-bg::after {
+      background: rgb(0 0 0 / 60%);
+    }
+
+    & .featured-blogs-card {
+      width: calc(459 * var(--fbd-u));
+      height: calc(545 * var(--fbd-u));
+      margin-top: calc(105 * var(--fbd-u));
+      padding: calc(27 * var(--fbd-u)) calc(29 * var(--fbd-u)) calc(15 * var(--fbd-u)) calc(28 * var(--fbd-u));
+      border-radius: calc(20 * var(--fbd-u));
+      grid-template-columns: calc(24 * var(--fbd-u)) minmax(0, 1fr) calc(22 * var(--fbd-u));
+      column-gap: calc(90 * var(--fbd-u));
+    }
+
+    /* 12/16.2 */
+    & .featured-blogs-heading {
+      font-size: max(10px, calc(12 * var(--fbd-u)));
+      line-height: 1.35;
+    }
+
+    /* text starts 18 below the label */
+    & .featured-blogs-card-viewport {
+      margin-top: calc(18 * var(--fbd-u));
+    }
+
+    & .featured-blogs-card-pane {
+      gap: calc(18 * var(--fbd-u));
+    }
+
+    /* 24/26.4 */
+    & .featured-blogs-card-title {
+      line-height: 1.1;
+    }
+
+    /* 16/22.4, up to 12 lines */
+    & .featured-blogs-card-desc {
+      -webkit-line-clamp: 12;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+
+    & .featured-blogs-controls {
+      justify-content: space-between;
+    }
+
+    /* 38×49 buttons, 16 arrow, 14 / 13 in from the card edge */
+    & .featured-blogs-nav {
+      display: inline-flex;
+      width: calc(38 * var(--fbd-u));
+      height: calc(49 * var(--fbd-u));
+      border-radius: calc(8 * var(--fbd-u));
+      background: rgb(0 0 0 / 20%);
+    }
+
+    & .featured-blogs-prev {
+      margin-left: calc(-14 * var(--fbd-u));
+    }
+
+    & .featured-blogs-next {
+      margin-right: calc(-16 * var(--fbd-u));
+    }
+
+    & .featured-blogs-nav::before {
+      width: calc(16 * var(--fbd-u));
+      height: calc(16 * var(--fbd-u));
+    }
+
+    /* 176×49: label left (12/16.2), bare "+" right */
+    & a.featured-blogs-readmore:any-link {
+      flex: 0 0 auto;
+      width: calc(176 * var(--fbd-u));
+      height: calc(49 * var(--fbd-u));
+      padding: calc(7 * var(--fbd-u)) calc(7 * var(--fbd-u)) calc(7 * var(--fbd-u)) calc(12 * var(--fbd-u));
+      border-radius: calc(8 * var(--fbd-u));
+      font-size: max(10px, calc(12 * var(--fbd-u)));
+      line-height: 1.35;
+      letter-spacing: 0.03em;
+    }
+
+    & .featured-blogs-readmore::after {
+      width: calc(15 * var(--fbd-u));
+      height: calc(15 * var(--fbd-u));
+      border-radius: 0;
+      background: currentcolor;
+      backdrop-filter: none;
+      mask: url('../../icons/plus.svg') center / calc(13 * var(--fbd-u)) no-repeat;
+    }
+
+    & .featured-blogs-readmore::before {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,233 @@
+// Hero Carousel "Showroom Layout" (classes_showroom): the hero's own Text stays beside every
+// slide. Its paragraphs before the first label are the eyebrow (above the slide's heading);
+// each paragraph starting with a bold label ("**Address** Plot 14, …", or a bold-only
+// paragraph followed by its value) becomes a row of the info card under the slide's text.
+
+import { inEditor } from '../../scripts/utils/common.js';
+
+/**
+ * The bold label a paragraph starts with, or null.
+ * @param {HTMLParagraphElement} p
+ * @returns {Element|null}
+ */
+function leadingLabel(p) {
+  const first = [...p.childNodes]
+    .find((n) => n.nodeType !== Node.TEXT_NODE || n.textContent.trim());
+  return first?.nodeType === Node.ELEMENT_NODE && first.matches('strong, b') ? first : null;
+}
+
+// how long the photo wipe runs (hero-showroom.css --sr-wipe-ms), plus a frame to settle
+const WIPE_MS = 950;
+const SETTLE_MS = 50;
+
+/**
+ * Starts each further sentence of a slide heading on its own line, as the desktop source sets
+ * them ("Sit in it.<br>Walk around it."); a heading of one sentence wraps on its own (balanced).
+ * The breaks keep a space before them so phones, where the mobile design lets the heading wrap
+ * ("Sit in it. Walk / around it."), can hide them (hero-showroom.css .showroom-break).
+ * @param {Element} contents the slides' contents (.slide-contents)
+ */
+function breakSentences(contents) {
+  contents.querySelectorAll(':scope > .content > :is(h1, h2, h3, h4, h5, h6)').forEach((heading) => {
+    [...heading.childNodes].forEach((node) => {
+      if (node.nodeType !== Node.TEXT_NODE) return;
+      const parts = node.textContent.split(/(?<=[.!?])\s+(?=\S)/);
+      if (parts.length < 2) return;
+      const lines = document.createDocumentFragment();
+      parts.forEach((part, i) => {
+        if (i) {
+          const br = document.createElement('br');
+          br.className = 'showroom-break';
+          lines.append(' ', br);
+        }
+        lines.append(part);
+      });
+      node.replaceWith(lines);
+    });
+  });
+}
+
+/**
+ * Phones (the mobile design): a slide heading longer than two lines steps its size down
+ * (4% a step) until it fits two; desktop keeps the stylesheet's size.
+ * @param {Element} contents the slides' contents (.slide-contents)
+ */
+function fitHeadings(contents) {
+  const phone = window.matchMedia('(width < 900px)');
+  const headings = [...contents.querySelectorAll(':scope > .content > :is(h1, h2, h3, h4, h5, h6)')];
+  const fit = () => headings.forEach((heading) => {
+    heading.style.removeProperty('font-size');
+    if (!phone.matches) return;
+    let size = parseFloat(getComputedStyle(heading).fontSize);
+    const lines = () => Math.round(
+      heading.offsetHeight / parseFloat(getComputedStyle(heading).lineHeight),
+    );
+    for (let k = 0; k < 12 && lines() > 2; k += 1) {
+      size *= 0.96;
+      heading.style.fontSize = `${size}px`;
+    }
+  });
+  // refit once laid out, whenever the width changes, and once the web fonts are in
+  let width = -1;
+  new ResizeObserver(([entry]) => {
+    if (entry.contentRect.width === width) return;
+    width = entry.contentRect.width;
+    fit();
+  }).observe(contents);
+  document.fonts?.ready.then(fit);
+  document.fonts?.addEventListener('loadingdone', fit);
+}
+
+/**
+ * The slide changes: no autoplay (hero.js); a thumbnail picks a slide (and, on phones, a
+ * sideways swipe); the next photo wipes in (hero-showroom.css .is-wiping) and a pick during a
+ * wipe waits for it. A scroll always moves the page on to the next / previous fold (the slides
+ * don't take scroll steps).
+ * @param {Element} block the hero carousel block
+ */
+function wireSlides(block) {
+  const nav = block.querySelector(':scope > .slide-nav');
+  const section = block.closest('.section');
+  if (!nav || !section) return;
+  const thumbs = [...nav.querySelectorAll('.slide-thumb')];
+  if (thumbs.length < 2) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const current = () => thumbs.findIndex((thumb) => thumb.hasAttribute('aria-current'));
+
+  let wipingUntil = 0;
+  let timer = 0;
+  let queued = null;
+  let instant = false;
+  const wiping = () => performance.now() < wipingUntil;
+  const endWipe = () => {
+    clearTimeout(timer);
+    wipingUntil = 0;
+    block.classList.remove('is-wiping');
+  };
+
+  // runs before hero.js's own click handler on the thumbnail
+  nav.addEventListener('click', (e) => {
+    const thumb = e.target.closest('.slide-thumb');
+    if (!thumb || thumb.hasAttribute('aria-current') || instant || reduce.matches) return;
+    if (wiping()) {
+      e.stopImmediatePropagation();
+      queued = thumb;
+      return;
+    }
+    block.classList.add('is-wiping');
+    wipingUntil = performance.now() + WIPE_MS;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      endWipe();
+      const next = queued;
+      queued = null;
+      if (next && !next.hasAttribute('aria-current')) next.click();
+    }, WIPE_MS + SETTLE_MS);
+  }, true);
+
+  const go = (i, now = false) => {
+    const thumb = thumbs[i];
+    if (!thumb || i === current()) return;
+    if (!now) {
+      thumb.click();
+      return;
+    }
+    // at once, with no wipe or caption transition
+    endWipe();
+    queued = null;
+    instant = true;
+    block.classList.add('showroom-instant');
+    thumb.click();
+    instant = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      block.classList.remove('showroom-instant');
+    }));
+  };
+
+  // phones (the mobile design): a sideways swipe on the copy steps to the next or last slide
+  const phone = window.matchMedia('(width < 900px)');
+  const copy = block.querySelector(':scope > .slide-contents');
+  let swipeX = null;
+  let swipeY = 0;
+  copy?.addEventListener('pointerdown', (e) => {
+    if (!phone.matches || !e.isPrimary) return;
+    swipeX = e.clientX;
+    swipeY = e.clientY;
+  });
+  copy?.addEventListener('pointerup', (e) => {
+    if (swipeX === null) return;
+    const dx = e.clientX - swipeX;
+    const dy = e.clientY - swipeY;
+    swipeX = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      go(Math.max(0, Math.min(thumbs.length - 1, current() + (dx < 0 ? 1 : -1))));
+    }
+  });
+  copy?.addEventListener('pointercancel', () => { swipeX = null; });
+}
+
+/**
+ * @param {Element} block the hero carousel block
+ * @param {Element} textCell the hero's own Text
+ */
+export default function decorateShowroom(block, textCell) {
+  if (!textCell) return;
+  const paras = [...textCell.querySelectorAll(':scope > p')];
+  const rows = [];
+  let pending = null;
+  paras.forEach((p) => {
+    const label = leadingLabel(p);
+    if (label) {
+      const value = p.cloneNode(true);
+      value.querySelector('strong, b')?.remove();
+      while (value.firstChild && (value.firstChild.nodeName === 'BR' || !value.firstChild.textContent.trim())) {
+        value.firstChild.remove();
+      }
+      const row = {
+        label: label.textContent.trim(),
+        value: value.childNodes.length ? value : null,
+        source: [p],
+      };
+      rows.push(row);
+      pending = row.value ? null : row;
+      return;
+    }
+    if (pending) {
+      pending.value = p.cloneNode(true);
+      pending.source.push(p);
+      pending = null;
+      return;
+    }
+    if (!rows.length) p.classList.add('showroom-eyebrow');
+  });
+  if (!rows.length) return;
+
+  const card = document.createElement('dl');
+  card.className = 'showroom-card';
+  rows.forEach(({ label, value }) => {
+    const item = document.createElement('div');
+    item.className = 'showroom-row';
+    const dt = document.createElement('dt');
+    dt.textContent = label;
+    const dd = document.createElement('dd');
+    if (value) dd.append(...value.childNodes);
+    item.append(dt, dd);
+    card.append(item);
+  });
+
+  // Universal Editor: the card stays in the Text field (inline editing keeps working); on the
+  // site the label/value paragraphs give way to it, under the slide's own text
+  if (inEditor()) {
+    rows.forEach(({ source }) => source.forEach((p) => p.classList.add('showroom-source')));
+    textCell.append(card);
+    return;
+  }
+  rows.forEach(({ source }) => source.forEach((p) => p.remove()));
+  const contents = block.querySelector(':scope > .slide-contents');
+  (contents || textCell).after(card);
+  if (contents) {
+    breakSentences(contents);
+    fitHeadings(contents);
+  }
+  wireSlides(block);
+}

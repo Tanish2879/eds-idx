@@ -1,0 +1,105 @@
+/* Carousel hero "Opening Animation" (hero-opening.js). The card itself is
+   moved from JS (transform + clip-path on the background holder); this sets
+   up the light screen, the two side lines and the header's entrance. */
+
+/* the opening lines: shown only in the animation, kept for screen readers */
+main .hero.carousel.opening .opening-line {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+main .hero.carousel.opening.is-opening {
+  /* the source's light screen behind the card */
+  --opening-u: clamp(1px, 100vw / 375, 1.3px);
+
+  background: #fff;
+
+  @media (width >= 900px) {
+    --opening-u: min(100vw / 1280, 100svh / 720);
+  }
+
+  > .bg {
+    z-index: 1;
+    overflow: hidden;
+    will-change: clip-path;
+  }
+
+  > .bg .slide {
+    will-change: scale;
+  }
+
+  > .content,
+  > .slide-contents {
+    z-index: 2;
+  }
+
+  /* the lines: stacked bottom left on phones, either side of the card on
+     desktop; under the card, so it catches them as it grows */
+  > .opening-side {
+    position: absolute;
+    left: clamp(20px, 5.2vw, 44px);
+    z-index: 0;
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-size: calc(15 * var(--opening-u));
+    font-weight: var(--font-weight-medium);
+    line-height: calc(24 * var(--opening-u));
+    color: #61606c;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity, translate, filter;
+  }
+
+  > .opening-side-start {
+    bottom: calc(48px + 24 * var(--opening-u));
+  }
+
+  > .opening-side-end {
+    bottom: 48px;
+  }
+
+  @media (width >= 900px) {
+    > .opening-side {
+      top: 50%;
+      bottom: auto;
+      font-size: calc(18 * var(--opening-u));
+      line-height: 1;
+      transform: translateY(-50%);
+    }
+
+    > .opening-side-start {
+      left: calc(64 * var(--opening-u));
+    }
+
+    > .opening-side-end {
+      right: calc(64 * var(--opening-u));
+      left: auto;
+    }
+  }
+}
+
+/* the header fades down into place from 0.25s */
+html.hero-opening header {
+  transition:
+    opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    translate 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+html.hero-opening-nav header {
+  opacity: 0;
+  translate: 0 -14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.hero-opening header {
+    transition: none;
+  }
+}

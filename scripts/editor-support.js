@@ -9,6 +9,14 @@ import {
 } from './aem.js';
 import { decorateRichtext } from './editor-support-rte.js';
 import { decorateButtons, decorateMain } from './scripts.js';
+import { decorateSectionStyles, normalizeSectionStyles } from './utils/section-styles.js';
+
+/**
+ * Re-runs the section-style scripts (e.g. the blog article's contents and
+ * callouts) after an edit replaced part of the page, which comes back
+ * undecorated. Each script is idempotent.
+ */
+const redecorateSectionStyles = () => decorateSectionStyles(document.querySelector('main'));
 
 let promiseChanges$ = Promise.resolve();
 
@@ -45,6 +53,7 @@ async function applyChanges(event) {
       await loadSections(newMain);
       element.remove();
       newMain.style.display = null;
+      await redecorateSectionStyles();
       // eslint-disable-next-line no-use-before-define
       attachEventListeners(newMain);
       return true;
@@ -64,6 +73,7 @@ async function applyChanges(event) {
         await loadBlock(newBlock);
         block.remove();
         newBlock.style.display = null;
+        await redecorateSectionStyles();
         return true;
       }
     } else {
@@ -79,15 +89,18 @@ async function applyChanges(event) {
           decorateIcons(newSection);
           decorateRichtext(newSection);
           decorateSections(parentElement);
+          normalizeSectionStyles(parentElement);
           decorateBlocks(parentElement);
           await loadSections(parentElement);
           element.remove();
           newSection.style.display = null;
+          await redecorateSectionStyles();
         } else {
           element.replaceWith(...newElements);
           decorateButtons(parentElement);
           decorateIcons(parentElement);
           decorateRichtext(parentElement);
+          await redecorateSectionStyles();
         }
         return true;
       }

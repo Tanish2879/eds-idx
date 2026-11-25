@@ -1,0 +1,469 @@
+/* Tabs "Locations"; --loc-u is one design pixel (1280 x 720 desktop) */
+
+main > .section.has-locations {
+  --loc-u: clamp(0.6px, min(100vw / 1280, 100svh / 720), 1.5px);
+  --loc-ink: #f2f2f2;
+  --loc-ease-wipe: cubic-bezier(0.87, 0, 0.13, 1);
+  --loc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: end;
+  row-gap: 36px;
+  padding: 0 20px max(36px, 5.2svh);
+
+  @media (width < 900px) {
+    &:has(.tabs-list-single) {
+      row-gap: 0;
+      padding-bottom: 38px;
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgb(10 10 10 / 0%) 80%, var(--section-bg) 100%),
+      linear-gradient(15deg, rgb(0 0 0 / 55%) 0%, rgb(0 0 0 / 18%) 38%, rgb(0 0 0 / 0%) 60%);
+  }
+
+  > .default-content-wrapper,
+  > .tabs-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* no z-index: a stacking context here would lift the panels above the copy */
+  > .tabs-wrapper {
+    position: static;
+    z-index: auto;
+    max-width: 620px;
+  }
+
+  > .default-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* at most three lines: a longer title ends in an ellipsis rather than pushing the layout up
+     (the Title component has no length limit of its own) */
+  > .default-content-wrapper > h2 {
+    --loc-lh: 1.6364;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    max-width: 11em;
+
+    /* trims the line box to the cap height */
+    margin: calc((0.3602 - var(--loc-lh) / 2) * 1em) 0;
+    margin-block-end: 10px;
+    color: rgb(255 255 255 / 60%);
+    font-size: clamp(22px, 5.867vw, 52px);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--loc-lh);
+    letter-spacing: -0.024em;
+    text-transform: uppercase;
+  }
+
+  > .default-content-wrapper > h2::first-line {
+    color: var(--color-white);
+  }
+
+  > .default-content-wrapper > p:has(> a:only-child) {
+    margin: 30px 0 0;
+  }
+
+  /* each description paragraph at most four lines, ending in an ellipsis (the Text component has
+     no length limit of its own) */
+  > .default-content-wrapper > p:not(:has(> a:only-child)) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    overflow: hidden;
+    max-width: 46ch;
+    margin: 0;
+    color: var(--loc-ink);
+    font-size: clamp(13px, 3.4vw, 17px);
+    line-height: 1.5385;
+    text-wrap: pretty;
+  }
+
+  > .default-content-wrapper > p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) {
+    margin-top: 10px;
+    color: rgb(242 242 242 / 72%);
+  }
+
+  /* two description paragraphs, the design's two columns: any more would start new rows and
+     push the title up, so they are not shown */
+  > .default-content-wrapper > p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) {
+    display: none;
+  }
+
+  > .default-content-wrapper > p > a:any-link:only-child {
+    box-sizing: border-box;
+    display: inline-grid;
+    place-items: center;
+    height: 46px;
+    margin: 0;
+    padding: 0 20.5px;
+    border: 0;
+    border-radius: var(--radius-12);
+    background-color: var(--color-white);
+    color: #191919;
+    font-family: var(--font-family-base);
+    font-size: var(--type-label-s-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--type-label-s-line-height);
+    letter-spacing: var(--type-label-s-tracking);
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color 0.15s ease;
+  }
+
+  > .default-content-wrapper > p > a:any-link:only-child:hover,
+  > .default-content-wrapper > p > a:any-link:only-child:focus-visible {
+    background-color: var(--button-solid-hover-bg-on-dark);
+    color: #191919;
+    text-decoration: none;
+  }
+
+  /* one location (no tiles): the single-location design, heading and text only */
+  /* stylelint-disable-next-line no-descending-specificity -- the CTA, not the text paragraphs */
+  &:has(.tabs-list-single) > .default-content-wrapper > p:has(> a:only-child) {
+    display: none;
+  }
+
+  @media (width >= 900px) {
+    grid-template-columns: calc(321.81 * var(--loc-u)) calc(321.81 * var(--loc-u)) calc(408 * var(--loc-u));
+    justify-content: space-between;
+    align-items: end;
+    gap: calc(32 * var(--loc-u)) 0;
+    padding: 0 calc(56 * var(--loc-u)) calc(61 * var(--loc-u));
+
+    &::before {
+      background: linear-gradient(
+        180deg,
+        rgb(10 10 10 / 0%) 34%,
+        rgb(10 10 10 / 6%) 42%,
+        rgb(10 10 10 / 18%) 50%,
+        rgb(10 10 10 / 36%) 58%,
+        rgb(10 10 10 / 56%) 66%,
+        rgb(10 10 10 / 74%) 75%,
+        rgb(10 10 10 / 88%) 86%,
+        var(--section-bg) 100%
+      );
+    }
+
+    &::after {
+      content: '';
+      position: relative;
+      z-index: 1;
+      grid-area: 2 / 1 / 3 / -1;
+      height: 1px;
+      background: rgb(255 255 255 / 20%);
+    }
+
+    > .default-content-wrapper {
+      display: contents;
+    }
+
+    > .default-content-wrapper > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    > .default-content-wrapper > h2 {
+      --loc-lh: 1.3333;
+
+      grid-area: 1 / 1 / 2 / 3;
+      max-width: calc(583 * var(--loc-u));
+      margin-block-end: calc((0.3602 - var(--loc-lh) / 2) * 1em);
+      font-size: calc(48 * var(--loc-u));
+      letter-spacing: -0.02em;
+    }
+
+    > .default-content-wrapper > p:has(> a:only-child) {
+      grid-area: 1 / 3 / 2 / 4;
+      justify-self: end;
+      margin: 0;
+    }
+
+    > .default-content-wrapper > p:not(:has(> a:only-child)),
+    > .default-content-wrapper > p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) {
+      align-self: start;
+      max-width: none;
+      margin: 0;
+      font-size: max(13px, calc(14 * var(--loc-u)));
+      line-height: 1.7143;
+    }
+
+    > .default-content-wrapper > p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) {
+      color: rgb(242 242 242 / 80%);
+    }
+
+    > .default-content-wrapper > p > a:any-link:only-child {
+      width: calc(182 * var(--loc-u));
+      height: calc(48 * var(--loc-u));
+      padding: 0;
+      border-radius: calc(8 * var(--loc-u));
+      font-size: max(11px, calc(12 * var(--loc-u)));
+    }
+
+    > .tabs-wrapper {
+      grid-area: 3 / 3 / 4 / 4;
+      align-self: start;
+      max-width: none;
+    }
+
+    /* one location: heading | text | text on one row, last lines on one baseline */
+    &:has(.tabs-list-single) {
+      grid-template-columns: calc(441 * var(--loc-u)) calc(321.81 * var(--loc-u)) calc(321.81 * var(--loc-u));
+
+      /* the shared baseline 61px from the bottom, as in the design */
+      padding-bottom: calc(55 * var(--loc-u));
+
+      &::after {
+        content: none;
+      }
+
+      > .default-content-wrapper > h2 {
+        grid-area: 1 / 1 / 2 / 2;
+        align-self: last baseline;
+        max-width: none;
+      }
+
+      /* stylelint-disable-next-line no-descending-specificity -- overrides the row above */
+      > .default-content-wrapper > p:not(:has(> a:only-child)),
+      > .default-content-wrapper > p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) {
+        grid-row: 1;
+        align-self: last baseline;
+      }
+
+      > .default-content-wrapper > p:not(:has(> a:only-child)) ~ p:not(:has(> a:only-child)) {
+        color: var(--loc-ink);
+      }
+
+      > .tabs-wrapper {
+        grid-area: 1 / 1 / 2 / 2;
+      }
+    }
+  }
+}
+
+.tabs.locations {
+  --loc-u: clamp(0.6px, min(100vw / 1280, 100svh / 720), 1.5px);
+  --loc-ink: #f2f2f2;
+  --loc-ease-wipe: cubic-bezier(0.87, 0, 0.13, 1);
+  --loc-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --loc-label: var(--color-white);
+  --loc-active-ring: var(--color-white);
+  --loc-active-shade: 61%;
+
+  @media (width >= 900px) {
+    --loc-label: var(--loc-ink);
+    --loc-active-ring: rgb(255 255 255 / 50%);
+    --loc-active-shade: 100%;
+  }
+
+  @media (width >= 900px) {
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      backdrop-filter: blur(14px);
+      mask-image: linear-gradient(transparent 40%, rgb(0 0 0 / 35%) 56%, rgb(0 0 0 / 80%) 72%, rgb(0 0 0) 86%);
+    }
+  }
+
+  > .tabs-list {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    overflow: visible;
+    border: 0;
+
+    @media (width >= 900px) {
+      grid-template-columns: repeat(4, calc(96 * var(--loc-u)));
+      gap: calc(8 * var(--loc-u));
+    }
+  }
+
+  > .tabs-list.tabs-list-single {
+    display: none;
+  }
+
+  > .tabs-list > .tabs-tab {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-width: 0;
+    height: clamp(64px, 16vw, 104px);
+    padding: 7px 2px 7px 5.5px;
+    overflow: hidden;
+    border-radius: 10px;
+    color: var(--loc-label);
+    letter-spacing: 0;
+    text-align: start;
+    opacity: 0.5;
+    transition: opacity 0.35s, box-shadow 0.35s;
+
+    @media (width >= 900px) {
+      height: calc(72 * var(--loc-u));
+      padding: calc(12 * var(--loc-u)) calc(10 * var(--loc-u));
+      border-radius: calc(12 * var(--loc-u));
+      letter-spacing: normal;
+    }
+  }
+
+  > .tabs-list > .tabs-tab:hover {
+    color: var(--loc-label);
+    opacity: 0.85;
+  }
+
+  > .tabs-list > .tabs-tab[aria-selected='true'] {
+    color: var(--loc-label);
+    opacity: 1;
+    box-shadow: inset 0 0 0 1px var(--loc-active-ring);
+  }
+
+  > .tabs-list > .tabs-tab::after {
+    inset: 0;
+    height: auto;
+    background: linear-gradient(0deg, rgb(0 0 0) 0%, rgb(0 0 0 / 0%) var(--loc-active-shade));
+    opacity: 0;
+    transform: none;
+    transition: opacity 0.35s;
+  }
+
+  > .tabs-list > .tabs-tab[aria-selected='true']::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .loc-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--loc-ease-out);
+  }
+
+  .tabs-tab:hover .loc-thumb {
+    transform: scale(1.06);
+  }
+
+  .loc-label {
+    --loc-lh: 2.2;
+
+    position: relative;
+    z-index: 1;
+    max-width: 100%;
+    overflow: hidden;
+    margin-block: calc((0.3602 - var(--loc-lh) / 2) * 1em);
+    font-size: clamp(9.5px, 2.613vw, 12px);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--loc-lh);
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+
+    @media (width >= 900px) {
+      font-size: max(9px, calc(10 * var(--loc-u)));
+    }
+  }
+
+  > .tabs-panel.loc-panel {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  > .tabs-panel.loc-panel:focus-visible {
+    outline-offset: -4px;
+  }
+
+  .loc-panel .tabs-panel-content,
+  .loc-panel .tabs-panel-content > :has(> .loc-bg) {
+    height: 100%;
+    margin: 0;
+  }
+
+  .loc-bg {
+    position: absolute;
+    inset: -8% 0;
+    display: block;
+  }
+
+  .loc-bg-img {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  > .tabs-panel.loc-panel.loc-leaving {
+    z-index: -2;
+  }
+
+  > .loc-entering {
+    animation: loc-wipe 1.2s var(--loc-ease-wipe) both;
+  }
+
+  > .loc-entering .loc-bg-img {
+    animation: loc-settle 1.6s var(--loc-ease-out) 0.1s both;
+  }
+
+  > .loc-leaving .loc-bg-img {
+    animation: loc-recede 1.2s var(--loc-ease-wipe) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    > .tabs-list > .tabs-tab,
+    > .tabs-list > .tabs-tab::after,
+    .loc-thumb {
+      transition: none;
+    }
+
+    .tabs-tab:hover .loc-thumb {
+      transform: none;
+    }
+  }
+}
+
+@keyframes loc-wipe {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0); }
+}
+
+@keyframes loc-settle {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+
+@keyframes loc-recede {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}

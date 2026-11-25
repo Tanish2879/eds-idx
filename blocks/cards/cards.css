@@ -1,55 +1,60 @@
-/* Cards: every rule nested in the block's root (a style's section context, e.g. the carousel's
-   title, as .section:has(> .cards-wrapper > :where(&).style): the root adding no specificity
-   there, so the Timeline's and Roller's own section rules still win). The Default grid, the Carousel (--c-u: one design pixel,
-   scaled to the screen) and Pillars (below); Timeline and Roller have their own stylesheets,
-   loaded with them. */
+/* Carousel section */
+main > .section.cards-container:has(.cards.carousel) {
+  --nav-space: calc((44 + 50) * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
+  --c-u: clamp(0.6px, min(100vw / 402, (100svh - 2 * var(--nav-space)) / (874 - 2 * 94)), 1px);
+  --carousel-title-color: #1a1a1a;
 
-main > .section > .cards-wrapper > .block {
-  /* Pillars: the design's colours (dark text on white), its motion, its corner marks and its
-     measures (rem; the image and the frame fit the screen below the nav) */
-  --pl-font: new-science, var(--body-font-family);
-  --pl-font-extended: new-science-extended, var(--display-font-family);
-  --pl-text: #232323;
-  --pl-title: rgb(0 12 16); /* (the design's 80%: the title's opacity) */
-  --pl-mute: rgb(35 35 35 / 50%);
-  --pl-mark: rgb(0 0 0 / 50%);
-  --pl-move: 1.2s;
-  --pl-ease: cubic-bezier(0.37, 0, 0.63, 1);
-  --pl-zoom-on: 1;
-  --pl-zoom-next: 1;
-  --pl-corner: 0.6875rem;
-  --pl-corner-line: 0.0625rem;
-  --pl-corners:
-    linear-gradient(var(--pl-mark), var(--pl-mark)) top left / var(--pl-corner) var(--pl-corner-line) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) top left / var(--pl-corner-line) var(--pl-corner) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) top right / var(--pl-corner) var(--pl-corner-line) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) top right / var(--pl-corner-line) var(--pl-corner) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom left / var(--pl-corner) var(--pl-corner-line) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom left / var(--pl-corner-line) var(--pl-corner) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom right / var(--pl-corner) var(--pl-corner-line) no-repeat,
-    linear-gradient(var(--pl-mark), var(--pl-mark)) bottom right / var(--pl-corner-line) var(--pl-corner) no-repeat;
+  justify-content: center;
+  justify-content: safe center;
 
-  /* (the phone design, 375 × 815: the image 335px square, 106px down; a shorter screen keeps
-     the frame's 311px under it, the image no smaller than 15rem) */
-  --pl-image: min(100vw - 2.5rem, max(15rem, 100svh - 30rem));
-  --pl-frame: 100%;
-  --pl-gap: 2rem;
-  --pl-radius: 1.5rem; /* 24px */
+  /* the content is centred in the space below the fixed header, so the white
+     space between the header and the title matches the space below the
+     arrows; --c-u still sizes it as if --nav-space were kept at both ends */
+  padding-block: var(--nav-space) 0;
+  background-color: var(--color-white);
 
   @media (width >= 900px) {
-    --pl-zoom-on: 1.08;
-    --pl-zoom-next: 1.6;
-    --pl-image: min(35.25rem, 100svh - 9.75rem, 44.0625vw); /* (564px at the design's 1280px) */
-    --pl-frame: min(27.5625rem, 34.5vw);
-    --pl-gap: min(6.75rem, 8.4vw);
+    --nav-space: calc((40 + 55) * clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px));
+    --c-u: clamp(0.4px, min(100vw / 1728, (100svh - 2 * var(--nav-space)) / (1117 - 2 * 95)), 1px);
   }
 
-  @media (width >= 1200px) {
-    --pl-radius: 1.75rem; /* 28px */
+  .default-content-wrapper {
+    margin: 0 auto;
   }
 
-  /* ---- Default: a grid of cards ---- */
+  .cards-wrapper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
 
+  .carousel-title {
+    max-width: calc(362 * var(--c-u));
+    margin: 0 auto calc(88 * var(--c-u));
+    font-family: var(--font-family-display);
+    font-size: max(20px, calc(24 * var(--c-u)));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+    letter-spacing: -0.045em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--carousel-title-color);
+    opacity: 0.7;
+
+    @media (width >= 900px) {
+      max-width: calc(954 * var(--c-u));
+      margin-bottom: calc(135 * var(--c-u));
+      font-size: max(24px, calc(48 * var(--c-u)));
+      font-weight: var(--font-weight-medium);
+      line-height: calc(64 / 48);
+      letter-spacing: 0;
+      text-box: trim-both cap alphabetic;
+    }
+  }
+}
+
+/* Cards (default grid) */
+.cards {
   .card-list {
     display: flex;
     flex-wrap: wrap;
@@ -79,61 +84,215 @@ main > .section > .cards-wrapper > .block {
     object-fit: cover;
   }
 
-  /* ---- Carousel ---- */
+  /* Rail: one row of full-height image cards that bleeds to both edges of the
+     screen, scrolled natively with snapping; one dash per card below it */
+  &.rail {
+    /* distance from the block's edge to the screen's edge, so the row can
+       bleed out while its first card stays lined up with the content
+       (cqw: the block is the container, whatever element uses it) */
+    --rail-bleed: calc(50vw - 50cqw);
+    --rail-card-width: calc(100vw - 112px);
 
-  /* its section: the content centred in the space below the fixed header, so the white space
-     between the header and the title matches the space below the arrows; --c-u still sizes it
-     as if --nav-space were kept at both ends */
-  main > .section:has(> .cards-wrapper > :where(&).carousel) {
-    --nav-space: calc((44 + 50) * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
-    --c-u: clamp(0.6px, min(100vw / 402, (100svh - 2 * var(--nav-space)) / (874 - 2 * 94)), 1px);
-    --carousel-title-color: #1a1a1a;
+    /* the section is one screen tall with its content centred; the cards take
+       what is left once the heading, text and dashes fit clear of the header */
+    --rail-card-height: clamp(300px, calc(100svh - 2 * var(--nav-offset, 94px) - 350px), 560px);
+    --rail-gap: 10px;
+    --rail-inset: 18px;
+    --rail-fade-width: 20px;
+    --rail-fade-color: var(--section-bg, #0a0a0a);
+    --rail-dash-width: 22px;
+    --rail-dash-gap: 6px;
 
-    justify-content: center;
-    justify-content: safe center;
-    padding-block: var(--nav-space) 0;
-    background-color: var(--color-white);
+    position: relative;
+    container-type: inline-size;
 
     @media (width >= 900px) {
-      --nav-space: calc((40 + 55) * clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px));
-      --c-u: clamp(0.4px, min(100vw / 1728, (100svh - 2 * var(--nav-space)) / (1117 - 2 * 95)), 1px);
+      --rail-card-width: clamp(360px, 38vw, 720px);
+      --rail-card-height: clamp(320px, calc(100svh - 2 * var(--nav-offset, 95px) - 290px), 600px);
+      --rail-gap: var(--spacing-16, 16px);
+      --rail-inset: var(--spacing-24, 24px);
+      --rail-fade-width: var(--spacing-64, 64px);
+      --rail-dash-width: var(--spacing-24, 24px);
+      --rail-dash-gap: var(--spacing-8, 8px);
     }
 
-    .default-content-wrapper {
-      margin: 0 auto;
+    /* soft edges over the cards as they leave the screen */
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      z-index: 2;
+      width: var(--rail-fade-width);
+      height: var(--rail-card-height);
+      pointer-events: none;
+      transition: opacity 0.5s;
     }
 
-    .cards-wrapper {
-      max-width: none;
-      margin: 0;
-      padding: 0;
+    &::before {
+      left: calc(50% - 50vw);
+      background: linear-gradient(90deg, var(--rail-fade-color), transparent);
+      opacity: 0;
     }
 
-    .carousel-title {
-      max-width: calc(362 * var(--c-u));
-      margin: 0 auto calc(88 * var(--c-u));
-      font-family: var(--font-family-display);
-      font-size: max(20px, calc(24 * var(--c-u)));
-      font-weight: var(--font-weight-regular);
-      line-height: 1.5;
-      letter-spacing: -0.045em;
-      text-align: center;
-      text-transform: uppercase;
-      color: var(--carousel-title-color);
-      opacity: 0.7;
+    &::after {
+      right: calc(50% - 50vw);
+      background: linear-gradient(270deg, var(--rail-fade-color), transparent);
+    }
+
+    &.is-moved::before {
+      opacity: 1;
+    }
+
+    &.is-end::after {
+      opacity: 0;
+    }
+
+    .rail-track {
+      flex-wrap: nowrap;
+      gap: var(--rail-gap);
+      margin-inline: calc(-1 * var(--rail-bleed));
+      padding-inline: var(--rail-bleed);
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--rail-bleed);
+      scrollbar-width: none;
+      outline: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      &:focus-visible {
+        outline: 2px solid currentcolor;
+        outline-offset: -2px;
+      }
 
       @media (width >= 900px) {
-        max-width: calc(954 * var(--c-u));
-        margin-bottom: calc(135 * var(--c-u));
-        font-size: max(24px, calc(48 * var(--c-u)));
-        font-weight: var(--font-weight-medium);
-        line-height: calc(64 / 48);
-        letter-spacing: 0;
-        text-box: trim-both cap alphabetic;
+        cursor: grab;
+      }
+
+      &.is-dragging {
+        cursor: grabbing;
+        scroll-snap-type: none;
+        user-select: none;
+      }
+    }
+
+    .card {
+      position: relative;
+      flex: 0 0 var(--rail-card-width);
+      width: var(--rail-card-width);
+      height: var(--rail-card-height);
+      overflow: hidden;
+      border: 0;
+      border-radius: 18px;
+      background-color: rgb(30 30 30);
+      color: var(--color-white);
+      scroll-snap-align: start;
+
+      /* darkens the bottom of the photo so the copy reads */
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 45%));
+        pointer-events: none;
+      }
+    }
+
+    .card-image {
+      position: absolute;
+      inset: 0;
+
+      p,
+      picture {
+        height: 100%;
+        margin: 0;
+      }
+    }
+
+    .card-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .card-body {
+      position: absolute;
+      inset: auto var(--rail-inset) var(--rail-inset);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .card-body h3 {
+      margin: 0;
+      font-family: var(--font-family-display);
+      font-size: 17px;
+      font-weight: var(--font-weight-medium);
+      line-height: 1.2;
+      letter-spacing: normal;
+      text-transform: uppercase;
+      color: var(--color-white);
+
+      @media (width >= 900px) {
+        font-size: clamp(16px, 1.4vw, 20px);
+      }
+    }
+
+    .card-body p {
+      width: 100%;
+      margin: 0;
+      font-family: var(--font-family-base);
+      font-size: 13px;
+      font-weight: var(--font-weight-regular);
+      line-height: 1.45;
+      letter-spacing: normal;
+      color: var(--color-white);
+      opacity: 0.85;
+
+      @media (width >= 900px) {
+        width: 88%;
+        font-size: clamp(13px, 1.05vw, 15px);
+      }
+    }
+
+    .rail-progress {
+      display: flex;
+      gap: var(--rail-dash-gap);
+      margin-top: var(--spacing-32, 32px);
+      visibility: hidden;
+
+      @media (width >= 900px) {
+        margin-top: 52px;
+      }
+    }
+
+    &.is-scrollable .rail-progress {
+      visibility: visible;
+    }
+
+    .rail-progress-dash {
+      flex: 0 0 auto;
+      width: var(--rail-dash-width);
+      height: 1.5px;
+      background-color: color-mix(in srgb, currentcolor 15%, transparent);
+      transition: background-color 0.3s;
+
+      &.is-active {
+        background-color: currentcolor;
       }
     }
   }
 
+  /* Carousel */
   &.carousel {
     --card-size: calc(285 * var(--c-u));
     --card-gap: calc(23 * var(--c-u));
@@ -394,443 +553,548 @@ main > .section > .cards-wrapper > .block {
       }
     }
   }
+}
 
-  /* ---- Pillars: each card an image and its text in a corner-marked frame beside it (stacked on
-     phones); on the site pinned to the screen, one card per scroll step ---- */
+/* ==========================================================================
+   Combat theme (body.combat, the JSW Combat page only): the Carousel style as
+   the design's highlights strip. Wide cards (photo, then tag, title, text and
+   a call to action) slide sideways with the next and previous cards peeking
+   in, faded; below, "01 / 06" and the arrows (cards.js adds the count). Every
+   rule is scoped to body.combat, so the Carousel style elsewhere is unchanged.
+   Values from codet-design-prototype.vercel.app (#featureCard).
+   ========================================================================== */
 
-  main > .section:has(> .cards-wrapper > :where(&).pillars) {
-    padding: 0;
-    background-color: var(--color-white);
+/* stylelint-disable no-descending-specificity */
 
-    .cards-wrapper {
-      max-width: none;
-      margin: 0;
-      padding: 0;
+body.combat .cards.carousel {
+  /* card strip: one card wide, the side cards peeking in by --cc-peek */
+  --cc-gutter: 20px;
+  --cc-peek: 10px;
+  --cc-card-w: calc(100vw - 2 * (var(--cc-gutter) + var(--cc-peek)));
+  --cc-gap: 10px;
+
+  /* cards from --cc-top below the section's top to --cc-bottom above its foot;
+     the arrows sit --cc-nav-gap below the cards */
+  --cc-top: 96px;
+  --cc-bottom: 148px;
+  --cc-card-h: calc(100svh - var(--cc-top) - var(--cc-bottom));
+  --cc-nav-gap: 28px;
+  --cc-nav-h: 48px;
+  --cc-nav-inset: var(--cc-gutter);
+
+  /* the brochure link (default content right after the block, 44px tall) is
+     drawn back by this much, so on wider screens it shares the arrows' row */
+  --cc-overlap: 0px;
+  --cc-radius: 18px;
+  --cc-pad: 6px;
+  --carousel-move: 0.85s;
+
+  /* GSAP power3.inOut */
+  --carousel-ease: cubic-bezier(0.76, 0, 0.24, 1);
+
+  @media (width >= 768px) {
+    --cc-gutter: 64px;
+    --cc-peek: 12px;
+    --cc-gap: 24px;
+    --cc-top: 64px;
+    --cc-bottom: 128px;
+    --cc-nav-gap: 40px;
+    --cc-nav-inset: calc(var(--cc-gutter) + var(--cc-peek));
+    --cc-overlap: 46px;
+    --cc-radius: 24px;
+    --cc-pad: 8px;
+  }
+
+  @media (width >= 1024px) {
+    --cc-peek: clamp(64px, 6.5vw, 120px);
+  }
+
+  @media (width >= 1024px) and (height <= 860px) {
+    --cc-top: 56px;
+    --cc-bottom: 116px;
+    --cc-nav-gap: 34px;
+  }
+
+  &.is-rushing {
+    --carousel-move: 0.45s;
+  }
+}
+
+/* The section centres its content below its top padding (--nav-space, see
+   the carousel section rule above); these margins put the cards --cc-top
+   below the section's top whatever that padding is, with the brochure link
+   (44px) counted in */
+body.combat .cards.carousel:not(.is-static) {
+  margin-top: calc(var(--cc-top) - var(--cc-bottom) + var(--cc-nav-gap) + var(--cc-nav-h)
+    - var(--cc-overlap) + 44px - var(--nav-space, 0px));
+  margin-bottom: calc(-1 * var(--cc-overlap));
+}
+
+body.combat .cards.carousel .carousel-stage {
+  overflow: hidden clip;
+}
+
+body.combat .cards.carousel .carousel-track {
+  height: var(--cc-card-h);
+  perspective: none;
+}
+
+/* the card: a light panel, the photo inside it */
+body.combat .cards.carousel .card {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: var(--cc-pad);
+  border-radius: var(--cc-radius);
+  background-color: #f1f1ef;
+  color: var(--combat-ink, #2e2e2e);
+
+  @media (width >= 768px) {
+    grid-template-rows: 1fr auto;
+    gap: 8px;
+  }
+
+  @media (width >= 1024px) {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) min(460px, 38%);
+  }
+}
+
+body.combat .cards.carousel .carousel-track .card {
+  --wash: 0;
+  --blur: 0px;
+
+  left: calc(50% - var(--cc-card-w) / 2);
+  flex: none;
+  width: var(--cc-card-w);
+  height: var(--cc-card-h);
+  opacity: 0.38;
+  transform: translateX(calc(var(--offset, 0) * (var(--cc-card-w) + var(--cc-gap))));
+  filter: none;
+
+  &::after {
+    content: none;
+  }
+
+  &.is-active {
+    opacity: 1;
+  }
+
+  &.is-hidden {
+    opacity: 0;
+  }
+}
+
+body.combat .cards.carousel .card-image {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: calc(var(--cc-radius) - var(--cc-pad));
+  background-color: #1e1e1e;
+  line-height: 0;
+
+  p,
+  picture {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+}
+
+body.combat .cards.carousel .card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* a card taking the centre settles its photo in, as in the design */
+body.combat .cards.carousel .carousel-track .card.is-active .card-img {
+  animation: cards-carousel-combat-settle 1.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes cards-carousel-combat-settle {
+  from {
+    transform: scale(1.08);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+/* the copy only shows on the centre card: it fades in over the second half
+   of a move and out over the first */
+body.combat .cards.carousel .card-body {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 18px 14px 14px;
+  font-family: var(--font-family-base);
+  font-size: inherit;
+  font-weight: var(--font-weight-regular);
+  line-height: normal;
+  text-align: left;
+  text-transform: none;
+  color: inherit;
+
+  @media (width >= 768px) {
+    padding: 32px 28px 28px 24px;
+  }
+}
+
+body.combat .cards.carousel .carousel-track .card-body {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity calc(var(--carousel-move) / 2) linear;
+}
+
+body.combat .cards.carousel .carousel-track .card.is-active .card-body {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: calc(var(--carousel-move) / 2);
+}
+
+body.combat .cards.carousel .card-body > p:has(+ h2, + h3) {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.3;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  color: rgb(0 0 0 / 55%);
+}
+
+body.combat .cards.carousel .card-body :is(h2, h3) {
+  margin: 10px 0 0;
+  font-family: var(--font-family-display);
+  font-size: 22px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.02;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: #000;
+
+  @media (width >= 768px) {
+    margin-top: 20px;
+    font-size: clamp(22px, 2.15vw, 36px);
+  }
+}
+
+body.combat .cards.carousel .card-body :is(h2, h3) + p:not(:has(> a:only-child)) {
+  max-width: 340px;
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--combat-ink, #2e2e2e);
+  opacity: 0.75;
+
+  @media (width >= 768px) {
+    margin-top: 20px;
+    font-size: clamp(14px, 1.25vw, 16px);
+    line-height: 1.5;
+  }
+}
+
+/* call to action: a small outline button at the foot of the copy */
+body.combat .cards.carousel .card-body > p:has(> a:only-child) {
+  align-self: flex-start;
+  margin: 16px 0 0;
+
+  @media (width >= 768px) {
+    margin-top: auto;
+  }
+}
+
+body.combat .cards.carousel .card-body > p > a:only-child:any-link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 24px;
+  border: 1px solid #111;
+  border-radius: var(--combat-radius, 8px);
+  background: transparent;
+  color: #111;
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  line-height: normal;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+body.combat .cards.carousel .card-body > p > a:only-child:hover {
+  background-color: rgb(0 0 0 / 6%);
+  color: #111;
+  text-decoration: none;
+}
+
+body.combat .cards.carousel .card-body > p > a:only-child:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* count and arrows: below the cards, on the right (the count on the left on
+   phones); the row lets clicks through to the brochure link beside it */
+body.combat .cards.carousel .carousel-nav {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  height: var(--cc-nav-h);
+  margin-top: var(--cc-nav-gap);
+  padding-inline: var(--cc-nav-inset);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}
+
+body.combat .cards.carousel .carousel-count {
+  margin: 0 auto 0 0;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  font-variant-numeric: tabular-nums;
+
+  /* 60%, not the source's 40%: keeps "/ 06" above 4.5:1 on the light stage */
+  color: rgb(0 0 0 / 60%);
+
+  b {
+    margin-right: 6px;
+    font-weight: var(--font-weight-medium);
+    color: #000;
+  }
+
+  @media (width >= 768px) {
+    margin: 0 16px 0 0;
+  }
+}
+
+body.combat .cards.carousel .carousel-btn {
+  --carousel-icon-color: currentcolor;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #f1f1ef;
+  color: #111;
+  transition: background-color 0.25s, color 0.25s;
+
+  &:active {
+    background-color: #111;
+    color: var(--color-white);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: #111;
+      color: var(--color-white);
     }
   }
 
-  &.pillars {
-    color: var(--pl-text);
+  &:focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 2px;
+  }
+}
 
-    .list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+/* the design's thin chevron (20px, 1.6 stroke); the Previous one is mirrored */
+body.combat .cards.carousel .carousel-icon {
+  width: 20px;
+  height: 20px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.5 4.5 13 10l-5.5 5.5' fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   Combat theme: Rail (tech and safety), as the prototype's #techTrack and
+   #safetyTrack. The cards take the height their section leaves the rail
+   (styles/theme-combat.css): 565px at 1440 x 900, 499-524px at 390 x 844,
+   under the heading, with the dashes 32px under them on phones, 51px from
+   900px. The soft edges stop above the dashes.
+   -------------------------------------------------------------------------- */
+body.combat .cards.rail {
+  --rail-dash-room: calc(32px + 1.5px);
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+
+  @media (width >= 900px) {
+    --rail-dash-room: calc(51px + 1.5px);
+  }
+}
+
+body.combat .cards.rail::before,
+body.combat .cards.rail::after {
+  bottom: var(--rail-dash-room);
+  height: auto;
+}
+
+body.combat .cards.rail .rail-track {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+body.combat .cards.rail .rail-track > .card {
+  height: auto;
+}
+
+body.combat .cards.rail .rail-progress {
+  flex: none;
+  margin-top: calc(var(--rail-dash-room) - 1.5px);
+}
+
+/* stylelint-enable no-descending-specificity */
+
+/* ==========================================================================
+   Combat motion (body.combat-motion: the Combat page with its snap motion
+   running, scripts/combat-motion.js): arrival reveals, played as the snap
+   move into the section runs (from .is-arriving, on under .is-current; a move
+   up arrives at the cards in place). --combat-arrive-at, set per section in
+   styles/theme-combat.css, is when they start after snap:start. Without
+   body.combat-motion, or under reduced motion, nothing here applies.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Rail (tech, safety): after the heading, the cards rise and grow from
+     0.94 as they fade in, the first three one after another, the rest with
+     the third (power3.out); the progress dashes fade in last. Safety comes on
+     a plain move; tech behind a Wave In edge, which starts it later, rises it
+     less and plays it faster, as on the prototype */
+  body.combat-motion main > .section:is(.is-arriving, .is-current):not([data-arrive='up']) .cards.rail {
+    --cards-rail-at: 0.14s;
+    --cards-rail-step: 0.1s;
+    --cards-rail-time: 0.5s;
+    --cards-rail-rise: 180px;
+    --cards-rail-progress-at: 0.64s;
+
+    .rail-track > .card {
+      --cards-arrive-y: var(--cards-rail-rise);
+      --cards-arrive-scale: 0.94;
+      --cards-arrive-i: 2;
+
+      animation: cards-combat-arrive var(--cards-rail-time) cubic-bezier(0.25, 1, 0.5, 1)
+        calc(var(--combat-arrive-at, 0s) + var(--cards-rail-at) + var(--cards-arrive-i) * var(--cards-rail-step))
+        backwards;
     }
 
-    /* (a different style from the carousel's cards: no overlap) */
-    /* stylelint-disable-next-line no-descending-specificity */
-    .card {
-      flex: none;
-      border: 0;
-      background: none;
+    .rail-track > .card:nth-child(1) {
+      --cards-arrive-i: 0;
     }
 
-    .image {
-      position: relative;
-      overflow: hidden;
-      width: var(--pl-image);
-      aspect-ratio: 1;
-      border-radius: var(--pl-radius);
-      background-color: var(--color-gray-10);
-      opacity: 1;
-
-      & picture {
-        display: block;
-        height: 100%;
-      }
+    .rail-track > .card:nth-child(2) {
+      --cards-arrive-i: 1;
     }
 
-    .img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 50% 70%;
+    .rail-progress {
+      animation: cards-combat-arrive 0.18s linear
+        calc(var(--combat-arrive-at, 0s) + var(--cards-rail-progress-at)) backwards;
+    }
+  }
+
+  /* tech: the wave fades and rises the track as one; it is kept in view
+     while the cards inside arrive on their own */
+  body.combat-motion main > .section.wave-in:is(.is-arriving, .is-current):not([data-arrive='up']) .cards.rail {
+    --cards-rail-at: 0.03s;
+    --cards-rail-step: 0.07s;
+    --cards-rail-time: 0.34s;
+    --cards-rail-rise: 160px;
+    --cards-rail-progress-at: 0.34s;
+
+    .rail-track {
+      animation: cards-combat-hold 1.3s linear backwards;
+    }
+  }
+
+  /* Carousel (highlights): behind the Wave In edge the centre card rises
+     from off screen (power3.out), the cards beside it 0.12s later; the count
+     and arrows fade in after them. The wave's own fade and rise of the stage
+     and the controls are held off, so the cards show at once as they rise */
+  body.combat-motion main > .section:is(.is-arriving, .is-current):not([data-arrive='up']) .cards.carousel:not(.is-static) {
+    .carousel-stage,
+    .carousel-nav {
+      animation: cards-combat-hold 1.3s linear backwards;
     }
 
-    /* the text: label, title and description, in the frame's corner marks (the design's
-       375 × 815 phone: the frame 335 × 311, the texts as wide, 38px down; from 900px beside the
-       image, 25.6px in, at 1200px and over 390px wide). The space between them is each text's
-       own top margin (the title's from the label, the description's from the title), so each
-       pair is set on its own: 32px apart on phones, 21px from 900px. */
-    .content {
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
-      width: var(--pl-frame);
-      min-height: 19.4375rem; /* 311px */
-      padding: 2.375rem 0 0;
-      background: var(--pl-corners);
-
-      @media (width >= 900px) {
-        min-height: 0;
-        padding: calc(var(--pl-image) * 0.216) 1.6rem 1.5rem;
-      }
+    .carousel-track > .card {
+      animation: cards-combat-rise 0.4s cubic-bezier(0.25, 1, 0.5, 1)
+        calc(var(--combat-arrive-at, 0s) + 0.12s) backwards;
     }
 
-    .label,
-    .title,
-    .description {
-      margin: 0;
+    .carousel-track > .card.is-active {
+      animation-delay: var(--combat-arrive-at, 0s);
     }
 
-    /* the type: the design's New Science faces, the site's Adobe Fonts kit (styles/fonts.css, its
-       families new-science and new-science-extended: the family picks the width, font-stretch
-       as the design names it); until they load, Inter / Sequel. Sizes in rem, line heights
-       unitless (the design's px over the size). The design's text boxes are trimmed to the
-       capitals (its heights: the label's 10px one line, the title's three lines, the
-       description's four): text-box does the same where the browser has it, the boxes then at
-       least the design's heights (a longer text, the authors', grows into the frame's room);
-       without it, each box as tall as its lines. */
-    .label {
-      width: fit-content; /* (as wide as its text, as the design's: 101px for ENGINEERING) */
-      max-width: 100%;
-      overflow: clip;
-      font-family: var(--pl-font);
-      font-size: 0.875rem; /* 14px */
-      font-weight: 500; /* (Medium) */
-      line-height: 1.5714; /* 22px */
-      letter-spacing: 0;
-      white-space: nowrap;
-      text-transform: uppercase;
-      color: var(--pl-mute);
+    .carousel-nav > * {
+      animation: cards-combat-arrive 0.2s cubic-bezier(0.5, 1, 0.89, 1)
+        calc(var(--combat-arrive-at, 0s) + 0.34s) backwards;
     }
 
-    /* (phones: 20px, the frame narrower; from 900px the design's 28px, scaled with the frame
-       below its 1280px width, so its lines break as there) */
-    .title {
-      width: 100%;
-      margin-top: 2rem; /* (from the label: 32px; 21px from 900px) */
-      overflow: clip;
-      font-family: var(--pl-font-extended);
-      font-size: 1.25rem; /* 20px */
-      font-weight: 500;
-      font-stretch: expanded; /* (Medium Extended) */
-      line-height: 1.4; /* 28px */
-      letter-spacing: 0;
-      text-transform: uppercase;
-      color: var(--pl-title);
-      opacity: 0.8;
-
-      @media (width >= 900px) {
-        /* (28px in the design's 390px: its lines break alike in a narrower frame) */
-        margin-top: 1.3125rem; /* 21px */
-        font-size: min(1.75rem, (var(--pl-frame) - 3.2rem) * 0.0718);
-        line-height: 1.2857; /* 36px */
-      }
+    .carousel-nav > :nth-child(2) {
+      animation-delay: calc(var(--combat-arrive-at, 0s) + 0.38s);
     }
 
-    .description {
-      width: 100%;
-      margin-top: 2rem; /* (from the title: 32px; 21px from 900px) */
-      overflow: clip;
-      font-family: var(--pl-font);
-      font-size: 1rem; /* 16px */
-      font-weight: 500; /* (Medium) */
-      line-height: 1.375; /* 22px */
-      letter-spacing: 0;
-      color: var(--pl-mute);
-      opacity: 1;
-
-      @media (width >= 900px) {
-        margin-top: 1.3125rem; /* 21px */
-        opacity: 0.8;
-      }
-
-      /* the bold opening words dark, the rest muted */
-      & strong,
-      & b {
-        font-weight: inherit;
-        color: var(--pl-text);
-      }
-    }
-
-    @supports (text-box: trim-both cap alphabetic) {
-      .label,
-      .title,
-      .description {
-        overflow-clip-margin: 0.375rem;
-        text-box: trim-both cap alphabetic;
-      }
-
-      .label {
-        height: 0.625rem; /* 10px */
-      }
-
-      .title {
-        min-height: 4.375rem; /* 70px */
-
-        @media (width >= 900px) {
-          min-height: 3.5rem; /* 56px */
-        }
-      }
-
-      .description {
-        min-height: 4.875rem; /* 78px */
-
-        @media (width >= 900px) {
-          min-height: 3.5rem; /* 92px */
-        }
-      }
-    }
-
-    /* the web design (1280 × 720): the texts 390px wide, the description 53px below the title */
-    @media (width >= 1200px) {
-      .label,
-      .title,
-      .description {
-        width: 24.375rem; /* 390px */
-      }
-
-      .description {
-        margin-top: 3.3125rem; /* 53px */
-      }
-    }
-
-    /* author warnings (Universal Editor only) */
-    .note {
-      margin: 0 0 var(--spacing-16);
-      padding: var(--spacing-12) var(--spacing-16);
-      border-left: 0.25rem solid var(--color-accent);
-      border-radius: var(--radius-4);
-      font-family: var(--font-family-base);
-      font-size: var(--body-font-size-s);
-      line-height: 1.4;
-      color: var(--text-color);
-      background-color: var(--light-color);
-    }
-
-    /* a video or other file instead of a JPG/PNG (Universal Editor only) */
-    .image.is-invalid {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: var(--spacing-12);
-      padding: var(--spacing-16);
-      border: 0.125rem dashed var(--color-accent);
-      overflow-wrap: anywhere;
-    }
-
-    /* static (the editor, reduced motion): a plain list, every card its own row */
-    &.is-static {
-      padding: 6.625rem 1.25rem 4rem;
-
-      .list {
-        display: flex;
-        flex-direction: column;
-        gap: 4rem;
-      }
-
-      .card {
-        display: grid;
-        grid-template-columns: minmax(0, 35.25rem);
-        justify-content: center;
-        gap: var(--pl-gap);
-
-        @media (width >= 900px) {
-          grid-template-columns: var(--pl-image) var(--pl-frame);
-        }
-      }
-
-      .image,
-      .content {
-        width: auto;
-      }
-    }
-
-    /* stepped (the site): the block one screen per card, its stage pinned meanwhile; the images
-       stack (the first on top) and the current one wipes off to the next, the texts crossfade,
-       in the Animation Direction (a class: horizontal or vertical) */
-    &.is-stepped {
-      height: calc(var(--count, 1) * 100svh);
-
-      .stage {
-        position: sticky;
-        top: 0;
-        display: grid;
-        grid-template:
-          'image' var(--pl-image)
-          'frame' minmax(0, 1fr)
-          / var(--pl-image);
-        row-gap: var(--pl-gap);
-        justify-content: center;
-        box-sizing: border-box;
-        height: 100svh;
-        padding: 6.625rem 1.25rem 1.9375rem; /* (the image 106px down, the frame 311px tall) */
-
-        @media (width >= 900px) {
-          grid-template: 'image frame' var(--pl-image) / var(--pl-image) var(--pl-frame);
-          column-gap: var(--pl-gap);
-          align-content: end;
-          padding: 0 2rem 1.75rem;
-        }
-
-        /* the web design (1280 × 720): the image 82.77px in (from the design's 1280px column,
-           centred) and 128px down */
-        @media (width >= 1200px) {
-          place-content: start start;
-          padding: 8rem 2rem 0 max(2rem, 50vw - 40rem + 5.17rem);
-        }
-      }
-
-      .list,
-      .card {
-        display: contents;
-      }
-
-      .image {
-        z-index: var(--z);
-        grid-area: image;
-        width: auto;
-        clip-path: inset(0 round var(--pl-radius));
-        pointer-events: none;
-      }
-
-      .content {
-        grid-area: frame;
-        width: auto;
-        min-height: 0;
-        background: none;
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      .frame {
-        grid-area: frame;
-        background: var(--pl-corners);
-        pointer-events: none;
-      }
-
-      .card.is-active .content {
-        pointer-events: auto;
-      }
-    }
-
-    /* (the directions' rules never meet, a block being one or the other: their order free) */
-    /* stylelint-disable no-descending-specificity */
-
-    /* vertical: once a step is reached, the current image wipes up (and back down when scrolling
-       up), the next one's zoom settling, the texts crossfading */
-    &.vertical.is-stepped {
-      .image {
-        transition: clip-path var(--pl-move) var(--pl-ease);
-      }
-
-      .img {
-        transition: transform var(--pl-move) var(--pl-ease);
-      }
-
-      .content {
-        transition: opacity var(--pl-move) var(--pl-ease);
-      }
-
-      .card.is-before .image {
-        clip-path: inset(0 0 100% 0 round var(--pl-radius));
-      }
-
-      .card.is-next .img {
-        transform: scale(var(--pl-zoom-next));
-      }
-
-      .card.is-active {
-        .img {
-          transform: scale(var(--pl-zoom-on));
-        }
-
-        .content {
-          opacity: 1;
-        }
-      }
-    }
-
-    /* horizontal (the default): tied to the scroll, the current image wipes off from its right
-       edge to its left as the page scrolls down (left to right back up), the next one's zoom
-       settling, the texts crossfading as they drift right to left; each card's place in that set
-       by the script (--wipe, --near, --seen, --shift, see track in cards.js) */
-    &.horizontal.is-stepped {
-      .image {
-        clip-path: inset(0 var(--wipe, 0%) 0 0 round var(--pl-radius));
-      }
-
-      .img {
-        transform: scale(calc(var(--pl-zoom-next) - (var(--pl-zoom-next) - var(--pl-zoom-on)) * var(--near, 1)));
-        will-change: transform;
-      }
-
-      .content {
-        opacity: var(--seen, 0);
-        transform: translateX(calc(var(--shift, 0) * -3rem));
-      }
-    }
-    /* stylelint-enable no-descending-specificity */
-
-    /* the rail: on the image, at its bottom left, one mark per card; the current one a track that
-       fills */
-    .rail {
-      z-index: 100; /* (above the stacked images) */
-      display: flex;
-      grid-area: image;
-      align-items: center;
-      place-self: end start;
-      gap: 1rem;
-      margin: 0 0 1.5rem 1.5rem;
-    }
-
-    .mark {
-      position: relative;
-      overflow: hidden;
-      width: 0.375rem;
-      height: 0.375rem;
-      padding: 0;
-      border: 0;
-      border-radius: 0.375rem;
-      background-color: rgb(255 255 255 / 60%);
-      cursor: pointer;
-      transition: width var(--pl-move) var(--pl-ease);
-
-      &::before {
-        content: '';
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 0;
-        border-radius: inherit;
-        background-color: var(--color-white);
-      }
-
-      &[aria-current='step'] {
-        width: 1.625rem;
-        background-color: rgb(255 255 255 / 40%);
-
-        &::before {
-          width: 78%;
-          animation: cards-mark-fill calc(var(--pl-move) * 2) var(--pl-ease) both;
-        }
-      }
-
-      &:focus-visible {
-        outline: 0.125rem solid var(--color-white);
-        outline-offset: 0.125rem;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .image,
-      .content,
-      .img,
-      .mark {
-        transition: none;
-      }
-
-      .mark::before {
-        animation: none;
-      }
+    .carousel-nav > :nth-child(3) {
+      animation-delay: calc(var(--combat-arrive-at, 0s) + 0.42s);
     }
   }
 }
 
-/* the rail's fill (keyframes can't be nested) */
-@keyframes cards-mark-fill {
-  from { width: 16%; }
-  to { width: 78%; }
+/* hidden, offset and scaled down into place: --cards-arrive-y, --cards-arrive-scale */
+@keyframes cards-combat-arrive {
+  from {
+    opacity: 0;
+    translate: 0 var(--cards-arrive-y, 0);
+    scale: var(--cards-arrive-scale, 1);
+  }
+
+  to {
+    opacity: 1;
+    translate: none;
+    scale: none;
+  }
+}
+
+/* up from below the screen, without touching the card's own opacity */
+@keyframes cards-combat-rise {
+  from {
+    translate: 0 100vh;
+  }
+
+  to {
+    translate: none;
+  }
+}
+
+/* in place and fully shown: keeps a Wave In cut's fade and rise off a part
+   whose children arrive on their own */
+@keyframes cards-combat-hold {
+  from,
+  to {
+    opacity: 1;
+    translate: none;
+  }
 }

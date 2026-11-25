@@ -1,0 +1,835 @@
+/* Hero Tech Slides style */
+
+main > .section.hero-container .hero-wrapper .hero.tech-slides {
+  /* the slide change (0.85 s), then the dot fills for --ts-slide-ms (hero-tech-slides.js
+     gives the rotation the sum); the copy enters --ts-in-delay into it */
+  --ts-change: 0.85s;
+  --ts-slide-ms: 6s;
+  --ts-in-delay: 0.15s;
+  --ts-ease-swap: cubic-bezier(0.455, 0.03, 0.515, 0.955); /* power2.inOut */
+  --ts-ease-in: cubic-bezier(0.55, 0.085, 0.68, 0.53); /* power2.in */
+  --ts-ease-rise: cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+  --ts-u: calc(100vw / 640);
+  --ts-c: max(100vw / 1280, 100svh / 720);
+
+  /* mobile scale unit: 1px at the Figma frame (375 × 815), so other phones show the same
+     layout larger or smaller; held between 85% (text stays readable) and 125% */
+  --ts-m: clamp(0.85px, min(100vw / 375, 100svh / 815), 1.25px);
+  --ts-side: calc(20 * var(--ts-m));
+  --ts-tile-size: calc(120 * var(--ts-c));
+  --ts-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ts-ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* colours */
+  --ts-bg: #141414;
+  
+  /* mobile stack, bottom up (Figma 375 × 815): dots, CTA, stat tiles, slide copy */
+  --ts-dots-bottom: calc(29 * var(--ts-m));
+  --ts-dots-gap: calc(22 * var(--ts-m));
+  --ts-cta-h: calc(59 * var(--ts-m));
+  --ts-stat-h: calc(67 * var(--ts-m));
+  --ts-info-gap: calc(8 * var(--ts-m));
+  --ts-copy-gap: calc(20 * var(--ts-m));
+  --ts-info-bottom: calc(var(--ts-dots-bottom) + 6 * var(--ts-m) + var(--ts-dots-gap));
+
+  /* the slide copy sits in the flow, above the bottom padding; the tile and
+     the hero's Text are placed against the block */
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 var(--ts-side) calc(var(--ts-info-bottom) + var(--ts-stat-h) + var(--ts-info-gap) + var(--ts-cta-h) + var(--ts-copy-gap));
+  background-color: var(--ts-bg);
+  touch-action: pan-y;
+
+  /* after the first slide, the new copy waits for the old to blur out */
+  &.has-changed {
+    --ts-in-delay: 0.35s;
+  }
+
+  @media (width >= 900px) {
+    --ts-u: min(100vw / 1280, 100svh / 720);
+    --ts-side: clamp(20px, 5.2vw, 44px);
+
+    /* 54 to the dots, plus the dots (4) and their gap (30) */
+    padding: 0 0 calc(88 * var(--ts-u)) calc(64 * var(--ts-u));
+  }
+
+  /* editor: scale to the held hero height, not the tall canvas */
+  &[data-aue-resource] {
+    --ts-c: max(100vw / 1280, var(--hero-editor-height) / 720);
+    --ts-m: clamp(0.85px, min(100vw / 375, var(--hero-editor-height) / 815), 1.25px);
+
+    @media (width >= 900px) {
+      --ts-u: min(100vw / 1280, var(--hero-editor-height) / 720);
+    }
+  }
+
+  /* no bottom shade: the images carry their own */
+  &::after {
+    content: none;
+  }
+
+  /* background slides: the new one sharpens in on top (blur 18px, 1.04x), the old one
+     blurs and grows a little underneath and stays solid until the change is over */
+  .bg.slides .slide {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+
+    &.is-active {
+      z-index: 1;
+      opacity: 1;
+      visibility: visible;
+      animation: ts-bg-in var(--ts-change) var(--ts-ease-swap) both;
+    }
+
+    &.is-leaving {
+      z-index: 0;
+      visibility: visible;
+      animation: ts-bg-out var(--ts-change) var(--ts-ease-swap) forwards;
+    }
+  }
+
+  /* not reached yet: the first slide waits to play in */
+  &:not(.is-started) .bg.slides .slide.is-active {
+    animation-play-state: paused;
+  }
+
+  /* slide copy: every slide's in the same grid cell, the current one shown.
+     Not positioned, so each tile is placed against the block. */
+  .ts-copy {
+    display: grid;
+    width: 100%;
+
+    @media (width >= 900px) {
+      width: calc(466 * var(--ts-u));
+    }
+  }
+
+  .ts-slide {
+    grid-area: 1 / 1;
+
+    /* held to the column: a one-line label longer than it is cut off, not widening it */
+    min-width: 0;
+    align-self: end;
+
+    /* the slides not showing (hero-tech-slides.js), once their lines have blurred out */
+    &[aria-hidden='true'] {
+      visibility: hidden;
+      transition: visibility 0s 0.5s;
+    }
+  }
+
+  /* a slide's stats and button show in the stats area (.ts-info), not in its copy */
+  .ts-src {
+    display: none;
+  }
+
+  /* the copy, line by line (label, each heading line, description, --ts-i):
+     out blurring 8px, 0.03s apart; in from blurred, 0.05s apart */
+  .ts-heading .ts-ln {
+    display: block;
+  }
+
+  .ts-text :is(.ts-label, .ts-ln, .ts-desc) {
+    opacity: 0;
+    filter: blur(8px);
+    transition:
+      opacity 0.35s var(--ts-ease-in) calc(var(--ts-i, 0) * 0.03s),
+      filter 0.35s var(--ts-ease-in) calc(var(--ts-i, 0) * 0.03s);
+  }
+
+  &.is-started .ts-slide.is-active .ts-text :is(.ts-label, .ts-ln, .ts-desc) {
+    opacity: 1;
+    filter: none;
+    transition:
+      opacity 0.5s var(--ts-ease-out) calc(var(--ts-in-delay) + var(--ts-i, 0) * 0.05s),
+      filter 0.5s var(--ts-ease-out) calc(var(--ts-in-delay) + var(--ts-i, 0) * 0.05s);
+  }
+
+  /* the close-up tiles' layer: the hero's full size, so the tiles are placed against
+     the hero even while a page effect (Wave In) moves this layer */
+  .ts-tiles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* close-up tile, placed by hero-tech-slides.js */
+  .ts-tile {
+    pointer-events: auto;
+    position: absolute;
+    top: calc(var(--ts-tile-y, 38.6%) - var(--ts-tile-size) / 2);
+    left: calc(var(--ts-tile-x, 33%) - var(--ts-tile-size) / 2);
+    z-index: 1;
+    width: var(--ts-tile-size);
+    height: var(--ts-tile-size);
+    overflow: hidden;
+
+    /* in proportion to the tile: 20px on the 136px mobile tile (Figma); 16px on desktop */
+    border-radius: calc(var(--ts-tile-size) * 20 / 136);
+    box-shadow: 0 calc(18 * var(--ts-u)) calc(40 * var(--ts-u)) rgb(0 0 0 / 35%);
+
+    /* out: fades and blurs where it is (0.3s), then drops back to rise in next time */
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(calc(36 * var(--ts-u)));
+    transition:
+      opacity 0.3s var(--ts-ease-in),
+      filter 0.3s var(--ts-ease-in),
+      transform 0s 0.3s;
+
+    picture,
+    .ts-tile-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  /* the current tile leans with a sideways drag (wireSwipe, below) */
+  .ts-tile.is-active {
+    translate: calc(var(--ts-drag, 0px) * 0.2) 0;
+  }
+
+  /* in: rises 36px into place (0.7s), 0.15s into the change; held until
+     hero-tech-slides.js has placed it on its slide's loaded image (.is-placed) */
+  &.is-started .ts-tile.is-active.is-placed {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition:
+      opacity 0.7s var(--ts-ease-rise) 0.15s,
+      transform 0.7s var(--ts-ease-rise) 0.15s,
+      translate 0.8s var(--ts-spring);
+  }
+
+  /* label, heading, description: line boxes 9px apart on mobile (Figma); on desktop
+     each is trimmed to its letters (margin-block from its line height, --ts-lh) as the source does */
+  .ts-text {
+    display: flex;
+    flex-direction: column;
+    gap: calc(9 * var(--ts-m));
+    width: 100%;
+    text-align: start;
+
+    @media (width >= 900px) {
+      gap: calc(24 * var(--ts-u));
+    }
+
+    > * {
+      margin: 0;
+
+      @media (width >= 900px) {
+        margin-block: calc((0.3602 - var(--ts-lh) / 2) * 1em);
+      }
+    }
+  }
+
+  :is(.ts-label, .ts-desc, .ts-stat-key, .ts-stat-value) {
+    display: block;
+    overflow: visible;
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 1;
+  }
+
+  .ts-label {
+    --ts-lh: 1.5714;
+
+    font-family: var(--font-family-base);
+    font-size: calc(12 * var(--ts-m));
+    font-weight: var(--font-weight-medium);
+    line-height: var(--ts-lh);
+    color: var(--color-white);
+
+    /* one line: a longer label is cut off at the right (clipped there only, so its blur
+       still shows above, below and to the left) */
+    white-space: nowrap;
+    clip-path: inset(-1em 0 -1em -1em);
+
+    @media (width >= 900px) {
+      font-size: max(12px, calc(14 * var(--ts-u)));
+    }
+  }
+
+  .ts-heading {
+    --ts-lh: 1.2727;
+
+    font-family: var(--font-family-display);
+    font-size: calc(22 * var(--ts-m));
+    font-weight: var(--font-weight-medium);
+    line-height: var(--ts-lh);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: rgb(236 236 236 / 80%);
+
+    /* two lines: further lines are cut off below the second (clipped there only, so the
+       lines' blur still shows above and at the sides) */
+    max-height: calc(2em * var(--ts-lh));
+    clip-path: inset(-1em -1em 0 -1em);
+
+    @media (width >= 900px) {
+      --ts-lh: 1.25;
+
+      font-size: calc(32 * var(--ts-u));
+    }
+  }
+
+  .ts-desc {
+    --ts-lh: 1.5714;
+
+    /* three lines at most, then an ellipsis */
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    max-width: 40ch;
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--ts-m));
+    font-weight: var(--font-weight-medium);
+    line-height: var(--ts-lh);
+    color: rgb(205 204 204);
+    text-wrap: pretty;
+
+    @media (width >= 900px) {
+      --ts-lh: 1.375;
+
+      max-width: none;
+      font-size: max(14px, calc(16 * var(--ts-u)));
+    }
+  }
+
+  /* a link within the copy text (a link on its own line is the button instead) */
+  .ts-text a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+
+    &:hover {
+      color: var(--color-white);
+    }
+  }
+
+  /* progress dots: the current one widens and fills over a slide's time.
+     Mobile: centred at the bottom, below the CTA; desktop: under the slide copy */
+  .ts-dots {
+    position: absolute;
+    right: 0;
+    bottom: var(--ts-dots-bottom);
+    left: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: calc(6 * var(--ts-m));
+    width: max-content;
+    height: calc(6 * var(--ts-m));
+
+    /* centred without translate, which Wave In sets */
+    margin-inline: auto;
+
+    @media (width >= 900px) {
+      right: auto;
+      bottom: calc(54 * var(--ts-u));
+      left: calc(64 * var(--ts-u));
+      z-index: 1;
+      gap: calc(4 * var(--ts-u));
+      height: calc(4 * var(--ts-u));
+      margin-inline: 0;
+    }
+  }
+
+  .ts-dot {
+    position: relative;
+    width: calc(6 * var(--ts-m));
+    height: calc(6 * var(--ts-m));
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 99px;
+    background: rgb(160 155 155 / 90%);
+    cursor: pointer;
+    transition: width 0.5s var(--ts-ease-out);
+
+    /* a bigger hit area */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -19px -6px;
+    }
+
+    &[aria-current] {
+      width: calc(30 * var(--ts-m));
+    }
+
+    @media (width >= 900px) {
+      width: calc(4 * var(--ts-u));
+      height: calc(4 * var(--ts-u));
+      margin: 0;
+
+      &::before {
+        inset: calc(-8 * var(--ts-u));
+      }
+
+      &[aria-current] {
+        width: calc(26.4 * var(--ts-u));
+      }
+    }
+  }
+
+  .ts-dot-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-white);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* fills once the change is over; pauses while the rotation is held */
+  .ts-dot[aria-current] .ts-dot-fill {
+    animation: ts-dot-fill var(--ts-slide-ms) linear var(--ts-change) forwards;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      transform: none;
+    }
+  }
+
+  /* the hero's own Text: stat tiles, then a full-width CTA, bottom right */
+  .ts-info {
+    position: absolute;
+    right: var(--ts-side);
+    bottom: var(--ts-info-bottom);
+    left: var(--ts-side);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ts-info-gap);
+    width: auto;
+    text-align: start;
+
+    @media (width >= 900px) {
+      right: calc(64 * var(--ts-u));
+      bottom: calc(54 * var(--ts-u));
+      left: auto;
+      gap: calc(16 * var(--ts-u));
+      width: calc(316 * var(--ts-u));
+    }
+  }
+
+  &.is-paused .ts-dot[aria-current] .ts-dot-fill {
+    animation-play-state: paused;
+  }
+
+  .ts-stats {
+    display: flex;
+    gap: calc(5 * var(--ts-m));
+
+    @media (width >= 900px) {
+      gap: calc(8 * var(--ts-u));
+    }
+  }
+
+  /* stat text and the button label roll over (hero-tech-slides.js roll) */
+  .ts-roll,
+  .ts-info .cta-label {
+    display: inline-block;
+  }
+
+  .ts-stat {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: calc(12 * var(--ts-m));
+
+    /* held to its share of the row: longer text is cut off, not widening it */
+    min-width: 0;
+
+    /* sized in --ts-m below 900px so the tile stays --ts-stat-h tall (the copy above is spaced by it) */
+    padding: calc(16 * var(--ts-m));
+    border-radius: calc(14 * var(--ts-m));
+    background: rgb(148 148 148 / 20%);
+    backdrop-filter: blur(15px);
+
+    @media (width >= 900px) {
+      gap: calc(15 * var(--ts-u));
+
+      /* 24 (Figma), less on the right so a value like 26.7kwh fits its half of the row */
+      padding: calc(24 * var(--ts-u)) calc(16 * var(--ts-u)) calc(24 * var(--ts-u)) calc(24 * var(--ts-u));
+      border-radius: calc(16 * var(--ts-u));
+    }
+
+    p {
+      margin: calc((0.3602 - var(--ts-lh) / 2) * 1em) 0;
+    }
+
+    /* key and value: one line, cut off at the end (on the rolling text, so the roll isn't clipped) */
+    .ts-roll {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: clip;
+    }
+  }
+
+  .ts-stat-key {
+    --ts-lh: 1.4;
+
+    font-family: var(--font-family-base);
+    font-size: calc(11.2 * var(--ts-m));
+    font-weight: var(--font-weight-regular);
+    line-height: var(--ts-lh);
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 80%);
+
+    @media (width >= 900px) {
+      font-size: max(12px, calc(14 * var(--ts-u)));
+    }
+  }
+
+  .ts-stat-value {
+    --ts-lh: 1.1;
+
+    font-family: var(--font-family-display);
+    font-size: calc(20.2 * var(--ts-m));
+    font-weight: var(--font-weight-medium);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--ts-lh);
+    color: var(--color-white);
+
+    @media (width >= 900px) {
+      font-size: calc(24 * var(--ts-u));
+    }
+  }
+
+  .ts-stat-unit {
+    margin-left: 0.08em;
+    font-size: 0.594em; /* 12px on the 20.2px value (Figma mobile) */
+    letter-spacing: 0.01em;
+    color: rgb(255 255 255 / 50%);
+
+    @media (width >= 900px) {
+      font-size: 0.6667em; /* 16px on the 24px value (Figma desktop) */
+    }
+  }
+
+  .ts-info .cta-wrapper {
+    display: block;
+    margin: 0;
+  }
+
+  /* a slide with no stats or button of its own, and none in the hero's Text */
+  .ts-info > [hidden] {
+    display: none;
+  }
+
+  .ts-info .cta.button {
+    justify-content: space-between;
+    gap: var(--spacing-16);
+    width: 100%;
+    height: var(--ts-cta-h);
+    padding: 0 calc(22 * var(--ts-m));
+    border-radius: calc(12 * var(--ts-m));
+    font-size: calc(14 * var(--ts-m));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.4;
+    letter-spacing: 0;
+    color: var(--color-black);
+    background-color: var(--color-white);
+    transition:
+      transform 0.42s var(--ts-ease-io),
+      background-color 0.15s ease;
+
+    @media (width >= 900px) {
+      height: calc(40 * var(--ts-u));
+      padding: 0 calc(16 * var(--ts-u));
+      border-radius: calc(8 * var(--ts-u));
+      font-size: max(11px, calc(12 * var(--ts-u)));
+      line-height: 1.35;
+      letter-spacing: 0.03em;
+      color: var(--color-gray-90);
+    }
+
+    /* the label: one line, cut off at the end; the arrow keeps its size */
+    .cta-label {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: clip;
+    }
+
+    /* the source's arrow, not the hero's plus */
+    .cta-icon {
+      flex-shrink: 0;
+      width: calc(16 * var(--ts-m));
+      height: calc(16 * var(--ts-m));
+      background-color: currentcolor;
+      mask: url('../../icons/arrow-up-right.svg') center / contain no-repeat;
+      transition: transform 0.42s var(--ts-ease-io);
+
+      @media (width >= 900px) {
+        width: calc(16 * var(--ts-u));
+        height: calc(16 * var(--ts-u));
+      }
+    }
+
+    .cta-icon-img {
+      visibility: hidden;
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--button-solid-hover-bg-on-dark);
+    }
+
+    &:hover .cta-icon {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  /* Universal Editor: every slide's copy is reachable */
+  &[data-aue-resource] .ts-slide {
+    transition: none;
+  }
+
+  &[data-aue-resource] .bg.slides .slide > .ts-slide {
+    position: absolute;
+    right: var(--ts-side);
+    bottom: calc(var(--ts-info-bottom) + var(--ts-stat-h) + var(--ts-info-gap) + var(--ts-cta-h) + var(--ts-copy-gap));
+    left: var(--ts-side);
+    z-index: 2;
+
+    @media (width >= 900px) {
+      right: auto;
+      bottom: calc(88 * var(--ts-u));
+      left: calc(64 * var(--ts-u));
+      width: calc(466 * var(--ts-u));
+    }
+  }
+
+  /* Universal Editor: the label, heading and description shown whole, not cut to their
+     1 / 2 / 3 lines, so all of them can be edited (as the hero's other styles do) */
+  &[data-aue-resource] :is(.ts-label, .ts-heading, .ts-desc) {
+    display: block;
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+    clip-path: none;
+    -webkit-line-clamp: unset;
+  }
+
+  /* swipe: the picture and tile lean with the drag; a mouse gets the Swipe pill */
+  --ts-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ts-follow: cubic-bezier(0.33, 1, 0.68, 1);
+
+  .bg.slides {
+    translate: calc(var(--ts-drag, 0px) * 0.12) 0;
+    transition: translate 0.8s var(--ts-spring);
+  }
+
+  &.is-dragging {
+    user-select: none;
+
+    .bg.slides {
+      transition: translate 0.35s var(--ts-follow);
+    }
+
+    &.is-started .ts-tile.is-active {
+      transition:
+        opacity 0.7s var(--ts-ease-rise) 0.15s,
+        transform 0.7s var(--ts-ease-rise) 0.15s,
+        translate 0.35s var(--ts-follow);
+    }
+  }
+
+  .ts-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: calc(6 * var(--ts-u));
+    padding: calc(8 * var(--ts-u)) calc(12 * var(--ts-u));
+    border-radius: calc(16 * var(--ts-u));
+    font-size: max(11px, calc(14 * var(--ts-u)));
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-white);
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(12px);
+    opacity: 0;
+    pointer-events: none;
+    translate: var(--ts-cursor-pos, 0 0);
+    transform: translate(-50%, -50%) scale(0.6);
+    transition:
+      opacity 0.3s ease-in,
+      transform 0.3s ease-in;
+    will-change: translate, transform;
+
+    svg {
+      flex: none;
+      width: max(14px, calc(16 * var(--ts-u)));
+      height: max(14px, calc(16 * var(--ts-u)));
+    }
+  }
+
+  &.has-cursor {
+    cursor: none;
+
+    .ts-cursor {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      transition:
+        opacity 0.35s var(--ts-follow),
+        transform 0.35s var(--ts-follow);
+    }
+  }
+
+  /* pressed: the pill gives a little */
+  &.has-cursor.is-dragging .ts-cursor {
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: transform 0.2s var(--ts-follow);
+  }
+
+  /* the copy, dots and CTA keep the normal pointer */
+  .ts-text,
+  .ts-dots,
+  .ts-info,
+  .hero-controls {
+    cursor: auto;
+  }
+
+  .ts-dots button,
+  .ts-info a {
+    cursor: pointer;
+  }
+
+  /* Universal Editor: the tile is dragged into place (tile-editor.js), with its x, y beside it */
+  .ts-tile.is-editable {
+    cursor: grab;
+    touch-action: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+
+    &.is-moving {
+      cursor: grabbing;
+      outline: 2px dashed rgb(255 255 255 / 70%);
+      outline-offset: 3px;
+    }
+  }
+
+  .ts-tile-coords {
+    position: absolute;
+    top: var(--ts-badge-y, 0);
+    left: var(--ts-badge-x, 0);
+    z-index: 5;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-family: var(--font-family-base);
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    color: var(--color-white);
+    background: rgb(0 0 0 / 70%);
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+    transform: translate(-50%, calc(-1 * var(--ts-tile-size) / 2 - 100% - 8px));
+
+    &.is-below {
+      transform: translate(-50%, calc(var(--ts-tile-size) / 2 + 8px));
+    }
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  /* Universal Editor and reduced motion: no change animation, everything shown as is
+     (both start straight away, hero-tech-slides.js) */
+  &[data-aue-resource],
+  &:has([data-aue-resource]) {
+    .bg.slides .slide.is-active,
+    .bg.slides .slide.is-leaving {
+      animation: none;
+    }
+
+    &.is-started .ts-tile.is-active.is-placed,
+    &.is-started .ts-slide.is-active .ts-text :is(.ts-label, .ts-ln, .ts-desc) {
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg.slides {
+      translate: none;
+    }
+
+    .bg.slides .slide.is-active {
+      animation: none;
+    }
+
+    .bg.slides .slide.is-leaving {
+      visibility: hidden;
+      animation: none;
+    }
+
+    &.is-started .ts-tile.is-active.is-placed,
+    &.is-started .ts-slide.is-active .ts-text :is(.ts-label, .ts-ln, .ts-desc) {
+      translate: none;
+      transition: none;
+    }
+  }
+}
+
+@keyframes ts-bg-in {
+  0% {
+    opacity: 0;
+    filter: blur(18px);
+    scale: 1.04;
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    scale: 1;
+  }
+}
+
+@keyframes ts-bg-out {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    scale: 1;
+  }
+
+  99.9% {
+    opacity: 1;
+    filter: blur(10px);
+    scale: 1.02;
+  }
+
+  100% {
+    opacity: 0;
+    filter: blur(10px);
+    scale: 1.02;
+  }
+}
+
+@keyframes ts-dot-fill {
+  to {
+    transform: scaleX(1);
+  }
+}

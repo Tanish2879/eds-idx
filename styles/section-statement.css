@@ -1,0 +1,64 @@
+/* Section style "Statement" (models/_section.json, scripts/utils/section-styles.js): a short
+   line (the section's title) shown very large in the middle of the screen, its words rising
+   into place as the section arrives (scripts/section-statement.js), e.g. "Two ways to drive"
+   between two sections. Pairs with Light for the dark-on-white look and Wave In for the rise.
+   Loaded only on pages that use it. */
+
+main > .section.statement > .default-content-wrapper {
+  max-width: none;
+  margin: auto;
+  padding: 0 clamp(20px, 5vw, 64px);
+  text-align: center;
+}
+
+main > .section.statement > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  max-width: 14ch;
+  margin: 0 auto;
+  color: inherit;
+  font-family: var(--font-family-display);
+  font-size: clamp(36px, 11vw, 48px);
+  font-weight: var(--font-weight-regular);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* with Light: the source's near-black ink, a shade deeper than the light section's text */
+main > .section.statement.light > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+  color: #0b0b0b;
+}
+
+/* each word (section-statement.js) */
+main > .section.statement .statement-word {
+  display: inline-block;
+  vertical-align: top;
+}
+
+main > .section.statement .statement-word > span {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* before the section arrives: the words wait below their place, faded and blurred */
+  main > .section.statement.is-split:not(.is-in) .statement-word > span {
+    opacity: 0;
+    translate: 0 70%;
+    filter: blur(8px);
+  }
+
+  /* arrived: one after another into place */
+  main > .section.statement.is-split.is-in .statement-word > span {
+    transition:
+      opacity 0.6s ease-out,
+      translate 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.8s ease-out;
+    transition-delay: calc(0.2s + var(--statement-word, 0) * 70ms);
+  }
+}
+
+@media (width >= 600px) {
+  main > .section.statement > .default-content-wrapper :is(h1, h2, h3, h4, h5, h6) {
+    font-size: clamp(44px, 6.4vw, 120px);
+  }
+}

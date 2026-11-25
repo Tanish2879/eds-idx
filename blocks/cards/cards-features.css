@@ -1,0 +1,1530 @@
+/* Cards "Features" style: cards (or stat tiles) that open their detail in place, in a dialog.
+   Loaded by cards.js only when the style is used. Values from the Code T prototype
+   (.tech-card / .perf-stat / .pop / .detail--centre); phone first, desktop from 600px / 900px. */
+
+@property --ft-fade-start {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --ft-fade-end {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 20px;
+}
+
+.cards.features {
+  --ft-gutter: 20px;
+  --ft-gap: 10px;
+  --ft-radius: 18px;
+  --ft-move: 300ms;
+  --ft-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ft-ink: #2e2e2e;
+  --ft-paper: #fcfdfc;
+  --ft-progress-gap: 24px;
+  --ft-progress-h: 1.5px;
+
+  position: relative;
+  container-type: inline-size;
+
+  .card-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--ft-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    /* image cards: a rail that bleeds to both edges of the screen; the first card lines up with
+       the section's text and the rail fades out under the screen edges */
+    margin-inline: calc(50cqi - 50vw);
+    padding-inline: calc(50vw - 50cqi);
+    scroll-padding-inline: calc(50vw - 50cqi);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    --ft-fade-end: var(--ft-fade, var(--ft-gutter));
+
+    /* the fade, also used by the stat tiles' rail (desktop, more than four tiles) */
+    --ft-rail-mask: linear-gradient(
+      90deg,
+      transparent 0,
+      rgb(0 0 0 / 3%) calc(var(--ft-fade-start) * 0.14),
+      rgb(0 0 0 / 12%) calc(var(--ft-fade-start) * 0.28),
+      rgb(0 0 0 / 28%) calc(var(--ft-fade-start) * 0.42),
+      rgb(0 0 0 / 48%) calc(var(--ft-fade-start) * 0.56),
+      rgb(0 0 0 / 68%) calc(var(--ft-fade-start) * 0.7),
+      rgb(0 0 0 / 85%) calc(var(--ft-fade-start) * 0.84),
+      #000 var(--ft-fade-start),
+      #000 calc(100% - var(--ft-fade-end)),
+      rgb(0 0 0 / 85%) calc(100% - var(--ft-fade-end) * 0.84),
+      rgb(0 0 0 / 68%) calc(100% - var(--ft-fade-end) * 0.7),
+      rgb(0 0 0 / 48%) calc(100% - var(--ft-fade-end) * 0.56),
+      rgb(0 0 0 / 28%) calc(100% - var(--ft-fade-end) * 0.42),
+      rgb(0 0 0 / 12%) calc(100% - var(--ft-fade-end) * 0.28),
+      rgb(0 0 0 / 3%) calc(100% - var(--ft-fade-end) * 0.14),
+      transparent 100%
+    );
+
+    mask-image: var(--ft-rail-mask);
+  }
+
+  .card-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* the left fade shows once the rail has moved, the right one goes at its end */
+  @supports (animation-timeline: scroll()) {
+    .card-list {
+      animation:
+        ft-fade-start linear both,
+        ft-fade-end linear both;
+      animation-timeline: scroll(self inline), scroll(self inline);
+      animation-range: 0 64px, calc(100% - 64px) 100%;
+    }
+  }
+
+  .ft-card {
+    position: relative;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: calc(100vw - 2 * var(--ft-gutter) - 72px);
+    height: max(320px, 100svh - 345px);
+    border: 0;
+    border-radius: var(--ft-radius);
+    overflow: hidden;
+    scroll-snap-align: start;
+    background: #1e1e1e;
+    color: var(--color-white, #fff);
+    cursor: pointer;
+  }
+
+  /* the picture fills the card, a shade at the foot keeps the copy legible */
+  .card-image {
+    position: absolute;
+    inset: 0;
+    line-height: 0;
+  }
+
+  .card-image > p {
+    height: 100%;
+    margin: 0;
+  }
+
+  .card-image picture,
+  .card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+
+  .ft-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 45%));
+    pointer-events: none;
+  }
+
+  .card-body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 18px;
+  }
+
+  .ft-title,
+  .ft-line {
+    margin: 0;
+    color: inherit;
+  }
+
+  .ft-card .ft-title {
+    font-family: var(--font-family-display);
+    font-size: 17px;
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .ft-card .ft-line {
+    font-size: 13px;
+    line-height: 1.45;
+    opacity: 0.85;
+    text-wrap: pretty;
+  }
+
+  /* image cards: the title on one line, the rest cut off (no ellipsis) */
+  .ft-card:not(.is-stat) .ft-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  /* image cards: the short line in two lines, then an ellipsis */
+  .ft-card:not(.is-stat) .ft-line {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  /* the "+" button, in the card's corner */
+  .ft-open {
+    position: absolute;
+    inset-block-start: 12px;
+    inset-inline-end: 12px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: rgb(20 20 20 / 38%);
+    color: var(--color-white, #fff);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: background-color 0.25s;
+  }
+
+  .ft-open:focus-visible,
+  .ft-detail :focus-visible {
+    outline: 2px solid var(--color-accent, currentcolor);
+    outline-offset: 2px;
+  }
+
+  .ft-open:hover,
+  .ft-card:hover .ft-open {
+    background: rgb(20 20 20 / 62%);
+  }
+
+  .ft-open-icon,
+  .ft-close-icon {
+    position: relative;
+    width: 12.4px;
+    height: 12.4px;
+  }
+
+  .ft-open-icon::before,
+  .ft-open-icon::after,
+  .ft-close-icon::before,
+  .ft-close-icon::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 2px;
+    border-radius: 1px;
+    background: currentcolor;
+    translate: 0 -50%;
+  }
+
+  .ft-open-icon::after {
+    rotate: 90deg;
+  }
+
+  .ft-close-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .ft-close-icon::before,
+  .ft-close-icon::after {
+    height: 1.5px;
+  }
+
+  .ft-close-icon::before {
+    rotate: 45deg;
+  }
+
+  .ft-close-icon::after {
+    rotate: -45deg;
+  }
+
+  /* the rail's position: a dash per card under the rail (cards-features.js) */
+  .ft-progress {
+    position: absolute;
+    inset-block-start: calc(100% + var(--ft-progress-gap));
+    inset-inline-start: 0;
+    display: flex;
+    gap: 6px;
+    pointer-events: none;
+  }
+
+  .ft-progress i {
+    width: 22px;
+    height: var(--ft-progress-h);
+    background: rgb(0 0 0 / 15%);
+    transition: background-color 0.3s;
+  }
+
+  .ft-progress i.is-active {
+    background: #1b1b1b;
+  }
+
+  /* Performance: stat tiles (a value and a label, no picture on the tile) */
+  &.is-stats .card-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 16px;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+    mask-image: none;
+    animation: none;
+    color: var(--color-white, #fff);
+  }
+
+  /* min-width 0: a tile shrinks (its texts end in "…") rather than push the row off screen */
+  .ft-card.is-stat {
+    display: block;
+    flex: 0 1 auto;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    border-radius: 6px;
+    overflow: visible;
+    background: none;
+  }
+
+  .ft-card.is-stat::after,
+  .ft-card.is-stat .card-image {
+    display: none;
+  }
+
+  .ft-card.is-stat .card-body {
+    display: block;
+    padding: 0;
+  }
+
+  .ft-card.is-stat .ft-title {
+    display: block;
+    font-family: var(--font-family-display);
+    font-size: 24px;
+    font-weight: var(--font-weight-regular, 400);
+
+    /* the Figma's line: 28.5 at 24px (36 at 30.08 on desktop, below) */
+    line-height: 1.1875;
+    text-transform: none;
+    text-wrap: pretty;
+  }
+
+  /* the value (at most MAX_CHARS.value characters, cards-features.js) */
+  .ft-card.is-stat .ft-title strong {
+    font-weight: inherit;
+  }
+
+  /* two lines, then "…" */
+  .ft-card.is-stat .ft-line {
+    width: auto;
+    display: -webkit-box;
+    margin-top: 4px;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-family: var(--font-family-base);
+    font-size: 13px;
+    font-weight: var(--font-weight-regular, 400);
+    line-height: 1.35;
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 0.78;
+    transition: opacity 0.25s;
+  }
+
+  /* the "+" follows the value */
+  .ft-card.is-stat .ft-open {
+    position: relative;
+    inset: -3px auto auto;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: -4px 0 0 8px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 12%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 32%);
+    vertical-align: middle;
+    backdrop-filter: blur(8px);
+    transition:
+      background-color 0.25s,
+      box-shadow 0.25s;
+  }
+
+  .ft-card.is-stat .ft-open-icon {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 8px;
+    height: 1.5px;
+    translate: -50% -50%;
+  }
+
+  .ft-card.is-stat .ft-open-icon::before,
+  .ft-card.is-stat .ft-open-icon::after {
+    height: 1.5px;
+  }
+
+  .ft-card.is-stat:hover .ft-open,
+  .ft-card.is-stat .ft-open:focus-visible {
+    background: rgb(255 255 255 / 30%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 60%);
+  }
+
+  .ft-card.is-stat:hover .ft-line,
+  .ft-card.is-stat:has(.ft-open:focus-visible) .ft-line {
+    opacity: 0.85;
+  }
+
+  /* the focus ring goes round the whole tile, as on the source */
+  .ft-card.is-stat .ft-open:focus-visible {
+    outline: none;
+  }
+
+  .ft-card.is-stat:has(.ft-open:focus-visible) {
+    outline: 2px solid rgb(255 255 255 / 60%);
+    outline-offset: 8px;
+  }
+
+  /* Universal Editor: every part of every card visible and editable */
+  &.is-authoring .card-list {
+    flex-wrap: wrap;
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+    mask-image: none;
+    animation: none;
+  }
+
+  &.is-authoring .ft-card:not(.is-stat) {
+    width: 280px;
+    height: auto;
+    min-height: 400px;
+    cursor: auto;
+  }
+
+  &.is-authoring .ft-more {
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px dashed currentcolor;
+  }
+
+  /* more than four tiles: a row that scrolls sideways (desktop: four across, from 900px below;
+     phones and tablets: pages of four); it bleeds to the screen's edges, and a light arrow at
+     each end shows while there is more that way (cards-features.js). The block padding keeps
+     the "+" and the focus ring clear of the rail's edge */
+  &.is-stats:not(.is-authoring) .card-list:has(> .ft-card:nth-child(5)) {
+    margin: -12px calc(50cqi - 50vw);
+    padding: 12px calc(50vw - 50cqi);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-padding-inline: calc(50vw - 50cqi);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    /* dragged with the mouse (cards-features.js): no snapping while it moves and eases to its
+       stop, no text selection, the grabbing hand */
+    &.is-dragging {
+      scroll-snap-type: none;
+      user-select: none;
+    }
+
+    &.is-grabbing,
+    &.is-grabbing > .ft-card.is-stat {
+      cursor: grabbing;
+    }
+
+    /* phones and tablets, as an app drawer: pages of four tiles in the four tiles' 2 x 2 (1 2 /
+       3 4, their size and 16px gap), at the foot; a swipe brings the next page, one at a time.
+       The pages follow each other with no gap (a page's first column holds the 16px), so the
+       next page's start shows in the gutter, under the fade. Each tile's row comes from its
+       place on its page; the columns fill in page by page (dense: a tile takes the first free
+       column of its row). A last page of one or two tiles has them in the bottom row, as two
+       tiles on their own; a last page of one tile gets its missing column as end padding, so
+       it comes fully into view */
+    @media (width < 900px) {
+      --ft-page-tile: calc((100cqi - 16px) / 2);
+
+      grid-template-columns: none;
+      grid-template-rows: auto auto;
+      grid-auto-columns: calc(var(--ft-page-tile) + 16px) var(--ft-page-tile);
+      grid-auto-flow: column dense;
+      column-gap: 0;
+
+      &:has(> .ft-card:nth-child(4n + 1):last-child) {
+        padding-inline-end: calc(50vw - 50cqi + var(--ft-page-tile));
+      }
+
+      > .ft-card.is-stat {
+        width: var(--ft-page-tile);
+        scroll-snap-align: none;
+      }
+
+      > .ft-card.is-stat:nth-child(4n + 1) {
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+
+      > .ft-card.is-stat:is(:nth-child(4n + 1), :nth-child(4n + 2)) {
+        grid-row: 1;
+      }
+
+      > .ft-card.is-stat:is(:nth-child(4n + 3), :nth-child(4n + 4)),
+      > .ft-card.is-stat:nth-child(4n + 1):nth-last-child(-n + 2),
+      > .ft-card.is-stat:nth-child(4n + 2):last-child {
+        grid-row: 2;
+      }
+    }
+  }
+
+  /* the rail's arrows (cards-features.js): light, each shown only while there is more that way;
+     a click moves on a view (four tiles, or a page). Desktop: in the gutters, 12px below the
+     tiles (under their descriptions, clear of every text; the tiles stay at the foot) */
+  .ft-rail-arrow {
+    position: absolute;
+    inset-block-start: calc(100% + 12px);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 22%);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 8%);
+    color: rgb(255 255 255 / 70%);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .ft-rail-arrow[hidden] {
+    display: none;
+  }
+
+  .ft-rail-arrow:hover {
+    background: rgb(255 255 255 / 16%);
+    color: var(--color-white, #fff);
+  }
+
+  .ft-rail-arrow:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 70%);
+    outline-offset: 2px;
+  }
+
+  .ft-rail-arrow::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: currentcolor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M4.25 2 8.25 6l-4 4' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* in the middle of the gutter (64 on desktop); on phones, 4px in from the screen's edge */
+  .ft-rail-prev {
+    inset-inline-start: max(calc(var(--ft-gutter) / -2 - 16px), calc(4px - var(--ft-gutter)));
+  }
+
+  .ft-rail-next {
+    inset-inline-end: max(calc(var(--ft-gutter) / -2 - 16px), calc(4px - var(--ft-gutter)));
+  }
+
+  .ft-rail-prev::before {
+    scale: -1 1;
+  }
+
+  /* phones and tablets: the margin is too narrow beside the tiles, so the pair sits just above
+     them at the right (‹ ›), clear of their texts */
+  @media (width < 900px) {
+    .ft-rail-arrow {
+      inset-block: auto calc(100% + 4px);
+    }
+
+    .ft-rail-prev {
+      inset-inline: auto 40px;
+    }
+
+    .ft-rail-next {
+      inset-inline-end: 0;
+    }
+  }
+
+  /* --- the detail: a dialog in the top layer, as large as the screen, holding a shade over
+     the page and the panel on it (the source's .pop / .perf-tint and #perfPop).
+     cards-features.js plays the opening and closing (the picture growing out of the card).
+     Image cards: a light panel, the picture on top (phone) or at the left (desktop). The
+     picture lies over an empty slot in the panel, so it can move on its own. --- */
+  .ft-detail {
+    --ft-pop-w: calc(100% - 24px);
+    --ft-pop-h: min(100% - 48px, 540px);
+    --ft-pop-media: 46%;
+
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    /* clip, not hidden: nothing can scroll it (Safari scrolled it to the close button as the
+       phone sheet rose, which shifted the sheet up, then back down) */
+    overflow: hidden;
+    overflow: clip;
+    overscroll-behavior: contain;
+    background: none;
+    color: var(--ft-ink);
+  }
+
+  .ft-detail::backdrop {
+    background: none;
+  }
+
+  .ft-back {
+    position: absolute;
+    inset: 0;
+    background: rgb(10 10 10 / 55%);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+  }
+
+  .ft-panel {
+    position: absolute;
+    inset-block-start: calc((100% - var(--ft-pop-h)) / 2);
+    inset-inline-start: calc((100% - var(--ft-pop-w)) / 2);
+    display: flex;
+    flex-direction: column;
+    width: var(--ft-pop-w);
+    height: var(--ft-pop-h);
+    overflow: hidden;
+    background: var(--ft-paper);
+    clip-path: inset(0 round 24px);
+  }
+
+  .ft-slot {
+    flex: none;
+    height: var(--ft-pop-media);
+  }
+
+  .ft-media {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: calc((100% - var(--ft-pop-h)) / 2);
+    inset-inline-start: calc((100% - var(--ft-pop-w)) / 2);
+    width: var(--ft-pop-w);
+    height: calc(var(--ft-pop-h) * 0.46);
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    background: #1e1e1e;
+    line-height: 0;
+  }
+
+  .ft-media[hidden],
+  .ft-detail.is-text-only .ft-slot {
+    display: none;
+  }
+
+  .ft-media-pic,
+  .ft-media picture,
+  .ft-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  .ft-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    min-height: 0;
+    padding: 22px 64px 24px 22px;
+    overflow-y: auto;
+  }
+
+  .ft-eyebrow {
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    color: rgb(0 0 0 / 55%);
+
+    /* one line, the rest cut off (no ellipsis) */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  .ft-eyebrow[hidden] {
+    display: none;
+  }
+
+  .ft-close {
+    position: absolute;
+    inset-block-start: calc(var(--ft-pop-media) + 14px);
+    inset-inline-end: 14px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: rgb(0 0 0 / 6%);
+    color: inherit;
+    cursor: pointer;
+    transition: background-color 0.25s;
+  }
+
+  /* a card without a picture: no picture room, the close button at the top */
+  .ft-detail.is-text-only {
+    --ft-pop-media: 0%;
+  }
+
+  .ft-close:hover {
+    background: rgb(0 0 0 / 12%);
+  }
+
+  .ft-detail-title {
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-size: 24px;
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1.05;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: inherit;
+
+    /* two lines, the rest cut off (no ellipsis) */
+    max-height: 2lh;
+    overflow: hidden;
+  }
+
+  /* six lines on phones (eight from 600px), then an ellipsis */
+  .ft-detail-text {
+    display: -webkit-box;
+    max-width: 380px;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgb(0 0 0 / 62%);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+  }
+
+  .ft-detail-text p {
+    margin: 0;
+    color: inherit;
+  }
+
+  .ft-detail-text > * + * {
+    margin-top: 0.8em;
+  }
+
+  /* stat tiles (Performance): a frosted glass panel holding its picture, with a "next"
+     control; a sheet from the foot of the screen on phones, centred from 600px */
+  .ft-next {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    min-height: 44px;
+    margin: 0 20px 24px;
+    padding: 16px 0 0;
+    border: 0;
+    border-top: 1px solid rgb(255 255 255 / 30%);
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .ft-next[hidden] {
+    display: none;
+  }
+
+  .ft-next-thumb {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  .ft-next-thumb:empty {
+    display: none;
+  }
+
+  .ft-next-thumb picture,
+  .ft-next-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* one line, then "…": a long name never pushes the arrow out of the panel */
+  .ft-next-label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: var(--font-weight-medium, 500);
+    text-transform: capitalize;
+  }
+
+  .ft-next-arrow {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    background: currentcolor;
+    mask: url('../../icons/arrow-right.svg') center / 16px no-repeat;
+  }
+
+  &.is-stats .ft-detail {
+    color: var(--color-white, #fff);
+  }
+
+  &.is-stats .ft-back {
+    background: rgb(0 0 0 / 42%);
+    backdrop-filter: blur(10px);
+  }
+
+  &.is-stats .ft-panel {
+    inset: auto 0 0;
+    width: 100%;
+    height: fit-content;
+    max-height: calc(100% - 24px);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+    overflow: clip;
+    background: rgb(255 255 255 / 35%);
+    clip-path: none;
+    backdrop-filter: blur(50px);
+  }
+
+  /* the grab handle of the sheet */
+  &.is-stats .ft-panel::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 8px;
+    inset-inline-start: 50%;
+    z-index: 2;
+    width: 40px;
+    height: 4px;
+    margin-inline-start: -20px;
+    border-radius: 2px;
+    background: rgb(255 255 255 / 85%);
+    box-shadow: 0 1px 6px rgb(0 0 0 / 30%);
+  }
+
+  /* above the picture: the panel is a flex box, so its picture (z-index 2, after the button)
+     was drawn over the button */
+  &.is-stats .ft-close {
+    z-index: 3;
+    inset-block-start: 14px;
+    border-radius: 8px;
+    background: rgb(0 0 0 / 32%);
+    backdrop-filter: blur(10px);
+  }
+
+  &.is-stats .ft-close:hover {
+    background: rgb(0 0 0 / 48%);
+  }
+
+  &.is-stats .ft-media {
+    position: static;
+    flex: none;
+    width: auto;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+    background: none;
+  }
+
+  /* the copy scrolls in the panel when it is long (its picture, close and "next" stay put) */
+  &.is-stats .ft-body {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 18px 20px 16px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  &.is-stats .ft-media[hidden] + .ft-body {
+    padding-inline-end: 64px;
+  }
+
+  /* three lines, then "…" (the text under it scrolls in the panel) */
+  &.is-stats .ft-detail-title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 20px;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* all of it (it scrolls), not cut after six or eight lines */
+  &.is-stats .ft-detail-text {
+    display: block;
+    max-width: none;
+    margin-top: 10px;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    font-size: 14px;
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 20px;
+    color: rgb(255 255 255 / 60%);
+  }
+
+  @media (width >= 600px) {
+    --ft-gutter: 64px;
+    --ft-gap: 16px;
+    --ft-progress-h: 2px;
+
+    .ft-card {
+      width: clamp(360px, 38vw, 720px);
+      height: max(320px, 100svh - 335px);
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    .ft-card .ft-title {
+      font-size: clamp(16px, 1.4vw, 20px);
+    }
+
+    .ft-card .ft-line {
+      width: 88%;
+      font-size: clamp(13px, 1.05vw, 15px);
+    }
+
+    .ft-open {
+      inset-block-start: 16px;
+      inset-inline-end: 16px;
+      width: 36px;
+      height: 36px;
+    }
+
+    .ft-progress {
+      gap: 8px;
+    }
+
+    .ft-progress i {
+      width: 24px;
+    }
+
+    &.is-stats .ft-panel {
+      inset: 0;
+      width: 440px;
+      max-height: calc(100% - 48px);
+      margin: auto;
+      padding-bottom: 0;
+      border-radius: 24px;
+    }
+
+    &.is-stats .ft-panel::before {
+      content: none;
+    }
+
+    &.is-stats .ft-close {
+      width: 36px;
+      height: 36px;
+    }
+
+    &.is-stats .ft-body {
+      padding: 22px 24px 24px;
+    }
+
+    &.is-stats .ft-detail-title {
+      font-size: 24px;
+    }
+
+    .ft-detail-text {
+      -webkit-line-clamp: 8;
+    }
+
+    &.is-stats .ft-detail-text {
+      margin-top: 20px;
+    }
+  }
+
+  @media (width >= 900px) {
+    /* stat tiles: one row of figures across the section, 30.45 apart (the Figma frame's unit,
+       --ft-u, set on the section) */
+    &.is-stats .card-list {
+      display: flex;
+      justify-content: flex-start;
+      gap: calc(30.45 * var(--ft-u, 1px));
+    }
+
+    /* a tile at most a third of the row: a very long label wraps (two lines, then "…") rather
+       than stretch its tile across the row, as with two or three tiles (the usual tiles are
+       narrower, 216 to 298 at 1280) */
+    &.is-stats .card-list > .ft-card.is-stat {
+      max-width: calc((100cqi - 2 * 30.45 * var(--ft-u, 1px)) / 3);
+    }
+
+    /* more than four tiles (the rail, above): four across the row, each a quarter of it (as
+       four tiles share it), the rest on to the right */
+    &.is-stats:not(.is-authoring) .card-list:has(> .ft-card:nth-child(5)) > .ft-card.is-stat {
+      flex: none;
+      width: calc((100cqi - 3 * 30.45 * var(--ft-u, 1px)) / 4);
+    }
+
+    .ft-card.is-stat .ft-title {
+      font-size: clamp(26px, 2.35vw, 34px);
+      line-height: 1.1968;
+    }
+
+    .ft-card.is-stat .ft-line {
+      margin-top: 10px;
+      font-size: clamp(17px, 1.5vw, 20px);
+      line-height: 1.2;
+      opacity: 0.55;
+    }
+
+    .ft-card.is-stat .ft-open {
+      inset-block-start: -5px;
+      width: 24px;
+      height: 24px;
+      margin-inline-start: 12px;
+    }
+
+    .ft-card.is-stat .ft-open-icon {
+      width: 10px;
+    }
+
+    /* image-card detail: picture at the left, copy at the right */
+    .ft-detail {
+      --ft-pop-w: min(1000px, 84%);
+      --ft-pop-h: min(580px, 78%);
+    }
+
+    .ft-panel {
+      flex-direction: row;
+    }
+
+    .ft-slot {
+      width: 56%;
+      height: auto;
+    }
+
+    .ft-media {
+      width: calc(var(--ft-pop-w) * 0.56);
+      height: var(--ft-pop-h);
+      border-radius: 24px 0 0 24px;
+    }
+
+    .ft-body {
+      justify-content: center;
+      gap: 18px;
+      padding: 48px 44px;
+    }
+
+    .ft-close {
+      inset-block-start: 18px;
+      inset-inline-end: 18px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .ft-detail-title {
+      font-size: clamp(24px, 2.2vw, 34px);
+    }
+
+    .ft-detail-text {
+      font-size: clamp(14px, 1.25vw, 16px);
+    }
+
+    &.is-stats .ft-panel {
+      flex-direction: column;
+    }
+
+    &.is-stats .ft-close {
+      inset-inline-end: 14px;
+    }
+
+    &.is-stats .ft-body {
+      justify-content: initial;
+      padding: 22px 24px 24px;
+    }
+  }
+
+  /* short desktop screens, as the source */
+  @media (width >= 768px) and (height <= 820px) {
+    &.is-stats .ft-detail-title {
+      font-size: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-list {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@keyframes ft-fade-start {
+  from {
+    --ft-fade-start: 0;
+  }
+
+  to {
+    --ft-fade-start: var(--ft-fade, var(--ft-gutter));
+  }
+}
+
+@keyframes ft-fade-end {
+  from {
+    --ft-fade-end: var(--ft-fade, var(--ft-gutter));
+  }
+
+  to {
+    --ft-fade-end: 0;
+  }
+}
+
+/* --- the sections holding the Features cards (Code T prototype: .rail-wrap .fold-head, .perf-hero,
+   .perf-tag). They sit here, next to the cards, because they only apply to a section holding a
+   Features block; selectors start at the section, so no other section is reached. --- */
+
+/* Technology, Safety (Light sections): as the source's .rail-wrap, the heading at a fixed
+   distance below the top, the rail filling the screen down to a fixed distance above the foot,
+   the progress dashes in that foot room; across the full width, a 20px / 64px gutter */
+main > .section.light:has(.cards.features) {
+  --ft-rail-top: 84px;
+  --ft-rail-bottom: 116px;
+  --ft-rail-gap: 20px;
+  --ft-rail-dash: 82px;
+  --ft-rail-gutter: 20px;
+  --ft-rail-clear: 16px;
+
+  justify-content: flex-start;
+  gap: var(--ft-rail-gap);
+
+  /* the heading never under the site header's bar (--nav-offset), shown again on a move up */
+  padding-block: max(var(--ft-rail-top), var(--nav-offset, 90px) + var(--ft-rail-clear)) var(--ft-rail-bottom);
+
+  @media (width >= 600px) {
+    --ft-rail-top: 104px;
+    --ft-rail-bottom: 104px;
+    --ft-rail-gap: 40px;
+    --ft-rail-dash: 51px;
+    --ft-rail-gutter: 64px;
+  }
+
+  /* short desktop screens, as Figma at 1280 x 720: heading at 88px (10px clear of the
+     header), cards down to 87px above the foot, dashes 44px under them */
+  @media (width >= 900px) and (height <= 860px) {
+    --ft-rail-top: 88px;
+    --ft-rail-bottom: 87px;
+    --ft-rail-gap: 32px;
+    --ft-rail-dash: 41px;
+    --ft-rail-clear: 10px;
+  }
+
+  > :is(.default-content-wrapper, .cards-wrapper) {
+    max-width: none;
+    margin: 0;
+    padding-inline: var(--ft-rail-gutter);
+  }
+
+  /* the rail takes the room left under the heading; its cards are as tall as it */
+  > .cards-wrapper {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .cards.features:not(.is-stats, .is-authoring) {
+    --ft-progress-gap: calc(var(--ft-rail-bottom) - var(--ft-rail-dash) - var(--ft-progress-h));
+
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+
+    > .card-list {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    /* as tall as the rail, never taller: a fixed minimum overflowed it on short screens and the
+       cards' tops (radius, "+") were cut off */
+    .ft-card {
+      height: auto;
+      min-height: 0;
+    }
+  }
+}
+
+/* the title and its sub-line above the rail, side by side from 600px */
+main > .section.light:has(.cards.features) > .default-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 0;
+
+  > * {
+    margin: 0;
+  }
+
+  > h2 {
+    color: #2e2e2e;
+    font-family: var(--font-family-display);
+    font-size: clamp(21px, 6.3vw, 26px);
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: uppercase;
+    text-wrap: balance;
+
+    /* two lines, the rest cut off (no ellipsis) */
+    max-height: 2lh;
+    overflow: hidden;
+  }
+
+  /* three lines, then an ellipsis */
+  > h2 + p {
+    display: -webkit-box;
+    overflow: hidden;
+    color: rgb(0 0 0 / 55%);
+    font-family: var(--font-family-base);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  @media (width >= 600px) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 64px;
+
+    > h2 {
+      max-width: 22ch;
+      font-size: clamp(26px, 3.125vw, 44px);
+    }
+
+    > h2 + p {
+      flex: 0 1 420px;
+      font-size: clamp(14px, 1.25vw, 16px);
+      line-height: 1.6;
+    }
+  }
+
+  /* short desktop screens, as the source */
+  @media (width >= 900px) and (height <= 860px) {
+    > h2 {
+      font-size: clamp(26px, 2.5vw, 34px);
+    }
+
+    > h2 + p {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
+}
+
+/* Performance (stat tiles): the picture fills the section; over it, the big figure at the top
+   left (cards-features.js splits "359 PS" into its number and unit), its label beside the unit,
+   the tag line at the top right (from 1200px), and the tiles at the foot */
+main > .section:has(.cards.features.is-stats) {
+  position: relative;
+  isolation: isolate;
+
+  /* the picture reaches past the section's sides: always clipped, also where sections let their
+     content overflow (reduced motion, Universal Editor), or it widens the page */
+  overflow: clip;
+
+  /* a Video block authored in the picture's place: behind everything, as the picture (2% above,
+     8% beyond each side, 14% below), whatever the block's own markup; its video covers it.
+     The minimum sizes keep that size whatever width or height cap a site's own styles set on
+     a block, a wrapper or a video (a minimum wins over a maximum): a 1280px cap left the
+     video short of the screen's right edge */
+  > :not(.default-content-wrapper, .cards-wrapper):has(video) {
+    position: absolute;
+    inset: -2% -8% -14%;
+    z-index: -1;
+    min-width: 116%;
+    max-width: none;
+    min-height: 116%;
+    margin: 0;
+    padding: 0;
+    aspect-ratio: auto;
+  }
+
+  > :not(.default-content-wrapper, .cards-wrapper):has(video) :has(video),
+  > .default-content-wrapper > :has(video):not(:has(strong, a)) :has(video) {
+    width: 100%;
+    min-width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    aspect-ratio: auto;
+  }
+
+  > :not(.cards-wrapper) video {
+    display: block;
+    width: 100%;
+    min-width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+    object-position: 50% 100%;
+  }
+
+  > .default-content-wrapper {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-rows: auto 1fr;
+    max-width: none;
+    margin: 0 0 auto;
+
+    /* as Figma: the figure 84px from the top (the section hides the site header) */
+    padding: 84px 20px 0;
+    color: var(--color-white, #fff);
+
+    > * {
+      margin: 0;
+    }
+
+    /* the picture: behind everything, larger than the section and anchored at its foot, as the
+       source's .perf-bg (2% above, 8% beyond each side, 14% below; the section clips it) */
+    > p:has(> picture:only-child) {
+      position: absolute;
+      inset: -2% -8% -14%;
+      z-index: -1;
+    }
+
+    > p:has(> picture:only-child) picture,
+    > p:has(> picture:only-child) img {
+      display: block;
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 100%;
+    }
+
+    /* a video in the text, in the picture's place: the same (cards-features.js makes it a
+       muted, looping background without controls) */
+    > :has(video):not(:has(strong, a)) {
+      position: absolute;
+      inset: -2% -8% -14%;
+      z-index: -1;
+      min-width: 116%;
+      max-width: none;
+      min-height: 116%;
+      aspect-ratio: auto;
+    }
+
+    /* the figure (a bold paragraph, or a bare <strong> as Universal Editor publishes it): number
+       (rows 1-2), unit beside its top, the label beside its foot */
+    > p:has(> strong:only-child) {
+      display: contents;
+    }
+
+    /* the figure (its number and unit at most MAX_CHARS characters, cards-features.js) */
+    :is(& > p:has(> strong:only-child) > strong, & > strong) {
+      grid-area: 1 / 1 / 3 / 2;
+      font-family: var(--font-family-display);
+      font-size: clamp(88px, 27vw, 120px);
+      font-weight: var(--font-weight-regular, 400);
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+    }
+
+    :is(& > p:has(> strong:only-child) > strong, & > strong):has(> .ft-figure-unit) {
+      display: contents;
+    }
+
+    .ft-figure-number {
+      grid-area: 1 / 1 / 3 / 2;
+    }
+
+    /* phones: four characters (e.g. 1250) a quarter smaller, so the unit stays on screen */
+    @media (width < 600px) {
+      .ft-figure-number.is-long {
+        font-size: 0.75em;
+      }
+    }
+
+    .ft-figure-unit {
+      grid-area: 1 / 2;
+      justify-self: start; /* as wide as its text (the label below sets the column) */
+      margin: 8px 0 0;
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: normal;
+    }
+
+    /* the figure's label: three lines on phones (its column is narrow), two from 600px, then "…" */
+    > :is(p:has(> strong:only-child), strong) + p {
+      display: -webkit-box;
+      grid-area: 2 / 2;
+      align-self: end;
+      max-width: 7em;
+      margin: 0 0 4px 4px;
+      overflow: hidden;
+      font-family: var(--font-family-base);
+      font-size: 13px;
+      line-height: 15px;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+
+      /* the cut edge 0.07em below the box: room for the letters below the line (g, p, y), not
+         for the hidden next line; the box itself stays as tall as its lines */
+      @supports (overflow-clip-margin: 1px) {
+        overflow: clip;
+        overflow-clip-margin: 0.07em;
+      }
+    }
+
+    /* the tag line: desktop only, as the source */
+    > p:last-child:not(:has(> strong:only-child, > picture:only-child)) {
+      display: none;
+    }
+  }
+
+  /* the tiles: their foot 76px above the screen's (the source's dock room), 20 from the sides */
+  > .cards-wrapper {
+    margin-top: auto;
+    margin-bottom: 76px;
+    padding-inline: 20px;
+  }
+
+  /* from 600px: a 64px gutter, the source's desktop figure */
+  @media (width >= 600px) {
+    > .default-content-wrapper {
+      /* as the source: up to 210px, smaller (never under 70%) on short screens so the figure
+         stays clear of the car; the unit (52px) scales with it. The figure starts 12px under
+         the site header's bar (--nav-offset, the source has it at 64px), so it ends where it
+         did: the room is the source's 34.4svh - 102px less that shift */
+      --ft-figure: clamp(120px, 15.2vw, 210px);
+      --ft-figure-k: clamp(0.7, tan(atan2(34.4svh - 50px - var(--nav-offset, 90px), var(--ft-figure))), 1);
+
+      padding: calc(var(--nav-offset, 90px) + 12px) 64px 0;
+
+      /* Universal Editor: the frame grows with the page, so size as on a 900px tall screen */
+      body:has([data-aue-resource]) & {
+        --ft-figure-k: clamp(0.7, tan(atan2(259.6px - var(--nav-offset, 90px), var(--ft-figure))), 1);
+      }
+
+      :is(& > p:has(> strong:only-child) > strong, & > strong) {
+        font-size: calc(var(--ft-figure) * var(--ft-figure-k));
+      }
+
+      .ft-figure-unit {
+        margin: 14px 0 0 4px;
+        font-size: calc(52px * var(--ft-figure-k));
+      }
+
+      > :is(p:has(> strong:only-child), strong) + p {
+        max-width: 7.6em;
+        margin: 0 0 6px 4px;
+        font-size: 20px;
+        line-height: 20px;
+        -webkit-line-clamp: 2;
+      }
+    }
+
+    > .cards-wrapper {
+      max-width: none;
+      margin-bottom: 100px;
+      padding-inline: 64px;
+    }
+  }
+
+  /* short screens, as the source */
+  @media (width >= 600px) and (height <= 800px) {
+    > .cards-wrapper {
+      margin-bottom: 84px;
+    }
+  }
+
+  /* the tag line at the top right, where there is room for it beside the figure; two lines,
+     then "…" */
+  @media (width >= 1200px) {
+    > .default-content-wrapper > p:last-child:not(:has(> strong:only-child, > picture:only-child)) {
+      display: -webkit-box;
+      grid-area: 1 / 4 / 3 / 5;
+      align-self: start;
+      width: max-content;
+      max-width: 14.5625em; /* 466 at 32px, the Figma's: its left 214.42 from the unit's right */
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      font-family: var(--font-family-display);
+      font-size: 32px;
+      font-weight: var(--font-weight-medium, 500);
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+  }
+
+  /* desktop: the Figma frame (1280×720), scaled down evenly on smaller or shorter screens, and
+     not tied to the site header's height: the figure 64 from the top, 146.09 (134.4 a line), its
+     unit 39.04 and 14 below its top; the tiles' lines 83 above the foot (titles at 568) */
+  @media (width >= 900px) {
+    --ft-u: min(calc(100vw / 1280), calc(100svh / 720));
+
+    > .default-content-wrapper {
+      padding-top: calc(64 * var(--ft-u));
+
+      :is(& > p:has(> strong:only-child) > strong, & > strong) {
+        font-size: calc(146.09 * var(--ft-u));
+      }
+
+      .ft-figure-unit {
+        margin-top: calc(14 * var(--ft-u));
+        font-size: calc(39.04 * var(--ft-u));
+      }
+    }
+
+    > .cards-wrapper {
+      margin-bottom: calc(83 * var(--ft-u));
+    }
+  }
+}

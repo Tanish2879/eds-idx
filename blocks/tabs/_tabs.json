@@ -1,0 +1,142 @@
+{
+  "definitions": [
+    {
+      "title": "Tabs",
+      "id": "tabs",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Tabs",
+              "model": "tabs",
+              "filter": "tabs"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab",
+      "id": "tab",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Tab",
+              "model": "tab",
+              "filter": "richtext"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "tabs",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Style",
+          "description": "Combine freely, e.g. Vertical + Pills. Accordion on mobile stacks the tabs below 600px. Specs lays out a spec comparison: give each tab a Fragment holding a Columns block (one column per model; row 1 the model names, every other cell a label and a value as two paragraphs). Locations shows each tab as an image tile: give each tab a city Title and one image as its Content; the open tab's image fills the section. FAQ puts text tabs above the accordions of a Light FAQ section: give each tab a Title, then add one Accordion block per tab after the Tabs block in the same section (the first accordion goes in the first tab, and so on), or give a tab a Fragment holding an Accordion. Vertical in a Product Page section: 3 to 7 tabs; at most 7, no more can be added after the 7th.",
+          "options": [
+            { "name": "Vertical", "value": "vertical" },
+            { "name": "Pills", "value": "pills" },
+            { "name": "Brackets", "value": "brackets" },
+            { "name": "Accordion on mobile", "value": "accordion-mobile" },
+            { "name": "Specs (comparison)", "value": "specs" },
+            { "name": "Locations (image tiles)", "value": "locations" },
+            { "name": "FAQ (accordions)", "value": "faq" }
+          ]
+        },
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "defaultTab",
+          "label": "Open Tab",
+          "description": "Which tab is open when the page loads (1 = first). A link to #tab-name opens that tab instead.",
+          "min": 1
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "activation",
+          "label": "Keyboard Activation",
+          "description": "Automatic opens a tab as the arrow keys reach it. Manual only moves focus, Enter or Space opens it (better when tabs load heavy content).",
+          "value": "auto",
+          "options": [
+            { "name": "Automatic", "value": "auto" },
+            { "name": "Manual", "value": "manual" }
+          ]
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "lightMode",
+          "label": "Light Mode",
+          "description": "On: the tabs sit on a white card with dark text. Off: they follow the section (light text on the default dark sections).",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "tab",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Tab Title",
+          "required": true,
+          "description": "Short label shown on the tab. Also used for the tab's link, e.g. #tab-specifications.",
+          "validation": {
+            "maxLength": 40
+          }
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "content",
+          "label": "Content",
+          "value": ""
+        },
+        {
+          "component": "aem-content",
+          "name": "fragment",
+          "label": "Fragment (Optional)",
+          "description": "Show a fragment's content (any blocks) in this tab, below the Content. It loads when the tab is first opened."
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image (Optional)",
+          "description": "An image shown in this tab's panel.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "tabs",
+      "components": [
+        "tab"
+      ]
+    },
+    {
+      "id": "tabs-full",
+      "components": []
+    }
+  ]
+}

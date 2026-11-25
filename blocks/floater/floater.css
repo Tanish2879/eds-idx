@@ -1,0 +1,379 @@
+/* Floater. Glass: Figma 8990:2159 (desktop), 8990:907 (phone). Dark: Figma 9671:1856 (desktop,
+   tablets), 8983:7110 (phone). */
+
+.floater {
+  --floater-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* site button tokens, sized for the bar */
+  --floater-control-h: 40px;
+  --floater-pop: clip-path 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+  --button-font-size: 14px;
+  --button-line-height: 1;
+  --button-letter-spacing: normal;
+  --button-padding: 0 16px;
+
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+  max-width: calc(100vw - 32px);
+  min-height: 48px;
+  margin: 0;
+  padding: 4px 4px 4px 20px;
+  border-radius: 12px;
+  background-color: rgb(0 0 0 / 35%);
+  backdrop-filter: blur(20px) saturate(1.2);
+  color: var(--color-white);
+  text-transform: uppercase;
+  white-space: nowrap;
+  translate: -50% 60px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.35s,
+    translate 0.5s var(--floater-ease),
+    visibility 0s 0.5s;
+
+  &.is-shown {
+    translate: -50% 0;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      opacity 0.45s,
+      translate 0.6s var(--floater-ease),
+      visibility 0s;
+  }
+
+  .floater-intro {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .floater-text {
+    font-family: var(--font-family-base);
+    color: #f2f2f2;
+    letter-spacing: normal;
+  }
+
+  .floater-rule {
+    flex: none;
+    width: 1px;
+    height: 14px;
+    margin-inline: -4px;
+    background-color: rgb(255 255 255 / 22%);
+  }
+
+  .button:any-link {
+    height: var(--floater-control-h);
+  }
+
+  /* no border, for Figma's width */
+  .button.primary:any-link {
+    border-width: 0;
+  }
+
+  .floater-link {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: var(--floater-control-h);
+    margin-inline: -8px;
+    padding: var(--button-padding);
+    border-radius: var(--button-radius);
+    font-family: var(--button-font-family);
+    font-size: var(--button-font-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--button-line-height);
+    letter-spacing: var(--button-letter-spacing);
+    text-decoration: none;
+    color: var(--floater-link-color, var(--color-white));
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .floater-link:is(:hover, :focus-visible),
+  .floater-link[aria-expanded='true'] {
+    background-color: rgb(255 255 255 / 12%);
+    color: var(--color-white);
+  }
+
+  :is(.floater-link, .button):focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+
+  /* brochure popup */
+  .floater-brochure {
+    position: relative;
+    display: flex;
+  }
+
+  .floater-brochure > .brochure-label {
+    display: flex;
+    margin: 0;
+  }
+
+  button.floater-link {
+    border: 0;
+    background: none;
+    text-transform: inherit;
+    cursor: pointer;
+  }
+
+  .floater-brochure > .brochure-links {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    box-sizing: border-box;
+    min-width: 236px;
+    margin: 0;
+    padding: 6px;
+    border-radius: 18px;
+    background-color: rgb(18 18 18 / 66%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 14%);
+    backdrop-filter: blur(28px) saturate(1.3);
+    transform: translateX(-50%);
+    visibility: hidden;
+    opacity: 0;
+    clip-path: inset(100% 0 0 round 18px);
+    transition: var(--floater-pop), visibility 0s 0.55s;
+  }
+
+  .floater-brochure.is-open > .brochure-links {
+    visibility: visible;
+    opacity: 1;
+    clip-path: inset(0 round 18px);
+    transition: var(--floater-pop);
+  }
+
+  .floater-brochure > .brochure-links > a:any-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 46px;
+    padding: 0 14px;
+    border-radius: 12px;
+    font-family: var(--font-family-base);
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    color: var(--color-white);
+    transition: background-color 0.2s;
+
+    &::before {
+      content: '';
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      background-color: currentcolor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v11.5m0 0 4.5-4.5M12 15l-4.5-4.5M4.5 20.5h15'/%3E%3C/svg%3E") center / contain no-repeat;
+    }
+
+    &[href*='wa.me']::before,
+    &[href*='whatsapp']::before {
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.4-4.3A8.5 8.5 0 1 1 20.5 11.7Z'/%3E%3Cpath d='M9.2 8.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.5 1.9 2.6 2.4.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.3.5 0 .6-.3 1.3-.9 1.6-.6.3-1.6.4-3.3-.4a9.4 9.4 0 0 1-3.9-3.7c-.8-1.4-.6-2.5-.1-3.1Z'/%3E%3C/svg%3E");
+    }
+
+    &:is(:hover, :focus-visible) {
+      outline: none;
+      background-color: rgb(255 255 255 / 12%);
+    }
+  }
+
+  @media (width < 600px) {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+    gap: 11px;
+    min-height: 46px;
+    padding: 5px 5px 5px 12.5px;
+
+    .floater-intro {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      font-size: 10.5px;
+      line-height: 12px;
+    }
+
+    --floater-control-h: 36px;
+    --button-font-size: 10.5px;
+    --button-padding: 0 12px;
+    --button-radius: 12px;
+  }
+
+  &.dark {
+    --floater-control-h: 38px;
+    --button-font-size: 12px;
+    --button-line-height: 14px;
+    --button-letter-spacing: 0.04em;
+    --button-padding: 0 18px;
+    --button-radius: 9px;
+
+    gap: 8px;
+    min-height: 48px;
+    padding: 5px 5px 5px 7px;
+    border-radius: 14px;
+    background-color: rgb(23 23 25);
+    box-shadow: 0 8px 28px rgb(0 0 0 / 16%);
+
+    .floater-intro {
+      padding-left: 12px;
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold, 600);
+      letter-spacing: 0.04em;
+    }
+
+    /* a Text beside the Name (e.g. the price): quieter than the Name */
+    .floater-text {
+      font-weight: var(--font-weight-regular);
+      letter-spacing: normal;
+      color: rgb(255 255 255 / 70%);
+    }
+
+    .floater-rule {
+      margin: 0 4px;
+    }
+
+    :is(.floater-link, .button:any-link) {
+      margin: 0;
+      font-weight: var(--font-weight-semibold, 600);
+    }
+
+    .floater-link {
+      padding: 0 12px;
+    }
+
+    /* desktop and tablets: Figma 9671:1856, a compact bar of plain links; a button (RESERVE NOW,
+       authored in bold) looks like the other links. Phones keep Figma 8983:7110 (below) */
+    @media (width >= 600px) {
+      --floater-control-h: 36px;
+
+      gap: 24px;
+      min-height: 36px;
+      padding: 0 16px 0 14px;
+      border-radius: 12px;
+      background-color: rgb(16 16 18 / 80%);
+      box-shadow: 0 6px 22px rgb(0 0 0 / 18%);
+
+      .floater-intro {
+        padding-left: 0;
+        font-size: 11px;
+        font-weight: var(--font-weight-medium);
+        line-height: 11px;
+        letter-spacing: 0.08em;
+      }
+
+      /* 14.5px after the name, 20px before the first link */
+      .floater-rule {
+        margin: 0 -4px 0 -9.5px;
+      }
+
+      :is(.floater-link, .button:any-link) {
+        height: var(--floater-control-h);
+        margin-inline: -12px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: var(--radius-8);
+        background-color: transparent;
+        font-family: var(--font-family-base);
+        font-size: 11px;
+        font-weight: var(--font-weight-medium);
+        line-height: 13px;
+        letter-spacing: 0.05em;
+        color: rgb(255 255 255 / 92%);
+      }
+
+      :is(.floater-link, .button:any-link):is(:hover, :focus-visible),
+      .floater-link[aria-expanded='true'] {
+        background-color: rgb(255 255 255 / 12%);
+        color: var(--color-white);
+      }
+    }
+
+    @media (width < 600px) {
+      right: 12px;
+      left: 12px;
+      justify-content: space-between;
+      gap: 4px;
+      max-width: none;
+      min-height: 48px;
+      padding: 4px;
+      border-radius: 12px;
+      translate: 0 60px;
+
+      &.is-shown {
+        translate: 0 0;
+      }
+
+      .floater-intro,
+      .floater-rule {
+        display: none;
+      }
+
+      /* Figma 8983:7110 */
+      --floater-control-h: 40px;
+      --button-font-size: 11px;
+      --button-line-height: 13px;
+      --button-padding: 0 9px;
+      --button-radius: var(--radius-8);
+      --button-letter-spacing: 0.03em;
+
+      :is(.floater-link, .button:any-link) {
+        justify-content: center;
+        margin: 0;
+        padding: var(--button-padding);
+      }
+
+      /* a bar with a Text and one button (no quick links), e.g. Name + price + Test drive:
+         the Name and Text stay, the button at the end */
+      &:has(.floater-text):not(:has(.floater-link, .floater-brochure)) .floater-intro {
+        display: flex;
+        flex: 0 1 auto;
+        flex-wrap: wrap;
+        gap: 2px 8px;
+        min-width: 0;
+        padding-left: 12px;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &.is-shown {
+      translate: -50% 0;
+      transition: opacity 0.2s, visibility 0s;
+    }
+  }
+}
+
+html:is(.is-nav-open, .is-modal-open) .floater.is-shown {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Universal Editor */
+.floater.is-editing {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  translate: none;
+  opacity: 1;
+  visibility: visible;
+  width: max-content;
+  margin: 24px auto;
+}

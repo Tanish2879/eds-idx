@@ -1,0 +1,758 @@
+/* Hero Carousel "Showroom Layout" (class "showroom", loaded by hero.js only with it): the
+   hero's own Text stays beside every slide — the eyebrow above the slide's heading and the
+   info card (dl.showroom-card, built by hero-showroom.js) under the slide's text.
+   Desktop values are the source's 1280x720 frame (meridian-motors-dealer, #about), scaled by
+   --sr-u like the source's --u, with its edge pinning (--sr-ex, --sr-ey) on screens wider or
+   taller than 16:9. Phones get their own layout (the source only scales its desktop frame). */
+
+/* the wipe between photos (hero-showroom.js sets .is-wiping while it runs) */
+@property --sr-y {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@keyframes hero-showroom-wipe {
+  from { --sr-y: 0; }
+  to { --sr-y: 1; }
+}
+
+@keyframes hero-showroom-in {
+  from { translate: 12% 0; }
+  to { translate: 0 0; }
+}
+
+@keyframes hero-showroom-in-back {
+  from { translate: -12% 0; }
+  to { translate: 0 0; }
+}
+
+@keyframes hero-showroom-out {
+  from { translate: 0 0; }
+  to { translate: -25% 0; }
+}
+
+@keyframes hero-showroom-out-back {
+  from { translate: 0 0; }
+  to { translate: 25% 0; }
+}
+
+@keyframes hero-showroom-blur {
+  0%, 100% { filter: blur(0); }
+  50% { filter: blur(5px); }
+}
+
+main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
+  /* phone unit: a 390x844 screen */
+  --sr-m: clamp(0.75px, min(100vw / 390, 100svh / 844), 1.4px);
+
+  /* the source's motion: the photo wipe and the caption's blur-through */
+  --sr-wipe-ms: 0.95s;
+  --sr-wipe-ease: linear(0, 0.004, 0.017, 0.0399, 0.073, 0.1166, 0.171, 0.2364, 0.3129, 0.4008, 0.5, 0.6355, 0.744, 0.8285, 0.892, 0.9375, 0.968, 0.9865, 0.996, 0.9995, 1);
+  --sr-in: cubic-bezier(0.32, 0, 0.67, 0);
+  --sr-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --sr-shift: calc(8 * var(--sr-m));
+
+  /* the fixed price bar (floater): how far its top is above the screen's bottom */
+  --sr-floater-top: 58px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: calc(112 * var(--sr-m)) calc(20 * var(--sr-m)) calc(var(--sr-floater-top) + 16px + env(safe-area-inset-bottom));
+  background-color: #111;
+
+  @media (width >= 900px) {
+    --sr-u: min(100vw / 1280, 100svh / 720);
+    --sr-ex: max(0px, (100vw - 1280 * var(--sr-u)) / 2);
+    --sr-ey: max(0px, (100svh - 720 * var(--sr-u)) / 2);
+    --sr-shift: calc(8 * var(--sr-u));
+    --sr-floater-top: 68px;
+
+    align-items: flex-start;
+
+    /* the source's 92 / 7 / 12 copy offsets, less what this build of New Science adds above
+       its baselines (2.2, 2.7 and -2.7 of --sr-u), so the lines sit on the source's baselines */
+    padding: calc(89.8 * var(--sr-u) + 2 * var(--sr-ey)) 0 0 calc(64 * var(--sr-u));
+  }
+
+  /* the source's shading: dark at the bottom, plus a light veil behind the copy (top left) so
+     white text stays readable (WCAG AA) on the bright showroom photo */
+  > .bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    background:
+      linear-gradient(0deg, rgb(0 0 0 / 66%) 0%, rgb(0 0 0 / 28%) 34%, rgb(0 0 0 / 0%) 58%),
+      linear-gradient(180deg, rgb(0 0 0 / 64%) 0%, rgb(0 0 0 / 56%) 22%, rgb(0 0 0 / 48%) 44%, rgb(0 0 0 / 0%) 66%);
+    pointer-events: none;
+
+    @media (width >= 900px) {
+      background:
+        linear-gradient(0deg, rgb(0 0 0 / 66%) 0%, rgb(0 0 0 / 28%) 34%, rgb(0 0 0 / 0%) 58%),
+        radial-gradient(ellipse 48% 50% at 22% 32%, rgb(0 0 0 / 52%) 0%, rgb(0 0 0 / 48%) 50%, rgb(0 0 0 / 0%) 100%);
+    }
+  }
+
+  /* the photos: one shown; a change wipes the next in over the last along a curved edge
+     (0.95s), the last drifting away and both blurring a little mid-way */
+  .slide {
+    z-index: 0;
+    visibility: hidden;
+    transform: none;
+    clip-path: none;
+    transition: none;
+
+    &.is-active {
+      z-index: 1;
+      visibility: visible;
+      transform: none;
+      transition: none;
+    }
+
+    &.is-leaving {
+      z-index: 0;
+      visibility: hidden;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* not the carousel's push to the side, either way */
+  .slides.is-back .slide {
+    &:not(.is-active, .is-leaving),
+    &.is-leaving {
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &.is-wiping .slide {
+      &.is-leaving {
+        visibility: visible;
+
+        :is(img, video) {
+          animation:
+            hero-showroom-out var(--sr-wipe-ms) var(--sr-wipe-ease) both,
+            hero-showroom-blur var(--sr-wipe-ms) linear;
+        }
+      }
+
+      &.is-active {
+        --sr-e: calc((1 - var(--sr-y)) * 100%);
+        --sr-a: calc(7% * sin(var(--sr-y) * 180deg));
+
+        clip-path: polygon(
+          var(--sr-e) 0%,
+          calc(var(--sr-e) - var(--sr-a) * 0.4375) 12.5%,
+          calc(var(--sr-e) - var(--sr-a) * 0.75) 25%,
+          calc(var(--sr-e) - var(--sr-a) * 0.9375) 37.5%,
+          calc(var(--sr-e) - var(--sr-a)) 50%,
+          calc(var(--sr-e) - var(--sr-a) * 0.9375) 62.5%,
+          calc(var(--sr-e) - var(--sr-a) * 0.75) 75%,
+          calc(var(--sr-e) - var(--sr-a) * 0.4375) 87.5%,
+          var(--sr-e) 100%,
+          100% 100%,
+          100% 0%
+        );
+        animation: hero-showroom-wipe var(--sr-wipe-ms) var(--sr-wipe-ease) both;
+
+        :is(img, video) {
+          animation:
+            hero-showroom-in var(--sr-wipe-ms) var(--sr-wipe-ease) both,
+            hero-showroom-blur var(--sr-wipe-ms) linear;
+        }
+      }
+    }
+
+    /* back to an earlier photo: the edge sweeps the other way */
+    &.is-wiping .slides.is-back .slide {
+      &.is-leaving :is(img, video) {
+        animation-name: hero-showroom-out-back, hero-showroom-blur;
+      }
+
+      &.is-active {
+        --sr-e: calc(var(--sr-y) * 100%);
+
+        clip-path: polygon(
+          0% 0%,
+          var(--sr-e) 0%,
+          calc(var(--sr-e) + var(--sr-a) * 0.4375) 12.5%,
+          calc(var(--sr-e) + var(--sr-a) * 0.75) 25%,
+          calc(var(--sr-e) + var(--sr-a) * 0.9375) 37.5%,
+          calc(var(--sr-e) + var(--sr-a)) 50%,
+          calc(var(--sr-e) + var(--sr-a) * 0.9375) 62.5%,
+          calc(var(--sr-e) + var(--sr-a) * 0.75) 75%,
+          calc(var(--sr-e) + var(--sr-a) * 0.4375) 87.5%,
+          var(--sr-e) 100%,
+          0% 100%
+        );
+
+        :is(img, video) {
+          animation-name: hero-showroom-in-back, hero-showroom-blur;
+        }
+      }
+    }
+  }
+
+  /* the hero's own Text: the eyebrow (and, in Universal Editor, the card) */
+  > .content {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
+    @media (width >= 900px) {
+      width: calc(640 * var(--sr-u));
+    }
+  }
+
+  .showroom-eyebrow {
+    display: block;
+    max-width: none;
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--sr-m));
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    letter-spacing: calc(0.54 * var(--sr-m));
+    text-align: left;
+    text-transform: uppercase;
+
+    /* phones: brighter than the source's 75% white, for AA contrast on the bright photo */
+    color: rgb(255 255 255 / 92%);
+    opacity: 1;
+
+    @media (width >= 900px) {
+      color: rgb(255 255 255 / 75%);
+    }
+
+    @media (width >= 900px) {
+      max-width: calc(440 * var(--sr-u));
+      font-size: calc(16 * var(--sr-u));
+      letter-spacing: calc(0.54 * var(--sr-u));
+    }
+  }
+
+  /* each slide's heading and text, the current one shown, all in one place so nothing moves */
+  > .slide-contents {
+    align-items: start;
+    width: 100%;
+    margin-top: calc(6 * var(--sr-m));
+
+    @media (width >= 900px) {
+      width: calc(640 * var(--sr-u));
+      margin-top: calc(4.3 * var(--sr-u));
+    }
+
+    > .content {
+      display: block;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      opacity: 1;
+      transition: visibility 0s linear 0.25s;
+
+      &.is-active {
+        visibility: visible;
+        transition: none;
+      }
+
+      > :is(h1, h2, h3, h4, h5, h6) {
+        max-width: none;
+        margin: 0;
+        font-family: var(--font-family-display);
+        font-size: calc(28 * var(--sr-m));
+        font-weight: var(--font-weight-medium);
+        line-height: 1.05;
+        letter-spacing: calc(-0.28 * var(--sr-m));
+        text-align: left;
+        text-transform: uppercase;
+        text-wrap: balance;
+        color: var(--color-white);
+
+        @media (width >= 900px) {
+          font-size: calc(40 * var(--sr-u));
+          letter-spacing: calc(-0.4 * var(--sr-u));
+        }
+      }
+
+      > p {
+        max-width: calc(340 * var(--sr-m));
+        margin: calc(12 * var(--sr-m)) 0 0;
+        font-family: var(--font-family-base);
+        font-size: calc(15 * var(--sr-m));
+        font-weight: var(--font-weight-regular);
+        line-height: 1.5;
+        letter-spacing: 0;
+        text-align: left;
+        text-transform: none;
+        color: var(--color-white);
+        opacity: 1;
+
+        /* the source's 80% white is 4.4:1 on the bright first photo; 85% keeps AA (4.7:1) */
+        @media (width >= 900px) {
+          max-width: calc(440 * var(--sr-u));
+          margin-top: calc(14.7 * var(--sr-u));
+          font-size: calc(16 * var(--sr-u));
+          color: rgb(255 255 255 / 85%);
+        }
+      }
+    }
+  }
+
+  /* a change of slide: the last caption blurs out (8 down, 0.25s power2.in), the next one blurs
+     back in from 0.45s (0.45s power3.out, its lines 0.06s apart) */
+  @media (prefers-reduced-motion: no-preference) {
+    > .slide-contents > .content {
+      &:not(.is-active) > * {
+        opacity: 0;
+        filter: blur(8px);
+        translate: 0 var(--sr-shift);
+        transition:
+          opacity 0.25s var(--sr-in),
+          filter 0.25s var(--sr-in),
+          translate 0.25s var(--sr-in);
+      }
+
+      &.is-active > * {
+        transition:
+          opacity 0.45s var(--sr-out) 0.45s,
+          filter 0.45s var(--sr-out) 0.45s,
+          translate 0.45s var(--sr-out) 0.45s;
+      }
+
+      &.is-active > * + * {
+        transition-delay: 0.51s;
+      }
+
+      &.is-active > * + * + * {
+        transition-delay: 0.57s;
+      }
+    }
+  }
+
+  /* reduced motion: the other slides' text is simply hidden */
+  @media (prefers-reduced-motion: reduce) {
+    > .slide-contents > .content:not(.is-active) {
+      transition: none;
+    }
+  }
+
+  /* the thumbnail strip: under the text on phones, at the right on desktop */
+  > .slide-nav {
+    position: relative;
+    inset: auto;
+    z-index: 1;
+    order: 1;
+    flex-direction: row;
+    align-self: flex-start;
+    gap: calc(10 * var(--sr-m));
+    margin-top: calc(24 * var(--sr-m));
+    padding: calc(4 * var(--sr-m));
+    border-radius: calc(12 * var(--sr-m));
+    background-color: #000;
+    transform: none;
+
+    @media (width >= 900px) {
+      position: absolute;
+      top: calc(274 * var(--sr-u) + var(--sr-ey));
+
+      /* the source's place, kept clear of the page's section nav (64 wide) at the right edge */
+      left: min(calc(1160 * var(--sr-u) + 2 * var(--sr-ex)), calc(100% - 72px - 56 * var(--sr-u)));
+      flex-direction: column;
+      gap: calc(10 * var(--sr-u));
+      margin: 0;
+      padding: calc(4 * var(--sr-u));
+      border-radius: calc(12 * var(--sr-u));
+    }
+  }
+
+  .slide-thumb {
+    position: relative;
+    width: calc(44 * var(--sr-m));
+    height: calc(44 * var(--sr-m));
+    border: 1px solid transparent;
+    border-radius: calc(10 * var(--sr-m));
+    background-color: transparent;
+    opacity: 0.5;
+
+    @media (width >= 900px) {
+      width: calc(48 * var(--sr-u));
+      height: calc(48 * var(--sr-u));
+      border-radius: calc(10 * var(--sr-u));
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &[aria-current] {
+      border-color: var(--color-white);
+      opacity: 1;
+    }
+
+    /* the source's focus ring (its signal blue, 8:1 on the black strip) */
+    &:focus-visible {
+      outline: 2px solid #4aadd1;
+      outline-offset: 3px;
+    }
+  }
+
+  /* the info card: label column and value column, thin lines between the rows */
+  .showroom-card {
+    position: relative;
+    z-index: 1;
+    order: 2;
+    box-sizing: border-box;
+    width: 100%;
+    margin: auto 0 0;
+    padding: calc(6 * var(--sr-m)) calc(16 * var(--sr-m));
+    border-radius: calc(16 * var(--sr-m));
+
+    /* the source's 5% white, plus a dark tint so the labels stay readable on bright photos */
+    background-color: rgb(255 255 255 / 5%);
+    background-image: linear-gradient(rgb(0 0 0 / 42%), rgb(0 0 0 / 42%));
+    backdrop-filter: blur(50px);
+    color: var(--color-white);
+
+    @media (width >= 900px) {
+      position: absolute;
+
+      /* the source's place, moved up only when a short screen would put it over the price bar */
+      top: min(calc(419 * var(--sr-u) + var(--sr-ey)), calc(100% - var(--sr-floater-top) - 20px - 202 * var(--sr-u)));
+      left: calc(64 * var(--sr-u));
+      width: calc(420 * var(--sr-u));
+      margin: 0;
+      padding: calc(8 * var(--sr-u)) calc(20 * var(--sr-u));
+      border-radius: calc(16 * var(--sr-u));
+    }
+  }
+
+  .showroom-row {
+    display: grid;
+    grid-template-columns: calc(88 * var(--sr-m)) 1fr;
+    gap: 0;
+    padding: calc(11 * var(--sr-m)) 0;
+    border-bottom: 1px solid rgb(255 255 255 / 15%);
+
+    /* the source's 12 above and below, the text lifted the 1.3 this font build sets it lower */
+    @media (width >= 900px) {
+      grid-template-columns: calc(96 * var(--sr-u)) 1fr;
+      padding: calc(10.7 * var(--sr-u)) 0 calc(13.3 * var(--sr-u));
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    dt {
+      margin: 0;
+      font-family: var(--font-family-base);
+      font-size: calc(12 * var(--sr-m));
+      font-weight: var(--font-weight-medium);
+      line-height: calc(16 * var(--sr-m));
+      text-transform: uppercase;
+      color: rgb(255 255 255 / 60%);
+
+      @media (width >= 900px) {
+        font-size: calc(12 * var(--sr-u));
+        line-height: calc(16 * var(--sr-u));
+      }
+    }
+
+    dd {
+      margin: 0;
+      font-family: var(--font-family-base);
+      font-size: calc(14 * var(--sr-m));
+      font-weight: var(--font-weight-medium);
+      line-height: 1.25;
+      color: var(--color-white);
+
+      @media (width >= 900px) {
+        font-size: calc(14 * var(--sr-u));
+      }
+
+      /* an authored link (the mobile design links the phone number) reads as the value */
+      a:any-link {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+  }
+
+  /* ---------- phones: the mobile design (meridian-motors-mobile, #about) ----------
+     Its unit is 390 / 375 on a 390 x 844 screen (--sr-p); its text boxes are trimmed to the
+     capitals, so the margins below are the trimmed gaps less this font's half-leading. The
+     copy starts the design's 22 below the header; the thumbnail strip sits centred above the
+     info card at the bottom, the card the design's 82 above the screen's bottom (clear of the
+     price bar). */
+  @media (width < 900px) {
+    --sr-p: clamp(0.75px, min(100vw / 375, 100svh / 640), 1.6px);
+    --sr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --sr-io: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --sr-shift: calc(16 * var(--sr-p));
+
+    padding: calc(108 * var(--sr-m)) calc(16 * var(--sr-p)) calc(82 * var(--sr-p) + env(safe-area-inset-bottom));
+
+    /* the design's shading is a veil at the top only; ours is darker so the white copy keeps
+       AA contrast on the bright showroom photos */
+    > .bg::after {
+      background: linear-gradient(180deg, rgb(0 0 0 / 62%) 0%, rgb(0 0 0 / 58%) 24%, rgb(0 0 0 / 44%) 36%, rgb(0 0 0 / 0%) 52%);
+    }
+
+    /* the design frames its photos a little left of centre on a tall screen (38 to 50%, per
+       photo; one value here, as the focal point isn't authored) */
+    .slide :is(img, video) {
+      object-position: 40% 50%;
+    }
+
+    .showroom-eyebrow {
+      font-size: calc(12 * var(--sr-p));
+      font-weight: var(--font-weight-regular);
+      line-height: 1.33;
+      letter-spacing: 0;
+    }
+
+    > .slide-contents {
+      margin-top: calc(4.5 * var(--sr-p));
+
+      /* a sideways swipe on the copy steps the slides (hero-showroom.js) */
+      touch-action: pan-y;
+
+      > .content {
+        transition: visibility 0s linear 0.3s;
+
+        > :is(h1, h2, h3, h4, h5, h6) {
+          font-size: calc(30 * var(--sr-p));
+          line-height: 1.18;
+          letter-spacing: 0;
+
+          /* the mobile design lets a heading of two sentences wrap (hero-showroom.js) */
+          .showroom-break {
+            display: none;
+          }
+        }
+
+        > p {
+          max-width: none;
+          margin-top: calc(10.8 * var(--sr-p));
+          font-size: calc(14 * var(--sr-p));
+          line-height: 1.22;
+          color: rgb(255 255 255 / 80%);
+        }
+      }
+    }
+
+    /* thumbnails: a strip centred above the card */
+    > .slide-nav {
+      align-self: center;
+      gap: calc(10 * var(--sr-p));
+      margin: auto 0 calc(14 * var(--sr-p));
+      padding: calc(4 * var(--sr-p));
+      border-radius: calc(16 * var(--sr-p));
+    }
+
+    .slide-thumb {
+      width: calc(52 * var(--sr-p));
+      height: calc(52 * var(--sr-p));
+      padding: 1px;
+      border-radius: calc(12 * var(--sr-p));
+
+      .slide-thumb-picture,
+      .slide-thumb-picture img {
+        overflow: hidden;
+        border-radius: calc(10 * var(--sr-p));
+      }
+    }
+
+    .showroom-card {
+      margin: 0;
+      padding: calc(6 * var(--sr-p)) calc(20 * var(--sr-p));
+      border-radius: calc(16 * var(--sr-p));
+
+      /* the design's 60% is a little lighter: 66%, with 72% labels, keeps AA on the bright floor */
+      background-color: rgb(10 10 10 / 66%);
+      background-image: none;
+      backdrop-filter: blur(15px);
+    }
+
+    .showroom-row {
+      grid-template-columns: calc(100 * var(--sr-p)) 1fr;
+      align-items: center;
+      padding: calc(6.4 * var(--sr-p)) 0 calc(8.2 * var(--sr-p));
+
+      dt {
+        font-size: calc(12 * var(--sr-p));
+        font-weight: var(--font-weight-regular);
+        line-height: 1.5;
+        color: rgb(255 255 255 / 72%);
+      }
+
+      dd {
+        font-size: calc(12 * var(--sr-p));
+        line-height: 1.5;
+      }
+    }
+
+    /* slide changes: the photos cross-fade (0.9s) and the new one settles from 1.06x (1.6s);
+       the caption fades down and out (0.3s), the next rises in from 0.12s */
+    @media (prefers-reduced-motion: no-preference) {
+      .slides .slide,
+      &.is-wiping .slides .slide {
+        &,
+        &.is-active,
+        &.is-leaving {
+          visibility: visible;
+          clip-path: none;
+          opacity: 0;
+          transition: opacity 0.9s var(--sr-io);
+          animation: none;
+        }
+
+        &.is-active {
+          opacity: 1;
+        }
+
+        :is(img, video) {
+          scale: 1.06;
+          transition: scale 1.6s var(--sr-ease);
+          animation: none;
+        }
+
+        &.is-active :is(img, video) {
+          scale: 1;
+        }
+      }
+
+      &.showroom-instant .slides .slide {
+        &,
+        :is(img, video) {
+          transition: none;
+        }
+      }
+
+      > .slide-contents > .content {
+        &:not(.is-active) > * {
+          filter: none;
+          transition:
+            opacity 0.3s ease,
+            translate 0.3s ease;
+        }
+
+        &.is-active > * {
+          transition:
+            opacity 0.6s ease 0.12s,
+            translate 0.8s var(--sr-ease) 0.12s;
+        }
+
+        &.is-active > * + *,
+        &.is-active > * + * + * {
+          transition-delay: 0.22s;
+        }
+      }
+    }
+  }
+
+  /* entering the section from above or below picks its first or last slide at once */
+  &.showroom-instant {
+    > .slide-contents > .content,
+    > .slide-contents > .content > *,
+    .slide-thumb {
+      transition: none;
+    }
+  }
+
+  /* carousel UI the source doesn't have */
+  > .scroll,
+  .slide-controls {
+    display: none;
+  }
+
+  /* Universal Editor: the slides' Text sits in each slide (hero.css); the eyebrow and the card
+     (inside the Text field, its label/value paragraphs hidden) at the top left */
+  &[data-aue-resource] {
+    > .content {
+      .showroom-source {
+        display: none;
+      }
+
+      .showroom-card {
+        position: static;
+        width: 100%;
+        max-width: calc(420 * var(--sr-m));
+        margin-top: calc(20 * var(--sr-m));
+
+        @media (width >= 900px) {
+          width: calc(420 * var(--sr-u));
+          max-width: none;
+          margin-top: calc(24 * var(--sr-u));
+        }
+      }
+    }
+
+    > .slide-nav {
+      @media (width < 900px) {
+        position: absolute;
+        top: 50%;
+        right: calc(20 * var(--sr-m));
+        left: auto;
+        flex-direction: column;
+        margin: 0;
+      }
+    }
+
+    /* each slide's Text sits in its slide (hero.css), so the shading goes on the slide, under it */
+    > .bg::after {
+      content: none;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(0deg, rgb(0 0 0 / 70%) 0%, rgb(0 0 0 / 40%) 40%, rgb(0 0 0 / 30%) 100%);
+      pointer-events: none;
+    }
+
+    .slide > .content {
+      z-index: 2;
+      opacity: 1;
+
+      > :is(h1, h2, h3, h4, h5, h6) {
+        margin: 0;
+        font-family: var(--font-family-display);
+        font-size: calc(28 * var(--sr-m));
+        font-weight: var(--font-weight-medium);
+        line-height: 1.05;
+        text-transform: uppercase;
+        color: var(--color-white);
+
+        @media (width >= 900px) {
+          font-size: calc(40 * var(--sr-u));
+        }
+      }
+
+      > p {
+        margin: calc(12 * var(--sr-m)) 0 0;
+        font-size: calc(15 * var(--sr-m));
+        line-height: 1.5;
+        color: var(--color-white);
+        opacity: 1;
+
+        @media (width >= 900px) {
+          max-width: calc(440 * var(--sr-u));
+          margin-top: calc(12 * var(--sr-u));
+          font-size: calc(16 * var(--sr-u));
+        }
+      }
+    }
+  }
+}

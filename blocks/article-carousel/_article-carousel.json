@@ -1,0 +1,113 @@
+{
+  "definitions": [
+    {
+      "title": "Article Carousel",
+      "id": "article-carousel",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Article Carousel",
+              "model": "article-carousel",
+              "filter": "article-carousel",
+              "viewAllLabel": "View all",
+              "limit": "12"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Article Carousel Tab",
+      "id": "article-carousel-tab",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Article Carousel Tab",
+              "model": "article-carousel-tab"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "article-carousel",
+      "fields": [
+        {
+          "component": "aem-content",
+          "name": "viewAll",
+          "label": "View All Link",
+          "description": "Page the View All button opens (e.g. the full newsroom listing).",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "viewAllLabel",
+          "label": "View All Label",
+          "value": "View all",
+          "required": true
+        },
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "limit",
+          "label": "Max Articles per Tab",
+          "description": "How many article cards each tab shows: a whole number from 1 to 12.",
+          "value": 12,
+          "validation": {
+            "numberMin": 1,
+            "numberMax": 12,
+            "customErrorMsg": "Enter a whole number from 1 to 12."
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "index",
+          "label": "Query Index Path",
+          "description": "Index to read articles from (e.g. /blog-index.json).",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "article-carousel-tab",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Tab Label",
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "name": "root",
+          "label": "Root Path",
+          "description": "Folder the tab lists articles from (e.g. /news).",
+          "required": true
+        },
+        {
+          "component": "aem-tag",
+          "valueType": "string",
+          "name": "tags",
+          "label": "Tags Filter (Optional)"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "article-carousel",
+      "components": [
+        "article-carousel-tab"
+      ]
+    }
+  ]
+}

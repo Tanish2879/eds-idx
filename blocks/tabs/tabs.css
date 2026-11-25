@@ -1,0 +1,1143 @@
+/*
+ * Tabs — base styles, then one section per variant.
+ *
+ * Every variant uses the same markup:
+ *   .tabs > .tabs-list > .tabs-tab   (the tab buttons)
+ *   .tabs > .tabs-panel              (one per tab, [hidden] when not active)
+ * A variant restyles the tabs by overriding the --tabs-* variables below and
+ * changing the layout. To add one: add its class to the Style field in
+ * _tabs.json and a section at the end of this file.
+ *
+ * `>` keeps tabs nested inside a panel on their own styles. Colours come from
+ * currentcolor, so the block works on dark and light sections.
+ */
+
+/* ---------- Base (default variant: underline) ---------- */
+
+.tabs {
+  --tabs-gap: var(--spacing-24);
+  --tabs-font-size: var(--body-font-size-s);
+  --tabs-tab-padding: var(--spacing-12) 0;
+
+  /* 60%: unselected tabs keep >= 4.5:1 contrast on white and on dark */
+  --tabs-tab-color: color-mix(in srgb, currentcolor 60%, transparent);
+  --tabs-tab-active-color: var(--color-accent);
+  --tabs-tab-bg: transparent;
+  --tabs-tab-active-bg: transparent;
+  --tabs-tab-border: 0;
+  --tabs-tab-radius: 0;
+  --tabs-border-color: color-mix(in srgb, currentcolor 15%, transparent);
+  --tabs-indicator-size: 2px;
+  --tabs-panel-padding: var(--spacing-24) 0 0;
+  --tabs-focus-color: var(--color-accent);
+}
+
+/* tab bar: scrolls sideways when the tabs don't fit */
+.tabs > .tabs-list {
+  display: flex;
+  gap: var(--tabs-gap);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--tabs-border-color);
+  scrollbar-width: none;
+}
+
+.tabs > .tabs-list.tabs-list-single {
+  display: none;
+}
+
+.tabs > .tabs-list > .tabs-tab {
+  position: relative;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--tabs-tab-padding);
+  border: var(--tabs-tab-border);
+  border-radius: var(--tabs-tab-radius);
+  background-color: var(--tabs-tab-bg);
+  color: var(--tabs-tab-color);
+  font-family: var(--text-font-family);
+  font-size: var(--tabs-font-size);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  text-align: start;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* active indicator: an underline that grows in */
+.tabs > .tabs-list > .tabs-tab::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--tabs-indicator-size);
+  background-color: var(--tabs-tab-active-color);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.tabs > .tabs-list > .tabs-tab:hover {
+  color: currentcolor;
+}
+
+.tabs > .tabs-list > .tabs-tab[aria-selected='true'] {
+  background-color: var(--tabs-tab-active-bg);
+  color: var(--tabs-tab-active-color);
+}
+
+.tabs > .tabs-list > .tabs-tab[aria-selected='true']::after {
+  transform: scaleX(1);
+}
+
+/* inset, so the scrolling tab bar doesn't clip it */
+.tabs > .tabs-list > .tabs-tab:focus-visible {
+  outline: 2px solid var(--tabs-focus-color);
+  outline-offset: -2px;
+}
+
+.tabs > .tabs-panel {
+  padding: var(--tabs-panel-padding);
+}
+
+.tabs > .tabs-panel[hidden] {
+  display: none;
+}
+
+.tabs > .tabs-panel:focus-visible {
+  outline: 2px solid var(--tabs-focus-color);
+  outline-offset: 4px;
+}
+
+.tabs .tabs-panel-content > :first-child {
+  margin-top: 0;
+}
+
+.tabs .tabs-panel-content > :last-child {
+  margin-bottom: 0;
+}
+
+.tabs .tabs-panel-fragment[data-status='loading'] {
+  min-height: var(--spacing-96);
+}
+
+/* Universal Editor: an empty block still needs something to select */
+.tabs[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  display: block;
+  padding: var(--spacing-24);
+  border: 1px dashed var(--tabs-border-color);
+}
+
+@media (width >= 900px) {
+  .tabs {
+    --tabs-gap: var(--spacing-32);
+    --tabs-font-size: var(--body-font-size-m);
+    --tabs-panel-padding: var(--spacing-32) 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs > .tabs-list > .tabs-tab,
+  .tabs > .tabs-list > .tabs-tab::after {
+    transition: none;
+  }
+}
+
+/* ---------- Variant: brackets — the site's listing style, [ ACTIVE ] ---------- */
+
+.tabs.brackets {
+  --tabs-indicator-size: 0;
+  --tabs-border-color: transparent;
+}
+
+.tabs.brackets > .tabs-list > .tabs-tab[aria-selected='true']::before {
+  content: '[' / '';
+}
+
+.tabs.brackets > .tabs-list > .tabs-tab[aria-selected='true']::after {
+  content: ']' / '';
+  position: static;
+  height: auto;
+  background: none;
+  transform: none;
+}
+
+/* ---------- Variant: pills — rounded, filled tabs ---------- */
+
+.tabs.pills {
+  --tabs-gap: var(--spacing-8);
+  --tabs-tab-padding: var(--spacing-8) var(--spacing-16);
+  --tabs-tab-color: currentcolor;
+  --tabs-tab-active-color: var(--color-black);
+  --tabs-tab-active-bg: var(--color-white);
+  --tabs-tab-border: 1px solid color-mix(in srgb, currentcolor 30%, transparent);
+  --tabs-tab-radius: 999px;
+  --tabs-border-color: transparent;
+  --tabs-indicator-size: 0;
+}
+
+/* room for the outset focus ring inside the scrolling bar */
+.tabs.pills > .tabs-list {
+  padding: 3px;
+}
+
+.tabs.pills > .tabs-list > .tabs-tab:focus-visible {
+  outline-offset: 2px;
+}
+
+.tabs.pills > .tabs-list > .tabs-tab:hover:not([aria-selected='true']) {
+  background-color: color-mix(in srgb, currentcolor 10%, transparent);
+}
+
+/* ---------- Variant: vertical — tabs in a column beside the panel (900px+) ---------- */
+
+@media (width >= 900px) {
+  .tabs.vertical {
+    --tabs-panel-padding: 0;
+
+    display: grid;
+    grid-template-columns: minmax(180px, 25%) minmax(0, 1fr);
+    gap: var(--spacing-48);
+    align-items: start;
+  }
+
+  .tabs.vertical > .tabs-list {
+    grid-area: 1 / 1;
+    flex-direction: column;
+    gap: 0;
+    overflow: visible;
+    border-bottom: 0;
+    border-inline-start: 1px solid var(--tabs-border-color);
+  }
+
+  .tabs.vertical > .tabs-list > .tabs-tab {
+    padding: var(--spacing-12) var(--spacing-16);
+    white-space: normal;
+  }
+
+  /* the indicator moves to the left rail */
+  .tabs.vertical > .tabs-list > .tabs-tab::after {
+    inset: 0 auto 0 -1px;
+    width: var(--tabs-indicator-size);
+    height: auto;
+    transform: scaleY(0);
+  }
+
+  .tabs.vertical > .tabs-list > .tabs-tab[aria-selected='true']::after {
+    transform: scaleY(1);
+  }
+
+  .tabs.vertical > .tabs-panel {
+    grid-area: 1 / 2;
+  }
+
+  .tabs.vertical.pills > .tabs-list {
+    gap: var(--spacing-8);
+    border-inline-start: 0;
+  }
+}
+
+/* ---------- Variant: accordion-mobile — below 600px each tab sits above its panel ---------- */
+
+/* The tab bar dissolves (display: contents) so its buttons and the panels
+   share one column; --tab-index (set in tabs.js) orders them
+   tab 1, panel 1, tab 2, panel 2… One panel is always open, as with tabs. */
+@media (width < 600px) {
+  .tabs.accordion-mobile {
+    --tabs-panel-padding: var(--spacing-16) 0 var(--spacing-24);
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tabs.accordion-mobile > .tabs-list {
+    display: contents;
+  }
+
+  .tabs.accordion-mobile > .tabs-list > .tabs-tab {
+    order: calc(var(--tab-index) * 2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-16) 0;
+    border-bottom: 1px solid var(--tabs-border-color);
+    border-radius: 0;
+    background: none;
+    white-space: normal;
+  }
+
+  .tabs.accordion-mobile > .tabs-panel {
+    order: calc(var(--tab-index) * 2 + 1);
+  }
+
+  /* + / − instead of the underline */
+  .tabs.accordion-mobile > .tabs-list > .tabs-tab::after {
+    content: '+' / '';
+    position: static;
+    height: auto;
+    background: none;
+    font-size: 1.5em;
+    line-height: 1;
+    transform: none;
+  }
+
+  .tabs.accordion-mobile > .tabs-list > .tabs-tab[aria-selected='true']::after {
+    content: '−' / '';
+  }
+}
+
+/* ---------- Variant: specs — spec comparison from a Columns block ---------- */
+
+/* Each tab's Fragment holds a default Columns block: one column per model,
+   row 1 the model names, every other cell a label and a value as two
+   paragraphs (a spec shared by all models: fill only the first cell).
+   This lays it out as a comparison: columns side by side on every screen,
+   grey labels, a thin line between rows. Colours derive from currentcolor,
+   so it works on dark and light sections. Only Columns inside this variant's
+   panels change; Columns elsewhere on the page keep their own look. */
+.tabs.specs .columns > div {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  align-items: start;
+  gap: 0 var(--spacing-16);
+  padding: var(--spacing-12) 0;
+  border-top: 1px solid var(--tabs-border-color);
+}
+
+.tabs.specs .columns > div > div {
+  order: unset;
+  min-width: 0;
+}
+
+.tabs.specs .columns p {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+  overflow-wrap: break-word;
+}
+
+/* row 1: the model names */
+.tabs.specs .columns > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.tabs.specs .columns > div:first-child p {
+  font-weight: var(--font-weight-medium);
+}
+
+/* a spec shared by all models (only the first cell filled) runs full width */
+.tabs.specs .columns > div:not(:has(> div:not(:first-child) *)) {
+  display: block;
+}
+
+.tabs.specs .columns > div:not(:has(> div:not(:first-child) *)) > div:not(:first-child) {
+  display: none;
+}
+
+/* label: a cell's first paragraph when a value follows it */
+.tabs.specs .columns > div:not(:first-child) > div > p:first-child:not(:only-child) {
+  margin-bottom: var(--spacing-4);
+  color: color-mix(in srgb, currentcolor 45%, transparent);
+}
+
+@media (width >= 900px) {
+  .tabs.specs .columns > div {
+    gap: 0 var(--spacing-24);
+    padding: var(--spacing-16) 0;
+  }
+
+  .tabs.specs .columns p {
+    font-size: var(--body-font-size-s);
+    line-height: 20px;
+  }
+}
+
+/* Specs from the tab's Content instead of a fragment: a nested bulleted list.
+     • Models                 ← first bullet: its sub-bullets are the model
+       ◦ Combat 2WD             names (the word "Models" is not shown, but
+       ◦ Combat 4WD             screen readers read it)
+     • Combined power         ← every other bullet: the spec's label
+       ◦ 245 PS               ← sub-bullets: one value per model, in order
+       ◦ 330 PS
+     • Gearbox
+       ◦ 3DHT gearbox         ← one sub-bullet: runs full width
+   The label shows once, in grey, above its values. */
+.tabs.specs .tabs-panel-content > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tabs.specs .tabs-panel-content > ul > li {
+  margin: 0;
+  padding: var(--spacing-12) 0;
+  border-top: 1px solid var(--tabs-border-color);
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+}
+
+/* the label is the bullet's own text: its first line, above the values */
+.tabs.specs .tabs-panel-content > ul > li::first-line {
+  color: color-mix(in srgb, currentcolor 45%, transparent);
+}
+
+.tabs.specs .tabs-panel-content > ul > li > :is(ul, ol) {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 0 var(--spacing-16);
+  margin: var(--spacing-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tabs.specs .tabs-panel-content > ul > li > :is(ul, ol) > li {
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+/* first bullet: the model names, without its "Models" label */
+.tabs.specs .tabs-panel-content > ul > li:first-child {
+  padding-top: 0;
+  border-top: 0;
+  font-size: 0;
+}
+
+.tabs.specs .tabs-panel-content > ul > li:first-child > :is(ul, ol) {
+  margin-top: 0;
+  font-size: var(--body-font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (width >= 900px) {
+  .tabs.specs .tabs-panel-content > ul > li {
+    padding: var(--spacing-16) 0;
+    font-size: var(--body-font-size-s);
+    line-height: 20px;
+  }
+
+  .tabs.specs .tabs-panel-content > ul > li > :is(ul, ol) {
+    gap: 0 var(--spacing-24);
+  }
+
+  .tabs.specs .tabs-panel-content > ul > li:first-child > :is(ul, ol) {
+    font-size: var(--body-font-size-s);
+  }
+}
+
+/* ---------- Tab image (optional 4th cell of a tab) ---------- */
+
+/* tabs.js adds .tabs-panel-image only when the cell holds a picture, so tabs
+   without an image keep their look. Phone/tablet: the image sits below the
+   text. 900px+: text and image side by side; with Vertical the image fills
+   the height of the tab list. Rounded, cover-fitted and faded in as in the
+   Comfort design. */
+.tabs .tabs-panel > .tabs-panel-image {
+  position: relative;
+  max-height: 50svh;
+  margin-top: 14px;
+  overflow: hidden;
+  border-radius: 18px;
+  background-color: #1e1e1e;
+  aspect-ratio: 1 / 1;
+  animation: tabs-image-in 0.6s ease;
+}
+
+.tabs .tabs-panel > .tabs-panel-image > * {
+  margin: 0;
+}
+
+/* the image covers the cell without adding to its height */
+.tabs .tabs-panel > .tabs-panel-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes tabs-image-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (width >= 900px) {
+  .tabs > .tabs-panel:not([hidden]):has(> .tabs-panel-image) {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-rows: auto 1fr;
+    gap: 0 var(--spacing-24);
+  }
+
+  .tabs > .tabs-panel:has(> .tabs-panel-image) > :not(.tabs-panel-image) {
+    grid-column: 1;
+  }
+
+  .tabs .tabs-panel > .tabs-panel-image {
+    grid-area: 1 / 2 / -1 / 3;
+    margin-top: 0;
+  }
+
+  /* Vertical: the panel takes the tab list's height and the image fills it */
+  .tabs.vertical > .tabs-panel:has(> .tabs-panel-image) {
+    align-self: stretch;
+  }
+
+  .tabs.vertical .tabs-panel > .tabs-panel-image {
+    min-height: 240px;
+    max-height: none;
+    aspect-ratio: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabs .tabs-panel > .tabs-panel-image {
+    animation: none;
+  }
+}
+
+/* ---------- Light Mode (toggle in the block's properties) ---------- */
+
+/* A white card with dark text. Everything above takes its colours from
+   currentcolor or the --tabs-* variables, so every style (and Specs content)
+   follows; only the active colours change, accent → black, as in the
+   Specifications design. Off: the block follows its section (dark by default). */
+.tabs.light {
+  --tabs-tab-active-color: var(--color-black);
+  --tabs-focus-color: var(--color-teal-700);
+
+  padding: var(--spacing-24) var(--spacing-20);
+  border-radius: var(--radius-12);
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+/* outlined buttons in a panel: the on-light values (the site default is white) */
+.tabs.light a.button.secondary,
+.tabs.light button.button.secondary {
+  border-color: var(--button-outlined-border);
+  color: var(--button-outlined-color);
+}
+
+.tabs.light a.button.secondary:hover,
+.tabs.light a.button.secondary:focus-visible,
+.tabs.light button.button.secondary:hover,
+.tabs.light button.button.secondary:focus-visible {
+  border-color: var(--button-outlined-border);
+  background-color: var(--button-outlined-hover-bg);
+  color: var(--button-outlined-color);
+}
+
+/* pills: invert the selected pill so it stands out on white */
+.tabs.light.pills {
+  --tabs-tab-active-color: var(--color-white);
+  --tabs-tab-active-bg: var(--color-black);
+}
+
+@media (width >= 900px) {
+  .tabs.light {
+    padding: var(--spacing-32) var(--spacing-40);
+  }
+}
+
+/* ---------- Combat theme: Specs in the Specifications side panel ---------- */
+
+/* Only on Combat pages (body.combat), inside a modal: the prototype's sheet.
+   Plain 14px tabs over a thin line, a 2px black ink under the open tab; the
+   open panel is the part that scrolls (the panel fills the sheet's height,
+   blocks/modal/modal.css Combat theme). Rows: a black line under the model
+   names, grey lines between specs. Greys are 60% black, not the prototype's
+   45%/50%, to keep 4.5:1 contrast on the light sheet. Same at every width. */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs {
+  --tabs-gap: 22px;
+  --tabs-font-size: 14px;
+  --tabs-tab-padding: 0 0 12px;
+  --tabs-tab-color: rgb(0 0 0 / 60%);
+  --tabs-tab-active-color: #000;
+  --tabs-border-color: rgb(0 0 0 / 12%);
+  --tabs-indicator-size: 2px;
+  --tabs-panel-padding: 40px 0 0;
+  --tabs-focus-color: var(--combat-line);
+
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* the line is drawn inside the bar (inset shadow + 1px padding) so the ink
+   can sit over it without being clipped by the scrolling bar; tabs past the
+   edge fade out */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-list {
+  flex: none;
+  padding-bottom: 1px;
+  border-bottom: 0;
+  box-shadow: inset 0 -1px 0 var(--tabs-border-color);
+  mask-image: linear-gradient(90deg, #000 88%, transparent);
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-list > .tabs-tab {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  line-height: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  transition: color 0.25s;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-list > .tabs-tab:hover {
+  color: var(--tabs-tab-active-color);
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-list > .tabs-tab::after {
+  inset: auto 0 -1px;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-panel {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-panel:focus-visible {
+  outline-offset: -2px;
+}
+
+/* one spec per row: label, then one value per model */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li {
+  padding: 14px 0;
+  border-top: 0;
+  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+/* the base style greys the label through ::first-line; same grey here */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li::first-line {
+  color: rgb(0 0 0 / 60%);
+}
+
+/* stylelint-disable-next-line no-descending-specificity -- higher than the Columns rule it follows */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li > p {
+  margin: 0;
+  color: rgb(0 0 0 / 60%);
+  font-size: inherit;
+  line-height: inherit;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li > :is(ul, ol) {
+  gap: 0 20px;
+  margin-top: 3px;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li > :is(ul, ol) > li {
+  color: #000;
+  font-size: inherit;
+  font-weight: var(--font-weight-medium);
+  line-height: inherit;
+}
+
+/* a row with a value per model: its label over each value (tabs.js data-label); the row's own
+   label stays for screen readers, and the copies aren't read out */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li.has-labels > p {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li.has-labels > :is(ul, ol) {
+  margin-top: 0;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li.has-labels > :is(ul, ol) > li[data-label]::before {
+  content: attr(data-label);
+  content: attr(data-label) / '';
+  display: block;
+  margin-bottom: 3px;
+  color: rgb(0 0 0 / 60%);
+  font-weight: var(--font-weight-regular);
+}
+
+/* first row: the model names over a black line; "Models" is for screen readers only */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li:first-child {
+  position: relative;
+  padding: 0 0 14px;
+  border-bottom-color: var(--combat-line);
+  font-size: 14px;
+  line-height: normal;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li:first-child > p {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs .tabs-panel-content > ul > li:first-child > :is(ul, ol) {
+  margin-top: 0;
+  font-size: 14px;
+}
+
+/* Combat specs motion (tabs.js wireCombatSpecsMotion): one underline that slides
+   from tab to tab instead of each tab drawing its own */
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs.has-ink > .tabs-list {
+  position: relative;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs.has-ink > .tabs-list > .tabs-tab::after {
+  content: none;
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-list > .tabs-ink {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: var(--ink-w, 0);
+  height: 2px;
+  background-color: var(--tabs-tab-active-color);
+  pointer-events: none;
+  transform: translateX(var(--ink-x, 0));
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), width 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+:is(body.combat .modal, .modal dialog.side-panel:has(.section.side-panel.light)) .tabs.specs > .tabs-list > .tabs-ink.is-instant {
+  transition: none;
+}
+
+/* opening the panel: the open tab's rows rise in after the title and tab bar
+   (modal.css), 25ms apart; only until the first tab change (.is-switched),
+   after which tabs.js animates the rows; tabs.js sets each row's --row index */
+@media (prefers-reduced-motion: no-preference) {
+  :is(body.combat .modal dialog.side-panel, .modal dialog.side-panel:has(.section.side-panel.light))[open] .tabs.specs:not(.is-switched) > .tabs-panel:not([hidden]) > .tabs-panel-content > ul > li {
+    animation: combat-sheet-rise 0.45s cubic-bezier(0.25, 1, 0.5, 1) both;
+    animation-delay: calc(0.4s + var(--row, 0) * 25ms);
+  }
+}
+
+/* the Comfort rules below are a different variant from the Specs ones above: their order is not
+   a specificity contest */
+/* stylelint-disable no-descending-specificity */
+
+/* ---------- Combat theme: Comfort (Vertical tabs with images, tabs.js wireCombatComfortMotion) ----------
+   The prototype's #comfortShow. No card: the content's Light Mode white card is dropped here.
+   Phones and tablets: the open feature's image (taking the height left), its name (20px) and
+   description (14px), then a row of thumbnails (45 x 57 on a 390px screen). From 900px: the
+   feature names (28px) at the foot of a ruled column, each description opening under its name
+   and one bar on the rule following the open feature; a column of thumbnails; a square image as
+   tall as the block. The block fills the height its section gives it (styles/theme-combat.css:
+   --combat-comfort-thumb-w, --combat-comfort-media-w). The panel keeps its description for
+   screen readers only; the one on screen is tabs.js's aria-hidden copy. Names that are not
+   selected stay at 60% black (not the prototype's 30%) for 4.5:1 contrast. */
+body.combat .tabs.vertical.combat-comfort {
+  --tabs-panel-padding: 0;
+  --tabs-tab-color: rgb(0 0 0 / 60%);
+  --tabs-tab-active-color: #000;
+  --tabs-border-color: rgb(0 0 0 / 12%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: #000;
+}
+
+/* the image: the open panel takes the height left */
+body.combat .tabs.vertical.combat-comfort > .tabs-panel {
+  position: relative;
+  flex: 1 1 auto;
+  order: 1;
+  min-height: 0;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-panel > .tabs-panel-content {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* the image fades in over the one before (tabs.js), not from nothing */
+body.combat .tabs.vertical.combat-comfort .tabs-panel > .tabs-panel-image {
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  aspect-ratio: auto;
+  animation: none;
+}
+
+body.combat .tabs.vertical.combat-comfort .tabs-panel > .tabs-panel-image > .tabs-panel-image-prev {
+  position: absolute;
+  inset: 0;
+}
+
+/* the open feature's name and description; the other names stay for screen readers and the
+   keyboard (the arrow keys bring the next one into view) */
+body.combat .tabs.vertical.combat-comfort > .tabs-list {
+  position: relative;
+  flex: none;
+  flex-direction: column;
+  order: 2;
+  gap: 0;
+  overflow: visible;
+  border: 0;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab {
+  padding: 0;
+  font-family: var(--font-family-base);
+  font-size: 20px;
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: normal;
+  transition: color 0.3s;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab::after {
+  content: none;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab:focus-visible {
+  outline-offset: 2px;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab:not([aria-selected='true']) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > :is(.tabs-tab-more, .tabs-bar) {
+  display: none;
+}
+
+/* tabs.js sets each description's height as it opens from 900px; here it is open */
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab[aria-selected='true'] + .tabs-tab-more {
+  display: block;
+  height: auto !important;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab-more > div {
+  padding-top: 6px;
+  color: rgb(0 0 0 / 62%);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab-more p {
+  margin: 0;
+}
+
+/* thumbnails: grey and faded, the open one in colour */
+body.combat .tabs.vertical.combat-comfort > .tabs-thumbs {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(var(--tabs-count, 7), minmax(0, 1fr));
+  order: 3;
+  gap: 6px;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-thumbs > .tabs-thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  aspect-ratio: 0.78;
+  opacity: 0.38;
+  filter: grayscale(1);
+  cursor: pointer;
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-thumbs > .tabs-thumb :is(picture, img) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-thumbs > .tabs-thumb img {
+  object-fit: cover;
+}
+
+@media (hover: hover) {
+  body.combat .tabs.vertical.combat-comfort > .tabs-thumbs > .tabs-thumb:hover {
+    opacity: 0.7;
+  }
+}
+
+body.combat .tabs.vertical.combat-comfort > .tabs-thumbs > .tabs-thumb.is-active {
+  opacity: 1;
+  filter: none;
+}
+
+@media (width >= 900px) {
+  /* list | thumbnails | image, 24px apart */
+  body.combat .tabs.vertical.combat-comfort {
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      var(--combat-comfort-thumb-w, 72px)
+      var(--combat-comfort-media-w, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0 24px;
+    align-items: stretch;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list {
+    grid-area: 1 / 1;
+    justify-content: flex-end;
+    min-height: 0;
+    padding-left: 24px;
+    border-left: 1px solid var(--tabs-border-color);
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab {
+    font-size: clamp(20px, 1.95vw, 28px);
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab:not([aria-selected='true']) {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab ~ .tabs-tab {
+    margin-top: 14px;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab-more,
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab[aria-selected='true'] + .tabs-tab-more {
+    display: block;
+    height: 0;
+    overflow: hidden;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-tab-more > div {
+    padding-top: 10px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-list > .tabs-bar {
+    position: absolute;
+    top: 0;
+    left: -1px;
+    display: block;
+    width: 2px;
+    height: 0;
+    background-color: var(--combat-line, #111);
+    pointer-events: none;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-thumbs {
+    grid-area: 1 / 2;
+    grid-template-columns: none;
+    grid-template-rows: repeat(var(--tabs-count, 7), minmax(0, 1fr));
+    gap: 8px;
+    min-height: 0;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-thumbs > .tabs-thumb {
+    aspect-ratio: auto;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-panel {
+    grid-area: 1 / 3;
+    align-self: stretch;
+  }
+
+  body.combat .tabs.vertical.combat-comfort > .tabs-panel:not([hidden]):has(> .tabs-panel-image) {
+    display: block;
+  }
+
+  body.combat .tabs.vertical.combat-comfort .tabs-panel > .tabs-panel-image {
+    min-height: 0;
+  }
+}
+
+/* arrival (needs body.combat-motion, scripts/combat-motion.js): as the page moves down to the
+   section, the heading rises 60px, the image 160px from 94%, the thumbnails' pictures 80px one
+   after another inside their frames, then the features 60px one after another and the bar fades
+   in (power3.out, timed to the 1.2s move as on the prototype). Moving up to it, it is there at
+   once. */
+body.combat-motion main > .section:has(.tabs.vertical):not([data-arrive='up']) > .default-content-wrapper > * {
+  transition:
+    opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.45s,
+    translate 0.5s cubic-bezier(0.25, 1, 0.5, 1) 0.45s;
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not([data-arrive='up']) .tabs.vertical > .tabs-panel > .tabs-panel-image {
+  transition:
+    opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.46s,
+    translate 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.46s,
+    scale 0.7s cubic-bezier(0.25, 1, 0.5, 1) 0.46s;
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not([data-arrive='up']) .tabs.vertical > .tabs-thumbs > .tabs-thumb > * {
+  transition:
+    opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1) calc(0.5s + var(--tab-index, 0) * 0.035s),
+    translate 0.35s cubic-bezier(0.25, 1, 0.5, 1) calc(0.5s + var(--tab-index, 0) * 0.035s);
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not([data-arrive='up']) .tabs.vertical > .tabs-list > :is(.tabs-tab, .tabs-tab-more),
+body.combat-motion main > .section:has(.tabs.vertical):not([data-arrive='up']) .tabs.vertical > .tabs-panel > .tabs-panel-content {
+  transition:
+    color 0.3s ease,
+    background-color 0.2s ease,
+    opacity 0.45s cubic-bezier(0.25, 1, 0.5, 1) calc(0.55s + var(--tab-index, 0) * 0.05s),
+    translate 0.45s cubic-bezier(0.25, 1, 0.5, 1) calc(0.55s + var(--tab-index, 0) * 0.05s);
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not([data-arrive='up']) .tabs.vertical > .tabs-list > .tabs-bar {
+  transition: opacity 0.25s linear 0.74s;
+}
+
+/* the hidden state last, so it wins over the transitions above (no transition: it is
+   taken off screen) */
+body.combat-motion main > .section:has(.tabs.vertical):not(.is-current, .is-arriving) > .default-content-wrapper > *,
+body.combat-motion main > .section:has(.tabs.vertical):not(.is-current, .is-arriving) .tabs.vertical > .tabs-list > :is(.tabs-tab, .tabs-tab-more),
+body.combat-motion main > .section:has(.tabs.vertical):not(.is-current, .is-arriving) .tabs.vertical > .tabs-panel > .tabs-panel-content {
+  opacity: 0;
+  translate: 0 60px;
+  transition: none;
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not(.is-current, .is-arriving) .tabs.vertical > .tabs-panel > .tabs-panel-image {
+  opacity: 0;
+  translate: 0 160px;
+  scale: 0.94;
+  transition: none;
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not(.is-current, .is-arriving) .tabs.vertical > .tabs-list > .tabs-bar {
+  opacity: 0;
+  transition: none;
+}
+
+body.combat-motion main > .section:has(.tabs.vertical):not(.is-current, .is-arriving) .tabs.vertical > .tabs-thumbs > .tabs-thumb > * {
+  opacity: 0;
+  translate: 0 80px;
+  transition: none;
+}
+
+/* stylelint-enable no-descending-specificity */
+
+/* ---------- FAQ: text tabs above the accordions of a FAQ section ----------
+   Each tab shows an Accordion block of the section (or of its Fragment); accordion.css styles
+   it and lays out the section. The tabs: New Science SemiBold 15 / 19.5, 0.045em tracking,
+   uppercase, the open one black with a 1px underline, the others at 55% (black on hover); a
+   12% line under the bar. */
+.tabs.faq {
+  --tabs-gap: 24px;
+  --tabs-font-size: 15px;
+  --tabs-tab-padding: 0 0 12px;
+  --tabs-tab-color: rgb(0 0 0 / 55%);
+  --tabs-tab-active-color: #000;
+  --tabs-border-color: rgb(0 0 0 / 12%);
+  --tabs-indicator-size: 1px;
+  --tabs-panel-padding: 24px 0 0;
+  --tabs-focus-color: #000;
+
+  position: relative;
+}
+
+/* a tab whose accordion follows the block in the section (tabs.js): the accordion shows below
+   the block, the panel takes no room */
+.tabs.faq > .tabs-panel.is-linked {
+  padding: 0;
+}
+
+/* stylelint-disable-next-line no-descending-specificity -- FAQ tabs are never pills */
+.tabs.faq > .tabs-list > .tabs-tab {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 19.5px;
+  letter-spacing: 0.675px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity -- FAQ tabs are never pills */
+.tabs.faq > .tabs-list > .tabs-tab:hover {
+  color: #000;
+}
+
+/* the bar's arrows (tabs.js wireTabScroll): shown at an end only while more tabs lie that way;
+   each fades the tabs under it into the section's off-white and holds a 12px chevron level with
+   the tab text. The bar stops a tab clear of them (scroll-padding) */
+/* stylelint-disable-next-line no-descending-specificity -- FAQ tabs are never Specs tabs */
+.tabs.faq > .tabs-list {
+  scroll-padding-inline: 40px;
+}
+
+.tabs.faq > .tabs-scroll {
+  position: absolute;
+  inset-block-start: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 40px;
+  height: calc(19.5px + 12px);
+  margin: 0;
+  padding: calc((19.5px - 12px) / 2) 0 0;
+  border: 0;
+  border-radius: 0;
+  color: rgb(0 0 0 / 55%);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tabs.faq > .tabs-scroll[hidden] {
+  display: none;
+}
+
+.tabs.faq > .tabs-scroll:hover {
+  color: #000;
+}
+
+.tabs.faq > .tabs-scroll::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M4.25 2 8.25 6l-4 4' stroke='%23000' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.tabs.faq > .tabs-scroll-next {
+  inset-inline-end: 0;
+  justify-content: flex-end;
+  background: linear-gradient(to right, rgb(252 253 252 / 0%), #fcfdfc 45%);
+}
+
+.tabs.faq > .tabs-scroll-prev {
+  inset-inline-start: 0;
+  justify-content: flex-start;
+  background: linear-gradient(to left, rgb(252 253 252 / 0%), #fcfdfc 45%);
+}
+
+.tabs.faq > .tabs-scroll-prev::before {
+  transform: scaleX(-1);
+}

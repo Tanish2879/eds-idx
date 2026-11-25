@@ -9,7 +9,23 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Hero",
-              "model": "hero"
+              "model": "hero",
+              "filter": "hero"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Hero Slide",
+      "id": "hero-slide",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Hero Slide",
+              "model": "hero-slide"
             }
           }
         }
@@ -24,25 +40,270 @@
           "component": "reference",
           "valueType": "string",
           "name": "image",
-          "label": "Image",
+          "label": "Background Image or Video (Desktop)",
+          "required": true,
+          "condition": { "and": [{ "!==": [{ "var": "classes" }, "carousel"] }, { "!==": [{ "var": "classes" }, "tech-slides"] }, { "!==": [{ "var": "classes" }, "statement"] }] },
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "mobileImage",
+          "label": "Background Image or Video (Mobile)",
+          "description": "Optional. Uses the desktop one if empty.",
+          "condition": { "and": [{ "!==": [{ "var": "classes" }, "carousel"] }, { "!==": [{ "var": "classes" }, "tech-slides"] }, { "!==": [{ "var": "classes" }, "statement"] }] },
           "multi": false
         },
         {
           "component": "text",
           "valueType": "string",
           "name": "imageAlt",
-          "label": "Alt",
+          "label": "Image Alt Text",
+          "condition": { "and": [{ "!==": [{ "var": "classes" }, "carousel"] }, { "!==": [{ "var": "classes" }, "tech-slides"] }, { "!==": [{ "var": "classes" }, "statement"] }] },
+          "value": ""
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "thumbnail",
+          "label": "Video Thumbnail (Desktop)",
+          "description": "Optional. Only used for a video: the image shown until it plays. Product: the image of the Watch the film card. Dealer: the image of the product card, bottom right.",
+          "condition": { "and": [{ "!==": [{ "var": "classes" }, "carousel"] }, { "!==": [{ "var": "classes" }, "tech-slides"] }, { "!==": [{ "var": "classes" }, "statement"] }] },
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "mobileThumbnail",
+          "label": "Video Thumbnail (Mobile)",
+          "description": "Optional. Only used for a video on mobile. Uses the desktop thumbnail if empty.",
+          "condition": { "and": [{ "!==": [{ "var": "classes" }, "carousel"] }, { "!==": [{ "var": "classes" }, "tech-slides"] }, { "!==": [{ "var": "classes" }, "statement"] }] },
+          "multi": false
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "text",
+          "label": "Text",
+          "description": "Heading, text and buttons. Carousel: shown on every slide without its own Text (with Opening Animation, its first two paragraphs are the animation's lines). Tech Slides: shown below every slide; key and value paragraph pairs (e.g. Battery / 26.7 kWh) become stat tiles, then the button. Product, in this order: title (Heading 1), a link to the film's MP4 (its text is the card's eyebrow, e.g. Watch the film) and the card's text in the next paragraph, the price line (amount in bold), then the button. Dealer, in this order: the status line (e.g. Closed today · Opens Monday, 10am), the dealer's name (Heading 1), the address, the two buttons in one paragraph, then the product card's paragraphs: its title (e.g. [ New ] Combat), the price line and a line of text.",
           "value": ""
         },
         {
           "component": "richtext",
-          "name": "text",
+          "valueType": "string",
+          "name": "manifesto",
+          "label": "Scroll Manifesto (Editorial and Intro)",
+          "description": "Editorial and Intro styles only. Appears on scroll.",
+          "value": ""
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "backgroundImage",
+          "label": "Background Image",
+          "description": "Showcase only. Optional. A decorative layer behind the main image, e.g. a sky behind a cut-out car photo.",
+          "condition": { "===": [{ "var": "classes" }, "showcase"] },
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "logo",
+          "label": "Logo (Product)",
+          "description": "Product only. The model's logo or lockup, shown above the title.",
+          "condition": { "===": [{ "var": "classes" }, "product"] },
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "logoAlt",
+          "label": "Logo Alt Text",
+          "condition": { "===": [{ "var": "classes" }, "product"] },
+          "value": ""
+        },
+        {
+          "component": "select",
+          "name": "classes",
+          "label": "Style",
+          "description": "Hero layout. Carousel and Tech Slides take up to 3 slides. Product: a car launch hero with the logo and a big centred title, a Watch the film card and the price beside the button. Its Background Image is the whole scene (e.g. the car in its landscape); the Logo has its own field. Dealer: a dealer storefront hero with the status line, name, address and two buttons bottom left, and a product card (the Video Thumbnail and the paragraphs after the buttons) bottom right.",
           "value": "",
+          "options": [
+            { "name": "Default", "value": "" },
+            { "name": "Editorial", "value": "editorial" },
+            { "name": "Teaser", "value": "teaser" },
+            { "name": "Showcase", "value": "showcase" },
+            { "name": "Carousel", "value": "carousel" },
+            { "name": "Intro", "value": "intro" },
+            { "name": "Statement", "value": "statement" },
+            { "name": "Tech Slides", "value": "tech-slides" },
+            { "name": "Product", "value": "product" },
+            { "name": "Dealer", "value": "dealer" }
+          ]
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "classes_opening",
+          "label": "Opening Animation",
+          "description": "Carousel only. On load the first slide plays in a small card in the middle of the screen, then grows to fill it. The first two Text paragraphs appear either side of the card, and only there (screen readers still get them).",
+          "condition": { "===": [{ "var": "classes" }, "carousel"] }
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "classes_showroom",
+          "label": "Showroom Layout",
+          "description": "Carousel only. The Text stays beside every slide: its first paragraphs are the eyebrow above the slide's heading, and each paragraph that starts with a bold label (e.g. **Address** Plot 14, Sector 54) becomes a row of the info card under the slide's text. Each slide's own Text gives its heading and description.",
+          "condition": { "===": [{ "var": "classes" }, "carousel"] }
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "classes_thumbs-bottom",
+          "label": "Thumbnails at the Bottom",
+          "description": "Carousel only. Moves the thumbnails to a row at the bottom right and keeps the heading and text clear of them and of the Test Drive strip.",
+          "condition": { "===": [{ "var": "classes" }, "carousel"] }
+        },
+        {
+          "component": "select",
+          "name": "classes_align",
+          "label": "Heading Position",
+          "description": "Where the heading sits: left, centre or right. Only the heading moves; the text and buttons stay where the style puts them. Default keeps the style's own layout.",
+          "value": "",
+          "options": [
+            { "name": "Default", "value": "" },
+            { "name": "Left", "value": "align-left" },
+            { "name": "Center", "value": "align-center" },
+            { "name": "Right", "value": "align-right" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hero-slide",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Background Image or Video (Desktop)",
+          "required": true,
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "value": ""
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "mobileImage",
+          "label": "Background Image or Video (Mobile)",
+          "description": "Optional. Uses the desktop one if empty.",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "thumbnail",
+          "label": "Thumbnail (Desktop)",
+          "description": "Optional. Tech Slides: the close-up tile. Carousel: the video's poster and slide strip image.",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "mobileThumbnail",
+          "label": "Thumbnail (Mobile)",
+          "description": "Carousel: only used for a video on mobile. Uses the desktop thumbnail if empty. Optional.",
+          "multi": false
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "videoControls",
+          "label": "Enable Video Control",
+          "description": "Shows mute and pause buttons when this slide is a video."
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "text",
           "label": "Text",
-          "valueType": "string"
+          "description": "Optional. Heading, text and buttons for this slide. Uses the Hero's Text if empty. Tech Slides: label, heading, description, stats (e.g. Battery / 26.7 kWh) and a button.",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "tilePosition",
+          "label": "Tile Position",
+          "description": "Tech Slides only. Written as: x, y (e.g. 33, 61). You can drag the tile to any position in preview mode.",
+          "value": "",
+          "valueFormat": "regexp",
+          "validation": {
+            "regExp": "^(\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*,\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*)?$",
+            "customErrorMsg": "Write it as x, y: two numbers from 0 to 100, e.g. 33, 61."
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "tilePositionMobile",
+          "label": "Tile Position (Mobile)",
+          "description": "Tech Slides only. Optional, written as: x, y. Uses Tile Position if empty. Drag the tile at mobile size in preview mode.",
+          "value": "",
+          "valueFormat": "regexp",
+          "validation": {
+            "regExp": "^(\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*,\\s*(\\d{1,2}(\\.\\d+)?|100)\\s*)?$",
+            "customErrorMsg": "Write it as x, y: two numbers from 0 to 100, e.g. 50, 70."
+          }
         }
       ]
     }
   ],
-  "filters": []
+  "filters": [
+    {
+      "id": "hero",
+      "components": [
+        "hero-slide"
+      ],
+      "rte": {
+        "toolbar": {
+          "format": ["bold", "italic", "underline", "strike", "code_inline", "text_color"],
+          "alignment": ["left", "center", "right", "justify"],
+          "direction": ["rtl", "ltr"],
+          "indentation": ["indent", "outdent"],
+          "blocks": ["paragraph", "h1", "h2", "h3", "h4", "h5", "h6", "code_block", "blockquote"],
+          "list": ["bullet_list", "ordered_list"],
+          "insert": ["link", "unlink", "image", "table", "special_characters"],
+          "sr_script": ["superscript", "subscript"],
+          "editor": ["removeformat", "clean_unsupported_tags", "paste_text", "fullscreen", "find_and_replace"],
+          "sections": ["blocks", "format", "alignment", "direction", "indentation", "list", "insert", "sr_script", "editor"]
+        }
+      }
+    },
+    {
+      "id": "hero-full",
+      "components": [],
+      "rte": {
+        "toolbar": {
+          "format": ["bold", "italic", "underline", "strike", "code_inline", "text_color"],
+          "alignment": ["left", "center", "right", "justify"],
+          "direction": ["rtl", "ltr"],
+          "indentation": ["indent", "outdent"],
+          "blocks": ["paragraph", "h1", "h2", "h3", "h4", "h5", "h6", "code_block", "blockquote"],
+          "list": ["bullet_list", "ordered_list"],
+          "insert": ["link", "unlink", "image", "table", "special_characters"],
+          "sr_script": ["superscript", "subscript"],
+          "editor": ["removeformat", "clean_unsupported_tags", "paste_text", "fullscreen", "find_and_replace"],
+          "sections": ["blocks", "format", "alignment", "direction", "indentation", "list", "insert", "sr_script", "editor"]
+        }
+      }
+    }
+  ]
 }

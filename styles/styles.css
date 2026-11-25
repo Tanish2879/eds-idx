@@ -1,196 +1,326 @@
-/*
- * Copyright 2020 Adobe. All rights reserved.
- * This file is licensed to you under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License. You may obtain a copy
- * of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under
- * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
- * OF ANY KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
- */
-
 :root {
-  /* brand colors (MG Select) */
+  /* brand */
   --color-black: #000;
   --color-white: #fff;
-  --color-charcoal: #1e1e1e;
-  --color-ink: #1e1e20;
-  --color-grey-125: #828282;
-  --color-grey-400: #4d4d4d;
-  --color-stone-100: #f4f0ee;
+
+  /* accent (teal) */
+  --color-teal-900: #00374c;
+  --color-teal-700: #317485;
+  --color-teal-500: #5da0b3;
+  --color-teal-200: #d8e7e2;
+
+  /* bright accent on dark surfaces: date squares, selected tab, focus rings, spinners */
+  --color-accent: #4aadd1;
+
+  /* grayscale */
+  --color-gray-10: #e6e6e6;
+  --color-gray-20: #ccc;
+  --color-gray-30: #b3b3b3;
+  --color-gray-40: #999;
+  --color-gray-50: #808080;
+  --color-gray-60: #666;
+  --color-gray-70: #4d4d4d;
+  --color-gray-80: #333;
+  --color-gray-90: #191919;
+  --color-gray-100: #000;
 
   /* semantic colors */
   --background-color: var(--color-white);
-  --light-color: var(--color-stone-100);
-  --dark-color: var(--color-ink);
+  --section-bg: #0a0a0a; /* default dark section surface; also the html/body root colour */
+  --light-color: var(--color-gray-10);
+  --dark-color: var(--color-gray-80);
   --text-color: var(--color-black);
-  --text-muted-color: var(--color-charcoal);
-  --text-inverse-color: var(--color-white);
-  --link-color: var(--color-black);
-  --link-hover-color: var(--color-grey-400);
-  --border-color: var(--color-stone-100);
-  --overlay-color: rgb(0 0 0 / 35%);
+  --link-color: var(--color-teal-700);
+  --link-hover-color: var(--color-teal-900);
 
-  /* fonts */
-  --display-font-family: sequel, sequel-fallback, arial, sans-serif;
+  /* font families */
+  --text-font-family: 'new-science', new-science-fallback, 'Anek Latin', arial, sans-serif;
+  --font-family-base: 'new-science', 'Anek Latin', arial, sans-serif;
+  --font-family-display: 'new-science-extended', var(--font-family-base);
+  --nav-font-family: var(--font-family-base);
 
-  /* the display face comes in one (heavy) weight: headings set in it are drawn lighter by tracing
-     their letters with a hairline in the colour behind them (-webkit-text-stroke, crisp at any
-     pixel density), which trims this much off every stroke — matched to the walkthrough */
-  --display-thin: 0.035em; /* mid-size headings */
-  --display-thin-large: 0.015em; /* large headlines on a plain background (they are bolder in the
-                                    walkthrough); the hero headline, over the video, keeps its weight */
-  --heading-font-family: var(--display-font-family);
-  --body-font-family: inter, inter-fallback, arial, sans-serif;
-  --mono-font-family: roboto-mono, roboto-mono-fallback, 'Courier New', monospace;
+  /* font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* type roles (Figma UAT, desktop @ 1280px) for new UI; existing headings,
+     body copy and buttons keep the metrics further down */
+  --type-heading-xxl-size: 64px;
+  --type-heading-xxl-line-height: 1.25;
+  --type-heading-xxl-tracking: -0.02em;
+  --type-heading-xl-size: 52px;
+  --type-heading-xl-line-height: 1.05;
+  --type-heading-xl-tracking: -0.05em;
+  --type-h1-size: 48px;
+  --type-h1-line-height: 1.25;
+  --type-h1-tracking: -0.02em;
+  --type-h1-weight: var(--font-weight-regular);
+  --type-heading-l-size: 40px;
+  --type-heading-l-line-height: 1.2;
+  --type-heading-l-tracking: 0.01em;
+  --type-heading-l-weight: var(--font-weight-medium);
+  --type-heading-m-size: 32px;
+  --type-heading-m-line-height: 1.25;
+  --type-heading-m-tracking: -0.04em;
+  --type-heading-m-weight: var(--font-weight-medium);
+  --type-heading-s-size: 30px;
+  --type-heading-s-line-height: 1.2;
+  --type-heading-s-tracking: 0.01em;
+  --type-heading-s-weight: var(--font-weight-medium);
+  --type-h5-size: 24px;
+  --type-h5-line-height: 1.1;
+  --type-h5-tracking: -0.01em;
+  --type-h5-weight: var(--font-weight-medium);
+  --type-h6-size: 16px;
+  --type-h6-line-height: 1.3;
+  --type-h6-tracking: 0;
+  --type-h6-weight: var(--font-weight-medium);
+
+    /* Body — New Science */
+  --type-body-l-size: 24px;
+  --type-body-l-line-height: 1.35;
+  --type-body-l-tracking: 0;
+  --type-body-20-size: 20px;
+  --type-body-20-line-height: 1.4;
+  --type-body-20-tracking: -0.01em;
+  --type-body-m-size: 16px;
+  --type-body-m-line-height: 1.4;
+  --type-body-m-tracking: 0;
+  --type-body-m-upper-line-height: 0.95;
+  --type-body-m-upper-tracking: -0.03em;
+  --type-body-s-size: 14px;
+  --type-body-s-line-height: 1.45;
+  --type-body-s-tracking: 0;
+  --type-body-s-upper-line-height: 1.1;
+  --type-body-s-upper-tracking: -0.01em;
+  --type-caption-size: 12px;
+  --type-caption-line-height: 1.5;
+  --type-caption-tracking: 0;
+  --type-micro-size: 10px;
+  --type-micro-line-height: 1.1;
+  --type-micro-tracking: -0.01em;
+  --type-caption-s-size: 11px;
+  --type-caption-s-line-height: 1.364;
+  --type-caption-s-tracking: 0.01em;
+
+    /* Buttons & Tags — New Science */
+  --type-label-xl-size: 20px;
+  --type-label-xl-line-height: 1.2;
+  --type-label-xl-tracking: 0.03em;
+  --type-label-l-size: 16px;
+  --type-label-l-line-height: 1.2;
+  --type-label-l-tracking: 0.05em;
+  --type-label-l-medium-line-height: 0.95;
+  --type-label-l-medium-tracking: -0.01em;
+  --type-label-m-size: 14px;
+  --type-label-m-line-height: 1.35;
+  --type-label-m-tracking: 0.03em;
+  --type-label-m-medium-line-height: 1.1;
+  --type-label-s-size: 12px;
+  --type-label-s-line-height: 1.35;
+  --type-label-s-tracking: 0.03em;
+  --type-label-s-medium-line-height: 1.1;
+  --type-label-xs-size: 10px;
+  --type-label-xs-line-height: 1.1;
+  --type-label-xs-tracking: -0.01em;
+
+  /* heading sizes (New Science) */
+  --heading-font-size-xxl: 64px;
+  --heading-font-size-xl: 56px;
+  --heading-font-size-l: 48px;
+  --heading-font-size-m: 40px;
+  --heading-font-size-s: 32px;
+  --heading-font-size-xs: 28px;
+  --heading-font-size-xxs: 24px;
+
+  /* display size (New Science Extended) */
+  --heading-font-size-xxxl: 100px;
+
+  /* heading line-heights (unitless, Figma line ÷ size) */
+  --heading-line-height-xxl: 1.125;
+  --heading-line-height-xl: 1.143;
+  --heading-line-height-l: 1.208;
+  --heading-line-height-m: 1.2;
+  --heading-line-height-s: 1.1875;
+  --heading-line-height-xs: 1.214;
+  --heading-line-height-xxs: 1.208;
+  --heading-line-height-xxxl: 0.9;
+
+  /* heading tracking */
+  --heading-tracking-display: -0.04em;
+  --heading-tracking-headline: -0.02em;
+  --heading-tracking-xxxl: -0.03em;
 
   /* body sizes */
-  --body-font-size-l: 16px;
+  --body-font-size-l: 18px;
   --body-font-size-m: 16px;
   --body-font-size-s: 14px;
   --body-font-size-xs: 12px;
-  --body-line-height: 1.5;
-  --body-letter-spacing: 0.01em;
-
-  /* heading sizes */
-  --heading-font-size-xxl: 24px;
-  --heading-font-size-xl: 30px;
-  --heading-font-size-l: 29.5px;
-  --heading-font-size-m: 24px;
-  --heading-font-size-s: 20px;
-  --heading-font-size-xs: 16px;
-  --heading-line-height: 1.1;
-
-  /* Sequel ships as a single face; the source renders headings with synthesized bold */
-  --heading-font-weight: 700;
-
-  /* buttons / CTAs */
-  --button-font-family: var(--mono-font-family);
-  --button-font-size: 14px;
-  --button-line-height: 32px;
-  --button-padding: 8px 20px;
-  --button-border-width: 1px;
-  --button-gap: 24px;
-  --button-min-width: 155px;
 
   /* spacing */
-  --spacing-xxs: 4px;
-  --spacing-xs: 8px;
-  --spacing-s: 16px;
-  --spacing-m: 24px;
-  --spacing-l: 32px;
-  --spacing-xl: 48px;
-  --spacing-xxl: 64px;
-  --section-spacing: 48px;
-  --gutter: 16px;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-96: 96px;
+  --spacing-128: 128px;
 
-  /* layout */
-  --content-max-width: 1440px;
-  --text-max-width: 823px;
-  --section-min-height: 100svh;
+  /* radius */
+  --radius-4: 4px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-24: 24px;
+  --radius-32: 32px;
+  --radius-48: 48px;
 
-  /* motion */
-  --transition-fast: 0.2s ease;
-  --ease-power2-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* power2.inOut: the JSW pages' curve */
+  /* buttons */
+  --button-font-family: var(--font-family-base);
+  --button-font-size: 16px;
+  --button-line-height: 21px;
+  --button-letter-spacing: 0.16px;
+  --button-padding: 22px 19px;
+  --button-radius: var(--radius-8);
+  --button-height: 56px;
+  --button-disabled-opacity: 0.4;
 
-  /* nav height: the header is a transparent overlay, so it reserves no space */
-  --nav-height: 0px;
-}
+  /* solid (primary) CTA on light surfaces */
+  --button-solid-bg: var(--color-black);
+  --button-solid-color: var(--color-white);
+  --button-solid-hover-bg: var(--color-gray-80);
 
-/* the JSW theme (a page's "theme" metadata jsw: a class on the body): the page's base type and
-   the design tokens the blocks made for the JSW sites read (the cards block): the New Science
-   faces of the site's Adobe Fonts kit (styles/fonts.css; until they load, Sequel / Inter; the
-   kit's heaviest weight Medium 500), sizes in rem */
-body.jsw {
-  --body-font-family: new-science, inter, inter-fallback, arial, sans-serif;
-  --heading-font-family: new-science-extended, sequel, sequel-fallback, arial, sans-serif;
-  --heading-font-weight: 500;
-  --font-family-display: var(--heading-font-family);
-  --font-family-base: var(--body-font-family);
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --spacing-12: 0.75rem;
-  --spacing-16: 1rem;
-  --spacing-24: 1.5rem;
-  --spacing-64: 4rem;
-  --radius-4: 0.25rem;
-  --color-gray-10: #f2f2f2;
-  --color-gray-20: #e0e0e0;
-  --color-gray-60: #737373;
-  --color-accent: #f0b866; /* (the editor's notices: the JSW bronze) */
-}
+  /* outlined (secondary) CTA on light surfaces */
+  --button-outlined-color: var(--color-black);
+  --button-outlined-border: var(--color-black);
+  --button-outlined-hover-bg: rgb(0 0 0 / 6%);
 
-/* fallback fonts (metric-matched to reduce CLS while web fonts load) */
-@font-face {
-  font-family: sequel-fallback;
-  size-adjust: 113%;
-  src: local('Arial');
-}
+  /* CTAs on dark surfaces */
+  --button-solid-bg-on-dark: var(--color-white);
+  --button-solid-color-on-dark: #1d1d1d;
+  --button-solid-hover-bg-on-dark: rgb(255 255 255 / 80%);
+  --button-outlined-color-on-dark: var(--color-white);
+  --button-outlined-border-on-dark: var(--color-white);
+  --button-outlined-hover-bg-on-dark: rgb(255 255 255 / 10%);
 
-@font-face {
-  font-family: inter-fallback;
-  size-adjust: 95%;
-  src: local('Arial');
-}
+  /* primary v2 CTA: translucent dark fill */
+  --button-v2-bg: rgb(0 0 0 / 30%);
+  --button-v2-hover-bg: rgb(0 0 0 / 50%);
+  --button-v2-color: var(--color-white);
 
-@font-face {
-  font-family: roboto-mono-fallback;
-  size-adjust: 100%;
-  src: local('Courier New');
-}
+  /* small button */
+  --button-small-font-size: 14px;
+  --button-small-line-height: 19px;
+  --button-small-letter-spacing: 0.14px;
+  --button-small-height: 39px;
 
-@media (width >= 600px) {
-  :root {
-    --heading-font-size-xxl: 40px;
-    --gutter: 32px;
-  }
+  /* header / nav */
+  --nav-link-color: var(--color-black);
+  --nav-link-font-size: 14px;
+  --nav-link-line-height: 15px;
+  --nav-link-letter-spacing: 0.14px;
+  --nav-link-font-weight: var(--font-weight-regular);
+  --nav-link-gap: var(--spacing-40);
+  --nav-brand-width: 74px;
+  --nav-height: 64px;
+
+  /* bottom of the fixed header's nav pill; mirrors blocks/header/header.css */
+  --nav-offset: calc(94 * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
 }
 
 @media (width >= 900px) {
   :root {
-    --body-font-size-l: 18px;
-    --heading-font-size-xl: 44.7px;
-    --heading-font-size-l: 36.9px;
-    --heading-font-size-m: 30px;
-    --section-spacing: 64px;
-    --gutter: 60px;
+    --heading-font-size-xxl: 56px;
+    --heading-font-size-xl: 48px;
+    --heading-font-size-l: 40px;
+    --heading-font-size-m: 34px;
+    --heading-font-size-s: 28px;
+    --heading-font-size-xs: 24px;
+    --heading-font-size-xxs: 22px;
+    --nav-offset: calc(95 * clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px));
   }
 }
 
-@media (width >= 1200px) {
-  :root {
-    --body-font-size-l: 24px;
-    --heading-font-size-xxl: 60px;
-  }
+/* fallback fonts */
+@font-face {
+  font-family: roboto-condensed-fallback;
+  size-adjust: 88.82%;
+  src: local('Arial');
+}
+
+@font-face {
+  font-family: roboto-fallback;
+  size-adjust: 99.529%;
+  src: local('Arial');
+}
+
+/* Arial matched to New Science Extended widths so line breaks hold when the kit loads */
+@font-face {
+  font-family: new-science-extended-fallback;
+  size-adjust: 134.5%;
+  src: local('Arial');
+}
+
+/* Arial / Roboto matched to New Science widths and metrics until the kit loads */
+@font-face {
+  font-family: new-science-fallback;
+  size-adjust: 106%;
+  ascent-override: 103.8%;
+  descent-override: 21.7%;
+  line-gap-override: 0%;
+  src: local('Arial'), local('Roboto'), local('Roboto-Regular');
 }
 
 body {
   display: none;
   margin: 0;
-  background-color: var(--background-color);
+  background-color: var(--root-bg, var(--section-bg));
   color: var(--text-color);
-  font-family: var(--body-font-family);
+  font-family: var(--font-family-base);
   font-size: var(--body-font-size-m);
-  line-height: var(--body-line-height);
-  letter-spacing: var(--body-letter-spacing);
-  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  scrollbar-width: none; /* the page pages through sections with snap scroll */
+}
+
+html {
+  /* Safari 26 tints its bars from the root background */
+  background-color: var(--root-bg, var(--section-bg));
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-gutter: stable;
+}
+
+/* no native scroll until section snap is ready (scripts.js adds .snap-ready, with a timeout fallback) */
+html:not(.snap-ready) {
+  overflow: hidden;
+}
+
+html.snap-active.snap-locked {
+  overflow: hidden;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 body.appear {
   display: block;
 }
 
-header {
-  height: var(--nav-height);
-}
-
-header .header,
 footer .footer {
   visibility: hidden;
 }
 
-header .header[data-block-status="loaded"],
 footer .footer[data-block-status="loaded"] {
   visibility: visible;
 }
@@ -201,21 +331,57 @@ h3,
 h4,
 h5,
 h6 {
-  margin-top: 0.8em;
-  margin-bottom: 0.25em;
-  font-family: var(--heading-font-family);
-  font-weight: var(--heading-font-weight);
-  line-height: var(--heading-line-height);
-  letter-spacing: var(--body-letter-spacing);
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-regular);
   scroll-margin: 40px;
 }
 
-h1 { font-size: var(--heading-font-size-xxl); }
-h2 { font-size: var(--heading-font-size-l); }
-h3 { font-size: var(--heading-font-size-m); }
-h4 { font-size: var(--heading-font-size-s); }
-h5 { font-size: var(--heading-font-size-xs); }
-h6 { font-size: var(--heading-font-size-xs); }
+/* fluid from a phone minimum at 360px wide to the desktop size at 1280px */
+h1 {
+  font-size: clamp(32px, var(--type-h1-size) - (1280px - 100vw) * 16 / 920, var(--type-h1-size));
+  font-weight: var(--type-h1-weight);
+  line-height: var(--type-h1-line-height);
+  letter-spacing: var(--type-h1-tracking);
+}
+
+h2 {
+  font-size: clamp(28px, var(--type-heading-l-size) - (1280px - 100vw) * 12 / 920, var(--type-heading-l-size));
+  font-weight: var(--type-heading-l-weight);
+  line-height: var(--type-heading-l-line-height);
+  letter-spacing: var(--type-heading-l-tracking);
+}
+
+h3 {
+  font-size: clamp(24px, var(--type-heading-m-size) - (1280px - 100vw) * 8 / 920, var(--type-heading-m-size));
+  font-weight: var(--type-heading-m-weight);
+  line-height: var(--type-heading-m-line-height);
+  letter-spacing: var(--type-heading-m-tracking);
+  text-transform: uppercase;
+}
+
+h4 {
+  font-size: clamp(22px, var(--type-heading-s-size) - (1280px - 100vw) * 8 / 920, var(--type-heading-s-size));
+  font-weight: var(--type-heading-s-weight);
+  line-height: var(--type-heading-s-line-height);
+  letter-spacing: var(--type-heading-s-tracking);
+  text-transform: uppercase;
+}
+
+h5 {
+  font-size: clamp(20px, var(--type-h5-size) - (1280px - 100vw) * 4 / 920, var(--type-h5-size));
+  font-weight: var(--type-h5-weight);
+  line-height: var(--type-h5-line-height);
+  letter-spacing: var(--type-h5-tracking);
+  text-transform: uppercase;
+}
+
+h6 {
+  font-size: var(--type-h6-size);
+  font-weight: var(--type-h6-weight);
+  line-height: var(--type-h6-line-height);
+  letter-spacing: var(--type-h6-tracking);
+  text-transform: uppercase;
+}
 
 p,
 dl,
@@ -225,23 +391,20 @@ pre,
 blockquote {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
+  overflow-wrap: break-word; /* long words/URLs wrap instead of being clipped by the section */
 }
 
 code,
 pre {
-  font-family: var(--mono-font-family);
   font-size: var(--body-font-size-s);
 }
 
 pre {
   padding: 16px;
+  border-radius: 8px;
   background-color: var(--light-color);
   overflow-x: auto;
   white-space: pre;
-}
-
-main > div {
-  margin: 40px 16px;
 }
 
 input,
@@ -256,7 +419,6 @@ a:any-link {
   color: var(--link-color);
   text-decoration: none;
   overflow-wrap: break-word;
-  transition: color var(--transition-fast), opacity var(--transition-fast);
 }
 
 a:hover {
@@ -264,13 +426,7 @@ a:hover {
   text-decoration: underline;
 }
 
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid currentcolor;
-  outline-offset: 2px;
-}
-
-/* buttons: MG Select square, outlined, monospaced CTA */
+/* buttons */
 p.button-wrapper {
   margin: 12px 0;
 }
@@ -280,48 +436,46 @@ button.button {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--button-gap);
-  min-width: var(--button-min-width);
+  justify-content: center;
   max-width: 100%;
   margin: 0;
-  border: var(--button-border-width) solid transparent;
-  border-radius: 0;
+  border: 1px solid transparent;
+  border-radius: var(--button-radius);
   padding: var(--button-padding);
   font-family: var(--button-font-family);
   font-size: var(--button-font-size);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   line-height: var(--button-line-height);
-  letter-spacing: 0;
+  letter-spacing: var(--button-letter-spacing);
   text-decoration: none;
-  text-transform: uppercase;
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 a.button[aria-disabled="true"],
 button.button:disabled {
   cursor: not-allowed;
   pointer-events: none;
+  opacity: var(--button-disabled-opacity);
 }
 
+/* solid (primary) CTA */
 a.button.primary,
 button.button.primary {
-  border-color: var(--text-color);
-  background-color: var(--text-color);
-  color: var(--background-color);
+  border-color: var(--button-solid-bg);
+  background-color: var(--button-solid-bg);
+  color: var(--button-solid-color);
 }
 
 a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--dark-color);
-  color: var(--text-inverse-color);
+  border-color: var(--button-solid-hover-bg);
+  background-color: var(--button-solid-hover-bg);
+  color: var(--button-solid-color);
 }
 
 a.button.primary[aria-disabled="true"],
@@ -332,23 +486,27 @@ button.button.primary:disabled:hover,
 button.button.primary:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--color-grey-125);
+  color: var(--dark-color);
 }
 
+/* outlined (secondary) CTA: on-dark by default, Light Mode swaps in on-light values */
 a.button.secondary,
 button.button.secondary {
-  border-color: currentcolor;
+  gap: 10px;
+  border-color: var(--button-outlined-border-on-dark);
   background-color: transparent;
-  color: var(--text-color);
+  color: var(--button-outlined-color-on-dark);
+  text-transform: uppercase;
+  transition: background-color 200ms ease;
 }
 
 a.button.secondary:hover,
 a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
-  background-color: var(--text-color);
-  border-color: var(--text-color);
-  color: var(--background-color);
+  border-color: var(--button-outlined-border-on-dark);
+  background-color: var(--button-outlined-hover-bg-on-dark);
+  color: var(--button-outlined-color-on-dark);
 }
 
 a.button.secondary[aria-disabled="true"],
@@ -359,35 +517,96 @@ button.button.secondary:disabled:hover,
 button.button.secondary:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--color-grey-125);
+  color: var(--dark-color);
 }
 
-/* high-impact call-to-action: outline on dark imagery */
-a.button.accent,
-button.button.accent {
-  border-color: var(--border-color);
-  background-color: transparent;
-  color: var(--text-inverse-color);
+main .section.light-mode a.button.secondary,
+main .section.light-mode button.button.secondary {
+  border-color: var(--button-outlined-border);
+  color: var(--button-outlined-color);
 }
 
-a.button.accent:hover,
-a.button.accent:focus-visible,
-button.button.accent:hover,
-button.button.accent:focus-visible {
-  border-color: var(--color-white);
-  background-color: var(--color-white);
-  color: var(--text-color);
+main .section.light-mode a.button.secondary:hover,
+main .section.light-mode a.button.secondary:focus-visible,
+main .section.light-mode button.button.secondary:hover,
+main .section.light-mode button.button.secondary:focus-visible {
+  border-color: var(--button-outlined-border);
+  background-color: var(--button-outlined-hover-bg);
+  color: var(--button-outlined-color);
 }
 
-a.button.accent[aria-disabled="true"],
-a.button.accent[aria-disabled="true"]:hover,
-a.button.accent[aria-disabled="true"]:focus-visible,
-button.button.accent:disabled,
-button.button.accent:disabled:hover,
-button.button.accent:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--color-grey-125);
+@media (width < 900px) {
+  #onetrust-banner-sdk #onetrust-policy-text,
+  #onetrust-banner-sdk #onetrust-policy-text * {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+}
+
+/* CTA glitch hover (scripts/utils/glitch.js) */
+.glitch .glitch-char.is-dim {
+  opacity: 0.22;
+}
+
+/* primary v2 CTA: bold + italic link, or any primary button in a "Primary V2 Buttons" section */
+a.button.primary-v2,
+button.button.primary-v2,
+main .section.primary-v2-buttons a.button.primary,
+main .section.primary-v2-buttons button.button.primary {
+  justify-content: space-between;
+  gap: var(--spacing-16);
+  min-width: 176px;
+  height: 49px;
+  padding: 7px 7px 7px 12px;
+  border-color: transparent;
+  background-color: var(--button-v2-bg);
+  color: var(--button-v2-color);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: background-color 200ms ease;
+}
+
+a.button.primary-v2::after,
+button.button.primary-v2::after,
+main .section.primary-v2-buttons a.button.primary::after,
+main .section.primary-v2-buttons button.button.primary::after {
+  content: '';
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  background-color: currentcolor;
+  mask: url('../icons/plus.svg') center / 100% no-repeat;
+}
+
+a.button.primary-v2:hover,
+a.button.primary-v2:focus-visible,
+button.button.primary-v2:hover,
+button.button.primary-v2:focus-visible,
+main .section.primary-v2-buttons a.button.primary:hover,
+main .section.primary-v2-buttons a.button.primary:focus-visible,
+main .section.primary-v2-buttons button.button.primary:hover,
+main .section.primary-v2-buttons button.button.primary:focus-visible {
+  border-color: transparent;
+  background-color: var(--button-v2-hover-bg);
+  color: var(--button-v2-color);
+}
+
+a.button.primary-v2:focus-visible,
+button.button.primary-v2:focus-visible,
+main .section.primary-v2-buttons a.button.primary:focus-visible,
+main .section.primary-v2-buttons button.button.primary:focus-visible {
+  outline: 2px solid var(--button-v2-color);
+  outline-offset: 2px;
+}
+
+a.button.primary-v2[aria-disabled="true"],
+button.button.primary-v2:disabled,
+main .section.primary-v2-buttons a.button.primary[aria-disabled="true"],
+main .section.primary-v2-buttons button.button.primary:disabled {
+  background-color: var(--button-v2-bg);
+  color: var(--button-v2-color);
 }
 
 main img {
@@ -407,209 +626,232 @@ main img {
   width: 100%;
 }
 
-/* sections: MG Select sections are edge-to-edge panels */
+/* section snap-scroll paging */
 main > .section {
-  margin: 0;
+  /* exactly one viewport tall so every snap travels the same distance */
+  height: 100vh;
+  height: 100svh;
+  background-color: var(--section-bg);
+  color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 main > .section > div {
-  max-width: var(--content-max-width);
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
   margin: auto;
-  padding: 0 var(--gutter);
+  padding: 0 clamp(20px, 5vw, 48px);
 }
 
-main > .section > .default-content-wrapper {
-  padding-top: var(--section-spacing);
-}
-
-main > .section > .default-content-wrapper:last-child {
-  padding-bottom: var(--section-spacing);
-}
-
-/* section-to-section transitions (pages with the JSW theme: scripts.js, decorateSectionMotion,
-   sets the states): a section's content, its wrappers, rises 5rem and fades in as the section
-   locks into the screen (is-active, the walkthroughs' ease), and fades away (lifting 2rem) as it
-   leaves at the top (is-exiting). A section with its own scroll animation
-   (data-motion="block"), or one held still by the next (data-motion="held"), is only faded:
-   never moved, its transforms left to its block. The blocks' own rules are untouched. */
-html.has-section-motion main > .section {
-  --section-ease: cubic-bezier(0.22, 1, 0.36, 1);
-
-  > div {
-    transition: opacity 0.9s var(--section-ease);
-  }
-
-  &:not([data-motion]) > div {
-    transition:
-      opacity 0.9s var(--section-ease),
-      transform 0.9s var(--section-ease);
-  }
-
-  /* not yet reached: its content waiting below, unseen */
-  &:not(.is-seen, [data-motion]) > div {
-    opacity: 0;
-    transform: translateY(5rem);
-  }
-
-  /* leaving at the top */
-  &.is-exiting > div {
-    opacity: 0;
-    transition-duration: 0.6s;
-  }
-
-  &.is-exiting:not([data-motion]) > div {
-    transform: translateY(-2rem);
-  }
-}
-
-/* page metadata table: published pages turn it into <meta> tags; never render it as content */
-main .metadata {
-  display: none;
-}
-
-/* section metadata */
-main .section.light,
-main .section.highlight {
-  background-color: var(--light-color);
-  margin: 0;
-  padding: var(--section-spacing) 0;
-}
-
-main .section.dark {
-  background-color: var(--dark-color);
-  color: var(--text-inverse-color);
-}
-
-main .section.dark a:any-link {
-  color: var(--text-inverse-color);
-}
-
-/* eyebrow paragraph directly above a section heading (e.g. "OUR HERITAGE") */
-main > .section > .default-content-wrapper > p:has(+ h2) {
-  margin: 0 0 var(--spacing-s);
-  font-size: var(--body-font-size-xs);
-  line-height: 16px;
-  color: var(--text-muted-color);
-  text-transform: uppercase;
-}
-
-main > .section > .default-content-wrapper > p + h2 {
+main > .section:first-of-type {
   margin-top: 0;
 }
 
-/* manifesto: full-height, centred brand statement */
-main .section.manifesto {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  min-height: var(--section-min-height);
-  padding-bottom: 54px;
-  background-color: var(--background-color);
+/* Text Alignment (section field): default content only, blocks keep their own layout */
+main > .section.text-align-left > .default-content-wrapper {
+  text-align: left;
+}
+
+main > .section.text-align-center > .default-content-wrapper {
   text-align: center;
 }
 
-main .section.manifesto > .default-content-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: none;
-  padding-top: 80px;
+main > .section.text-align-right > .default-content-wrapper {
+  text-align: right;
 }
 
-main .section.manifesto > .default-content-wrapper > * {
-  max-width: var(--text-max-width);
+/* snapping section of text only, taller than the screen below the header (section-snap.js):
+   the text scrolls inside the section, starting below the header */
+html.snap-active main > .section.has-text-scroll {
+  justify-content: flex-start;
+  padding-top: var(--nav-offset);
+}
+
+html.snap-active main > .section.has-text-scroll > .default-content-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0 auto;
+  padding-bottom: clamp(20px, 5vw, 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* section styles: Light Mode and Spotlight are kept but not offered in models/_section.json */
+main .section.light-mode {
+  background-color: var(--light-color);
   margin: 0;
-}
-
-/* brand logo */
-main .section.manifesto > .default-content-wrapper > picture {
-  display: block;
-  width: 192px;
-  margin-top: 12px;
-}
-
-main .section.manifesto > .default-content-wrapper > picture img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-main .section.manifesto > .default-content-wrapper > h2 {
-  max-width: none;
-  margin: var(--spacing-xxl) 0 var(--spacing-l);
-  font-size: var(--heading-font-size-xxl);
-  line-height: 1.08;
-}
-
-/* lead + body copy */
-main .section.manifesto > .default-content-wrapper > h2 ~ p {
-  font-size: var(--body-font-size-l);
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: var(--text-muted-color);
-}
-
-main .section.manifesto > .default-content-wrapper > h2 + p {
+  padding: 40px 0;
   color: var(--text-color);
-  letter-spacing: var(--body-letter-spacing);
 }
 
-@media (width >= 900px) {
-  main .section.manifesto > .default-content-wrapper > picture {
-    width: 254px;
-    margin-top: 16px;
-  }
+main .section.light-mode h1,
+main .section.light-mode h2,
+main .section.light-mode h3,
+main .section.light-mode h4,
+main .section.light-mode h5,
+main .section.light-mode h6,
+main .section.light-mode p {
+  color: var(--text-color);
 }
 
-/* eyebrow ("WELCOME TO") */
-main .section.manifesto > .default-content-wrapper > p:first-child {
-  max-width: none;
-  font-family: var(--display-font-family);
-  font-size: var(--heading-font-size-m);
-  line-height: 1.1;
-}
-
-/* heritage timeline: eyebrow renders as the source's centred, underlined tab label */
-main > .section.cards-timeline-container > .default-content-wrapper {
-  padding-top: 0;
-}
-
-main > .section.cards-timeline-container > .default-content-wrapper > p:first-child:has(+ h2) {
-  width: fit-content;
-  margin: 0 auto 42px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--color-black);
+main .section.spotlight {
+  margin: 0;
+  padding: 72px 0 0;
   text-align: center;
 }
 
-main > .section.cards-timeline-container > .default-content-wrapper > p + h2 {
-  margin-bottom: 0;
+main .section.spotlight h1,
+main .section.spotlight h2,
+main .section.spotlight h3 {
+  color: var(--color-white);
+  text-transform: uppercase;
 }
 
-/* collage pages: link/button transitions use the shared power2.inOut curve. No CSS scroll
-   snapping or smooth scroll-behavior here: wheel steps are eased by scripts/scroll-stops.js */
-html:has(main .parallax-collage) {
-  --transition-fast: 0.2s var(--ease-power2-in-out);
+main .section.spotlight p {
+  color: var(--color-gray-30);
 }
 
-/* JSW pages (pill nav): no visible page scrollbar; scrolling (wheel, trackpad, touch, keyboard)
-   works as normal */
-html:has(header .header.is-pill) {
-  scrollbar-width: none;
+/* No Snap: free-scrolls and grows to fit its content */
+main > .section.no-snap {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: visible;
 }
 
-/* older WebKit / Blink without scrollbar-width */
-@supports not (scrollbar-width: none) {
-  html:has(header .header.is-pill)::-webkit-scrollbar {
-    display: none;
+/* reduced motion turns snap off, so sections free-scroll at natural height */
+@media (prefers-reduced-motion: reduce) {
+  main > .section {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: visible;
   }
 }
 
-/* authoring (Universal Editor; html.is-authoring, see isAuthoring in scripts.js): the editor sizes
-   its frame to the page height, so no height may follow the viewport there (it would grow without
-   end); blocks lay out statically and a fixed "screen" height stands in for 100svh */
-html.is-authoring {
-  --authoring-screen: 760px;
-  --section-min-height: var(--authoring-screen);
+/* Universal Editor: size sections to content so authors can reach every field */
+body:has([data-aue-resource]) main > .section {
+  height: auto;
+  min-height: auto;
+  overflow: visible;
+}
+
+/* standalone fragment previews (scripts.js) */
+body.fragment-preview main > .section {
+  height: auto;
+  min-height: auto;
+  overflow: visible;
+}
+
+/* Universal Editor: fixed height for full-viewport blocks (add new ones to the list);
+   the footer is outside <main>, so it is listed separately */
+body:has([data-aue-resource]) main :is(
+    .hero,
+    .register-form,
+    .countdown,
+    .columns.thank-you,
+    .featured-intro,
+    .events,
+    .blog-listing,
+    .featured-blogs,
+  ),
+body:has([data-aue-resource]) footer .footer {
+  height: 900px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* stops the footer's aspect-ratio widening the editor canvas */
+body:has([data-aue-resource]) footer .footer {
+  aspect-ratio: auto;
+}
+
+/* iOS/iPadOS 26 Safari draws content behind its translucent bars; cover them */
+@supports (-webkit-touch-callout: none) {
+  html,
+  body {
+    background-color: var(--color-black);
+  }
+
+  .bar-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    transform: translateY(var(--bar-cover-y, 0));
+    pointer-events: none;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      left: 0;
+      background-color: var(--color-black);
+      transition: background-color 0.15s ease;
+    }
+
+    /* the section's colour at each edge (initBarTint, section-snap.js) */
+    &::before {
+      bottom: 100%;
+      height: var(--bar-cover-above, 0);
+      background-color: var(--bar-tint-top, var(--color-black));
+    }
+
+    &::after {
+      top: 100%;
+      height: var(--bar-cover-below, 0);
+      background-color: var(--bar-tint-bottom, var(--color-black));
+    }
+
+    /* a No Snap section is on screen (section-snap.js) */
+    &.is-off {
+      display: none;
+    }
+  }
+
+  /* 1px edge strips Safari tints its bars from (initBarTint); hidden while the menu is open */
+  .bar-tint {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 11;
+    height: 1px;
+    pointer-events: none;
+    transition: background-color 0.15s ease;
+
+    &.is-top {
+      top: 0;
+      background-color: var(--bar-tint-top, transparent);
+    }
+
+    &.is-bottom {
+      bottom: 0;
+      background-color: var(--bar-tint-bottom, transparent);
+    }
+
+    html:is(.is-nav-open, .is-modal-open) & {
+      display: none;
+    }
+  }
+
+  html:not(.snap-ready) body::after {
+    content: '';
+    position: absolute;
+    top: 100svh;
+    right: 0;
+    left: 0;
+    z-index: 9;
+    height: 200px;
+    background-color: var(--bar-tint-bottom, var(--section-bg));
+    pointer-events: none;
+  }
 }

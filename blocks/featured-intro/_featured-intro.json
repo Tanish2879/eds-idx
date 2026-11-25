@@ -1,0 +1,103 @@
+{
+  "definitions": [
+    {
+      "title": "Featured Intro",
+      "id": "featured-intro",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Featured Intro",
+              "model": "featured-intro"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "featured-intro",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Title",
+          "description": "Maximum character limit: 10 characters.",
+          "required": true,
+          "validation": {
+            "maxLength": 10,
+            "customErrorMsg": "Use 10 characters or fewer."
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
+          "description": "Maximum character limit: 30 characters.",
+          "validation": {
+            "maxLength": 30,
+            "customErrorMsg": "Use 30 characters or fewer."
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "headline",
+          "label": "Headline",
+          "required": true,
+          "description": "Maximum character limit: 180 characters.",
+          "validation": {
+            "maxLength": 180,
+            "customErrorMsg": "Use 180 characters or fewer."
+          }
+        },
+        {
+          "component": "date-time",
+          "valueType": "date",
+          "name": "date",
+          "label": "Date",
+          "description": "Enter the date in MM/DD/YYYY format",
+          "validation": {
+            "customErrorMsg": "Pick a valid date from the calendar."
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "link",
+          "label": "Read More Link"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkText",
+          "label": "Read More Text",
+          "value": "Read more",
+          "description": "Maximum character limit: 20 characters.",
+          "validation": {
+            "maxLength": 20,
+            "customErrorMsg": "Use 20 characters or fewer."
+          }
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "required": true,
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
