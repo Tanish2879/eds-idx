@@ -33,6 +33,14 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const IMAGE_RE = /\.(avif|gif|jpe?g|png|webp)([?#]|$)/i;
 const SLOT_HOURS = [10, 11, 12, 13, 14, 15, 16, 17, 18];
 const ANCHORS = { 'test-drive': 'test-drive', quote: 'quote' };
+const BOOKING_DAYS = 14; // the date picker offers today and the 13 days after it
+const CLOSED_DAYS = [0]; // Sunday (Date#getDay)
+const WEEKDAYS = [['M', 'Monday'], ['T', 'Tuesday'], ['W', 'Wednesday'], ['T', 'Thursday'], ['F', 'Friday'], ['S', 'Saturday'], ['S', 'Sunday']];
+const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const chevron = (d) => `<svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="${d}" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const CHEVRON_LEFT = chevron('M10 3.5 5.5 8l4.5 4.5');
+const CHEVRON_RIGHT = chevron('M6 3.5 10.5 8 6 12.5');
+const CALENDAR_ICON = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
 const OTP_LENGTH = 4; // the design's code length; the real service must match it
 const RESEND_SECONDS = 30;
 const MAX_ATTEMPTS = 3; // wrong codes before the number is locked
@@ -64,7 +72,12 @@ const TEXT = {
   slotTitle: ['registerFormTrialSlotTitle', 'When works for you?'],
   date: ['registerFormTrialDate', 'Date'],
   dateRequired: ['registerFormTrialDateRequired', 'Select a date'],
-  datePast: ['registerFormTrialDatePast', 'Choose today or a later date'],
+  dateUnavailable: ['registerFormTrialDateUnavailable', 'Choose one of the next {n} days, Monday to Saturday'],
+  datePlaceholder: ['registerFormTrialDatePlaceholder', 'DD / MM / YYYY'],
+  chooseDate: ['registerFormTrialChooseDate', 'Choose a date'],
+  prevMonth: ['registerFormTrialPrevMonth', 'Previous month'],
+  nextMonth: ['registerFormTrialNextMonth', 'Next month'],
+  calendarNote: ['registerFormTrialCalendarNote', 'Next {n} days. Closed on Sundays.'],
   slots: ['registerFormTrialSlots', 'Available slots'],
   slotRequired: ['registerFormTrialSlotRequired', 'Select a time slot'],
   aboutTitle: ['registerFormTrialAbout', 'Tell us about you'],
@@ -310,30 +323,258 @@ function validateAll(entries) {
   return first;
 }
 
+/* ---------- the date picker ---------- */
+
+// bookable days: today and the BOOKING_DAYS - 1 after it, Monday to Saturday (Sunday closed)
+const dayStart = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const fromIso = (iso) => {
+  const [y, m, d] = (iso || '').split('-').map(Number);
+  return y ? new Date(y, m - 1, d) : null;
+};
+const mondayIndex = (d) => (d.getDay() + 6) % 7; // Monday 0 … Sunday 6
+const monthKey = (d) => d.getFullYear() * 12 + d.getMonth();
+
+function bookingWindow() {
+  const now = new Date();
+  const start = dayStart(now);
+  const end = addDays(start, BOOKING_DAYS - 1);
+  const lastHour = SLOT_HOURS[SLOT_HOURS.length - 1];
+  const isBookable = (d) => {
+    if (!d || d < start || d > end || CLOSED_DAYS.includes(d.getDay())) return false;
+    // today, once its last slot has started, is over
+    return isoDate(d) !== isoDate(now) || now.getHours() < lastHour;
+  };
+  const first = Array.from({ length: BOOKING_DAYS }, (_, i) => addDays(start, i)).find(isBookable)
+    || null;
+  return {
+    start, end, isBookable, first,
+  };
+}
+
+/**
+ * The calendar under the Date field: a month/year header with previous / next (between the
+ * months the booking window touches), weekday labels and, for that month, the weeks the window
+ * covers: each day a tile with its month and number. Past days, days past the window and
+ * Sundays are disabled (Sundays crossed out, as closed). Arrow keys move by day / week,
+ * Home / End to the week's ends, Page Up / Down by month; Enter or a click picks the day.
+ * @returns {{el: Element, show: Function, focusDay: Function}}
+ */
+function buildCalendar({ uid, t }) {
+  const win = bookingWindow();
+  const monthsOf = [monthKey(win.start), monthKey(win.end)];
+  let view = win.start; // any day in the month shown
+  let selected = '';
+
+  const title = createEl('p', { class: 'calendar-title', id: `${uid}-calendar-title`, 'aria-live': 'polite' });
+  const navButton = (dir, label) => {
+    const btn = createEl('button', {
+      type: 'button', class: `calendar-nav calendar-${dir}`, 'aria-label': label,
+    });
+    btn.insertAdjacentHTML('beforeend', dir === 'prev' ? CHEVRON_LEFT : CHEVRON_RIGHT);
+    return btn;
+  };
+  const prev = navButton('prev', t(TEXT.prevMonth));
+  const next = navButton('next', t(TEXT.nextMonth));
+  const grid = createEl('div', { class: 'calendar-grid', role: 'grid', 'aria-labelledby': title.id });
+  const el = createEl(
+    'div',
+    {
+      class: 'calendar', id: `${uid}-calendar`, role: 'dialog', 'aria-label': t(TEXT.chooseDate), hidden: true,
+    },
+    createEl('div', { class: 'calendar-header' }, prev, title, next),
+    grid,
+    createEl('p', { class: 'calendar-note' }, fill(t(TEXT.calendarNote), { n: BOOKING_DAYS })),
+  );
+
+  const dayLabel = (d) => d.toLocaleDateString('en-GB', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  });
+
+  // the month's weeks that hold a day of the window, Monday first
+  const weeksOf = (month) => {
+    const firstOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+    const lastOfMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0);
+    const from = win.start > firstOfMonth ? win.start : firstOfMonth;
+    const to = win.end < lastOfMonth ? win.end : lastOfMonth;
+    const firstMonday = addDays(from, -mondayIndex(from));
+    const count = Math.floor(Math.round((to - firstMonday) / 864e5) / 7) + 1;
+    return Array.from({ length: count }, (_, w) => Array.from(
+      { length: 7 },
+      (__, i) => addDays(firstMonday, w * 7 + i),
+    ));
+  };
+
+  const render = () => {
+    title.textContent = view.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    prev.disabled = monthKey(view) <= monthsOf[0];
+    next.disabled = monthKey(view) >= monthsOf[1];
+    const header = createEl('div', { class: 'calendar-row calendar-weekdays', role: 'row' }, ...WEEKDAYS.map(([short, long]) => createEl(
+      'span',
+      {
+        class: 'weekday', role: 'columnheader', 'aria-label': long,
+      },
+      short,
+    )));
+    const rows = weeksOf(view).map((week) => createEl('div', { class: 'calendar-row', role: 'row' }, ...week.map((d) => {
+      // days of the next / previous month stay blank: the arrows show them
+      if (d.getMonth() !== view.getMonth()) return createEl('span', { class: 'day-blank', role: 'gridcell' });
+      const iso = isoDate(d);
+      const bookable = win.isBookable(d);
+      const inWindow = d >= win.start && d <= win.end;
+      const classes = ['day'];
+      if (iso === selected) classes.push('is-selected');
+      if (iso === isoDate(new Date())) classes.push('is-today');
+      if (inWindow && CLOSED_DAYS.includes(d.getDay())) classes.push('is-closed');
+      return createEl('span', { role: 'gridcell', 'aria-selected': String(iso === selected) }, createEl(
+        'button',
+        {
+          type: 'button',
+          class: classes.join(' '),
+          'data-date': iso,
+          'aria-label': dayLabel(d),
+          'aria-current': iso === isoDate(new Date()) ? 'date' : null,
+          disabled: !bookable,
+          tabindex: '-1',
+        },
+        createEl('span', { class: 'day-month', 'aria-hidden': 'true' }, MONTHS_SHORT[d.getMonth()]),
+        createEl('span', { class: 'day-num', 'aria-hidden': 'true' }, String(d.getDate())),
+      ));
+    })));
+    grid.replaceChildren(header, ...rows);
+    // one day takes the Tab stop: the selected one, else the first bookable one shown
+    const days = [...grid.querySelectorAll('.day:not(:disabled)')];
+    const stop = days.find((b) => b.dataset.date === selected) || days[0];
+    if (stop) stop.tabIndex = 0;
+  };
+
+  const showMonth = (d) => {
+    view = new Date(d.getFullYear(), d.getMonth(), 1);
+    render();
+  };
+
+  const focusDay = (iso) => {
+    const d = fromIso(iso) || win.first || win.start;
+    if (monthKey(d) !== monthKey(view)) showMonth(d);
+    const btn = grid.querySelector(`.day[data-date="${isoDate(d)}"]:not(:disabled)`)
+      || grid.querySelector('.day:not(:disabled)');
+    btn?.focus();
+  };
+
+  // the nearest bookable day `step` days at a time from `from`, within the window
+  const nearest = (from, step) => {
+    for (let d = addDays(from, step); d >= win.start && d <= win.end; d = addDays(d, step)) {
+      if (win.isBookable(d)) return d;
+    }
+    return null;
+  };
+
+  prev.addEventListener('click', () => showMonth(new Date(view.getFullYear(), view.getMonth() - 1, 1)));
+  next.addEventListener('click', () => showMonth(new Date(view.getFullYear(), view.getMonth() + 1, 1)));
+  // a picked day is reported as a calendar-pick event (detail: its ISO date)
+  grid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.day');
+    if (btn && !btn.disabled) el.dispatchEvent(new CustomEvent('calendar-pick', { detail: btn.dataset.date }));
+  });
+  grid.addEventListener('keydown', (e) => {
+    const btn = e.target.closest('.day');
+    if (!btn) return;
+    const from = fromIso(btn.dataset.date);
+    const jump = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      ArrowDown: 7,
+      Home: -mondayIndex(from),
+      End: 6 - mondayIndex(from),
+      PageUp: -BOOKING_DAYS,
+      PageDown: BOOKING_DAYS,
+    }[e.key];
+    if (jump === undefined) return;
+    e.preventDefault();
+    if (!jump) return;
+    const dir = jump < 0 ? -1 : 1;
+    const landing = addDays(from, jump);
+    // a closed or out-of-window day: the nearest bookable one on that side
+    const target = win.isBookable(landing) ? landing : nearest(addDays(landing, -dir), dir);
+    if (target) focusDay(isoDate(target));
+  });
+
+  return {
+    el,
+    window: win,
+    show: (iso) => {
+      selected = iso || '';
+      showMonth(fromIso(iso) || win.first || win.start);
+    },
+    focusDay,
+  };
+}
+
 /* ---------- steps ---------- */
 
 /**
- * When works for you?: the date and the time slots (past slots of today are disabled).
+ * When works for you?: the date (a field opening the calendar, buildCalendar) and the time
+ * slots (past slots of today are disabled).
  * @returns {{el: Element, validate: Function, values: Function, reset: Function}}
  */
 function buildSlotStep({ uid, t }) {
-  const now = new Date();
-  const today = isoDate(now);
-  const lastHour = SLOT_HOURS[SLOT_HOURS.length - 1];
-  // after the last slot, the first bookable day is tomorrow
-  const first = new Date(now);
-  if (now.getHours() >= lastHour) first.setDate(first.getDate() + 1);
+  const calendar = buildCalendar({ uid, t });
+  const win = calendar.window;
+  const firstIso = win.first ? isoDate(win.first) : '';
 
-  const date = createEl('input', {
+  // the chosen day (ISO) is the form's value; the field shows it as DD / MM / YYYY
+  const date = createEl('input', { type: 'hidden', name: 'date', value: firstIso });
+  const labelId = `${uid}-date-label`;
+  const valueEl = createEl('span', { class: 'date-value', id: `${uid}-date-value` });
+  const trigger = createEl('button', {
+    type: 'button',
     class: 'control date-control',
-    type: 'date',
     id: `${uid}-date`,
-    name: 'date',
-    min: today,
-    value: isoDate(first),
-    required: true,
-  });
+    'aria-haspopup': 'dialog',
+    'aria-expanded': 'false',
+    'aria-controls': calendar.el.id,
+    'aria-labelledby': `${labelId} ${valueEl.id}`,
+  }, valueEl);
+  trigger.insertAdjacentHTML('beforeend', `<span class="date-icon">${CALENDAR_ICON}</span>`);
+  const dateField = createEl('div', { class: 'date-field' }, trigger, calendar.el, date);
   const dateMsg = createEl('p', { class: 'msg', id: `${uid}-date-msg` });
+
+  const showValue = () => {
+    const [y, m, d] = date.value.split('-');
+    valueEl.textContent = date.value ? `${d} / ${m} / ${y}` : t(TEXT.datePlaceholder);
+    valueEl.classList.toggle('is-empty', !date.value);
+  };
+
+  const isOpen = () => !calendar.el.hidden;
+  const close = (refocus) => {
+    if (!isOpen()) return;
+    calendar.el.hidden = true;
+    trigger.setAttribute('aria-expanded', 'false');
+    dateField.classList.remove('is-open');
+    if (refocus) trigger.focus();
+  };
+  const open = () => {
+    calendar.show(date.value);
+    calendar.el.hidden = false;
+    trigger.setAttribute('aria-expanded', 'true');
+    dateField.classList.add('is-open');
+    calendar.focusDay(date.value);
+  };
+  trigger.addEventListener('click', () => (isOpen() ? close(false) : open()));
+  // Esc closes it (back on the field); a press outside, or focus moving out, closes it too
+  dateField.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !isOpen()) return;
+    e.preventDefault();
+    e.stopPropagation();
+    close(true);
+  });
+  document.addEventListener('pointerdown', (e) => {
+    if (isOpen() && !dateField.contains(e.target)) close(false);
+  });
+  dateField.addEventListener('focusout', (e) => {
+    if (e.relatedTarget && !dateField.contains(e.relatedTarget)) close(false);
+  });
 
   const slotInputs = SLOT_HOURS.map((hour) => createEl('input', {
     class: 'slot-input',
@@ -365,8 +606,8 @@ function buildSlotStep({ uid, t }) {
     createEl(
       'div',
       { class: 'group' },
-      createEl('label', { class: 'group-label', for: date.id }, t(TEXT.date)),
-      date,
+      createEl('label', { class: 'group-label', id: labelId, for: trigger.id }, t(TEXT.date)),
+      dateField,
       dateMsg,
     ),
     slotsGroup,
@@ -386,11 +627,12 @@ function buildSlotStep({ uid, t }) {
 
   const entries = [
     {
-      control: date,
+      control: trigger,
       msg: dateMsg,
       check: () => {
         if (!date.value) return t(TEXT.dateRequired);
-        return date.value < isoDate(new Date()) ? t(TEXT.datePast) : '';
+        if (win.isBookable(fromIso(date.value))) return '';
+        return fill(t(TEXT.dateUnavailable), { n: BOOKING_DAYS });
       },
     },
     {
@@ -400,10 +642,15 @@ function buildSlotStep({ uid, t }) {
     },
   ];
 
-  date.addEventListener('change', () => {
+  // a day picked in the calendar
+  calendar.el.addEventListener('calendar-pick', (e) => {
+    date.value = e.detail;
+    showValue();
     updateSlots();
-    setError(date, dateMsg, entries[0].check());
+    setError(trigger, dateMsg, entries[0].check());
+    close(true);
   });
+  showValue();
   slotInputs.forEach((input) => input.addEventListener('change', () => setError(slotsGroup, slotsMsg, '')));
   updateSlots();
 
@@ -413,12 +660,15 @@ function buildSlotStep({ uid, t }) {
       updateSlots();
       const invalid = validateAll(entries);
       // the slot group itself can't take focus: its first free slot does
-      return invalid === slotsGroup ? slotInputs.find((input) => !input.disabled) || date : invalid;
+      if (invalid !== slotsGroup) return invalid;
+      return slotInputs.find((input) => !input.disabled) || trigger;
     },
     values: () => ({ date: date.value, slot: checkedSlot()?.value || '' }),
     reset: () => entries.forEach(({ control, msg }) => setError(control, msg, '')),
     clear: () => {
-      date.value = isoDate(first);
+      close(false);
+      date.value = firstIso;
+      showValue();
       slotInputs.forEach((input) => { input.checked = false; });
       updateSlots();
       entries.forEach(({ control, msg }) => setError(control, msg, ''));
