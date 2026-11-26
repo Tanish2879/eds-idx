@@ -242,6 +242,16 @@ const capTld = (value) => {
  * @param {Element} block
  */
 export default async function decorate(block) {
+  // Trial style: rendered entirely by register-form-trial.js (and its CSS)
+  if (block.classList.contains('trial')) {
+    const [, { default: decorateTrial }] = await Promise.all([
+      loadCSS(`${window.hlx.codeBasePath}/blocks/register-form/register-form-trial.css`),
+      import('./register-form-trial.js'),
+    ]);
+    await decorateTrial(block);
+    return;
+  }
+
   // Booking style: its steps load alongside the placeholders (register-form-booking.js)
   const booking = block.classList.contains('booking');
   const bookingModule = booking ? Promise.all([

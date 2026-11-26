@@ -1771,11 +1771,23 @@
         "label": "Request Sent Pop-up",
         "description": "Booking only (used when the Thank-you Page Link is empty). The heading is the pop-up's title (e.g. Request sent to Meridian Motors); each paragraph starting with a bold label is a row (e.g. **Dealer** Meridian Motors, Plot 14, Sector 54, Golf Course Road, Gurgaon); a plain paragraph is the status line (e.g. Waiting for Meridian Motors to call you); a link is the outlined button beside Done (e.g. Explore the Combat to #combat). The visitor's email and contact are added automatically.",
         "condition": {
-          "===": [
+          "or": [
             {
-              "var": "classes"
+              "===": [
+                {
+                  "var": "classes"
+                },
+                "booking"
+              ]
             },
-            "booking"
+            {
+              "===": [
+                {
+                  "var": "classes"
+                },
+                "trial"
+              ]
+            }
           ]
         }
       },
@@ -1786,11 +1798,23 @@
         "label": "Map Pop-up Name",
         "description": "Booking only. The bold line of the pop-up over the map's pin, e.g. Meridian Motors.",
         "condition": {
-          "===": [
+          "or": [
             {
-              "var": "classes"
+              "===": [
+                {
+                  "var": "classes"
+                },
+                "booking"
+              ]
             },
-            "booking"
+            {
+              "===": [
+                {
+                  "var": "classes"
+                },
+                "trial"
+              ]
+            }
           ]
         }
       },
@@ -1801,11 +1825,23 @@
         "label": "Map Address",
         "description": "Booking only. The address the Google map shows and marks, e.g. Plot 14, Sector 54, Gurgaon; also the pop-up's second line. With it the map replaces the Decorative Image (which stays as the fallback); clicking the map opens the address in Google Maps.",
         "condition": {
-          "===": [
+          "or": [
             {
-              "var": "classes"
+              "===": [
+                {
+                  "var": "classes"
+                },
+                "booking"
+              ]
             },
-            "booking"
+            {
+              "===": [
+                {
+                  "var": "classes"
+                },
+                "trial"
+              ]
+            }
           ]
         }
       },
@@ -1823,6 +1859,10 @@
           {
             "name": "Booking",
             "value": "booking"
+          },
+          {
+            "name": "Trial",
+            "value": "trial"
           }
         ]
       }
