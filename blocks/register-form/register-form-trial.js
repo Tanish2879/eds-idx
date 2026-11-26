@@ -6,7 +6,10 @@
 //     request), Check your request (Back, Request test drive), then two pop-ups: Verify your
 //     number (the code boxes, resend countdown, Change number, Submit) and Request sent
 //     (Add to calendar, Done);
-//   "Get a quote": Tell us about you (Continue), still a stub (see JOURNEYS).
+//   "Get a quote": Tell us about you (Continue), then straight to the same two pop-ups (no
+//     date or slot: Request sent lists the dealer and the contact, without Add to calendar).
+// Both journeys share one Verify your number pop-up (buildVerify) and one Request sent pop-up
+// (buildSent); what differs is set per journey in JOURNEYS (`sent`).
 // Authored rows are read in model order (_register-form.json); the map uses Map Address and
 // Map Pop-up Name, over the Decorative Image as its fallback; Request Sent Pop-up gives the
 // pop-up's title, its label rows (e.g. a bold "Dealer") and status line.
@@ -118,6 +121,7 @@ const TEXT = {
   sentCall: ['registerFormTrialSentCall', 'We will call you on {phone}.'],
   sentReference: ['registerFormTrialSentReference', 'Reference {ref}.'],
   sentStatus: ['registerFormTrialSentStatus', 'Waiting for {dealer} to confirm your slot'],
+  quoteStatus: ['registerFormTrialQuoteStatus', 'Waiting for {dealer} to call you with your quote'],
   addToCalendar: ['registerFormTrialAddToCalendar', 'Add to calendar'],
   calendarTitle: ['registerFormTrialCalendarTitle', 'Test drive at {dealer}'],
   done: ['registerFormTrialDone', 'Done'],
@@ -134,14 +138,18 @@ const JOURNEYS = {
     ],
     // the last step's button: send the code, then Verify your number and Request sent
     complete: 'verify',
+    // Request sent: the preferred date and time, Add to calendar, the authored status line
+    sent: { when: true, calendar: true, status: 'authored' },
   },
-  // stub: built in the next phase (no complete handler yet: its Continue reports the values
-  // in a register-form-trial:complete event)
   quote: {
     tab: ['registerFormTrialQuote', 'Get a quote'],
     steps: [
       { step: 'details', next: TEXT.continue },
     ],
+    // Continue goes straight to the code, then the same pop-ups
+    complete: 'verify',
+    // Request sent: the contact instead of a date, no calendar, the quote's own status line
+    sent: { contact: true, status: TEXT.quoteStatus },
   },
 };
 
@@ -575,6 +583,9 @@ function dealerLine(authored, sent) {
   return row ? row[1] : [authored.map.name, authored.map.address].filter(Boolean).join(', ');
 }
 
+// "+91 98765 43210, riya.sharma@example.com"
+const contactLine = (v) => [v.phone ? phoneLabel(v.phone) : '', v.email].filter(Boolean).join(', ');
+
 // a <dl> of [term, value] rows, empty values left out
 function fillSummary(dl, rows) {
   dl.replaceChildren(...rows.filter(([, value]) => value).map(([term, value]) => createEl(
@@ -614,7 +625,7 @@ function buildReviewStep({
       [t(TEXT.dealerTerm), dealerLine(authored, sent)],
       [t(TEXT.whenTerm), whenLabel(v.date, v.slot)],
       [t(TEXT.nameTerm), `${v.firstName || ''} ${v.lastName || ''}`.trim()],
-      [t(TEXT.contactTerm), [v.phone ? phoneLabel(v.phone) : '', v.email].filter(Boolean).join(', ')],
+      [t(TEXT.contactTerm), contactLine(v)],
     ]),
   };
 }
@@ -1071,8 +1082,9 @@ function downloadCalendar({
 }
 
 /**
- * Request sent: the title, where the copy goes and the reference, dealer and preferred date and
- * time, the status line; Add to calendar and Done.
+ * Request sent: the title, where the copy goes and the reference, the dealer, the status line
+ * and Done; per journey (JOURNEYS `sent`) the preferred date and time and Add to calendar
+ * (Book a test drive) or the contact (Get a quote).
  * @returns {{dialog: HTMLDialogElement, open: Function, hide: Function}}
  */
 function buildSent({
@@ -1086,12 +1098,13 @@ function buildSent({
   const done = createEl('button', {
     type: 'button', class: 'primary', 'data-glitch': true, autofocus: true,
   }, t(TEXT.done));
+  const status = createEl('p', { class: 'sent-status' });
   const dialog = buildPopup('sent', titleId);
   dialog.append(
     createEl('h3', { class: 'popup-title', id: titleId }, sent.title || fill(t(TEXT.sentTitle), { dealer })),
     sub,
     summary,
-    createEl('p', { class: 'sent-status' }, sent.status || fill(t(TEXT.sentStatus), { dealer })),
+    status,
     popupActions(calendar, done),
   );
 
@@ -1111,7 +1124,9 @@ function buildSent({
 
   return {
     dialog,
-    open: (v, reference) => {
+    open: (v, reference, {
+      when = false, contact = false, calendar: withCalendar = false, status: statusText,
+    } = {}) => {
       const where = v.email
         ? fill(t(TEXT.sentCopy), { email: v.email })
         : fill(t(TEXT.sentCall), { phone: phoneLabel(v.phone) });
@@ -1120,17 +1135,23 @@ function buildSent({
       const dealerValue = dealerLine(authored, sent);
       fillSummary(summary, [
         [t(TEXT.dealerTerm), dealerValue],
-        [t(TEXT.whenTerm), whenLabel(v.date, v.slot)],
+        when ? [t(TEXT.whenTerm), whenLabel(v.date, v.slot)] : null,
+        contact ? [t(TEXT.contactTerm), contactLine(v)] : null,
         // any other authored label rows
         ...sent.rows.filter(([term]) => !/^dealer$/i.test(term)),
-      ]);
-      booking = {
+      ].filter(Boolean));
+      // 'authored': the Request Sent field's status line, else the default; or a text of its own
+      status.textContent = statusText === 'authored' || !statusText
+        ? sent.status || fill(t(TEXT.sentStatus), { dealer })
+        : fill(t(statusText), { dealer });
+      calendar.hidden = !withCalendar;
+      booking = withCalendar ? {
         date: v.date,
         slot: v.slot,
         title: fill(t(TEXT.calendarTitle), { dealer }),
         location: authored.map.address || dealerValue,
         reference,
-      };
+      } : null;
       dialog.showModal();
       syncModalFlag();
     },
@@ -1254,8 +1275,9 @@ export default async function decorateTrial(block) {
         email: v.email,
         phone: v.phone,
         consent: { granted: true, text: v.consentText, updates: v.updates },
-        preferredDate: v.date,
-        preferredSlot: v.slot,
+        requestType: v.journey,
+        // Book a test drive only
+        ...(v.date ? { preferredDate: v.date, preferredSlot: v.slot } : {}),
         verificationToken,
       });
       hideVerify();
@@ -1264,7 +1286,7 @@ export default async function decorateTrial(block) {
         next.focus();
         return;
       }
-      sentPopup.open(v, res.data?.reference || '');
+      sentPopup.open(v, res.data?.reference || '', JOURNEYS[v.journey].sent);
     },
   });
 
@@ -1280,7 +1302,7 @@ export default async function decorateTrial(block) {
       if (!opened) formMsg.textContent = t(TEXT.sendFailed);
     },
   };
-  // a journey without its own handler (Get a quote, next phase) reports its values
+  // a journey without a complete handler (none today) reports its values in an event
   const report = () => block.dispatchEvent(new CustomEvent('register-form-trial:complete', { detail: values() }));
 
   form.addEventListener('submit', (e) => {
