@@ -34,6 +34,13 @@
 
   /* fonts */
   --display-font-family: sequel, sequel-fallback, arial, sans-serif;
+
+  /* the display face comes in one (heavy) weight: headings set in it are drawn lighter by tracing
+     their letters with a hairline in the colour behind them (-webkit-text-stroke, crisp at any
+     pixel density), which trims this much off every stroke — matched to the walkthrough */
+  --display-thin: 0.035em; /* mid-size headings */
+  --display-thin-large: 0.015em; /* large headlines on a plain background (they are bolder in the
+                                    walkthrough); the hero headline, over the video, keeps its weight */
   --heading-font-family: var(--display-font-family);
   --body-font-family: inter, inter-fallback, arial, sans-serif;
   --mono-font-family: roboto-mono, roboto-mono-fallback, 'Courier New', monospace;
@@ -89,6 +96,29 @@
 
   /* nav height: the header is a transparent overlay, so it reserves no space */
   --nav-height: 0px;
+}
+
+/* the JSW theme (a page's "theme" metadata jsw: a class on the body): the page's base type and
+   the design tokens the blocks made for the JSW sites read (the cards block): the New Science
+   faces of the site's Adobe Fonts kit (styles/fonts.css; until they load, Sequel / Inter; the
+   kit's heaviest weight Medium 500), sizes in rem */
+body.jsw {
+  --body-font-family: new-science, inter, inter-fallback, arial, sans-serif;
+  --heading-font-family: new-science-extended, sequel, sequel-fallback, arial, sans-serif;
+  --heading-font-weight: 500;
+  --font-family-display: var(--heading-font-family);
+  --font-family-base: var(--body-font-family);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --spacing-12: 0.75rem;
+  --spacing-16: 1rem;
+  --spacing-24: 1.5rem;
+  --spacing-64: 4rem;
+  --radius-4: 0.25rem;
+  --color-gray-10: #f2f2f2;
+  --color-gray-20: #e0e0e0;
+  --color-gray-60: #737373;
+  --color-accent: #f0b866; /* (the editor's notices: the JSW bronze) */
 }
 
 /* fallback fonts (metric-matched to reduce CLS while web fonts load) */
@@ -396,6 +426,42 @@ main > .section > .default-content-wrapper:last-child {
   padding-bottom: var(--section-spacing);
 }
 
+/* section-to-section transitions (pages with the JSW theme: scripts.js, decorateSectionMotion,
+   sets the states): a section's content, its wrappers, rises 5rem and fades in as the section
+   locks into the screen (is-active, the walkthroughs' ease), and fades away (lifting 2rem) as it
+   leaves at the top (is-exiting). A section with its own scroll animation
+   (data-motion="block"), or one held still by the next (data-motion="held"), is only faded:
+   never moved, its transforms left to its block. The blocks' own rules are untouched. */
+html.has-section-motion main > .section {
+  --section-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  > div {
+    transition: opacity 0.9s var(--section-ease);
+  }
+
+  &:not([data-motion]) > div {
+    transition:
+      opacity 0.9s var(--section-ease),
+      transform 0.9s var(--section-ease);
+  }
+
+  /* not yet reached: its content waiting below, unseen */
+  &:not(.is-seen, [data-motion]) > div {
+    opacity: 0;
+    transform: translateY(5rem);
+  }
+
+  /* leaving at the top */
+  &.is-exiting > div {
+    opacity: 0;
+    transition-duration: 0.6s;
+  }
+
+  &.is-exiting:not([data-motion]) > div {
+    transform: translateY(-2rem);
+  }
+}
+
 /* page metadata table: published pages turn it into <meta> tags; never render it as content */
 main .metadata {
   display: none;
@@ -525,4 +591,25 @@ main > .section.cards-timeline-container > .default-content-wrapper > p + h2 {
    snapping or smooth scroll-behavior here: wheel steps are eased by scripts/scroll-stops.js */
 html:has(main .parallax-collage) {
   --transition-fast: 0.2s var(--ease-power2-in-out);
+}
+
+/* JSW pages (pill nav): no visible page scrollbar; scrolling (wheel, trackpad, touch, keyboard)
+   works as normal */
+html:has(header .header.is-pill) {
+  scrollbar-width: none;
+}
+
+/* older WebKit / Blink without scrollbar-width */
+@supports not (scrollbar-width: none) {
+  html:has(header .header.is-pill)::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* authoring (Universal Editor; html.is-authoring, see isAuthoring in scripts.js): the editor sizes
+   its frame to the page height, so no height may follow the viewport there (it would grow without
+   end); blocks lay out statically and a fixed "screen" height stands in for 100svh */
+html.is-authoring {
+  --authoring-screen: 760px;
+  --section-min-height: var(--authoring-screen);
 }

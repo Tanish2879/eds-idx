@@ -29,7 +29,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   --pc-card-ratio: 119 / 155;
 
   /* motion: scroll (in svh) during which the cards hold still: first the engine enters from the
-     right into its slot, then it fades out (--enter / --fade 0 → 1 are set by the block JS) */
+     right into its slot, then it fades out (--enter / --fade 0 → 1 are set on it by the block JS) */
   --hold-enter: 50;
   --hold-fade: 40;
   --enter: 0;
@@ -77,6 +77,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   letter-spacing: 0.01em;
   text-transform: uppercase;
   text-wrap: balance;
+  -webkit-text-stroke: var(--display-thin) var(--pc-bg); /* lighter letters (see styles.css) */
 }
 
 .parallax-collage .parallax-collage-subtitle {
@@ -95,7 +96,7 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
   position: relative;
   z-index: 5;
   margin-top: -100svh;
-  padding-bottom: calc((var(--hold-enter) + var(--hold-fade)) * 1svh + var(--pc-tail, 0px));
+  padding-bottom: calc((var(--hold-enter) + var(--hold-fade) + var(--hold-shift, 0) + var(--hold-rest, 0)) * 1svh + var(--pc-tail, 0px));
   pointer-events: none;
 }
 
@@ -196,11 +197,12 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
 @media (width >= 768px) {
   .parallax-collage {
     --u: min(1px, 0.1389svh, 0.0781vw);
-    --pc-heading-size: max(18px, calc(26 * var(--u)));
-    --pc-heading-lh: 1;
-    --pc-subtitle-size: max(12px, calc(15.5 * var(--u)));
-    --pc-subtitle-lh: 1.42;
-    --pc-text-gap: calc(24 * var(--u));
+    --u-text: min(1px, 0.0781vw); /* text keeps its design size on short windows (width-based only) */
+    --pc-heading-size: max(18px, calc(26 * var(--u-text)));
+    --pc-heading-lh: 1.05;
+    --pc-subtitle-size: max(12px, calc(15.5 * var(--u-text)));
+    --pc-subtitle-lh: 1.55;
+    --pc-text-gap: calc(30 * var(--u-text));
     --pc-card-w: calc(162 * var(--u));
     --pc-card-ratio: 113 / 146;
   }
@@ -262,4 +264,30 @@ main .section.parallax-collage-container > .parallax-collage-wrapper {
     top: 44.2%;
     right: 4.2%;
   }
+}
+
+/* authoring (Universal Editor, see styles.css): static, top to bottom: the text, then screen 1 (the
+   hero card in its slot among 4 cards) and screen 2, each a fixed "screen" tall; every card can be
+   selected */
+html.is-authoring .parallax-collage .sticky-text-layer {
+  position: relative;
+  height: auto;
+  padding: 96px 24px;
+}
+
+html.is-authoring .parallax-collage .scrolling-images-layer {
+  margin-top: 0;
+  padding-bottom: 0;
+  pointer-events: auto;
+}
+
+html.is-authoring .parallax-collage .screen-1,
+html.is-authoring .parallax-collage .screen-2 {
+  height: var(--authoring-screen);
+  margin-bottom: 0;
+}
+
+html.is-authoring .parallax-collage .engine {
+  --enter: 1;
+  --fade: 0;
 }

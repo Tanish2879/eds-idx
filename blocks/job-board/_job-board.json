@@ -1,0 +1,313 @@
+{
+  "definitions": [
+    {
+      "title": "Job Board",
+      "id": "job-board",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Job Board",
+              "model": "job-board",
+              "filter": "job-board"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Search",
+      "id": "job-board-search",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Search",
+              "model": "job-board-search"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Filters",
+      "id": "job-board-filters",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Filters",
+              "model": "job-board-filters"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Job",
+      "id": "job-board-job",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Job",
+              "model": "job-board-job"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "job-board",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "gallery",
+          "label": "Gallery image",
+          "description": "Optional: the photo strip under the board. JPG, PNG, WebP or SVG; other files are not shown.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "galleryAlt",
+          "label": "Gallery image alt text",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          },
+          "description": "Describes the photo strip for screen readers."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "emptyMessage",
+          "label": "No results message",
+          "description": "Shown when nothing matches, e.g. No roles match your search.",
+          "value": "",
+          "validation": {
+            "maxLength": 150
+          }
+        }
+      ]
+    },
+    {
+      "id": "job-board-search",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "heading",
+          "label": "Heading",
+          "description": "First line, in grey, e.g. OPEN ROLES AT.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "headingEmphasis",
+          "label": "Heading (second line)",
+          "description": "Second line, in black, e.g. JSW MOTORS.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "placeholder",
+          "label": "Search input placeholder",
+          "description": "Inside the empty search box, e.g. Search Roles.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "description",
+          "label": "Description",
+          "description": "Under the search box.",
+          "value": "",
+          "validation": {
+            "maxLength": 150
+          }
+        }
+      ]
+    },
+    {
+      "id": "job-board-filters",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "filterLabel",
+          "label": "Filters label",
+          "description": "Above the dropdowns, e.g. Filter Roles.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "locationLabel",
+          "label": "Location dropdown label",
+          "description": "The dropdown's label, e.g. Locations.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "container",
+          "name": "locations",
+          "label": "Locations",
+          "description": "The dropdown's choices; empty: the jobs' own locations.",
+          "multi": true,
+          "fields": [
+            {
+              "component": "text",
+              "valueType": "string",
+              "name": "location",
+              "label": "Location",
+              "value": "",
+              "validation": {
+                "maxLength": 64
+              }
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "departmentLabel",
+          "label": "Department dropdown label",
+          "description": "The dropdown's label, e.g. Departments.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "container",
+          "name": "departments",
+          "label": "Departments",
+          "description": "The dropdown's choices; empty: the jobs' own departments.",
+          "multi": true,
+          "fields": [
+            {
+              "component": "text",
+              "valueType": "string",
+              "name": "department",
+              "label": "Department",
+              "value": "",
+              "validation": {
+                "maxLength": 64
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "job-board-job",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Job title",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          },
+          "description": "E.g. Embedded Software Engineer. Up to 15 jobs are shown."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "department",
+          "label": "Department",
+          "description": "One of the filter's departments, written the same way.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "location",
+          "label": "Job location",
+          "description": "E.g. Bangalore, India; separate several with semicolons.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "description",
+          "label": "Job description",
+          "description": "A short summary under the location (searchable).",
+          "value": "",
+          "required": true,
+          "valueFormat": "string-multiline",
+          "validation": {
+            "maxLength": 150
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "applyLink",
+          "label": "Apply button link",
+          "description": "A page, URL or mailto: address.",
+          "required": true,
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "applyLabel",
+          "label": "Apply button label",
+          "description": "E.g. APPLY NOW.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "job-board",
+      "components": [
+        "job-board-search",
+        "job-board-filters",
+        "job-board-job"
+      ]
+    }
+  ]
+}

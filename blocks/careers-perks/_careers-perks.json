@@ -1,0 +1,134 @@
+{
+  "definitions": [
+    {
+      "title": "Careers Perks",
+      "id": "careers-perks",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Careers Perks",
+              "model": "careers-perks",
+              "filter": "careers-perks"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Perk",
+      "id": "careers-perk",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Perk",
+              "model": "careers-perk"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "careers-perks",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "heading",
+          "label": "Heading",
+          "description": "E.g. OUR PERKS.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 40
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "intro",
+          "label": "Intro",
+          "description": "Under the heading; new lines are kept.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "careers-perk",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "icon",
+          "label": "Icon",
+          "description": "The line icon above the title.",
+          "value": "flag",
+          "options": [
+            { "name": "Flag", "value": "flag" },
+            { "name": "Sprout", "value": "sprout" },
+            { "name": "Scales", "value": "scale" },
+            { "name": "Heart (health)", "value": "heart" },
+            { "name": "Sun", "value": "sun" },
+            { "name": "Home", "value": "home" },
+            { "name": "People", "value": "users" },
+            { "name": "Globe", "value": "globe" },
+            { "name": "Shield", "value": "shield" },
+            { "name": "Clock", "value": "clock" },
+            { "name": "Rocket", "value": "rocket" },
+            { "name": "Star", "value": "star" }
+          ]
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "iconImage",
+          "label": "Custom icon image",
+          "description": "Optional: replaces the icon (square, ideally SVG). JPG, PNG, WebP or SVG; other files are not shown.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Title",
+          "description": "E.g. Flexible hours. Up to 6 perks are shown.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "description",
+          "label": "Description",
+          "description": "Two or three short lines.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 150
+          }
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "careers-perks",
+      "components": [
+        "careers-perk"
+      ]
+    }
+  ]
+}

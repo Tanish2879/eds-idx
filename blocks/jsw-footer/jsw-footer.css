@@ -1,0 +1,472 @@
+/* JSW Footer: one block, its children (columns, links, social links) inside it. In the header's
+   faces (Inter, Roboto Mono; the Variant B column titles in New Science Extended).
+   Variant A – Standard (the base rules; design-footer.jpg, a 1280 frame): 490px tall on the
+   background media (the car at the bottom, centred); 32px margins; at the top left the wordmark
+   (164px, its top 29.5px down), the copyright and location (13px, grey), 48px below them the
+   white button (204 × 40, 8px corners, its label 13px uppercase and a +); from x 675 the columns,
+   175px wide and 24px apart (the titles 15px uppercase white; the links 12px grey on 26px lines,
+   the first 4px under the title; the social squares 36px, 5px apart, 15px under the title); the
+   legal link at the bottom left (10px mono, underlined), 32px above the bottom.
+   Variant B – Alternate (&.variant-b, after the base rules; design-footer-b.jpg).
+   Mobile first: phones stack the brand over the columns (two side by side); from 900px the
+   designs' layouts.
+   Every rule is nested in one root: the block in its wrapper, in a section of the page (main) or
+   of a page's footer (.footer, where pages show the footer document). */
+
+main > .section > .jsw-footer-wrapper {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+}
+
+:is(main, .footer) > .section > .jsw-footer-wrapper > .block {
+  --jf-text: #fff;
+  --jf-muted: #a0a0a0;
+  --jf-square: #181b1c;
+  --jf-font: var(--body-font-family);
+  --jf-mono: var(--mono-font-family);
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+  min-height: 560px;
+  padding: 32px 20px 240px; /* (phones: the car shows under the texts) */
+  background-color: #000;
+  color: var(--jf-text);
+  font-family: var(--jf-font);
+
+  /* the background media: the image or the video fills the footer, anchored to its bottom */
+  .background {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .background picture,
+  .background img,
+  .video {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .background img,
+  .video {
+    object-fit: cover;
+    object-position: 50% 100%;
+  }
+
+  /* (editor: the video's poster, the background image field, stays editable behind the video) */
+  .poster {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  /* the brand: the wordmark, the copyright and location, the button */
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .logo {
+    display: block;
+    line-height: 0;
+  }
+
+  .logo img {
+    display: block;
+    width: 164px;
+    height: auto;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 8px;
+    max-width: 100%;
+    margin: 4px 0 0;
+    color: var(--jf-muted);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  /* (each at most the line's width: a longer one cut with "…") */
+  .meta span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    box-sizing: border-box;
+    max-width: 100%;
+    height: 40px;
+    margin-top: 48px;
+    padding: 0 26px 0 24px;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #111;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease-out;
+  }
+
+  .cta:hover {
+    background-color: #e6e6e6;
+  }
+
+  .cta:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .cta-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cta-icon {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath d='M4 0v8M0 4h8' stroke='%23111' stroke-width='1.1'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  /* the columns: phones two side by side; each a title, its links, its social squares */
+  .link-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 24px;
+    min-width: 0;
+  }
+
+  .column {
+    flex: 1 1 calc(50% - 12px);
+    min-width: 0;
+  }
+
+  .column-title {
+    margin: 0;
+    overflow: hidden;
+    color: var(--jf-text);
+    font-family: var(--jf-font);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .link-list {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .link-item {
+    min-width: 0;
+    font-size: 12px;
+    line-height: 26px;
+  }
+
+  /* (editor only: social links over the limit or incomplete, not shown on the site) */
+  .is-over-limit {
+    opacity: 0.35;
+  }
+
+  .link {
+    display: block;
+    overflow: hidden;
+    color: var(--jf-muted);
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: color 0.2s ease-out;
+  }
+
+  & a.link:hover {
+    color: var(--jf-text);
+  }
+
+  & a.link:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .social-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 15px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .social-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: var(--jf-square);
+    color: var(--jf-text);
+    font-size: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-out;
+  }
+
+  & a.social-icon:hover {
+    background-color: #2b3032;
+  }
+
+  & a.social-icon:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .social-icon img {
+    display: block;
+    width: 13px;
+    height: 13px;
+  }
+
+  /* the legal link: at the bottom left */
+  .legal {
+    position: absolute;
+    bottom: 24px;
+    left: 20px;
+    margin: 0;
+    font-family: var(--jf-mono);
+    font-size: 10px;
+    line-height: 14px;
+    text-transform: uppercase;
+  }
+
+  .legal-link:any-link {
+    color: var(--jf-muted);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .legal-link:hover {
+    color: var(--jf-text);
+  }
+
+  .legal-link:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+
+  /* from 900px: the design's layout; the brand at the left, the columns from x 675 (175px each,
+     24px apart) at the right, the legal link 32px above the bottom */
+  @media (width >= 900px) {
+    min-height: 490px;
+    padding: 26px 32px 72px;
+
+    .inner {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 0 24px;
+    }
+
+    .brand {
+      padding-top: 3.5px; /* (the wordmark's top at 29.5px) */
+    }
+
+    .link-columns {
+      flex-wrap: nowrap;
+      gap: 24px;
+    }
+
+    .column {
+      flex: 0 0 175px;
+    }
+
+    .legal {
+      bottom: 32px;
+      left: 32px;
+    }
+  }
+
+  /* ==== Variant B – Alternate (&.variant-b; design-footer-b.jpg, a 1280 frame) ==== */
+
+  /* one row, 321px tall on a black-to-teal gradient (no media): from 36px down, the brand at x 36
+     (the wordmark 145px, the copyright and location 11.5px on 22px lines, the legal link 12px
+     underlined), the white button (235 × 36) from x 507, the columns from x 909 (146px each: the
+     title in the extended face 16px, the links 11px on 21.75px lines) and the social squares
+     (36px, 6px apart, no visible title) ending 64px from the right; the brand and button columns
+     in proportion to the width. Phones stack the brand and the button over the columns. */
+  &.variant-b {
+    min-height: 0;
+    padding: 32px 20px 56px;
+    background:
+      linear-gradient(
+        to bottom,
+        #000 0%,
+        rgb(2 16 18) 25%,
+        rgb(3 31 36) 37.4%,
+        rgb(4 53 61) 49.8%,
+        rgb(6 80 91) 62.3%,
+        rgb(17 104 117) 71.7%,
+        rgb(50 124 135) 81%,
+        rgb(82 145 154) 90.3%,
+        rgb(114 165 172) 100%
+      );
+
+    .inner {
+      gap: 32px;
+    }
+
+    .logo img {
+      width: 145px;
+    }
+
+    .meta {
+      flex-direction: column;
+      margin-top: 6px;
+      color: #b4b4b4;
+      font-size: 11.5px;
+      line-height: 22px;
+    }
+
+    .legal {
+      position: static;
+      margin-top: 18px;
+      font-family: var(--jf-font);
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .legal-link:any-link {
+      color: #a3b6b9;
+      text-underline-offset: 3px;
+    }
+
+    .action {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    /* the button: 235 × 36, its label at the left, the + at the right */
+    .cta {
+      justify-content: space-between;
+      gap: 12px;
+      width: 235px;
+      height: 36px;
+      margin: 0;
+      padding: 0 14px 0 9px;
+      font-size: 14.5px;
+    }
+
+    .cta-icon {
+      width: 9px;
+      height: 9px;
+    }
+
+    .column-title {
+      font-family: 'New Science Extended', new-science-extended, var(--display-font-family);
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .link-list {
+      margin-top: 10px;
+    }
+
+    .link-item {
+      font-size: 11px;
+      line-height: 21.75px;
+    }
+
+    .link {
+      color: #a9b4b6;
+    }
+
+    /* the social column: its title only read out by screen readers, the squares at the top */
+    .column.is-social .column-head {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .social-list {
+      gap: 6px;
+      margin-top: 0;
+    }
+
+    .social-icon {
+      background-color: #191e1e;
+    }
+
+    .social-icon img {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media (width >= 900px) {
+      min-height: 321px;
+      padding: 36px 64px 32px 36px;
+
+      /* the brand, the button (from x 507 at 1280: their columns in proportion), the columns */
+      .inner {
+        grid-template-columns: minmax(0, 471fr) minmax(0, 402fr) auto;
+        gap: 0;
+      }
+
+      .brand {
+        padding-top: 2.5px; /* (the wordmark's top at 38.5px) */
+      }
+
+      /* (the guardrail: the columns at most the width the brand and the button leave; more
+         columns, or longer ones, wrap to a second row instead of running past the edge) */
+      .link-columns {
+        flex-wrap: wrap;
+        gap: 24px 0;
+        max-width: calc(100vw - 400px);
+      }
+
+      /* a column: as wide as its content and 24px, at least 146px (the design's EXPLORE: its
+         title, then the space before the social squares), so a longer title (TECHNOLOGY) is not
+         cut; at most 200px (a longer title or link cut with "…") */
+      .column {
+        flex: 0 0 auto;
+        box-sizing: border-box;
+        min-width: 146px;
+        max-width: 200px;
+        padding-right: 24px;
+      }
+
+      .column.is-social {
+        flex: none;
+        min-width: 0;
+        max-width: none; /* (its icons: their own limit, MAX_ITEMS) */
+        padding-right: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "definitions": [
+    {
+      "title": "Reservation Form",
+      "id": "reservation-form",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Reservation Form",
+              "model": "reservation-form",
+              "filter": "reservation-form"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Form Field",
+      "id": "reservation-form-field",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Form Field",
+              "model": "reservation-form-field"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Dropdown Field",
+      "id": "reservation-form-dropdown",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Dropdown Field",
+              "model": "reservation-form-dropdown"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "reservation-form",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "background",
+          "label": "Background Image",
+          "description": "Fills the left half; a banner above the form on phones.",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "backgroundAlt",
+          "label": "Background Image alt text",
+          "description": "Describes the image for screen readers. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "heading",
+          "label": "Heading",
+          "description": "The form's heading. Max 40 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 40
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "description",
+          "label": "Description",
+          "description": "Shown under the heading. Max 200 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "submitLabel",
+          "label": "Button text",
+          "description": "The button's text. Max 30 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "submitAction",
+          "label": "Send the form to (URL)",
+          "description": "Where the data is posted as JSON; leave empty to send nothing. Max 256 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 256
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "disclaimer",
+          "label": "Privacy disclaimer",
+          "description": "Small print under the button; an email address in it becomes a link, and the privacy link follows it. Max 200 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "privacyLink",
+          "label": "Privacy notice link",
+          "description": "The privacy notice page.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "privacyLinkText",
+          "label": "Privacy notice link text",
+          "description": "The link's text. Max 30 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "tab",
+          "name": "pricingTab",
+          "label": "Pricing"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "amountLabel",
+          "label": "Amount label",
+          "description": "The price card's label. Max 30 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "amount",
+          "label": "Reservation amount (₹)",
+          "description": "In rupees; leave empty to hide the price card. Keep it the same as the payment service's amount."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "amountBadge",
+          "label": "Amount badge",
+          "description": "Optional tag beside the label. Max 30 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "amountNote",
+          "label": "Amount note",
+          "description": "Shown under the amount. Max 200 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
+        },
+        {
+          "component": "tab",
+          "name": "paymentTab",
+          "label": "Payment"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "paymentService",
+          "label": "Payment service URL",
+          "description": "The service that creates and verifies payments; leave empty for test mode. The Key ID is in the block's configuration. Max 256 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 256
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "merchantName",
+          "label": "Name in the payment window",
+          "description": "Shown in the payment window. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "successPage",
+          "label": "Page after the form is sent",
+          "description": "Opens once the form is sent and its payment confirmed (default: /jsw/confirmation).",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "failurePage",
+          "label": "Page after a failed payment",
+          "description": "Opens after a failed payment (default: /jsw/payment-failed).",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "tab",
+          "name": "pendingTab",
+          "label": "Pending"
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "pendingPreview",
+          "label": "Show pending state in the editor",
+          "description": "Shows the pending state in place of the form while editing, to edit its texts in place; never on the site.",
+          "value": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "pendingHeading",
+          "label": "Pending title",
+          "description": "Shown while the payment is confirmed. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "valueFormat": "string-multiline",
+          "name": "pendingDescription",
+          "label": "Pending description",
+          "description": "Shown under the pending title. Max 200 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 200
+          }
+        }
+      ]
+    },
+    {
+      "id": "reservation-form-field",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
+          "description": "Shown in the field; it also sets the field's kind. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "fieldName",
+          "label": "Field name",
+          "description": "The value's key in the sent data; leave empty to make it from the label. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "required",
+          "label": "Required",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "reservation-form-dropdown",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
+          "description": "Shown until a choice is made. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "fieldName",
+          "label": "Field name",
+          "description": "The choice's key in the sent data; leave empty to make it from the label. Max 64 characters.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "required",
+          "label": "Required",
+          "value": false
+        },
+        {
+          "component": "container",
+          "name": "options",
+          "label": "Cities",
+          "description": "The choices, one per entry.",
+          "multi": true,
+          "fields": [
+            {
+              "component": "text",
+              "valueType": "string",
+              "name": "option",
+              "label": "City",
+              "description": "Max 64 characters.",
+              "value": "",
+              "validation": {
+                "maxLength": 64
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "reservation-form",
+      "components": [
+        "reservation-form-field",
+        "reservation-form-dropdown"
+      ]
+    }
+  ]
+}

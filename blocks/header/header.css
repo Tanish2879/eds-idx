@@ -691,7 +691,7 @@ header .nav-sticky-close {
    >= 768px: logo left, links + CTA right. */
 
 header .header.is-pill {
-  --pill-bg: #999;
+  --pill-bg: #a3a3a3;
   --pill-ink: #111;
   --pill-ease: var(--ease-power2-in-out);
 }
@@ -699,36 +699,65 @@ header .header.is-pill {
 /* stays fixed at the top of the viewport while the page scrolls */
 header .nav-pill-wrapper {
   position: fixed;
-  inset: 16px 16px auto;
+  inset: 36px 22px auto;
   z-index: 10;
   display: flex;
   justify-content: center;
   pointer-events: none;
 }
 
+/* phones (mobile design): a grey bar with the logo + a short CTA, and the menu button as a separate
+   grey square beside it; the dropdown opens as a grey panel below. From 768px: one bar */
 header .nav-pill {
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  min-height: 48px;
-  padding: 6px 6px 6px 16px;
-  border-radius: 50px;
-  background-color: var(--pill-bg);
   color: var(--color-white);
   font-family: var(--body-font-family);
   pointer-events: auto;
-  transition: border-radius 0.3s var(--pill-ease);
+  transition:
+    border-radius 0.3s var(--pill-ease),
+    background-color 0.25s var(--pill-ease);
 }
 
-header .nav-pill[aria-expanded='true'] {
-  border-radius: 24px;
+header .nav-pill-main {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0; /* narrow phones: the logo gives way, so the menu button stays on the same row */
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 10px;
+  background-color: var(--pill-bg);
+  transition: background-color 0.25s var(--pill-ease);
+}
+
+header .nav-pill-quick:any-link {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 33px;
+  padding: 0 18px;
+  border-radius: 6px;
+  background-color: var(--color-white);
+  color: var(--pill-ink);
+  font-family: var(--mono-font-family);
+  font-size: 12px;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 header .nav-pill-brand {
   display: flex;
+  min-width: 0;
   align-items: center;
   height: 36px;
 }
@@ -737,24 +766,27 @@ header .nav-pill-brand {
 header .nav-pill-brand img {
   display: block;
   width: auto;
-  height: 24px;
+  max-width: 100%;
+  height: auto;
+  max-height: 24px;
 }
 
 header .nav-pill-toggle {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 42px;
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: transparent;
+  border-radius: 8px;
+  background-color: var(--pill-bg);
   cursor: pointer;
+  transition: background-color 0.25s var(--pill-ease);
 }
 
 header .nav-pill-toggle .nav-pill-bar {
   position: absolute;
-  left: 10px;
+  left: 11px;
   width: 16px;
   height: 1.5px;
   background-color: var(--color-white);
@@ -762,11 +794,11 @@ header .nav-pill-toggle .nav-pill-bar {
 }
 
 header .nav-pill-bar-top {
-  top: 14px;
+  top: 17px;
 }
 
 header .nav-pill-bar-bottom {
-  top: 21px;
+  top: 24px;
 }
 
 header .nav-pill[aria-expanded='true'] .nav-pill-bar-top {
@@ -782,7 +814,10 @@ header .nav-pill-menu {
   flex-basis: 100%;
   flex-direction: column;
   gap: 16px;
-  padding: 8px 10px 10px 0;
+  box-sizing: border-box;
+  padding: 8px 16px 16px;
+  border-radius: 12px;
+  background-color: var(--pill-bg);
 }
 
 header .nav-pill[aria-expanded='true'] .nav-pill-menu {
@@ -849,18 +884,56 @@ header .nav-pill-toggle:focus-visible {
   outline-offset: 2px;
 }
 
+/* dark states: on a dark video hero or a confirmation page while at the top, and over the darkened
+   blog (the same look): no grey bar, logo + links + CTA straight on the dark, the phone menu
+   button a dark square */
+body.is-page-dark header .nav-pill:not([aria-expanded='true']),
+body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-main,
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']),
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-main,
+body:has(main > .section:first-child:is(.confirmation-container, .payment-failed-container)) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']),
+body:has(main > .section:first-child:is(.confirmation-container, .payment-failed-container)) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-main {
+  background-color: transparent;
+}
+
+body.is-page-dark header .nav-pill:not([aria-expanded='true']) .nav-pill-toggle,
+body:has(main > .section:first-child.hero-video-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-toggle,
+body:has(main > .section:first-child:is(.confirmation-container, .payment-failed-container)) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-toggle {
+  background-color: rgb(255 255 255 / 8%);
+}
+
+/* over the careers hero while at the top: the design's dark glass bar (the photo shows through) */
+body:has(main > .section:first-child.careers-hero-container) header .nav-pill-wrapper.is-at-top {
+  --pill-bg: rgb(12 16 22 / 45%);
+}
+
+body:has(main > .section:first-child.careers-hero-container) header .nav-pill-wrapper.is-at-top .nav-pill:not([aria-expanded='true']) .nav-pill-main {
+  backdrop-filter: blur(12px);
+}
+
 @media (width >= 768px) {
   header .nav-pill-wrapper {
-    inset: 26px 16px auto;
+    inset: 24px 16px auto;
   }
 
+  /* walkthrough at 1280: 738 × 39 bar, 8px corners, logo 16px in */
   header .nav-pill,
   header .nav-pill[aria-expanded='true'] {
     flex-wrap: nowrap;
-    width: min(670px, 100%);
-    min-height: 42px;
-    padding: 7px 6px 7px 13px;
-    border-radius: 50px;
+    gap: 0;
+    width: min(738px, 100%);
+    min-height: 39px;
+    padding: 6px 4px 6px 16px;
+    border-radius: 8px;
+    background-color: var(--pill-bg);
+  }
+
+  header .nav-pill-main {
+    display: contents;
+  }
+
+  header .nav-pill-quick:any-link {
+    display: none;
   }
 
   header .nav-pill-brand {
@@ -884,6 +957,8 @@ header .nav-pill-toggle:focus-visible {
     gap: 34px;
     margin-left: auto;
     padding: 0;
+    border-radius: 0;
+    background: none;
   }
 
   header .nav-pill-links {
@@ -893,14 +968,18 @@ header .nav-pill-toggle:focus-visible {
 
   header .nav-pill-links a:any-link {
     padding: 4px 0;
-    font-size: 13px;
+    font-size: 10.5px;
   }
 
   header .nav-pill-tools {
     flex-direction: row;
   }
 
+  /* walkthrough: 138 × 27 white button with 6px corners, ≈10px mono */
   header .nav-pill-cta:any-link {
-    min-height: 28px;
+    min-height: 27px;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-size: 10px;
   }
 }

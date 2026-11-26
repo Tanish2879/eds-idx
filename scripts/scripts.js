@@ -289,6 +289,103 @@ export function moveInstrumentation(from, to) {
 }
 
 /**
+ * Whether the page is open for authoring: in the Universal Editor (edit or preview mode), or the
+ * author-side rendition it loads, which carries the editor's connection meta tag
+ * (urn:adobe:aue:system:aemconnection) and instrumentation (data-aue-*; the published page has
+ * neither; window.adobe is no sign: analytics libraries on the live site define it too).
+ * Scroll-driven effects are then left out and every block renders statically: the editor sizes
+ * its frame to the page height, so heights tied to the viewport (100svh, pinned scroll distances)
+ * would grow without end, and wheel / touch capture, pins and hidden or inert sections get in the
+ * way of selecting and editing content.
+ * @returns {boolean}
+ */
+export function isAuthoring() {
+  const root = document.documentElement;
+  return root.classList.contains('is-authoring')
+    || root.classList.contains('adobe-ue-edit')
+    || root.classList.contains('adobe-ue-preview')
+    // the editor's connection to AEM author (only in the author rendition, never published)
+    || !!document.querySelector('meta[name^="urn:adobe:aue:system:"]')
+    || !!document.querySelector('[data-aue-resource]');
+}
+
+/**
+ * Authoring: takes the rich-text instrumentation out of an authored cell, so that a block can put
+ * it on the element that holds that rich text once decorated (applyRichtext), instead of leaving
+ * the editor support's wrapper inside the block layout (an extra div that breaks grid / flex
+ * layouts) or losing it when the block moves the text elsewhere. Unwraps the editor's group
+ * (data-aue-type="richtext"), or, before it ran, removes the raw data-richtext-* markers (so it
+ * won't group them later). No-op on the published page.
+ * @param {Element} container the authored cell (or row)
+ * @returns {Object<string, string>|null} the data-aue-* attributes of the rich text, or null
+ */
+export function takeRichtext(container) {
+  if (!container) return null;
+  let attrs = null;
+  const group = container.querySelector('[data-aue-type="richtext"]');
+  if (group) {
+    attrs = Object.fromEntries([...group.attributes]
+      .filter(({ name }) => name.startsWith('data-aue-')).map(({ name, value }) => [name, value]));
+    group.replaceWith(...group.childNodes);
+  }
+  const marked = [...container.querySelectorAll('[data-richtext-prop]')];
+  if (marked.length && !attrs) {
+    const {
+      richtextResource, richtextProp, richtextLabel, richtextFilter,
+    } = marked[0].dataset;
+    attrs = { 'data-aue-type': 'richtext', 'data-aue-prop': richtextProp };
+    if (richtextResource) {
+      attrs['data-aue-resource'] = richtextResource;
+      attrs['data-aue-behavior'] = 'component';
+    }
+    if (richtextLabel) attrs['data-aue-label'] = richtextLabel;
+    if (richtextFilter) attrs['data-aue-filter'] = richtextFilter;
+  }
+  marked.forEach((node) => {
+    ['richtextResource', 'richtextProp', 'richtextLabel', 'richtextFilter'].forEach((k) => delete node.dataset[k]);
+  });
+  return attrs;
+}
+
+/**
+ * Authoring: puts rich-text instrumentation (from takeRichtext) on the element that holds exactly
+ * that rich text, which makes it the inline-editable rich text, without a wrapper.
+ * @param {Element} target
+ * @param {Object<string, string>|null} attrs
+ */
+export function applyRichtext(target, attrs) {
+  if (!target || !attrs) return;
+  Object.entries(attrs).forEach(([name, value]) => target.setAttribute(name, value));
+}
+
+/**
+ * Holds a picture back: its sources and image keep their URLs in data attributes, so nothing is
+ * fetched until loadHeldPicture() (e.g. images that are not shown yet).
+ * @param {Element} picture a <picture> (e.g. from createOptimizedPicture)
+ */
+export function holdPicture(picture) {
+  picture?.querySelectorAll('source[srcset], img[src]').forEach((node) => {
+    const attr = node.tagName === 'IMG' ? 'src' : 'srcset';
+    node.dataset[`held${attr}`] = node.getAttribute(attr);
+    node.removeAttribute(attr);
+  });
+}
+
+/**
+ * Lets a picture held back by holdPicture() load now (no-op otherwise). The image loads eagerly:
+ * it is released because it is wanted, and a lazy image whose URL is set late may never load.
+ * @param {Element} picture
+ */
+export function loadHeldPicture(picture) {
+  picture?.querySelectorAll('[data-heldsrc], [data-heldsrcset]').forEach((node) => {
+    const attr = node.dataset.heldsrc !== undefined ? 'src' : 'srcset';
+    if (node.tagName === 'IMG') node.loading = 'eager';
+    node.setAttribute(attr, node.dataset[`held${attr}`]);
+    delete node.dataset[`held${attr}`];
+  });
+}
+
+/**
  * Art direction: merges a mobile picture into a desktop picture so that viewports
  * narrower than `breakpoint` px load the mobile image instead.
  * The mobile picture's media-less <source> elements (its small / fallback renditions)
@@ -398,12 +495,89 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+// blocks with their own scroll-driven animation (pinned stages, stepping, a curtain): their
+// sections are never moved by the section transitions, only faded on leaving
+const SCROLL_BLOCKS = [
+  '.collage', '.cards.pillars', '.cards.timeline', '.cards.roller', '.cards.carousel',
+  '.interactive-showcase', '.parallax-collage', '.engine-showcase', '.blog-carousel', '.hero-video',
+].join(', ');
+
+/**
+ * Section-to-section transitions (pages with the JSW theme; not while authoring or with reduced
+ * motion): each section of main gets its state from three IntersectionObservers, set at most once
+ * a frame:
+ *   is-entering  on screen, not yet locked in (coming up from below)
+ *   is-active    locked in: holding the screen's middle, or wholly on screen (a short one); from
+ *                then on also is-seen
+ *   is-exiting   on screen only within its top fifth (leaving at the top)
+ * The CSS (styles.css) reveals a section's content as it becomes active (rising and fading in)
+ * and fades it as it leaves. A section with a scroll-driven block (SCROLL_BLOCKS) is marked
+ * data-motion="block" and one just before such a block's section data-motion="held" (the
+ * interactive showcase's curtain holds it still, moving it every frame): neither is ever moved,
+ * so the blocks' own animations take over untouched. The sections already on screen when this
+ * starts keep their content as it is.
+ * @param {Element} main
+ */
+function decorateSectionMotion(main) {
+  if (!document.body.classList.contains('jsw') || isAuthoring() || !('IntersectionObserver' in window)
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const sections = [...main.querySelectorAll(':scope > .section')];
+  if (!sections.length) return;
+  const state = new Map();
+  sections.forEach((section, i) => {
+    if (section.querySelector(SCROLL_BLOCKS)) section.dataset.motion = 'block';
+    else if (sections[i + 1]?.querySelector('.interactive-showcase')) section.dataset.motion = 'held';
+    if (section.getBoundingClientRect().top < window.innerHeight) section.classList.add('is-seen');
+    state.set(section, {
+      visible: false, whole: false, middle: false, above: false, low: false,
+    });
+  });
+  document.documentElement.classList.add('has-section-motion');
+
+  let frame = 0;
+  const apply = () => {
+    frame = 0;
+    state.forEach(({
+      visible, whole, middle, above, low,
+    }, section) => {
+      const exiting = visible && !low;
+      // (one past the middle stays locked in until it reaches the top fifth)
+      const active = visible && !exiting && (middle || whole || above);
+      section.classList.toggle('is-active', active);
+      section.classList.toggle('is-entering', visible && !active && !exiting);
+      section.classList.toggle('is-exiting', exiting);
+      if (active) section.classList.add('is-seen');
+    });
+  };
+  // the observers: on screen (and wholly on it), on the middle line, below the top fifth
+  const observe = (options, read) => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => Object.assign(state.get(entry.target), read(entry)));
+      if (!frame) frame = requestAnimationFrame(apply);
+    }, options);
+    sections.forEach((section) => observer.observe(section));
+  };
+  observe({ threshold: [0, 0.99] }, (entry) => ({
+    visible: entry.isIntersecting, whole: entry.intersectionRatio >= 0.99,
+  }));
+  observe({ rootMargin: '-50% 0px -50% 0px' }, (entry) => {
+    const line = entry.rootBounds?.top ?? window.innerHeight / 2;
+    return {
+      middle: entry.isIntersecting,
+      above: !entry.isIntersecting && entry.boundingClientRect.bottom <= line,
+    };
+  });
+  observe({ rootMargin: '-20% 0px 0px 0px' }, (entry) => ({ low: entry.isIntersecting }));
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
+  // before any block is decorated: the authoring styles (static layout) apply from the first paint
+  if (isAuthoring()) document.documentElement.classList.add('is-authoring');
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
@@ -431,6 +605,7 @@ async function loadLazy(doc) {
 
   const main = doc.querySelector('main');
   await loadSections(main);
+  if (main) decorateSectionMotion(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

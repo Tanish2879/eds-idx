@@ -7,15 +7,21 @@
  *               <p><strong> starts a group (optional subtitle <p>, description <p>,
  *               image, <ul> of links); a bold link is a direct-link group
  *   last      — section with only a <ul> of links → floating sticky CTAs
- * A standard nav document without tabs (brand | sections <ul> | tools links) renders as a
- * floating pill bar instead. Pages pick their nav document with the "nav" metadata
- * (e.g. /jsw-nav); without it the site default /nav is used.
+ * A nav document built from blocks (the JSW pages' /jsw-nav: a Jsw Nav block) is rendered as
+ * such: its sections and blocks decorated and loaded like a fragment's (the editor's
+ * instrumentation removed: it is edited in its own document). A standard nav document without
+ * tabs (brand | sections <ul> | tools links) renders as a floating pill bar (the JSW nav's earlier
+ * form, until its document holds the block). Pages pick their nav document with the "nav"
+ * metadata (e.g. /jsw-nav), or have no header with "off" (designs without one); without it the
+ * site default /nav is used.
  */
 
-import { getPageMetadata } from '../../scripts/scripts.js';
+import { getPageMetadata, decorateMain } from '../../scripts/scripts.js';
+import { loadSections } from '../../scripts/aem.js';
 
 const DESKTOP = window.matchMedia('(width >= 900px)');
 const PILL_DESKTOP = window.matchMedia('(width >= 768px)');
+const NAV_OFF = ['off', 'none', 'hidden'];
 let headerId = 0;
 
 function navPath() {
@@ -36,6 +42,15 @@ async function fetchNav() {
   const tmp = document.createElement('div');
   tmp.innerHTML = await resp.text();
   return tmp;
+}
+
+// the editor's instrumentation of the nav document (its resources, fields)
+function stripInstrumentation(root) {
+  root.querySelectorAll('*').forEach((node) => {
+    [...node.attributes].forEach(({ name }) => {
+      if (name.startsWith('data-aue-') || name.startsWith('data-richtext-')) node.removeAttribute(name);
+    });
+  });
 }
 
 function isBoldParagraph(node) {
@@ -324,7 +339,15 @@ function buildPill(sections, uid) {
   if (links.children.length) menu.append(links);
   if (tools.children.length) menu.append(tools);
 
-  nav.append(brand, button, menu);
+  // phones: the logo and a short CTA ("REGISTER") share the grey bar, with the menu button
+  // beside it (the full links + CTA stay in the dropdown); from 768px this wrapper is transparent
+  const main = el('div', { class: 'nav-pill-main' }, brand);
+  const cta = tools.querySelector('.nav-pill-cta');
+  if (cta) {
+    const short = cta.textContent.trim().split(/\s+/)[0];
+    main.append(el('a', { href: cta.getAttribute('href'), class: 'nav-pill-quick', 'aria-label': cta.textContent.trim() }, short));
+  }
+  nav.append(main, button, menu);
 
   button.addEventListener('click', () => togglePill(nav, button));
   window.addEventListener('keydown', (e) => {
@@ -338,7 +361,13 @@ function buildPill(sections, uid) {
   });
   PILL_DESKTOP.addEventListener('change', () => togglePill(nav, button, false));
 
-  return el('div', { class: 'nav-pill-wrapper' }, nav);
+  // marks the page top (the CSS drops the grey bar there over a dark video hero, as in the
+  // walkthrough; it appears as soon as the page scrolls)
+  const wrapper = el('div', { class: 'nav-pill-wrapper' }, nav);
+  const atTop = () => wrapper.classList.toggle('is-at-top', window.scrollY <= 1);
+  window.addEventListener('scroll', atTop, { passive: true });
+  atTop();
+  return wrapper;
 }
 
 function toggleMenu(nav, button, force) {
@@ -366,9 +395,28 @@ function updateTheme(nav) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
+  if (NAV_OFF.includes(getPageMetadata('nav').toLowerCase())) {
+    block.closest('header')?.setAttribute('hidden', '');
+    block.textContent = '';
+    return;
+  }
   const fragment = await fetchNav();
   block.textContent = '';
   if (!fragment) return;
+  // a nav document of blocks (the Jsw Nav): decorated in place, inside the header (its blocks
+  // know they are a page's header)
+  if (fragment.querySelector(':scope > div > .jsw-nav')) {
+    stripInstrumentation(fragment);
+    const main = document.createElement('main');
+    main.append(...fragment.childNodes);
+    main.querySelectorAll('.metadata').forEach((table) => table.remove());
+    block.append(main);
+    decorateMain(main);
+    await loadSections(main);
+    block.classList.add('is-blocks');
+    main.replaceWith(...main.children);
+    return;
+  }
   headerId += 1;
   const uid = `nav-${headerId}`;
   const sections = [...fragment.children].filter((c) => c.tagName === 'DIV' && c.children.length);

@@ -1,27 +1,35 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import {
+  moveInstrumentation, isAuthoring, takeRichtext, applyRichtext,
+} from '../../scripts/scripts.js';
 
 /*
  * Blog Carousel: one centred glass card ("OUR BLOGS" with previous / next arrows) showing a blog
  * teaser at a time (eyebrow, title, description, READ MORE bar), over a blurred backdrop image.
- * Scroll (walkthrough drafts/new-energy/jsw_walkthrough.mp4, 16.4–23.9s): the glass card peeks in
- * at the bottom while the previous section's images scroll away, then rises over that section's
- * text, which stays pinned until the card covers it (see CSS). The stage then pins and, tied to the
- * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg on <body>) goes
- * from white to black, the blurred backdrop fades in after it, the card settles into the centre
- * and its content fades / slides up part by part. Each of those three steps is one eased wheel
- * stop (scripts/scroll-stops.js), with the walkthrough's glides.
+ * Scroll (walkthrough drafts/jsw/new-energy/jsw_walkthrough.mp4, 16.4–23.9s): the glass card
+ * peeks in at the bottom while the previous section's images scroll away, then rises over that
+ * section's text, which stays pinned until the card covers it (see CSS). The stage then pins and,
+ * tied to the
+ * scroll (GSAP ScrollTrigger, scrubbed both ways), the page background (--page-bg, see CSS) goes
+ * from white to black, the blurred backdrop fades in after it and the card settles into the
+ * centre. The card's content is in place throughout, as in the walkthrough. One wheel gesture
+ * from the previous section brings the card all the way up (scripts/scroll-stops.js) and the
+ * darkening then plays by itself; one gesture back up returns to the previous section.
  * Rows:
  *   heading ("OUR BLOGS") | backdrop image (both optional, one row each)
  *   then one row per blog: eyebrow | title | description | link (its text is the bar label)
  */
 
+// (a placeholder's address from before the JSW pages moved under /jsw, /drafts/<page>/...: its
+// file is now in /drafts/jsw/<page>/)
+const LEGACY_DRAFTS = /^\/drafts\/(?!jsw\/)/;
+
 const IMAGE_FILE = /\.(avif|gif|jpe?g|png|webp)$/i;
 const MOTION = window.matchMedia('(prefers-reduced-motion: no-preference)');
-// the wheel stops, relative to the section top: card peeking in (the card top this far above the
-// viewport bottom), pinned, darkened; glides fitted to the walkthrough
-const PEEK = 110;
-const GLIDE = { duration: '1.8 1.05 2.3', ease: 'power2.inOut;power2.inOut;power2.inOut' };
+// the wheel stops, relative to the section top: pinned (the card has arrived; reached in one glide
+// from the previous section, then the darkening plays by itself), darkened
+const GLIDE = { duration: '2.2 2.3', ease: 'power2.inOut;power2.inOut' };
+const DARKEN_PHONE = 1.8; // s: the automatic darkening on phones
 let carouselId = 0;
 
 function el(tag, attrs = {}, ...children) {
@@ -54,7 +62,20 @@ function rowImage(row) {
   if (!link) return null;
   const { pathname } = new URL(link.href, window.location);
   const drafts = pathname.indexOf('/drafts/');
-  return { src: drafts > 0 ? pathname.slice(drafts) : link.href, alt: '', source: link };
+  return { src: drafts > 0 ? `${window.hlx?.codeBasePath || ''}${pathname.slice(drafts).replace(LEGACY_DRAFTS, '/drafts/jsw/')}` : link.href, alt: '', source: link };
+}
+
+/*
+ * How far above its resting place the card starts (it settles down while the page darkens):
+ * --bc-settle, but never so far that it would tuck under the fixed nav bar (16px clear) on short
+ * windows; none with reduced motion.
+ */
+function settleOf(block, card) {
+  if (!MOTION.matches) return 0;
+  const style = getComputedStyle(block);
+  const settle = parseFloat(style.getPropertyValue('--bc-settle')) || 0;
+  const nav = parseFloat(style.getPropertyValue('--bc-nav')) || 0;
+  return Math.max(0, Math.min(settle, card.offsetTop - nav - 16));
 }
 
 function buildSlide(row, index, total, uid) {
@@ -68,7 +89,9 @@ function buildSlide(row, index, total, uid) {
   if (title?.textContent.trim()) slide.append(el('h3', { class: 'blog-carousel-title' }, title.textContent.trim()));
   if (description?.textContent.trim()) {
     const desc = el('div', { class: 'blog-carousel-description' });
+    const richtext = takeRichtext(description); // (authoring: the box is the editable rich text)
     desc.append(...description.childNodes);
+    applyRichtext(desc, richtext);
     slide.append(desc);
   }
   if (link) {
@@ -88,10 +111,10 @@ function buildSlide(row, index, total, uid) {
 
 /*
  * Scroll animation (GSAP + ScrollTrigger, loaded with the wheel scroller): the page colour, the
- * backdrop, the card position and the staggered card content are all scrubbed by the pinned scroll.
+ * backdrop and the card position are scrubbed by the pinned scroll.
  */
 async function animate(block, card, backdrop) {
-  const { loadScrollTrigger } = await import('../../scripts/scroll-stops.js');
+  const { loadScrollTrigger, glideTo } = await import('../../scripts/scroll-stops.js');
   let gsap;
   let ScrollTrigger;
   try {
@@ -101,58 +124,113 @@ async function animate(block, card, backdrop) {
     return;
   }
   const pin = () => block.parentElement.offsetHeight - block.offsetHeight;
-  const settle = () => parseFloat(getComputedStyle(block).getPropertyValue('--bc-settle')) || 0;
-  const lift = () => (MOTION.matches ? 24 : 0);
 
-  // one scrubbed timeline over the pinned scroll (0 → 1), reversed when scrolling back up
-  const tl = gsap.timeline({
-    defaults: { duration: 1 },
-    scrollTrigger: {
-      trigger: block.parentElement,
-      start: 'top top',
-      end: () => `+=${pin()}`,
-      scrub: true,
-      invalidateOnRefresh: true,
-      // the stage only covers the previous section once the colour change has begun
-      onUpdate: (self) => block.classList.toggle('is-pinned', self.progress > 0),
-      onRefresh: (self) => block.classList.toggle('is-pinned', self.progress > 0),
-    },
-  });
-  // the page background (walkthrough 21.55–23.85s): the colour leads, the backdrop follows
-  tl.fromTo(document.body, { '--page-bg': '#ffffff' }, { '--page-bg': '#000000', ease: (t) => t ** 1.2 }, 0)
-    .fromTo(backdrop, { opacity: 0 }, { opacity: 1, ease: 'power1.in' }, 0)
-    .fromTo(card, { y: () => (MOTION.matches ? -settle() : 0) }, { y: 0, ease: 'none' }, 0);
-  // the card content comes in with it, one part after another: heading row, eyebrow, title,
-  // description, READ MORE (the same part of every blog, so switching blogs later is unaffected)
-  const groups = [
-    [card.querySelector('.blog-carousel-head')],
-    ...['eyebrow', 'title', 'description', 'link'].map((part) => [...card.querySelectorAll(`.blog-carousel-${part}`)]),
-  ].filter((g) => g.length && g[0]);
-  groups.forEach((group, i) => {
-    tl.fromTo(group, { autoAlpha: 0, y: lift }, {
-      autoAlpha: 1, y: 0, duration: 0.3, ease: 'power2.out',
-    }, 0.12 + i * 0.08);
-  });
+  // the mobile browser bar showing / hiding changes the window height: don't re-measure for it
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
-  // the previous section's pinned text exits under the rising card: it fades while the card's top
-  // edge crosses it, so nothing of it shows through the glass
-  const prevText = block.closest('.section')?.previousElementSibling?.querySelector('.sticky-text-layer');
-  if (prevText) {
-    gsap.fromTo(prevText, { opacity: 1 }, {
-      opacity: 0,
-      ease: 'none',
+  // the scrubbed timeline and the occlusion trigger are built per breakpoint (gsap.matchMedia):
+  // crossing it reverts them and builds them again with that breakpoint's values (phones: a
+  // shorter settle via --bc-settle in the CSS, and a quicker automatic darkening)
+  const current = { timeline: null, darken: 0 };
+  const mm = gsap.matchMedia();
+  mm.add({ desktop: '(width >= 768px)', phone: '(width < 768px)' }, (context) => {
+    current.darken = context.conditions.phone ? DARKEN_PHONE : Number(GLIDE.duration.split(' ')[1]);
+    // the stage covers the previous section once the colour change has begun, and the card settles
+    // from settleOf() above its resting place down to it (set directly from the progress, so a
+    // re-measure at the very start of the pin can't leave it unset). The settle distance is
+    // measured on each ScrollTrigger refresh, not per frame: reading it right after the colour
+    // write would force a full restyle on every scrubbed frame
+    let settle = settleOf(block, card);
+    const apply = (self) => {
+      block.classList.toggle('is-pinned', self.progress > 0);
+      // past halfway the page reads as dark (the phone nav drops its grey bar)
+      document.body.classList.toggle('is-page-dark', self.progress > 0.5);
+      card.style.transform = `translateY(${(-settle * (1 - self.progress)).toFixed(2)}px)`;
+    };
+    // one scrubbed timeline over the pinned scroll (0 → 1), reversed when scrolling back up
+    const timeline = gsap.timeline({
+      defaults: { duration: 1 },
       scrollTrigger: {
-        trigger: card, start: 'top 62%', end: 'top 30%', scrub: true, invalidateOnRefresh: true,
+        trigger: block.parentElement,
+        start: 'top top',
+        // (2px short of the pin: on the last section that is the page end, which can be 1px less)
+        end: () => `+=${Math.max(1, pin() - 2)}`,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: apply,
+        onRefresh: (self) => {
+          settle = settleOf(block, card); // (offsetTop: the card's own transform doesn't count)
+          apply(self);
+        },
       },
     });
-  }
+    // the page background (walkthrough 21.55–23.85s): the colour leads, the backdrop follows
+    timeline.fromTo([document.body, block], { '--page-bg': '#ffffff' }, { '--page-bg': '#000000', ease: (t) => t ** 1.2 }, 0)
+      .fromTo(backdrop, { opacity: 0 }, { opacity: 1, ease: 'power1.in' }, 0);
+    current.timeline = timeline;
 
-  // sections above keep settling after load (images, the showcase hand-off): re-measure
+    // the previous section's pinned text is covered by the rising card (walkthrough 19.2–19.5s): it
+    // stays crisp above the card's top edge and is cut off exactly at it, so none of it shows
+    // through the glass
+    const prevText = block.closest('.section')?.previousElementSibling?.querySelector('.sticky-text-layer');
+    if (prevText) {
+      const occlude = () => {
+        const edge = card.getBoundingClientRect().top - prevText.getBoundingClientRect().top;
+        prevText.style.clipPath = edge < prevText.offsetHeight ? `inset(0 0 calc(100% - ${Math.max(edge, 0).toFixed(1)}px) 0)` : '';
+      };
+      ScrollTrigger.create({
+        trigger: block.parentElement,
+        start: 'top bottom',
+        end: () => `+=${window.innerHeight + pin()}`,
+        onUpdate: occlude,
+        onRefresh: occlude,
+        onLeave: occlude,
+        onLeaveBack: () => { prevText.style.clipPath = ''; },
+      });
+    }
+
+    return () => {
+      current.timeline = null;
+      card.style.transform = '';
+      block.classList.remove('is-pinned');
+      document.body.classList.remove('is-page-dark');
+      if (prevText) prevText.style.clipPath = '';
+    };
+  });
+
+  // once the card has fully arrived (scrolled down onto the pinned stage and come to rest there),
+  // the colour change plays by itself: the page glides on through the pinned range with the
+  // darkening glide; scrolling back up still reverses it, and any scroll during the glide takes
+  // over
+  let lastY = window.scrollY;
+  let direction = 0;
+  let idle = 0;
+  let auto = false;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y !== lastY) direction = Math.sign(y - lastY);
+    lastY = y;
+    clearTimeout(idle);
+    idle = setTimeout(() => {
+      const trigger = current.timeline?.scrollTrigger;
+      if (!trigger) return;
+      const { start, end } = trigger;
+      if (auto || direction <= 0 || y < start - 2 || y > end - 2) return;
+      auto = true;
+      const left = (end - y) / Math.max(end - start, 1);
+      glideTo(end, { duration: Math.max(0.6, current.darken * left), ease: 'power2.inOut' })
+        .then(() => { auto = false; });
+    }, 120);
+  }, { passive: true });
+
+  // sections above keep settling after load (images, the showcase hand-off), and the card's own
+  // size (fonts) sets its resting place: re-measure on any of those changes
   let pending = 0;
-  new ResizeObserver(() => {
+  const remeasure = new ResizeObserver(() => {
     clearTimeout(pending);
     pending = setTimeout(() => ScrollTrigger.refresh(), 120);
-  }).observe(block.closest('main') || document.body);
+  });
+  [block.closest('main') || document.body, block, card].forEach((node) => remeasure.observe(node));
   block.classList.add('is-animated');
 }
 
@@ -194,9 +272,17 @@ export default function decorate(block) {
   if (image) {
     const picture = createOptimizedPicture(image.src, image.alt, false, [{ media: '(min-width: 900px)', width: '2000' }, { width: '900' }]);
     moveInstrumentation(image.source, picture.querySelector('img'));
+    picture.querySelector('img').decoding = 'async'; // (below the fold: decoded off the main thread)
     backdrop.append(picture);
   }
-  block.replaceChildren(backdrop, card);
+  // phones: one dash per blog under the card (the current one white), instead of the arrows
+  const dots = el('div', { class: 'blog-carousel-dots', role: 'group', 'aria-label': 'Choose a blog' });
+  if (blogs.length > 1) {
+    blogs.forEach((_, i) => dots.append(el('button', {
+      type: 'button', class: 'blog-carousel-dot', 'aria-label': `Blog ${i + 1} of ${blogs.length}`, 'aria-controls': `${uid}-slide-${i}`,
+    })));
+  }
+  block.replaceChildren(backdrop, card, ...(dots.children.length ? [dots] : []));
 
   // selection: the outgoing blog slides / fades out while the next one comes in from the side
   let current = -1;
@@ -211,8 +297,24 @@ export default function decorate(block) {
       slide.inert = i !== target;
     });
     slides.style.setProperty('--bc-dir', dir);
+    [...dots.children].forEach((dot, i) => dot.setAttribute('aria-current', i === target));
     current = target;
   };
+  [...dots.children].forEach((dot, i) => dot.addEventListener('click', () => show(i, i > current ? 1 : -1)));
+  // swipe (touch): left for the next blog, right for the previous one
+  let touch = null;
+  card.addEventListener('touchstart', (e) => {
+    touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: true });
+  card.addEventListener('touchend', (e) => {
+    if (!touch) return;
+    const dx = e.changedTouches[0].clientX - touch.x;
+    const dy = e.changedTouches[0].clientY - touch.y;
+    touch = null;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const dir = dx < 0 ? 1 : -1;
+    show(current + dir, dir);
+  }, { passive: true });
   prev.addEventListener('click', () => show(current - 1, -1));
   next.addEventListener('click', () => show(current + 1, 1));
   card.addEventListener('keydown', (e) => {
@@ -222,23 +324,39 @@ export default function decorate(block) {
   });
   show(0);
 
-  // wheel stops on the section (the block itself is sticky): peek, pinned, darkened
+  // authoring (Universal Editor, see isAuthoring): the final, dark look, no scroll animation and no
+  // scroll stops
+  if (isAuthoring()) {
+    block.classList.add('is-static');
+    return;
+  }
+
+  // wheel stops on the section (the block itself is sticky): pinned, darkened. One gesture from the
+  // previous section brings the card all the way up (the darkening then plays by itself); the
+  // pinned stop is passed over on the way back up, so one gesture returns to the previous section
   const section = block.closest('.section') || block;
   const setStops = () => {
     const pinPx = block.parentElement.offsetHeight - block.offsetHeight;
-    const settle = MOTION.matches ? parseFloat(getComputedStyle(block).getPropertyValue('--bc-settle')) || 0 : 0;
-    const peek = card.offsetTop - settle + PEEK - window.innerHeight;
-    section.dataset.scrollStops = `${Math.round(Math.min(peek, -1))} 0 ${Math.round(pinPx)}`;
+    section.dataset.scrollStops = `0 ${Math.round(pinPx)}`;
   };
   section.dataset.scrollDuration = GLIDE.duration;
   section.dataset.scrollEase = GLIDE.ease;
+  section.dataset.scrollSkipUp = '0';
   setStops();
-  new ResizeObserver(setStops).observe(block);
+  const sizes = new ResizeObserver(setStops);
+  [block, card].forEach((node) => sizes.observe(node));
   window.addEventListener('resize', setStops, { passive: true });
 
+  // the scroll animation (GSAP + ScrollTrigger) is set up only once the page has loaded and the
+  // section is within two screens of the window, so it costs nothing on the first load (phones)
   const start = () => {
-    animate(block, card, backdrop);
-    import('../../scripts/scroll-stops.js').then(({ default: init }) => init());
+    const near = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      near.disconnect();
+      animate(block, card, backdrop);
+    }, { rootMargin: '200% 0px' });
+    near.observe(section);
+    import('../../scripts/scroll-stops.js').then(({ default: init }) => init({ touch: true }));
   };
   if (document.readyState === 'complete') start();
   else window.addEventListener('load', start, { once: true });

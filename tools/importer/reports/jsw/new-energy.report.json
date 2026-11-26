@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/new-energy/source.html",
+  "path": "jsw/new-energy",
+  "timestamp": "2026-11-13T08:21:23.559Z",
+  "title": "New Energy | Built for Beyond",
+  "template": "new-energy",
+  "blocks": [
+    "hero-video",
+    "engine-showcase",
+    "parallax-collage",
+    "blog-carousel"
+  ],
+  "importScript": "6382981761a6"
+}

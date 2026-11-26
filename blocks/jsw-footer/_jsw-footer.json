@@ -1,0 +1,370 @@
+{
+  "definitions": [
+    {
+      "title": "Jsw Footer",
+      "id": "jsw-footer",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Jsw Footer",
+              "model": "jsw-footer",
+              "filter": "jsw-footer"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Footer Column",
+      "id": "jsw-footer-column",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Footer Column",
+              "model": "jsw-footer-column"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Social Link",
+      "id": "jsw-footer-social-link",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Social Link",
+              "model": "jsw-footer-social-link"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "jsw-footer",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes",
+          "label": "Layout",
+          "description": "Variant A: columns at the right, over the background media; Variant B: one row on a teal gradient.",
+          "value": "variant-a",
+          "options": [
+            {
+              "name": "Variant A – Standard",
+              "value": "variant-a"
+            },
+            {
+              "name": "Variant B – Alternate",
+              "value": "variant-b"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "logo",
+          "label": "Logo",
+          "description": "The JSW MOTORS wordmark (white, on transparent): SVG, PNG or JPG.",
+          "multi": false,
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "logoAlt",
+          "label": "Logo alt text",
+          "description": "E.g. JSW Motors.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "logoLink",
+          "label": "Logo link",
+          "description": "Where the logo leads, e.g. the home page.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "copyright",
+          "label": "Copyright",
+          "description": "E.g. © 2026 JSW Motors.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "location",
+          "label": "Location",
+          "description": "E.g. Mumbai, India.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "ctaLabel",
+          "label": "Button label",
+          "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it).",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "ctaLink",
+          "label": "Button link",
+          "description": "A page, URL or mailto: address; without a link the button is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "legalLink",
+          "label": "Legal link",
+          "description": "E.g. the privacy policy.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "legalLinkText",
+          "label": "Legal link label",
+          "description": "E.g. PRIVACY POLICY.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          }
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "backgroundMedia",
+          "label": "Background media",
+          "description": "Image, or a looping video with the image as its poster. Variant A only (ignored in Variant B).",
+          "value": "image",
+          "options": [
+            {
+              "name": "Image",
+              "value": "image"
+            },
+            {
+              "name": "Video",
+              "value": "video"
+            }
+          ]
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "background",
+          "label": "Background image",
+          "description": "JPG or PNG; also the video's poster. Variant A only (ignored in Variant B).",
+          "multi": false
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "backgroundVideo",
+          "label": "Background video",
+          "description": "MP4 or MOV, used when Background media is Video. Variant A only (ignored in Variant B).",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "socialHeading",
+          "label": "Social heading",
+          "description": "E.g. CONNECT, above the social icons (up to 4); in Variant B for screen readers only.",
+          "value": "",
+          "validation": {
+            "maxLength": 64
+          }
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-column",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "title",
+          "label": "Column title",
+          "description": "E.g. TECHNOLOGY.",
+          "value": "",
+          "required": true,
+          "validation": {
+            "maxLength": 64
+          }
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link1",
+          "label": "Link 1",
+          "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
+          "required": true,
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link1Text",
+          "label": "Link 1 text",
+          "description": "E.g. NEVs; without Link 1 the link is not shown.",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          },
+          "required": true
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link2",
+          "label": "Link 2",
+          "description": "A page, URL or mailto: address; without Link 2 text the link is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link2Text",
+          "label": "Link 2 text",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          },
+          "description": "Without Link 2 the link is not shown."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link3",
+          "label": "Link 3",
+          "description": "A page, URL or mailto: address; without Link 3 text the link is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link3Text",
+          "label": "Link 3 text",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          },
+          "description": "Without Link 3 the link is not shown."
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link4",
+          "label": "Link 4",
+          "description": "A page, URL or mailto: address; without Link 4 text the link is not shown.",
+          "validation": {
+            "rootPath": "/content/uet-eds/jsw"
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link4Text",
+          "label": "Link 4 text",
+          "value": "",
+          "validation": {
+            "maxLength": 30
+          },
+          "description": "Without Link 4 the link is not shown."
+        }
+      ]
+    },
+    {
+      "id": "jsw-footer-social-link",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "network",
+          "label": "Network",
+          "description": "The icon and its screen-reader name; without a profile link the icon is not shown.",
+          "value": "facebook",
+          "required": true,
+          "options": [
+            {
+              "name": "Facebook",
+              "value": "facebook"
+            },
+            {
+              "name": "Instagram",
+              "value": "instagram"
+            },
+            {
+              "name": "X",
+              "value": "x"
+            },
+            {
+              "name": "LinkedIn",
+              "value": "linkedin"
+            },
+            {
+              "name": "YouTube",
+              "value": "youtube"
+            }
+          ]
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "link",
+          "label": "Profile link",
+          "description": "The network page URL; without a network the icon is not shown.",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "jsw-footer",
+      "components": [
+        "jsw-footer-column",
+        "jsw-footer-social-link"
+      ]
+    }
+  ]
+}

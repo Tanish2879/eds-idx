@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "http://localhost:3000/drafts/jsw/sustainable-future/source.html",
+  "path": "jsw/sustainable-future",
+  "timestamp": "2026-11-13T08:21:33.021Z",
+  "title": "Driving India into a More Sustainable Future",
+  "template": "sustainable-future",
+  "blocks": [
+    "parallax-collage"
+  ],
+  "importScript": "a34573ea27f8"
+}

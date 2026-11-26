@@ -1,0 +1,596 @@
+/* Reservation Form: the car image beside the form on black. Values from the design at 1280x720:
+   image 599px (46.8%) wide, form column 511px centred in the black panel; fields 47px tall on
+   #191919 with 8px corners and 12px gaps. Mobile first: phones stack the image (a banner) over
+   the form; from 768px the two columns. */
+
+main > .section > .reservation-form-wrapper {
+  max-width: none;
+  padding: 0;
+  margin: 0;
+}
+
+main > .section > .reservation-form-wrapper > .block {
+  /* colors */
+  --rf-bg: #000;
+  --rf-text: #fff;
+  --rf-muted: #aaa;
+  --rf-faint: #656565;
+  --rf-field-bg: #191919;
+  --rf-chevron: #4d4d4d;
+  --rf-error: #ff6b6b;
+
+  /* type: the design's New Science faces, from the site's Adobe Fonts kit (styles/fonts.css): the
+     extended width (new-science-extended) and the normal one (new-science), each in Regular 400
+     and Medium 500; until they load, the site's Sequel / Inter. (The kit's two widths are two
+     families: the family picks the width, font-stretch as the design names it.) Sizes in rem. */
+  --rf-display-font: new-science-extended, var(--display-font-family);
+  --rf-body-font: new-science, var(--body-font-family);
+
+  /* layout */
+  --rf-column: 511px;
+  --rf-field-height: 47px;
+  --rf-gap: 12px;
+  --rf-radius: 8px;
+
+  display: grid;
+  background-color: var(--rf-bg);
+  color: var(--rf-text);
+
+  /* (the texts' guardrails, against text longer than its field's limit, see the JS: each
+     authored text clamped to the lines its limit needs, cut with "…", long words broken; the
+     one-line ones (the button, the badge, a dropdown's value) cut with "…") */
+
+  /* image: a banner on phones, the left column from 768px (cropped to fill, centred) */
+  .media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background-color: #1a0a08;
+  }
+
+  /* (phones: a taller banner with the price card over it, so the car still shows above the card) */
+  .media:has(.price) {
+    aspect-ratio: 1;
+  }
+
+  /* (out of the flow: the portrait image must not set the block's height) */
+  .media picture {
+    position: absolute;
+    inset: 0;
+  }
+
+  .media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+
+  /* the price card over the bottom of the image (the design at 1280 × 720: 525 × 150px, 39px from
+     the image's left, 33px above the bottom): dark glass, the label and badge, the amount in the
+     extended face, the note */
+  .price {
+    position: absolute;
+    inset: auto 12px 12px;
+    box-sizing: border-box;
+    padding: 14px 16px 16px;
+    border: 1px solid rgb(255 255 255 / 6%);
+    border-radius: 10px;
+    background-color: rgb(0 0 0 / 55%);
+    backdrop-filter: blur(14px);
+  }
+
+  .price-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .price-label {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    margin: 0;
+    color: #8c8c8c;
+    font-family: var(--rf-body-font);
+    font-size: 10px;
+    line-height: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .price-badge {
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: none;
+    box-sizing: border-box;
+    height: 22px;
+    padding: 0 9px;
+    border: 1px solid rgb(255 255 255 / 40%);
+    border-radius: 6px;
+    color: var(--rf-text);
+    font-family: var(--rf-display-font);
+    font-size: 9px;
+    line-height: 20px;
+    text-transform: uppercase;
+  }
+
+  .price-amount {
+    margin: 2px 0 0;
+    color: var(--rf-text);
+    font-family: var(--rf-display-font);
+    font-size: 28px;
+    line-height: 1.15;
+  }
+
+  .price-note {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    max-width: 420px;
+    margin: 8px 0 0;
+    color: #b3b3b3;
+    font-family: var(--rf-body-font);
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  /* the form column, centred in the black panel */
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, var(--rf-column));
+    place-content: center center;
+    padding: 40px 24px 56px;
+  }
+
+  .heading {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    margin: 0;
+    color: var(--rf-text);
+    font-family: var(--rf-display-font); /* (Medium Extended) */
+    font-stretch: expanded;
+    position: relative;
+    top: 1px; /* (the face's caps sit 1px high in its line box, against the design) */
+    font-size: 1.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.12em; /* the narrower fallback (Sequel) spaced out to the design's width */
+    text-transform: uppercase;
+  }
+
+  /* with the design's own extended face loaded (detected by the block JS): its natural spacing */
+  &.has-design-faces .heading {
+    letter-spacing: 0.01em;
+  }
+
+  .description {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    max-width: 420px;
+    margin: 15px 0 0;
+    color: var(--rf-muted);
+    font-family: var(--rf-body-font); /* (Medium) */
+    font-stretch: normal;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+    white-space: pre-line;
+  }
+
+  .form {
+    display: grid;
+    gap: var(--rf-gap);
+    margin: 22px 0 0;
+  }
+
+  /* a section: a grid of fields, two half-width fields side by side */
+  .field-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--rf-gap);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .field {
+    position: relative;
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .field.is-half {
+    grid-column: span 1;
+  }
+
+  /* a fixed prefix (+91) in its own box before the field */
+  .field.has-prefix {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 0 var(--rf-gap);
+  }
+
+  /* screen-reader-only text: field labels (the design shows them inside the fields), section names */
+  .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .prefix,
+  .input {
+    box-sizing: border-box;
+    height: var(--rf-field-height);
+    border: 1px solid transparent;
+    border-radius: var(--rf-radius);
+    background-color: var(--rf-field-bg);
+    font-family: var(--rf-body-font); /* (Medium) */
+    font-stretch: normal;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0;
+  }
+
+  .prefix {
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 13px;
+    color: var(--rf-faint);
+  }
+
+  .input {
+    width: 100%;
+    margin: 0;
+    padding: 0 13px;
+    color: var(--rf-text);
+    outline: none;
+    transition: border-color 0.2s ease-out;
+    appearance: none;
+  }
+
+  /* the placeholders: the fields' type (Medium, 0.75rem / 1.5) */
+  .input::placeholder {
+    color: var(--rf-faint);
+    font: inherit;
+    letter-spacing: inherit;
+    opacity: 1;
+  }
+
+  .input:focus-visible {
+    border-color: #5c5c5c;
+  }
+
+  /* a field the block's checks flagged (see the JS: no browser validation): red outline, and its
+     message on the line below (only there while it applies, so a valid form keeps the design's
+     spacing) */
+  .input[aria-invalid='true'] {
+    border-color: var(--rf-error);
+  }
+
+  .error {
+    grid-column: 1 / -1;
+    margin: 6px 0 0;
+    color: var(--rf-error);
+    font-family: var(--rf-body-font);
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .error:empty {
+    display: none;
+  }
+
+  /* dropdown: a thin chevron on the right; grey while nothing is chosen */
+  & select.input {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 52px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3Cpath d='M1 1l7 7 7-7' fill='none' stroke='%234d4d4d' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 19px center;
+    background-size: 16px 9px;
+    cursor: pointer;
+  }
+
+  & select.input:has(option[value='']:checked) {
+    color: var(--rf-faint);
+  }
+
+  & select.input option {
+    background-color: var(--rf-field-bg);
+    color: var(--rf-text);
+  }
+
+  /* button: white, after a 24px space */
+  .submit {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    justify-self: start;
+    min-width: 127px;
+    height: var(--rf-field-height);
+    margin: 12px 0 0;
+    padding: 0 32px;
+    border: 0;
+    border-radius: var(--rf-radius);
+    background-color: #fff;
+    color: #000;
+    font-family: var(--rf-body-font); /* (Medium) */
+    font-stretch: normal;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease-out;
+  }
+
+  .submit:hover {
+    background-color: #e6e6e6;
+  }
+
+  .submit:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  .status {
+    margin: 0;
+    color: var(--rf-error);
+    font-family: var(--rf-body-font);
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .status:empty {
+    display: none;
+  }
+
+  /* (a cancelled payment: not an error) */
+  .status.is-info {
+    color: var(--rf-muted);
+  }
+
+  .disclaimer {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    margin: 36px 0 0;
+    color: var(--rf-faint);
+    font-family: var(--rf-body-font); /* (Regular) */
+    font-stretch: normal;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .disclaimer a:any-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .disclaimer a:hover,
+  .disclaimer a:focus-visible {
+    text-decoration: underline;
+  }
+
+  /* the pending state (the block marked is-pending while a payment is confirmed, see the JS):
+     the pending view in the form's place and as tall, the JSW mark (160px, 18px left of the
+     text's centre, as the design) with a light sweeping across it from its bottom left to its
+     top right (no turning), the title and the text centred under it */
+  &.is-pending {
+    .pending-view {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      min-height: var(--form-height, 0);
+      box-sizing: border-box;
+      margin: 22px 0 0;
+      padding: 0 0 29px 11px; /* (the design's: 14px above the middle, 5px right of the column's) */
+      text-align: center;
+      outline: none;
+    }
+
+    .logo {
+      position: relative;
+      display: block;
+      width: 160px;
+      aspect-ratio: 75 / 56;
+      translate: -18px 0;
+    }
+
+    .logo svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* (the mark's outlines in the design's silver: the SVG's own dark grey would disappear on
+       the black) */
+    .logo svg path {
+      stroke: #a6a6a6;
+    }
+
+    /* the sweep: a bright diagonal band, only where the mark is (masked by its shape) */
+    .logo::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent 38%, rgb(255 255 255 / 0%) 42%, rgb(255 255 255 / 95%) 50%, rgb(255 236 210 / 0%) 58%, transparent 62%) 100% 0% / 300% 300% no-repeat;
+      mask: url('../../icons/jsw-logo-mark.svg') center / contain no-repeat;
+      animation: reservation-form-sweep 2.4s ease-in-out infinite;
+    }
+
+    /* the glare: a thin streak off the swoosh's tip (the mark's top right) up to the right,
+       brightest as the sweep reaches it */
+    .logo::before {
+      content: '';
+      position: absolute;
+      top: 4%;
+      left: 91%;
+      width: 48%;
+      height: 2px;
+      border-radius: 1px;
+      background: linear-gradient(90deg, transparent, rgb(255 244 228 / 85%) 55%, transparent);
+      opacity: 0;
+      transform-origin: 0 50%;
+      rotate: -39deg;
+      animation: reservation-form-glare 2.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .status-title {
+      display: -webkit-box;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      margin: 31px 0 0;
+      color: var(--rf-text);
+      font-family: var(--rf-body-font);
+      font-size: 19.7px;
+      font-weight: 500;
+      line-height: 26px;
+    }
+
+    .status-text {
+      display: -webkit-box;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      margin: 11px 0 0;
+      color: #bebebe;
+      font-family: var(--rf-body-font);
+      font-size: 15.3px;
+      line-height: 22px;
+      white-space: pre-line;
+    }
+
+    /* (less motion: the design's still frame, the light on the mark's top right) */
+    @media (prefers-reduced-motion: reduce) {
+      .logo::after,
+      .logo::before {
+        animation: none;
+      }
+
+      .logo::after {
+        background-position: 22% 78%;
+      }
+
+      .logo::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  /* two columns: the image fills the left 46.8% at full height, the form is centred on the right */
+  @media (width >= 768px) {
+    grid-template-columns: 46.8% minmax(0, 1fr);
+    min-height: 100svh;
+
+    .media,
+    .media:has(.price) {
+      aspect-ratio: auto;
+    }
+
+    .panel {
+      padding: 75px 43px 55px 37px; /* the design's column sits 3px left of and 10px below centre */
+    }
+
+    .price {
+      inset: auto 35px 33px 39px;
+      padding: 16px 20px 18px 24px;
+    }
+
+    .price-label {
+      font-size: 11px;
+    }
+
+    .price-badge {
+      margin-top: 2px; /* (the design's badge sits a little below the label) */
+    }
+
+    .price-amount {
+      margin-top: 0;
+      font-size: 35px;
+    }
+
+    .price-note {
+      max-width: 440px;
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 21px;
+    }
+  }
+
+  /* authoring (Universal Editor, see styles.css): a fixed height instead of the screen height */
+  @media (width >= 768px) {
+    html.is-authoring & {
+      min-height: var(--authoring-screen);
+    }
+  }
+}
+
+/* (keyframes can't be nested in a rule: the pending view's sweep and glare, used above) */
+@keyframes reservation-form-sweep {
+  from {
+    background-position: 100% 0%;
+  }
+
+  to {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes reservation-form-glare {
+  0%,
+  45% {
+    opacity: 0;
+  }
+
+  62% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

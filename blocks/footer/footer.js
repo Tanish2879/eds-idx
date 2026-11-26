@@ -8,9 +8,15 @@
  *   social     — section with only a <ul> of links (label = network name)
  * Pages pick their footer document with the "footer" metadata (a path), or hide the footer
  * with "off" (e.g. designs that have no footer yet); without it the site default /footer is used.
+ * A footer document built from blocks (the JSW pages' /jsw-footer: a Jsw Footer block, its
+ * columns and links its children) is rendered as such: its sections and blocks decorated and
+ * loaded like a fragment's, instead of the flat layout above.
+ * In the editor the footer is edited in its own document: on the pages it is only shown (its
+ * editor instrumentation removed, so it is not part of the page's content tree).
  */
 
-import { getPageMetadata } from '../../scripts/scripts.js';
+import { getPageMetadata, decorateMain } from '../../scripts/scripts.js';
+import { loadSections } from '../../scripts/aem.js';
 
 const DESKTOP = window.matchMedia('(width >= 900px)');
 const FOOTER_OFF = ['off', 'none', 'hidden'];
@@ -25,6 +31,15 @@ async function fetchFooter(meta) {
   const tmp = document.createElement('div');
   tmp.innerHTML = await resp.text();
   return tmp;
+}
+
+// the editor's instrumentation of the footer document (its resources, fields)
+function stripInstrumentation(root) {
+  root.querySelectorAll('*').forEach((node) => {
+    [...node.attributes].forEach(({ name }) => {
+      if (name.startsWith('data-aue-') || name.startsWith('data-richtext-')) node.removeAttribute(name);
+    });
+  });
 }
 
 function el(tag, attrs = {}, ...children) {
@@ -151,6 +166,20 @@ export default async function decorate(block) {
   const fragment = await fetchFooter(meta);
   block.textContent = '';
   if (!fragment) return;
+  stripInstrumentation(fragment);
+  if (fragment.querySelector(':scope > div > .jsw-footer')) {
+    const main = document.createElement('main');
+    main.append(...fragment.childNodes);
+    // (the footer document's own page metadata is not part of the footer)
+    main.querySelectorAll('.metadata').forEach((table) => table.remove());
+    // (decorated in place, inside the footer: its blocks know they are a page's footer)
+    block.append(main);
+    decorateMain(main);
+    await loadSections(main);
+    block.classList.add('is-blocks');
+    main.replaceWith(...main.children);
+    return;
+  }
   footerId += 1;
   const uid = `footer-${footerId}`;
   const sections = [...fragment.children].filter((c) => c.tagName === 'DIV' && c.children.length);

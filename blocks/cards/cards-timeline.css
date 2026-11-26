@@ -1,0 +1,808 @@
+/* Cards "Timeline" style (About Us — "Into Steel"). Loaded by cards.js only
+   when the style is used. Builds on the Carousel style's ring (cards.css):
+   the cards lie flat (no 3D turn) and the centre card is larger.
+   Figma: desktop 7325:4642 (1280 × 720), mobile 7325:4835 (375 × 815).
+   --t-u is one design pixel, scaled to the screen. Every rule is scoped to
+   the Timeline's section: main > .section > .cards-wrapper > .cards. Every
+   colour is a variable: the site's --color-* tokens (see-through ones derived
+   from them), plus the two Figma colours that aren't in the palette, all
+   declared at the top of the block. */
+
+main > .section.cards-container:has(.cards.timeline) {
+  --t-u: clamp(0.8px, min(100vw / 375, 100svh / 815), 1.2px);
+
+  /* drawn above the next section, which it slides up off */
+  position: relative;
+  z-index: 1;
+  justify-content: flex-start;
+  padding-block: calc(98 * var(--t-u)) calc(32 * var(--t-u));
+  background-color: var(--color-white);
+  color: var(--color-black);
+  overflow: hidden;
+
+  @media (width >= 900px) {
+    --t-u: clamp(0.7px, min(100vw / 1280, 100svh / 720), 1.6px);
+
+    padding-block: calc(77 * var(--t-u)) calc(25 * var(--t-u));
+  }
+
+  .cards-wrapper {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
+    .cards.carousel.timeline {
+      --card-w: calc(280 * var(--t-u));
+      --card-h: calc(315 * var(--t-u));
+      --tl-radius: calc(17 * var(--t-u)); /* every card's corners on screen */
+      --card-radius: var(--tl-radius);
+      --carousel-move: 0.9s;
+      --tl-head-fade: 0.9s;
+      --tl-menu-time: 0.8s;
+      --tl-menu-ease: cubic-bezier(0.45, 0, 0.55, 1);
+      --tl-fade: calc(82 * var(--t-u));
+      --tl-pad: calc(18 * var(--t-u));
+
+      /* colours (Figma 7325:4642, 7474:4632, 7325:4835) */
+      --tl-ink: #000c10; /* the mobile title */
+      --tl-button-dark: #050a0c; /* the desktop grid button */
+      --tl-title-color: rgb(from var(--tl-ink) r g b / 80%);
+      --tl-text-color: rgb(from var(--color-black) r g b / 60%);
+      --tl-fade-edge: rgb(from var(--color-white) r g b / 50%);
+      --tl-fade-mid: rgb(from var(--color-white) r g b / 25%);
+      --tl-fade-end: rgb(from var(--color-white) r g b / 0%);
+      --tl-shade-start: rgb(from var(--color-black) r g b / 35%);
+      --tl-shade-end: rgb(from var(--color-black) r g b / 0%);
+      --tl-label-color: rgb(from var(--color-white) r g b / 90%);
+      --tl-bar-bg: rgb(from var(--color-black) r g b / 10%);
+      --tl-grid-bg: var(--color-black);
+      --tl-menu-bg: rgb(from var(--color-black) r g b / 40%);
+      --tl-menu-text: rgb(from var(--color-white) r g b / 80%);
+      --tl-menu-current: rgb(from var(--color-black) r g b / 60%);
+
+      /* the authoring notice, as the Collage's (styles/collage.css) */
+      --tl-notice-ok: #2e7d32;
+      --tl-notice-ok-bg: #edf7ee;
+      --tl-notice-error: #d32f2f;
+      --tl-notice-error-bg: #fdecea;
+
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+
+      @media (width >= 900px) {
+        --card-w: calc(320 * var(--t-u));
+        --card-h: calc(380 * var(--t-u));
+        --tl-radius: calc(25 * var(--t-u));
+        --tl-fade: calc(552 * var(--t-u));
+        --tl-pad: calc(51 * var(--t-u));
+        --tl-title-color: rgb(from var(--color-black) r g b / 90%);
+        --tl-fade-edge: var(--color-white);
+        --tl-fade-mid: rgb(from var(--color-white) r g b / 75%);
+        --tl-bar-bg: rgb(from var(--color-black) r g b / 20%);
+        --tl-grid-bg: var(--tl-button-dark);
+      }
+
+      /* a move of more than one card (a far card clicked, a chapter picked
+         from the menu) is one smooth glide: it speeds up over the first card
+         (ease-in), passes the cards in between at an even 0.4s each (linear)
+         and slows down over the last (ease-out). The curves meet at the same
+         speed, so the strip never pauses on a card on the way (cards.js) */
+      &.is-rushing {
+        --carousel-move: 0.4s;
+        --carousel-ease: linear;
+      }
+
+      &.is-run-start {
+        --carousel-move: 0.8s;
+        --carousel-ease: cubic-bezier(0.33, 0, 0.67, 0.33);
+      }
+
+      &.is-run-end {
+        --carousel-move: 0.8s;
+        --carousel-ease: cubic-bezier(0.33, 0.67, 0.67, 1);
+      }
+
+      /* header — the centre card's title and text. It has a fixed share of
+         the screen, the space above the cards, so a longer title or text
+         never moves the cards or the bar. The title is kept to 2 lines and
+         the text to 4 on mobile, 1 and 3 on desktop (cut with "…", still read
+         in full by screen readers), so it always fits above the cards. */
+      .tl-head {
+        display: grid;
+        max-width: calc(307 * var(--t-u));
+        max-height: calc(192 * var(--t-u));
+        margin-top: calc(35 * var(--t-u));
+        padding: 0 calc(30 * var(--t-u));
+
+        @media (width >= 900px) {
+          max-width: calc(338 * var(--t-u));
+          max-height: calc(113 * var(--t-u));
+          margin-top: calc(36 * var(--t-u));
+          padding: 0 calc(75 * var(--t-u));
+        }
+      }
+
+      /* the chapter's title and text; on a change the leaving copy and the
+         new text share the same place and crossfade, as the Pillars text
+         does. It changes once per move: when the cards pass several on the
+         way, only as the last one glides into the centre */
+      .tl-head-text {
+        display: flex;
+        flex-direction: column;
+        grid-area: 1 / 1;
+        gap: calc(12.5 * var(--t-u));
+        min-width: 0;
+        transition: opacity var(--tl-head-fade) cubic-bezier(0.37, 0, 0.63, 1);
+
+        /* the gaps leave Figma's 20 / 16 between the title's and the text's
+           letters */
+        @media (width >= 900px) {
+          gap: calc(13.5 * var(--t-u));
+        }
+
+        &.is-entering {
+          opacity: 0;
+          transition: none;
+        }
+
+        &.is-leaving {
+          pointer-events: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+        }
+      }
+
+      /* 2 lines at most (1 on desktop), the rest cut off (no ellipsis) */
+      .tl-head-title {
+        flex: 0 0 auto;
+        max-height: 2lh;
+        margin: 0;
+        overflow: hidden;
+        font-family: var(--font-family-display);
+        font-size: calc(32 * var(--t-u));
+        font-weight: var(--font-weight-medium);
+        line-height: 1;
+        letter-spacing: 0;
+        text-transform: uppercase;
+        color: var(--tl-title-color);
+
+        @media (width >= 900px) {
+          max-height: 1lh;
+          font-size: calc(20 * var(--t-u));
+          letter-spacing: -0.02em;
+        }
+      }
+
+      /* 4 lines at most (3 on desktop) */
+      .tl-head-desc {
+        display: -webkit-box;
+        flex: 0 0 auto;
+        margin: 0;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        font-family: var(--font-family-base);
+        font-size: calc(16 * var(--t-u));
+        font-weight: var(--font-weight-medium);
+        line-height: calc(22 / 16);
+        color: var(--tl-text-color);
+
+        @media (width >= 900px) {
+          font-size: calc(14 * var(--t-u));
+          line-height: calc(22 / 14);
+          -webkit-line-clamp: 3;
+        }
+      }
+
+      /* the strip: flat cards, white wash and edge fades on the side cards. It
+         sits at a fixed distance above the bar (pushed down by the auto margin),
+         so a shorter or longer heading never moves the cards */
+      .carousel-stage {
+        flex: 0 0 auto;
+        margin-top: auto;
+
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          z-index: 4;
+          width: var(--tl-fade);
+          pointer-events: none;
+        }
+
+        &::before {
+          left: calc(-10 * var(--t-u));
+          background: linear-gradient(90deg, var(--tl-fade-edge), var(--tl-fade-mid) 50%, var(--tl-fade-end));
+        }
+
+        &::after {
+          right: calc(-10 * var(--t-u));
+          background: linear-gradient(270deg, var(--tl-fade-edge), var(--tl-fade-mid) 50%, var(--tl-fade-end));
+        }
+
+        @media (width >= 900px) {
+          &::before {
+            left: 0;
+          }
+
+          &::after {
+            right: 0;
+          }
+        }
+      }
+
+      .carousel-track {
+        height: var(--card-h);
+        perspective: none;
+
+        .card {
+          --x: calc(562 * var(--t-u));
+          --s: 0.924;
+
+          /* the corners are drawn before the card is scaled, so they are divided
+             by the scale: side cards show the same --tl-radius as the centre */
+          --card-radius:
+            calc(var(--tl-radius) / var(--sx, var(--s)))
+            / calc(var(--tl-radius) / var(--sy, var(--s)));
+
+          left: calc(50% - var(--card-w) / 2);
+          width: var(--card-w);
+          height: var(--card-h);
+          transform:
+            translateX(calc(var(--dir, 0) * var(--x)))
+            translateY(var(--y, 0))
+            scale(var(--sx, var(--s)), var(--sy, var(--s)));
+
+          /* desktop side cards are 220 × 280 against the centre's 320 × 380,
+             and sit 11.5 lower than its middle */
+          @media (width >= 900px) {
+            --x: calc(554.5 * var(--t-u));
+            --y: calc(11.5 * var(--t-u));
+            --sx: calc(220 / 320);
+            --sy: calc(280 / 380);
+          }
+
+          &.is-active {
+            --x: 0px;
+            --y: 0px;
+            --s: 1;
+            --sx: 1;
+            --sy: 1;
+          }
+
+          &.is-near {
+            --x: calc(286.4 * var(--t-u));
+            --s: 0.924;
+            --wash: 0;
+
+            @media (width >= 900px) {
+              --x: calc(302.5 * var(--t-u));
+              --wash: 0.45;
+            }
+          }
+
+          &.is-far {
+            --s: 0.924;
+            --wash: 0;
+            --blur: 0px;
+
+            @media (width >= 900px) {
+              --wash: 0.7;
+            }
+          }
+
+          /* as a card moves, its corners change with its scale (same timing), so
+             they stay the same size on screen through the move rather than
+             jumping when it arrives; not when it jumps round the ring */
+          @media (prefers-reduced-motion: no-preference) {
+            &:not(.is-jumping) {
+              .card-img,
+              .card-image::after {
+                transition: border-radius var(--carousel-move) var(--carousel-ease);
+              }
+
+              &::after {
+                transition:
+                  opacity var(--carousel-move) var(--carousel-ease),
+                  border-radius var(--carousel-move) var(--carousel-ease);
+              }
+            }
+          }
+        }
+      }
+
+      .card-image,
+      .card-image picture {
+        display: block;
+        height: 100%;
+      }
+
+      /* behind the image: a card whose image doesn't load (e.g. not yet
+         published) shows as a light card rather than a gap in the row */
+      .carousel-track .card-image {
+        border-radius: var(--card-radius);
+        background-color: var(--color-gray-10);
+      }
+
+      .card-img {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+        object-fit: cover;
+      }
+
+      /* the image didn't load: no broken-image icon on the light card */
+      .card-image.is-missing .card-img {
+        visibility: hidden;
+      }
+
+      /* a light shade behind the location label */
+      .card-image::after {
+        content: '';
+        position: absolute;
+        inset: 0 0 auto;
+        height: 25%;
+        border-radius: var(--card-radius);
+        background: linear-gradient(180deg, var(--tl-shade-start), var(--tl-shade-end));
+        pointer-events: none;
+      }
+
+      /* only the location shows on the card; the rest is in the header */
+      .card-body {
+        inset: calc(15.7 * var(--t-u)) auto auto 0;
+        z-index: 1;
+        padding: 0 calc(18 * var(--t-u));
+        text-align: start;
+
+        @media (width >= 900px) {
+          top: calc(20 * var(--t-u));
+          padding: 0 calc(20 * var(--t-u));
+        }
+
+        > :not(.tl-location) {
+          display: none;
+        }
+
+        /* desktop: only the centre card is labelled (the live carousel; the
+           editor's still row has no centre card and shows every card's text),
+           and not the cards just passing the centre in a glide */
+        @media (width >= 900px) {
+          .carousel-track .card:not(.is-active) &,
+          .is-rushing .carousel-track .card & {
+            opacity: 0;
+            transition: opacity var(--carousel-move) var(--carousel-ease);
+          }
+        }
+      }
+
+      .tl-location {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 calc(7.8 * var(--t-u));
+        margin: 0;
+        padding-left: calc(10.9 * var(--t-u));
+        font-family: var(--font-family-base);
+        font-size: calc(10 * var(--t-u));
+        font-weight: var(--font-weight-medium);
+        font-style: normal;
+        line-height: calc(14 / 10);
+        letter-spacing: -0.04em;
+        text-transform: uppercase;
+        color: var(--tl-label-color);
+
+        @media (width >= 900px) {
+          flex-direction: column;
+          gap: calc(4.3 * var(--t-u));
+          padding-left: 0;
+          font-size: calc(12 * var(--t-u));
+          line-height: calc(11 / 12);
+          letter-spacing: 0.04em;
+        }
+
+        /* the white square before the coordinates */
+        &::before {
+          content: '';
+          position: absolute;
+          top: calc(3.5 * var(--t-u));
+          left: 0;
+          width: calc(7 * var(--t-u));
+          height: calc(7 * var(--t-u));
+          border-radius: calc(1.1 * var(--t-u));
+          background-color: var(--color-white);
+
+          @media (width >= 900px) {
+            position: static;
+            display: none;
+          }
+        }
+
+        em {
+          font-style: normal;
+        }
+      }
+
+      @media (width >= 900px) {
+        .tl-location-line:first-child {
+          display: inline-flex;
+          align-items: center;
+          gap: calc(3.2 * var(--t-u));
+
+          &::before {
+            content: '';
+            flex: 0 0 auto;
+            width: calc(10 * var(--t-u));
+            height: calc(10 * var(--t-u));
+            border-radius: calc(1.6 * var(--t-u));
+            background-color: var(--color-white);
+          }
+        }
+      }
+
+      /* controls — chapter pill and chapter menu */
+      .tl-controls {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--t-u));
+        align-self: center;
+        margin-top: calc(86.6 * var(--t-u));
+        padding: calc(4 * var(--t-u));
+        border-radius: calc(20 * var(--t-u));
+        background-color: var(--tl-bar-bg);
+
+        @media (width >= 900px) {
+          margin-top: calc(21 * var(--t-u));
+          padding: calc(8 * var(--t-u));
+          border-radius: calc(16 * var(--t-u));
+        }
+      }
+
+      /* the bar is the pill and the grid button (Figma 7325:4642, 7474:4632) */
+      .tl-grid,
+      .tl-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(48 * var(--t-u));
+        border: 0;
+        border-radius: calc(16 * var(--t-u));
+        background-color: var(--color-black);
+        color: var(--color-white);
+
+        @media (width >= 900px) {
+          height: calc(52 * var(--t-u));
+          border-radius: calc(12 * var(--t-u));
+        }
+      }
+
+      .tl-grid {
+        width: calc(48 * var(--t-u));
+        padding: 0;
+        background-color: var(--tl-grid-bg);
+        cursor: pointer;
+
+        @media (width >= 900px) {
+          width: calc(52 * var(--t-u));
+        }
+
+        &::before {
+          content: '';
+          width: calc(24 * var(--t-u));
+          height: calc(24 * var(--t-u));
+          background-color: currentcolor;
+          mask: url('../../icons/grid-dots.svg') center / contain no-repeat;
+
+          /* turns in step with the menu's fade */
+          transition: transform var(--tl-menu-time) var(--tl-menu-ease);
+
+          @media (width >= 900px) {
+            width: calc(32 * var(--t-u));
+            height: calc(32 * var(--t-u));
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            transition: none;
+          }
+        }
+
+        /* the dots turn sideways while the chapter index is open */
+        &[aria-expanded='true']::before {
+          transform: rotate(90deg);
+        }
+      }
+
+      /* fixed width whatever the chapter name (220 mobile / 222 desktop, as in
+         the design): a short name is centred, a long one is cut off (no
+         ellipsis) and the chapter number always shows */
+      .tl-pill {
+        flex: 0 0 auto;
+        gap: calc(4 * var(--t-u));
+        width: calc(220 * var(--t-u));
+        min-width: 0;
+        padding: 0 calc(16 * var(--t-u));
+        font-family: var(--font-family-base);
+        font-size: calc(14 * var(--t-u));
+        font-weight: var(--font-weight-regular);
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        cursor: pointer;
+
+        @media (width >= 900px) {
+          width: auto;
+          min-width: calc(222 * var(--t-u));
+          height: calc(50 * var(--t-u));
+          padding: 0 calc(20 * var(--t-u));
+        }
+      }
+
+      /* a long name keeps to one line of whole words: the ones that don't fit
+         wrap below it, hidden, so no half-cut letter runs into the number */
+      .tl-pill-label {
+        min-width: 0;
+        max-height: 1lh;
+        overflow: hidden;
+        text-align: center;
+        white-space: normal;
+
+        /* desktop: the pill grows to fit it, so it stays whole on one line */
+        @media (width >= 900px) {
+          white-space: nowrap;
+        }
+      }
+
+      .tl-pill-number {
+        flex: 0 0 auto;
+        font-size: calc(10 * var(--t-u));
+        align-self: flex-start;
+        margin-top: calc(16.7 * var(--t-u));
+
+        @media (width >= 900px) {
+          font-size: calc(12 * var(--t-u));
+          margin-top: calc(15.7 * var(--t-u));
+        }
+      }
+
+      /* frosted glass over the cards: the centre card shows through only as soft
+         colour (Figma 7474:4632) */
+      .tl-menu {
+        position: absolute;
+        bottom: calc(100% + 8 * var(--t-u));
+        margin: 0;
+        padding: calc(8 * var(--t-u));
+        list-style: none;
+        border-radius: calc(16 * var(--t-u));
+        background-color: var(--tl-menu-bg);
+        backdrop-filter: blur(calc(40 * var(--t-u)));
+
+        /* 30 wider than the bar on each side, centred: 354 over the 294 bar on
+           desktop, 340 over the 280 bar on mobile */
+        inset-inline: calc(-30 * var(--t-u));
+
+        /* fades in and out; hidden (not focusable, not read out) once faded out */
+        visibility: hidden;
+        opacity: 0;
+        transition:
+          opacity var(--tl-menu-time) var(--tl-menu-ease),
+          visibility 0s linear var(--tl-menu-time);
+
+        .is-menu-open & {
+          visibility: visible;
+          opacity: 1;
+          transition: opacity var(--tl-menu-time) var(--tl-menu-ease);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+
+          .is-menu-open & {
+            transition: none;
+          }
+        }
+      }
+
+      .tl-menu-item {
+        display: flex;
+        gap: calc(4 * var(--t-u));
+        align-items: flex-start;
+        width: 100%;
+        padding: calc(16 * var(--t-u)) calc(14 * var(--t-u));
+        border: 0;
+        border-radius: calc(12 * var(--t-u));
+        background: none;
+        font-family: var(--font-family-base);
+        font-size: calc(14 * var(--t-u));
+        line-height: 1;
+        letter-spacing: -0.02em;
+        text-align: start;
+        text-transform: uppercase;
+        color: var(--tl-menu-text);
+        cursor: pointer;
+
+        &[aria-current='true'] {
+          background-color: var(--tl-menu-current);
+          color: var(--color-white);
+        }
+
+        @media (hover: hover) {
+          &:hover {
+            color: var(--color-white);
+          }
+        }
+      }
+
+      /* trimmed to the capitals, so each row is 16 + 10 + 16 = 42 (Figma) */
+      .tl-menu-item > span {
+        text-box: trim-both cap alphabetic;
+      }
+
+      /* the chapter name: 2 lines at most (1 on desktop), as the heading, the
+         rest cut off (no ellipsis). Its box is trimmed to the capitals, so the
+         crop gets --crop-room above and below for apostrophes and commas, given
+         back by the margins. The cut falls --crop-room above where a further
+         line's capitals would start, between that line and the last one shown,
+         so round letters reaching over the capitals (S, O) never show through */
+      .tl-menu-name {
+        --crop-room: 0.15em;
+
+        max-height: calc(2lh - 2 * var(--crop-room));
+        margin-block: calc(-1 * var(--crop-room));
+        padding-block: var(--crop-room);
+        overflow: hidden;
+
+        @media (width >= 900px) {
+          max-height: calc(1lh - 2 * var(--crop-room));
+        }
+      }
+
+      .tl-menu-number {
+        font-size: calc(12 * var(--t-u));
+      }
+
+      .tl-pill:focus-visible,
+      .tl-grid:focus-visible,
+      .tl-menu-item:focus-visible {
+        outline: 2px solid var(--color-white);
+        outline-offset: -4px;
+      }
+
+      /* Universal Editor: a still list, as the Pillars style does it, one
+         chapter per row: its image, and every part of its text styled as it
+         reads on the page (year, chapter, title, location, description), so
+         each card's fields can be seen and edited */
+      &.is-static {
+        .tl-head,
+        .tl-controls {
+          display: none;
+        }
+
+        /* how many cards are authored against the 10 the Timeline takes
+           (cards-timeline.js): green, or red past 10 */
+        .tl-notice {
+          margin: 0 var(--tl-pad) var(--spacing-24);
+          padding: var(--spacing-12) var(--spacing-16);
+          border-left: 4px solid var(--tl-notice-ok);
+          border-radius: var(--radius-4);
+          background-color: var(--tl-notice-ok-bg);
+          font-family: var(--font-family-base);
+          font-size: var(--body-font-size-s);
+          font-weight: var(--font-weight-medium);
+          line-height: 1.4;
+          color: var(--color-black);
+
+          &.is-invalid {
+            border-left-color: var(--tl-notice-error);
+            background-color: var(--tl-notice-error-bg);
+          }
+        }
+
+        .card-list {
+          display: flex;
+          flex-direction: column;
+          gap: calc(48 * var(--t-u));
+          margin: 0;
+          padding: 0 var(--tl-pad);
+        }
+
+        .card {
+          display: grid;
+          gap: calc(20 * var(--t-u));
+          width: auto;
+          height: auto;
+
+          @media (width >= 900px) {
+            grid-template-columns: var(--card-w) minmax(0, calc(420 * var(--t-u)));
+            gap: calc(64 * var(--t-u));
+            align-items: center;
+            justify-content: center;
+          }
+        }
+
+        .card-image {
+          width: var(--card-w);
+          max-width: 100%;
+          height: var(--card-h);
+          overflow: hidden;
+          border-radius: var(--tl-radius);
+
+          /* no label over the image here */
+          &::after {
+            content: none;
+          }
+        }
+
+        .card-body {
+          position: static;
+          display: flex;
+          flex-direction: column;
+          gap: calc(10 * var(--t-u));
+          padding: 0;
+          font-family: var(--font-family-base);
+          font-size: calc(16 * var(--t-u));
+          font-weight: var(--font-weight-medium);
+          line-height: calc(22 / 16);
+          text-align: start;
+          text-transform: none;
+          color: var(--tl-text-color);
+
+          > :not(.tl-location) {
+            display: block;
+          }
+
+          > * {
+            margin: 0;
+          }
+        }
+
+        .tl-year {
+          font-size: calc(14 * var(--t-u));
+          letter-spacing: 0.04em;
+          color: var(--color-gray-60);
+        }
+
+        .tl-chapter {
+          text-transform: uppercase;
+          color: var(--tl-title-color);
+        }
+
+        .tl-title {
+          font-family: var(--font-family-display);
+          font-size: calc(28 * var(--t-u));
+          font-weight: var(--font-weight-medium);
+          line-height: 1.1;
+          text-transform: uppercase;
+          color: var(--tl-title-color);
+        }
+
+        .tl-location {
+          display: block;
+          padding-left: 0;
+          font-size: calc(12 * var(--t-u));
+          line-height: 1.4;
+          letter-spacing: 0.04em;
+          color: var(--color-gray-60);
+
+          &::before {
+            content: none;
+          }
+        }
+      }
+    }
+  }
+
+  /* the section after the Timeline stays still underneath while the Timeline
+     slides up off it (--tl-reveal-y, set by cards-timeline.js) */
+  + .section {
+    transform: translateY(var(--tl-reveal-y, 0));
+  }
+}

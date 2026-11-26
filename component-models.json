@@ -213,7 +213,10 @@
         "valueType": "string",
         "name": "link",
         "label": "Link",
-        "description": "The blog post the READ MORE bar opens."
+        "description": "The blog post the READ MORE bar opens.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -256,6 +259,66 @@
     ]
   },
   {
+    "id": "cards",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Style",
+        "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Carousel",
+            "value": "carousel"
+          },
+          {
+            "name": "Timeline",
+            "value": "timeline"
+          },
+          {
+            "name": "Pillars",
+            "value": "pillars"
+          },
+          {
+            "name": "Roller",
+            "value": "roller"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes_animation",
+        "label": "Animation Direction",
+        "description": "Select the scroll animation direction for the cards.",
+        "value": "horizontal",
+        "condition": {
+          "===": [
+            {
+              "var": "classes"
+            },
+            "pillars"
+          ]
+        },
+        "options": [
+          {
+            "name": "Horizontal",
+            "value": "horizontal"
+          },
+          {
+            "name": "Vertical",
+            "value": "vertical"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -263,14 +326,219 @@
         "valueType": "string",
         "name": "image",
         "label": "Image",
+        "required": true,
         "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image Alt Text",
+        "value": ""
       },
       {
         "component": "richtext",
         "name": "text",
         "value": "",
         "label": "Text",
+        "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "careers-hero",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Background image",
+        "description": "The hero photo (cropped to fit, toned). JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Background image alt text",
+        "description": "Describes the photo for screen readers; empty if decorative.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "E.g. THE WORLD NEEDS PIONEERS.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 40
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Subheading / description",
+        "description": "Optional: a short paragraph under the heading.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLabel",
+        "label": "Button label",
+        "description": "E.g. SCROLL; empty for no button.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "#open-roles scrolls to the Job Board; a page or URL opens it.",
+        "value": "",
+        "validation": {
+          "maxLength": 256
+        }
+      }
+    ]
+  },
+  {
+    "id": "careers-perks",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "E.g. OUR PERKS.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 40
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "intro",
+        "label": "Intro",
+        "description": "Under the heading; new lines are kept.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      }
+    ]
+  },
+  {
+    "id": "careers-perk",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "icon",
+        "label": "Icon",
+        "description": "The line icon above the title.",
+        "value": "flag",
+        "options": [
+          {
+            "name": "Flag",
+            "value": "flag"
+          },
+          {
+            "name": "Sprout",
+            "value": "sprout"
+          },
+          {
+            "name": "Scales",
+            "value": "scale"
+          },
+          {
+            "name": "Heart (health)",
+            "value": "heart"
+          },
+          {
+            "name": "Sun",
+            "value": "sun"
+          },
+          {
+            "name": "Home",
+            "value": "home"
+          },
+          {
+            "name": "People",
+            "value": "users"
+          },
+          {
+            "name": "Globe",
+            "value": "globe"
+          },
+          {
+            "name": "Shield",
+            "value": "shield"
+          },
+          {
+            "name": "Clock",
+            "value": "clock"
+          },
+          {
+            "name": "Rocket",
+            "value": "rocket"
+          },
+          {
+            "name": "Star",
+            "value": "star"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "iconImage",
+        "label": "Custom icon image",
+        "description": "Optional: replaces the icon (square, ideally SVG). JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "description": "E.g. Flexible hours. Up to 6 perks are shown.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "Two or three short lines.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 150
+        }
       }
     ]
   },
@@ -399,6 +667,70 @@
     ]
   },
   {
+    "id": "collage",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "Shown below the collage. Max 60 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 60
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "Shown under the heading. Max 280 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 280
+        }
+      }
+    ]
+  },
+  {
+    "id": "collage-image",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "The first image is the centre tile; the next four fill the top left, bottom left, top right and bottom right. JPG, PNG, WebP or AVIF only.",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describes the image for screen readers. Max 125 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 125
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "caption",
+        "label": "Caption",
+        "description": "Optional; shown with the image when it is opened large. Max 40 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 40
+        }
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
@@ -414,6 +746,111 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "confirmation",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Reserved (spotlight, word and car)",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – All set (image beside the text)",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "displayWord",
+        "label": "Background word",
+        "description": "Variant A only: the large word behind the car. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Status heading",
+        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form. Variant A: one line per sentence. Max 200 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describes the image for screen readers. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "Optional: a button under the description.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLinkText",
+        "label": "Button text",
+        "description": "The button's text. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
       }
     ]
   },
@@ -438,15 +875,8 @@
         "valueType": "string",
         "name": "media_image",
         "label": "Engine image",
-        "description": "High-resolution image shown large on the right (hotspot positions are relative to it).",
+        "description": "High-resolution image shown large on the right (hotspot positions are relative to it). Its alt text is generated from the engine type, e.g. \"Battery Electric Vehicle engine\".",
         "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "media_imageAlt",
-        "label": "Engine image alt text",
-        "value": ""
       },
       {
         "component": "reference",
@@ -469,14 +899,15 @@
         "valueType": "string",
         "name": "title",
         "label": "Engine type",
-        "description": "E.g. Battery Electric Vehicle.",
+        "description": "E.g. Battery Electric Vehicle. Also used for the engine image alt text and the thumbnail label.",
         "value": ""
       },
       {
-        "component": "richtext",
+        "component": "textarea",
         "valueType": "string",
         "name": "description",
         "label": "Description",
+        "description": "Plain text shown under the engine type.",
         "value": ""
       },
       {
@@ -484,7 +915,7 @@
         "valueType": "string",
         "name": "hotspots",
         "label": "Hotspots",
-        "description": "One paragraph per hotspot: position | TITLE | description, e.g. \"18% 24% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is left% top% on the engine image.",
+        "description": "Up to 4 hotspots (any more are ignored), one paragraph each: position | TITLE | description, e.g. \"18% 76% | INTELLIGENT SWITCHING | Automatically alternates…\". Position is x y in % of the engine image, measured from its bottom-left corner (\"18 76\" works too). In the editor you can also drag a + on the image to move it: its position is saved here.",
         "value": ""
       }
     ]
@@ -634,7 +1065,10 @@
         "component": "aem-content",
         "valueType": "string",
         "name": "link",
-        "label": "Button link"
+        "label": "Button link",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
       },
       {
         "component": "text",
@@ -679,6 +1113,798 @@
     ]
   },
   {
+    "id": "interactive-showcase",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "value": "",
+        "description": "The card's heading. Max 40 characters.",
+        "validation": {
+          "maxLength": 40,
+          "customErrorMsg": "Keep the title to 40 characters at most."
+        }
+      }
+    ]
+  },
+  {
+    "id": "interactive-showcase-item",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "media_thumbnail",
+        "label": "Thumbnail",
+        "multi": false,
+        "required": true,
+        "description": "Shown in the thumbnail tray. Required."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "media_thumbnailAlt",
+        "label": "Thumbnail alt",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "media_image",
+        "label": "Showcase image",
+        "multi": false,
+        "required": true,
+        "description": "The image the + points sit on. Required."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "media_imageAlt",
+        "label": "Showcase image alt",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Title",
+        "value": "",
+        "description": "Max 40 characters.",
+        "validation": {
+          "maxLength": 40,
+          "customErrorMsg": "Keep the title to 40 characters at most."
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "value": "",
+        "description": "Max 160 characters.",
+        "validation": {
+          "maxLength": 160,
+          "customErrorMsg": "Keep the description to 160 characters at most."
+        }
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "hotspots",
+        "label": "Hotspots (+ points)",
+        "value": "",
+        "description": "One bullet per + point, at most 6: x, y | TITLE | description (x and y: % of the image from its bottom-left corner). Drag the + points in preview mode to place them."
+      }
+    ]
+  },
+  {
+    "id": "job-board",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "gallery",
+        "label": "Gallery image",
+        "description": "Optional: the photo strip under the board. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "galleryAlt",
+        "label": "Gallery image alt text",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        },
+        "description": "Describes the photo strip for screen readers."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "emptyMessage",
+        "label": "No results message",
+        "description": "Shown when nothing matches, e.g. No roles match your search.",
+        "value": "",
+        "validation": {
+          "maxLength": 150
+        }
+      }
+    ]
+  },
+  {
+    "id": "job-board-search",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "First line, in grey, e.g. OPEN ROLES AT.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "headingEmphasis",
+        "label": "Heading (second line)",
+        "description": "Second line, in black, e.g. JSW MOTORS.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "placeholder",
+        "label": "Search input placeholder",
+        "description": "Inside the empty search box, e.g. Search Roles.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "Under the search box.",
+        "value": "",
+        "validation": {
+          "maxLength": 150
+        }
+      }
+    ]
+  },
+  {
+    "id": "job-board-filters",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "filterLabel",
+        "label": "Filters label",
+        "description": "Above the dropdowns, e.g. Filter Roles.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "locationLabel",
+        "label": "Location dropdown label",
+        "description": "The dropdown's label, e.g. Locations.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "container",
+        "name": "locations",
+        "label": "Locations",
+        "description": "The dropdown's choices; empty: the jobs' own locations.",
+        "multi": true,
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "location",
+            "label": "Location",
+            "value": "",
+            "validation": {
+              "maxLength": 64
+            }
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "departmentLabel",
+        "label": "Department dropdown label",
+        "description": "The dropdown's label, e.g. Departments.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "container",
+        "name": "departments",
+        "label": "Departments",
+        "description": "The dropdown's choices; empty: the jobs' own departments.",
+        "multi": true,
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "department",
+            "label": "Department",
+            "value": "",
+            "validation": {
+              "maxLength": 64
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "job-board-job",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Job title",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        },
+        "description": "E.g. Embedded Software Engineer. Up to 15 jobs are shown."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "department",
+        "label": "Department",
+        "description": "One of the filter's departments, written the same way.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "location",
+        "label": "Job location",
+        "description": "E.g. Bangalore, India; separate several with semicolons.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "description",
+        "label": "Job description",
+        "description": "A short summary under the location (searchable).",
+        "value": "",
+        "required": true,
+        "valueFormat": "string-multiline",
+        "validation": {
+          "maxLength": 150
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "applyLink",
+        "label": "Apply button link",
+        "description": "A page, URL or mailto: address.",
+        "required": true,
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "applyLabel",
+        "label": "Apply button label",
+        "description": "E.g. APPLY NOW.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: columns at the right, over the background media; Variant B: one row on a teal gradient.",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Standard",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – Alternate",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logo",
+        "label": "Logo",
+        "description": "The JSW MOTORS wordmark (white, on transparent): SVG, PNG or JPG.",
+        "multi": false,
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoAlt",
+        "label": "Logo alt text",
+        "description": "E.g. JSW Motors.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "logoLink",
+        "label": "Logo link",
+        "description": "Where the logo leads, e.g. the home page.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "copyright",
+        "label": "Copyright",
+        "description": "E.g. © 2026 JSW Motors.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "location",
+        "label": "Location",
+        "description": "E.g. Mumbai, India.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLabel",
+        "label": "Button label",
+        "description": "The white button's text, e.g. REGISTER INTEREST (a + follows it).",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "A page, URL or mailto: address; without a link the button is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "legalLink",
+        "label": "Legal link",
+        "description": "E.g. the privacy policy.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "legalLinkText",
+        "label": "Legal link label",
+        "description": "E.g. PRIVACY POLICY.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "backgroundMedia",
+        "label": "Background media",
+        "description": "Image, or a looping video with the image as its poster. Variant A only (ignored in Variant B).",
+        "value": "image",
+        "options": [
+          {
+            "name": "Image",
+            "value": "image"
+          },
+          {
+            "name": "Video",
+            "value": "video"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "JPG or PNG; also the video's poster. Variant A only (ignored in Variant B).",
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "backgroundVideo",
+        "label": "Background video",
+        "description": "MP4 or MOV, used when Background media is Video. Variant A only (ignored in Variant B).",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "socialHeading",
+        "label": "Social heading",
+        "description": "E.g. CONNECT, above the social icons (up to 4); in Variant B for screen readers only.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer-column",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "title",
+        "label": "Column title",
+        "description": "E.g. TECHNOLOGY.",
+        "value": "",
+        "required": true,
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link1",
+        "label": "Link 1",
+        "description": "A page, URL or mailto: address; without Link 1 text the link is not shown.",
+        "required": true,
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link1Text",
+        "label": "Link 1 text",
+        "description": "E.g. NEVs; without Link 1 the link is not shown.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        },
+        "required": true
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link2",
+        "label": "Link 2",
+        "description": "A page, URL or mailto: address; without Link 2 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link2Text",
+        "label": "Link 2 text",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        },
+        "description": "Without Link 2 the link is not shown."
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link3",
+        "label": "Link 3",
+        "description": "A page, URL or mailto: address; without Link 3 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link3Text",
+        "label": "Link 3 text",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        },
+        "description": "Without Link 3 the link is not shown."
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link4",
+        "label": "Link 4",
+        "description": "A page, URL or mailto: address; without Link 4 text the link is not shown.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link4Text",
+        "label": "Link 4 text",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        },
+        "description": "Without Link 4 the link is not shown."
+      }
+    ]
+  },
+  {
+    "id": "jsw-footer-social-link",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "network",
+        "label": "Network",
+        "description": "The icon and its screen-reader name; without a profile link the icon is not shown.",
+        "value": "facebook",
+        "required": true,
+        "options": [
+          {
+            "name": "Facebook",
+            "value": "facebook"
+          },
+          {
+            "name": "Instagram",
+            "value": "instagram"
+          },
+          {
+            "name": "X",
+            "value": "x"
+          },
+          {
+            "name": "LinkedIn",
+            "value": "linkedin"
+          },
+          {
+            "name": "YouTube",
+            "value": "youtube"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link",
+        "label": "Profile link",
+        "description": "The network page URL; without a network the icon is not shown.",
+        "required": true
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-brand",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "logo",
+        "label": "Logo",
+        "description": "The JSW mark only, shown left of the brand name.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "logoAlt",
+        "label": "Logo alt text",
+        "description": "Describes the mark for screen readers when there is no brand name. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "brandName",
+        "label": "Brand name",
+        "description": "Shown as text right of the mark. Max 24 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 24
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "logoLink",
+        "label": "Logo link",
+        "description": "Where the logo leads.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-links",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link1",
+        "label": "Link 1 target",
+        "description": "Optional: a page or URL; Link 1 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link1Text",
+        "label": "Link 1 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link2",
+        "label": "Link 2 target",
+        "description": "Optional: a page or URL; Link 2 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link2Text",
+        "label": "Link 2 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link3",
+        "label": "Link 3 target",
+        "description": "Optional: a page or URL; Link 3 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link3Text",
+        "label": "Link 3 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "link4",
+        "label": "Link 4 target",
+        "description": "Optional: a page or URL; Link 4 is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "link4Text",
+        "label": "Link 4 text",
+        "description": "Optional; shown only with its target. Max 12 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 12
+        }
+      }
+    ]
+  },
+  {
+    "id": "jsw-nav-button",
+    "fields": [
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "cta",
+        "label": "Button target",
+        "description": "Optional: a page or URL; the button is shown only with its text.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaText",
+        "label": "Button text",
+        "description": "Optional; shown only with its target. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      }
+    ]
+  },
+  {
     "id": "parallax-collage",
     "fields": [
       {
@@ -714,6 +1940,431 @@
         "label": "Position (optional)",
         "description": "Optional. \"large\" marks the hero image that shrinks to the top (default: the first image). Images then fill screen 1 (4 cards) and screen 2 (4 cards) in order.",
         "value": ""
+      }
+    ]
+  },
+  {
+    "id": "payment-failed",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "classes",
+        "label": "Layout",
+        "description": "Variant A: word and car on a spotlight, text below. Variant B: image left, text right.",
+        "value": "variant-a",
+        "options": [
+          {
+            "name": "Variant A – Spotlight (word and car)",
+            "value": "variant-a"
+          },
+          {
+            "name": "Variant B – Image beside the text",
+            "value": "variant-b"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "displayWord",
+        "label": "Background word",
+        "description": "Variant A only: the large word behind the car. Max 12 characters.",
+        "value": "FAILED",
+        "validation": {
+          "maxLength": 12
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Status heading",
+        "description": "Wherever you add {name} in this field, it will be dynamically replaced with the name entered in the form. Max 64 characters.",
+        "value": "PAYMENT FAILED, {name}.",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "{name}, {email} and {mobile} are replaced with the values entered in the form, {failureReason} with the payment's failure reason. Variant A: one line per sentence. Max 200 characters.",
+        "value": "{failureReason|Your payment didn’t go through.} If any amount was deducted, it will be refunded automatically.",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "description": "Variant A: the cut-out car. Variant B: the photo. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describes the image for screen readers. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background image",
+        "description": "Variant A only: the spotlight behind the word. JPG, PNG, WebP or SVG; other files are not shown.",
+        "multi": false
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "Button link",
+        "description": "Optional: a button under the description, back to the reservation form by default.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        },
+        "value": "/content/uet-eds/jsw/reservation-form"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "ctaLinkText",
+        "label": "Button text",
+        "description": "The button's text. Max 30 characters.",
+        "value": "TRY AGAIN",
+        "validation": {
+          "maxLength": 30
+        }
+      }
+    ]
+  },
+  {
+    "id": "reservation-form",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "background",
+        "label": "Background Image",
+        "description": "Fills the left half; a banner above the form on phones.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "backgroundAlt",
+        "label": "Background Image alt text",
+        "description": "Describes the image for screen readers. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "heading",
+        "label": "Heading",
+        "description": "The form's heading. Max 40 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 40
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "description",
+        "label": "Description",
+        "description": "Shown under the heading. Max 200 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "submitLabel",
+        "label": "Button text",
+        "description": "The button's text. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "submitAction",
+        "label": "Send the form to (URL)",
+        "description": "Where the data is posted as JSON; leave empty to send nothing. Max 256 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 256
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "disclaimer",
+        "label": "Privacy disclaimer",
+        "description": "Small print under the button; an email address in it becomes a link, and the privacy link follows it. Max 200 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "privacyLink",
+        "label": "Privacy notice link",
+        "description": "The privacy notice page.",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "privacyLinkText",
+        "label": "Privacy notice link text",
+        "description": "The link's text. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "tab",
+        "name": "pricingTab",
+        "label": "Pricing"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "amountLabel",
+        "label": "Amount label",
+        "description": "The price card's label. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "amount",
+        "label": "Reservation amount (₹)",
+        "description": "In rupees; leave empty to hide the price card. Keep it the same as the payment service's amount."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "amountBadge",
+        "label": "Amount badge",
+        "description": "Optional tag beside the label. Max 30 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 30
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "amountNote",
+        "label": "Amount note",
+        "description": "Shown under the amount. Max 200 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      },
+      {
+        "component": "tab",
+        "name": "paymentTab",
+        "label": "Payment"
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "paymentService",
+        "label": "Payment service URL",
+        "description": "The service that creates and verifies payments; leave empty for test mode. The Key ID is in the block's configuration. Max 256 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 256
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "merchantName",
+        "label": "Name in the payment window",
+        "description": "Shown in the payment window. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "successPage",
+        "label": "Page after the form is sent",
+        "description": "Opens once the form is sent and its payment confirmed (default: /jsw/confirmation).",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "failurePage",
+        "label": "Page after a failed payment",
+        "description": "Opens after a failed payment (default: /jsw/payment-failed).",
+        "validation": {
+          "rootPath": "/content/uet-eds/jsw"
+        }
+      },
+      {
+        "component": "tab",
+        "name": "pendingTab",
+        "label": "Pending"
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "pendingPreview",
+        "label": "Show pending state in the editor",
+        "description": "Shows the pending state in place of the form while editing, to edit its texts in place; never on the site.",
+        "value": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "pendingHeading",
+        "label": "Pending title",
+        "description": "Shown while the payment is confirmed. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "valueFormat": "string-multiline",
+        "name": "pendingDescription",
+        "label": "Pending description",
+        "description": "Shown under the pending title. Max 200 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 200
+        }
+      }
+    ]
+  },
+  {
+    "id": "reservation-form-field",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Label",
+        "description": "Shown in the field; it also sets the field's kind. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "fieldName",
+        "label": "Field name",
+        "description": "The value's key in the sent data; leave empty to make it from the label. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "required",
+        "label": "Required",
+        "value": false
+      }
+    ]
+  },
+  {
+    "id": "reservation-form-dropdown",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Label",
+        "description": "Shown until a choice is made. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "fieldName",
+        "label": "Field name",
+        "description": "The choice's key in the sent data; leave empty to make it from the label. Max 64 characters.",
+        "value": "",
+        "validation": {
+          "maxLength": 64
+        }
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "required",
+        "label": "Required",
+        "value": false
+      },
+      {
+        "component": "container",
+        "name": "options",
+        "label": "Cities",
+        "description": "The choices, one per entry.",
+        "multi": true,
+        "fields": [
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "option",
+            "label": "City",
+            "description": "Max 64 characters.",
+            "value": "",
+            "validation": {
+              "maxLength": 64
+            }
+          }
+        ]
       }
     ]
   }

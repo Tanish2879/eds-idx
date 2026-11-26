@@ -25,7 +25,17 @@
       "parallax-collage",
       "hero-video",
       "engine-showcase",
-      "blog-carousel"
+      "blog-carousel",
+      "reservation-form",
+      "confirmation",
+      "payment-failed",
+      "careers-hero",
+      "job-board",
+      "careers-perks",
+      "jsw-footer",
+      "jsw-nav",
+      "interactive-showcase",
+      "collage"
     ]
   },
   {
@@ -47,6 +57,12 @@
     ]
   },
   {
+    "id": "careers-perks",
+    "components": [
+      "careers-perk"
+    ]
+  },
+  {
     "id": "carousel-dealer",
     "components": [
       "carousel-dealer-item"
@@ -62,6 +78,12 @@
     "id": "carousel-showcase",
     "components": [
       "carousel-showcase-item"
+    ]
+  },
+  {
+    "id": "collage",
+    "components": [
+      "collage-image"
     ]
   },
   {
@@ -86,15 +108,59 @@
     ]
   },
   {
+    "id": "engine-showcase-full",
+    "components": []
+  },
+  {
     "id": "hero-interactive",
     "components": [
       "hero-interactive-slide"
     ]
   },
   {
+    "id": "interactive-showcase",
+    "components": [
+      "interactive-showcase-item"
+    ]
+  },
+  {
+    "id": "interactive-showcase-full",
+    "components": []
+  },
+  {
+    "id": "job-board",
+    "components": [
+      "job-board-search",
+      "job-board-filters",
+      "job-board-job"
+    ]
+  },
+  {
+    "id": "jsw-footer",
+    "components": [
+      "jsw-footer-column",
+      "jsw-footer-social-link"
+    ]
+  },
+  {
+    "id": "jsw-nav",
+    "components": [
+      "jsw-nav-brand",
+      "jsw-nav-links",
+      "jsw-nav-button"
+    ]
+  },
+  {
     "id": "parallax-collage",
     "components": [
       "parallax-collage-image"
+    ]
+  },
+  {
+    "id": "reservation-form",
+    "components": [
+      "reservation-form-field",
+      "reservation-form-dropdown"
     ]
   }
 ]

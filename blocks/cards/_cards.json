@@ -9,6 +9,7 @@
             "resourceType": "core/franklin/components/block/v1/block",
             "template": {
               "name": "Cards",
+              "model": "cards",
               "filter": "cards"
             }
           }
@@ -33,6 +34,38 @@
   ],
   "models": [
     {
+      "id": "cards",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes",
+          "label": "Style",
+          "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
+          "options": [
+            { "name": "Default", "value": "" },
+            { "name": "Carousel", "value": "carousel" },
+            { "name": "Timeline", "value": "timeline" },
+            { "name": "Pillars", "value": "pillars" },
+            { "name": "Roller", "value": "roller" }
+          ]
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes_animation",
+          "label": "Animation Direction",
+          "description": "Select the scroll animation direction for the cards.",
+          "value": "horizontal",
+          "condition": { "===": [{ "var": "classes" }, "pillars"] },
+          "options": [
+            { "name": "Horizontal", "value": "horizontal" },
+            { "name": "Vertical", "value": "vertical" }
+          ]
+        }
+      ]
+    },
+    {
       "id": "card",
       "fields": [
         {
@@ -40,13 +73,22 @@
           "valueType": "string",
           "name": "image",
           "label": "Image",
+          "required": true,
           "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "value": ""
         },
         {
           "component": "richtext",
           "name": "text",
           "value": "",
           "label": "Text",
+          "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description",
           "valueType": "string"
         }
       ]

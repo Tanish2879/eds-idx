@@ -1,0 +1,139 @@
+/* eslint-disable */
+var CustomImportScript = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // tools/importer/import-reservation-form.js
+  var import_reservation_form_exports = {};
+  __export(import_reservation_form_exports, {
+    default: () => import_reservation_form_default
+  });
+  function clean(text) {
+    return (text || "").replace(/[​\s]+/g, " ").trim();
+  }
+  function rootRelative(src) {
+    try {
+      const u = new URL(src, "https://x");
+      return u.pathname + u.search + u.hash;
+    } catch (e) {
+      return src;
+    }
+  }
+  function hinted(document, field, ...nodes) {
+    const cell = document.createElement("div");
+    cell.append(document.createComment(` field:${field} `), ...nodes);
+    return cell;
+  }
+  function para(document, text) {
+    const p = document.createElement("p");
+    p.textContent = text;
+    return p;
+  }
+  function textCell(document, field, value) {
+    return value ? hinted(document, field, para(document, value)) : hinted(document, field);
+  }
+  function idCell(document, id) {
+    const cell = document.createElement("div");
+    cell.textContent = id;
+    return cell;
+  }
+  var import_reservation_form_default = {
+    transform: (payload) => {
+      var _a, _b, _c, _d;
+      const { document } = payload;
+      const src = document.querySelector(".reservation-form-source");
+      const main = document.createElement("main");
+      const value = (sel) => {
+        var _a2;
+        return clean((_a2 = src.querySelector(sel)) == null ? void 0 : _a2.textContent);
+      };
+      const cells = [];
+      const source = src.querySelector("img.image");
+      const img = document.createElement("img");
+      img.src = rootRelative(source.getAttribute("src"));
+      img.alt = clean(source.getAttribute("alt"));
+      cells.push([hinted(document, "background", img)]);
+      cells.push([textCell(document, "heading", value("h1"))]);
+      cells.push([textCell(document, "description", value(".description"))]);
+      cells.push([textCell(document, "submitLabel", value(".submit"))]);
+      cells.push([textCell(document, "submitAction", value(".action"))]);
+      const mail = clean((_a = src.querySelector("a.email")) == null ? void 0 : _a.textContent);
+      cells.push([textCell(document, "disclaimer", [value(".disclaimer"), mail ? `${mail.replace("@", "@\u200B")}.` : ""].filter(Boolean).join(" "))]);
+      const privacy = src.querySelector("a.privacy");
+      if (privacy) {
+        const a = document.createElement("a");
+        a.href = rootRelative(privacy.getAttribute("href"));
+        a.textContent = clean(privacy.textContent);
+        const p = document.createElement("p");
+        p.append(a);
+        cells.push([hinted(document, "privacyLink", p)]);
+      } else cells.push([hinted(document, "privacyLink")]);
+      cells.push([textCell(document, "amountLabel", value(".amount-label"))]);
+      cells.push([textCell(document, "amount", value(".amount"))]);
+      cells.push([textCell(document, "amountBadge", value(".amount-badge"))]);
+      cells.push([textCell(document, "amountNote", value(".amount-note"))]);
+      cells.push([textCell(document, "paymentService", value(".payment-service"))]);
+      cells.push([textCell(document, "merchantName", value(".merchant"))]);
+      ["success", "failure"].forEach((kind) => {
+        const page = src.querySelector(`a.${kind}-page`);
+        if (!page) {
+          cells.push([hinted(document, `${kind}Page`)]);
+          return;
+        }
+        const a = document.createElement("a");
+        a.href = rootRelative(page.getAttribute("href"));
+        a.textContent = rootRelative(page.getAttribute("href"));
+        const p = document.createElement("p");
+        p.append(a);
+        cells.push([hinted(document, `${kind}Page`, p)]);
+      });
+      cells.push([textCell(document, "pendingPreview", "false")]);
+      cells.push([textCell(document, "pendingHeading", value(".pending-title"))]);
+      cells.push([textCell(document, "pendingDescription", value(".pending-description"))]);
+      src.querySelectorAll(".item").forEach((item) => {
+        if (item.classList.contains("section")) return;
+        const label = clean([...item.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join(" "));
+        const common = [
+          textCell(document, "label", label),
+          textCell(document, "fieldName", item.dataset.name || ""),
+          textCell(document, "required", item.dataset.required === "true" ? "true" : "false")
+        ];
+        if (item.classList.contains("dropdown")) {
+          const options = [...item.querySelectorAll("li")].map((li) => clean(li.textContent)).join(", ");
+          cells.push([idCell(document, "reservation-form-dropdown"), ...common, textCell(document, "options", options)]);
+        } else cells.push([idCell(document, "reservation-form-field"), ...common]);
+      });
+      main.append(WebImporter.Blocks.createBlock(document, { name: "reservation-form", cells }));
+      main.append(WebImporter.Blocks.getMetadataBlock(document, {
+        Title: clean(document.title),
+        Description: clean((_b = document.querySelector('meta[name="description"]')) == null ? void 0 : _b.getAttribute("content")),
+        // the design has no header and no footer
+        nav: clean((_c = document.querySelector('meta[name="nav"]')) == null ? void 0 : _c.getAttribute("content")),
+        footer: clean((_d = document.querySelector('meta[name="footer"]')) == null ? void 0 : _d.getAttribute("content"))
+      }));
+      document.body.innerHTML = "";
+      document.body.append(main);
+      return [{
+        element: document.body,
+        path: "/jsw/reservation-form",
+        report: { title: document.title, template: "reservation-form", blocks: ["reservation-form"] }
+      }];
+    }
+  };
+  return __toCommonJS(import_reservation_form_exports);
+})();
