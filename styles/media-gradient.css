@@ -1,0 +1,37 @@
+/* Section style "Image Gradient" (models/_section.json): a bottom-up shade
+   over every image and every video (playing or paused) in the section.
+   Loaded only on pages that use the style (scripts/utils/section-styles.js).
+   scripts/media-gradient.js finds the box holding each image or video and
+   marks it .media-gradient-frame; the shade is drawn on whichever of its
+   ::after / ::before is free, or on a small overlay element when both are
+   taken. Images whose block already shades them are left alone. */
+main > .section.media-gradient {
+  --media-gradient: linear-gradient(
+    to top,
+    rgb(from var(--color-black) r g b / 60%) 0%,
+    rgb(from var(--color-black) r g b / 0%) 55%
+  );
+
+  /* a box that was not positioned yet, so the shade can cover it */
+  .media-gradient-pos {
+    position: relative;
+  }
+
+  /* an image straight in the section: its picture becomes the box */
+  .media-gradient-inline {
+    display: inline-block;
+    position: relative;
+    max-width: 100%;
+  }
+
+  .media-gradient-frame:not(.is-before, .has-overlay)::after,
+  .media-gradient-frame.is-before::before,
+  .media-gradient-overlay {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--media-gradient-radius, inherit);
+    background: var(--media-gradient);
+    pointer-events: none;
+  }
+}

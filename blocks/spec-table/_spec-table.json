@@ -1,0 +1,87 @@
+{
+  "definitions": [
+    {
+      "title": "Spec Table",
+      "id": "spec-table",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Spec Table",
+              "model": "spec-table",
+              "filter": "spec-table"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Spec Row",
+      "id": "spec-row",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Spec Row",
+              "model": "spec-row"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "spec-table",
+      "fields": [
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "classes",
+          "label": "Style",
+          "description": "Default: a plain list. Showcase: in a Product Page section, the full-screen specs layout.",
+          "value": "",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Showcase",
+              "value": "showcase"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "spec-row",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Label",
+          "description": "e.g. Engine"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "value",
+          "label": "Value",
+          "description": "e.g. 1.5L turbo-petrol, 154 bhp / 220 Nm"
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "spec-table",
+      "components": [
+        "spec-row"
+      ]
+    }
+  ]
+}

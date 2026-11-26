@@ -1,0 +1,648 @@
+/* Hero "Statement" style (About Us — "Our Ethos"). Loaded by hero.js only when
+   the style is used. A centred statement over a dark full-screen image: an
+   eyebrow (a paragraph before the heading), the heading, then the text.
+   Figma: desktop 6350:4330 (1280 × 720), mobile 6360:5997 (375 × 815).
+   --s-u is one design pixel. */
+
+main > .section.hero-container .hero-wrapper .hero.statement {
+  --s-u: clamp(0.8px, min(100vw / 375, 100svh / 815), 1.2px);
+  --statement-ink: rgb(255 255 255 / 80%);
+
+  align-items: center;
+  justify-content: center;
+
+  /* the uneven padding offsets the centred text to where Figma places it
+     (2 above centre on mobile, 6 below on desktop) */
+  padding: 0 calc(20 * var(--s-u)) calc(4 * var(--s-u));
+  background-color: var(--color-black);
+
+  @media (width >= 900px) {
+    --s-u: clamp(0.7px, min(100vw / 1280, 100svh / 720), 1.6px);
+
+    padding: calc(12 * var(--s-u)) calc(20 * var(--s-u)) 0;
+  }
+
+  &::after {
+    content: none;
+  }
+
+  .content {
+    align-items: center;
+    width: calc(335 * var(--s-u));
+    max-width: 100%;
+    text-align: center;
+
+    @media (width >= 900px) {
+      width: calc(442 * var(--s-u));
+    }
+  }
+
+  .heading {
+    max-width: calc(303 * var(--s-u));
+    font-family: var(--font-family-display);
+    font-size: calc(24 * var(--s-u));
+    font-weight: var(--font-weight-medium);
+    line-height: calc(36 / 24);
+    letter-spacing: 0;
+    white-space: normal;
+    color: var(--statement-ink);
+
+    @media (width >= 900px) {
+      max-width: none;
+      font-size: calc(36 * var(--s-u));
+      line-height: calc(48 / 36);
+    }
+  }
+
+  /* the eyebrow — a paragraph before the heading; its margin leaves Figma's
+     32 between the eyebrow and heading letters */
+  .subtext:has(+ .heading) {
+    margin: 0 0 calc(13 * var(--s-u));
+    font-family: var(--font-family-base);
+    font-size: calc(12 * var(--s-u));
+    font-weight: var(--font-weight-regular);
+    line-height: calc(26 / 12);
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: rgb(250 250 250 / 80%);
+    opacity: 0.9;
+
+    @media (width >= 900px) {
+      margin-bottom: calc(11 * var(--s-u));
+      font-size: calc(14 * var(--s-u));
+      line-height: calc(26 / 14);
+    }
+  }
+
+  .heading ~ .subtext {
+    max-width: calc(383 * var(--s-u));
+    margin: calc(17 * var(--s-u)) 0 0;
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--s-u));
+    font-weight: var(--font-weight-regular);
+    line-height: calc(22 / 14);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--statement-ink);
+    opacity: 1;
+
+    @media (width >= 900px) {
+      margin-top: calc(24.5 * var(--s-u));
+      font-size: calc(16 * var(--s-u));
+      line-height: calc(24 / 16);
+    }
+  }
+}
+
+/* Statement with Hero Slides (hero-statement.js): the statement over a row of clip
+   thumbnails (step 0); the clip in the row's slot grows to fill the screen, with its caption
+   and the rail of clips (step 1, .is-open). Only a Statement with slides gets .has-clips, so
+   the plain Statement above is unchanged. Values from the product page's "The idea" fold:
+   thumbnails 200 × 112 (phones: a third of the width, 0.62 tall), 83 above the foot
+   (phones 76). */
+main > .section.hero-container .hero-wrapper .hero.statement.has-clips {
+  --clip-w: calc((100vw - 56px) / 3);
+  --clip-h: calc(var(--clip-w) * 0.62);
+  --clip-gap: 8px;
+  --clip-foot: 76px;
+  --clip-radius: 18px;
+  --clip-row-w: calc(var(--clips) * var(--clip-w) + (var(--clips) - 1) * var(--clip-gap));
+  --clip-ease-in: cubic-bezier(0.11, 0, 0.5, 0);
+  --clip-ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --clip-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* the whole statement shows, never cut off */
+  --hero-title-lines: 99;
+
+  /* the display face (Adobe Fonts kit) sets its glyphs 0.14em lower in the line than the
+     source's font files (ascent 1.11em, not 0.8em): lifted back, without moving the layout */
+  --clip-glyph-lift: -0.14em;
+
+  display: block;
+  padding: 0;
+
+  @media (width >= 900px) {
+    --clip-w: 200px;
+    --clip-h: 112px;
+    --clip-gap: 10px;
+
+    /* the thumbnails' and the caption's foot, as in the Figma (Web / 02 The idea 8983:6109,
+       Web / 03 The idea, film 8983:6153): 83 above the bottom */
+    --clip-foot: 83px;
+
+    padding: 0;
+  }
+
+  .clip-intro {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* keyboard only: hidden until focused, then a pill at the bottom of the statement */
+  .clip-open {
+    position: absolute;
+    bottom: var(--clip-foot, 32px);
+    left: 50%;
+    z-index: 5;
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-black);
+    color: var(--color-white);
+    font: inherit;
+    font-size: 14px;
+    translate: -50% 0;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid currentcolor;
+      outline-offset: 3px;
+    }
+
+    &:where(:not(:focus-visible, :active)) {
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+  }
+
+  &.is-static .clip-open {
+    display: none;
+  }
+
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    padding: 24px 20px;
+    transform: translate(-50%, calc(-50% + var(--statement-shift, 0px)));
+    transition: opacity 0.4s var(--clip-ease-in) 0.7s, translate 0.4s var(--clip-ease-in) 0.7s;
+
+    @media (width >= 900px) {
+      width: min(1500px, 96%);
+      padding: 36px 24px;
+    }
+  }
+
+  .heading {
+    max-width: none;
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-size: clamp(19px, 5.4vw, 24px);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.3;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: var(--statement-ink);
+    translate: 0 var(--clip-glyph-lift);
+
+    @media (width >= 900px) {
+      font-size: clamp(22px, 2.7vw, 42px);
+      line-height: 1.38;
+    }
+  }
+
+  /* one line per clause (hero-statement.js), each wrapping on its own on phones, as it comes */
+  .clip-line {
+    display: block;
+    text-wrap: wrap;
+  }
+
+  /* while the page moves onto the statement: its lines after the first dimmed and blurred
+     (0.32, 5px), then sharpening in turn once it arrives (0.3s, 0.12s apart) */
+  @media (prefers-reduced-motion: no-preference) {
+    &.is-dim .clip-line:not(:first-child) {
+      opacity: 0.32;
+      filter: blur(5px);
+    }
+
+    &.is-dim.is-sharpening .clip-line:not(:first-child) {
+      opacity: 1;
+      filter: none;
+      transition:
+        opacity 0.3s var(--clip-ease-out) calc(0.02s + (var(--i, 1) - 1) * 0.12s),
+        filter 0.3s var(--clip-ease-out) calc(0.02s + (var(--i, 1) - 1) * 0.12s);
+    }
+  }
+
+  .clip-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .clip-thumbs {
+    position: absolute;
+    bottom: var(--clip-foot);
+    left: 50%;
+    display: flex;
+    gap: var(--clip-gap);
+    transform: translateX(-50%);
+  }
+
+  .clip-thumb {
+    flex: none;
+    width: var(--clip-w);
+    height: var(--clip-h);
+    overflow: hidden;
+    border-radius: var(--clip-radius);
+    background: #e9e9e9;
+    transition: opacity 0.35s var(--clip-ease-in) 0.72s, translate 0.35s var(--clip-ease-in) 0.72s;
+
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  /* the playing clip's place; the stage covers it */
+  .clip-slot {
+    background: transparent;
+
+    picture {
+      visibility: hidden;
+    }
+  }
+
+  /* the clip: the size of the slot, then the whole screen */
+  .clip-stage {
+    position: absolute;
+    top: calc(100% - var(--clip-foot) - var(--clip-h));
+    left: calc(50% - var(--clip-row-w) / 2 + var(--clip-at) * (var(--clip-w) + var(--clip-gap)));
+    z-index: 3;
+    width: var(--clip-w);
+    height: var(--clip-h);
+    overflow: hidden;
+    border-radius: var(--clip-radius);
+    background: #d8d8d8;
+    transition: top 0.85s var(--clip-ease-in-out) 0.15s, left 0.85s var(--clip-ease-in-out) 0.15s, width 0.85s var(--clip-ease-in-out) 0.15s, height 0.85s var(--clip-ease-in-out) 0.15s, border-radius 0.85s var(--clip-ease-in-out) 0.15s;
+  }
+
+  .clip-films {
+    position: absolute;
+    inset: 0;
+  }
+
+  .clip-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+
+    &.is-active {
+      opacity: 1;
+    }
+  }
+
+  /* the caption, bottom left of the open stage */
+  .clip-captions {
+    position: absolute;
+    right: 20px;
+    bottom: calc(var(--clip-foot) + 76px);
+    left: 20px;
+    z-index: 5;
+    display: grid;
+    color: var(--color-white);
+    text-shadow: 0 2px 24px rgb(0 0 0 / 35%);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 24px;
+    transition: opacity 0.2s var(--clip-ease-in), translate 0.2s var(--clip-ease-in), visibility 0s 0.2s;
+
+    @media (width >= 900px) {
+      right: auto;
+      bottom: var(--clip-foot);
+      left: 64px;
+      width: min(560px, 60%);
+    }
+  }
+
+  /* every caption in one cell; the picked one fades in as the last fades out */
+  .clip-caption {
+    grid-area: 2 / 1;
+    align-self: end;
+    opacity: 0;
+    filter: blur(8px);
+    translate: 0 8px;
+    transition: opacity 0.25s var(--clip-ease-in), filter 0.25s var(--clip-ease-in), translate 0.25s var(--clip-ease-in);
+
+    &.is-active {
+      opacity: 1;
+      filter: none;
+      translate: 0;
+      transition-duration: 0.45s;
+      transition-timing-function: var(--clip-ease-out);
+      transition-delay: 0.45s;
+    }
+  }
+
+  .clip-title {
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-size: 26px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.05;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-wrap: balance;
+    color: inherit;
+    translate: 0 var(--clip-glyph-lift);
+
+    @media (width >= 900px) {
+      font-size: clamp(26px, 3.125vw, 44px);
+    }
+  }
+
+  .clip-sub {
+    margin: 10px 0 0;
+    font-family: var(--font-family-base);
+    font-size: 14px;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+    letter-spacing: 0;
+    text-transform: none;
+    color: inherit;
+    opacity: 0.8;
+
+    @media (width >= 900px) {
+      max-width: 440px;
+      margin-top: 16px;
+      font-size: clamp(14px, 1.25vw, 16px);
+      line-height: 1.6;
+    }
+  }
+
+  /* sound and pause / play, placed as in the carousel (hero.css .slide-controls): top right on
+     desktop, above the caption on phones (hero-statement.js moves them) */
+  .clip-controls {
+    --ctl-u: clamp(0.7px, min(100vw / 375, 100svh / 815), 1.5px);
+
+    z-index: 5;
+    display: flex;
+    gap: 4px;
+    margin: 0 0 calc(23 * var(--ctl-u));
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s var(--clip-ease-in), visibility 0s 0.2s;
+
+    @media (width >= 900px) {
+      --ctl-u: clamp(0.6px, min(100vw / 1447, 100svh / 814), 1px);
+
+      position: absolute;
+      top: calc(31 * var(--ctl-u));
+      right: calc(38 * var(--ctl-u));
+      margin: 0;
+    }
+  }
+
+  /* on phones they sit in the caption's grid, in the row above the text */
+  .clip-captions > .clip-controls {
+    grid-area: 1 / 1;
+    justify-self: start;
+  }
+
+  .clip-controls[hidden] {
+    display: none;
+  }
+
+  .clip-control {
+    --icon: none;
+
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background-color: rgb(0 0 0 / 20%);
+    color: var(--color-gray-10, #fff);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &::before {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background-color: currentcolor;
+      mask: var(--icon) center / contain no-repeat;
+    }
+
+    &:hover {
+      background-color: rgb(0 0 0 / 40%);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-white);
+      outline-offset: 2px;
+    }
+  }
+
+  /* speaker with a cross (muted) / with sound waves */
+  .clip-sound {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.1 4.1h2.3l3-2.6v9l-3-2.6H1.1z'/%3E%3Cpath d='M8.3 4.5l2.2 2.2m0-2.2L8.3 6.7' fill='none' stroke='%23000' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E");
+
+    &.is-sound-on {
+      --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1.1 4.1h2.3l3-2.6v9l-3-2.6H1.1z'/%3E%3Cpath d='M8.1 4.2a2.5 2.5 0 0 1 0 3.6m1.5-5a4.5 4.5 0 0 1 0 6.4' fill='none' stroke='%23000' stroke-width='1.1' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+  }
+
+  /* two bars while playing / a triangle once paused */
+  .clip-playback {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Crect x='.5' width='3.8' height='12' rx='.8'/%3E%3Crect x='7.7' width='3.8' height='12' rx='.8'/%3E%3C/svg%3E");
+
+    &.is-paused {
+      --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 1.3v9.4c0 .6.6.9 1.1.6l7.4-4.7a.7.7 0 0 0 0-1.2L3.6.7c-.5-.3-1.1 0-1.1.6z'/%3E%3C/svg%3E");
+    }
+  }
+
+  /* the rail of clips: below on phones, right on desktop */
+  .clip-rail {
+    position: absolute;
+    right: 0;
+    bottom: var(--clip-foot);
+    left: 0;
+    z-index: 4;
+    display: flex;
+    gap: 10px;
+    width: max-content;
+    margin: 0 auto;
+    padding: 4px;
+    border-radius: 16px;
+    background: var(--color-black);
+    opacity: 0;
+    visibility: hidden;
+    translate: 24px 0;
+    transition: opacity 0.2s var(--clip-ease-in), translate 0.2s var(--clip-ease-in), visibility 0s 0.2s;
+
+    @media (width >= 900px) {
+      inset: 50% 64px auto auto;
+      flex-direction: column;
+      margin: 0;
+      transform: translateY(-50%);
+    }
+  }
+
+  .clip-rail-item {
+    box-sizing: border-box;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: none;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.3s;
+
+    @media (width >= 900px) {
+      width: 48px;
+      height: 48px;
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-white);
+      outline-offset: 2px;
+    }
+
+    &[aria-pressed='true'] {
+      border-color: var(--color-white);
+      opacity: 1;
+    }
+
+    picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  /* step 1: the statement and thumbnails leave, the clip grows, then its caption and rail */
+  &.is-open,
+  &.is-static {
+    .content {
+      opacity: 0;
+      translate: 0 -40px;
+      transition-delay: 0s;
+    }
+
+    .clip-thumb {
+      opacity: 0;
+      translate: 0 40px;
+      transition-delay: 0.02s;
+    }
+
+    .clip-stage {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      transition-delay: 0.25s;
+    }
+
+    .clip-captions {
+      opacity: 1;
+      visibility: visible;
+      translate: 0;
+      transition: opacity 0.35s var(--clip-ease-out) 1s, translate 0.35s var(--clip-ease-out) 1s, visibility 0s 1s;
+    }
+
+    .clip-rail,
+    .clip-controls {
+      opacity: 1;
+      visibility: visible;
+      translate: 0;
+      transition: opacity 0.3s ease 1.05s, translate 0.3s ease 1.05s, visibility 0s 1.05s;
+    }
+  }
+
+  /* no snap engine (reduced motion, Universal Editor): the statement, then the clips, one
+     screen each. In the editor a "screen" is the hero's fixed editor height (hero.css): its
+     frame grows with the page, so a screen-based height would grow the page without end */
+  &.is-static {
+    --clip-screen: 100svh;
+
+    height: auto;
+
+    .clip-intro,
+    .clip-stage {
+      position: relative;
+      inset: auto;
+      height: 100vh;
+      height: var(--clip-screen);
+      min-height: 560px;
+    }
+
+    &[data-aue-resource] {
+      --clip-screen: var(--hero-editor-height, 900px);
+    }
+
+    .clip-stage {
+      width: 100%;
+    }
+
+    .content {
+      opacity: 1;
+      translate: 0;
+    }
+
+    .clip-thumb {
+      opacity: 1;
+      translate: 0;
+    }
+
+    .clip-slot picture {
+      visibility: visible;
+    }
+
+    .clip-controls {
+      display: none;
+    }
+
+    *,
+    .clip-captions,
+    .clip-rail {
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    .clip-captions,
+    .clip-rail {
+      transition: none;
+    }
+  }
+}
+
+/* on the Light section: the off-white stage and near-black statement */
+main > .section.light.hero-container .hero-wrapper .hero.statement.has-clips {
+  --statement-ink: #010101;
+
+  background-color: var(--section-bg);
+
+  .clip-captions {
+    color: var(--color-white);
+  }
+}

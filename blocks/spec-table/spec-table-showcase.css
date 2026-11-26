@@ -1,0 +1,890 @@
+/* Spec Table "Showcase" in a Light section (Code T specs) */
+
+/* stylelint-disable no-descending-specificity -- each rule places a different part */
+main > .section.light:has(.spec-table.showcase) {
+  --stage: var(--specs-screen, 100svh);
+
+  /* phones and tablets: the car turned upright, half the screen high above the groups */
+  --car-w: min(100vw, (var(--stage) - 300px) * 0.944, 480px);
+  --car-h: calc(var(--car-w) * 1448 / 1086);
+  --car-top: calc(var(--stage) / 2 - var(--car-h) / 2);
+
+  /* how much of the car stays in view above the groups once it has risen */
+  --half: 0.528;
+
+  /* Floater clearance */
+  --foot: max(52px, var(--floater-clear, 0px) - 20px);
+  --broch-b: calc(var(--foot) + 92px);
+  --cta-b: 64px;
+  --lift: max(0px, var(--floater-clear, 0px) - var(--cta-b));
+
+  &.show-floater {
+    --floater-clear: calc(var(--floater-space, 0px) + 12px);
+  }
+
+  /* how far the car rises; the static layout moves what comes after it down by as much */
+  --shift: calc(var(--stage) / 2);
+  --after: var(--shift);
+
+  /* groups, title and button: 20px from the edges, at most 560px wide */
+  --inset: max(20px, (100% - 560px) / 2);
+  --g1: calc((var(--car-w) * var(--half) + var(--stage) - var(--foot) - 419px) / 2 + var(--after));
+
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  justify-content: stretch;
+  height: calc(var(--stage) + var(--shift));
+  padding: 0;
+  overflow: clip;
+  color: #2e2e2e;
+
+  /* Universal Editor: fixed 900px screen */
+  &[data-aue-resource] {
+    --specs-screen: 900px;
+  }
+
+  @media (height <= 720px) {
+    --half: 0.449;
+  }
+
+  /* desktop */
+  @media (width >= 900px) {
+    --u: min(100vw / 1280, var(--stage) / 720);
+    --car-w: min(880px, 66vw, (var(--stage) - 240px) * 1.335);
+    --car-h: calc(var(--car-w) * 1086 / 1448);
+    --car-top: calc(var(--stage) * 0.54 - var(--car-h) / 2);
+    --shift: calc(var(--u) * 300 + 60px);
+    --side: 64px;
+    --gap-half: 12px;
+    --g1: calc(var(--stage) / 2 + var(--after));
+    --broch-b: calc(132px + var(--lift));
+  }
+
+  /* narrow desktops: less room at the sides, so three tiles a group fit */
+  @media (900px <= width < 1200px) {
+    --side: 40px;
+  }
+
+  /* short desktops */
+  @media (width >= 900px) and (height <= 800px) {
+    --g1: calc(min(var(--stage) / 2, var(--stage) - 359px) + var(--after));
+  }
+
+  /* wide screens */
+  @media (width >= 1700px) {
+    --car-w: min(1120px, 58vw, (var(--stage) - 240px) * 1.335);
+    --side: max(64px, (100% - 1480px) / 2);
+    --gap-half: 16px;
+  }
+
+  /* short screens (landscape phones, small windows): a plain stack, the car lying flat */
+  @media (height < 500px) {
+    --car-w: min(560px, 70vw);
+    --car-h: calc(var(--car-w) * 1086 / 1448);
+
+    /* the brochure button sits over "See full specs" and its 16px gap: the popup reads this */
+    --broch-b: 68px;
+
+    display: block;
+    height: auto;
+    min-height: 100svh;
+    padding: calc(var(--nav-offset) + 16px) max(20px, (100% - 960px) / 2) max(40px, var(--floater-clear, 0px));
+  }
+
+  /* the layers */
+  > * {
+    position: relative;
+    grid-area: 1 / 1;
+    box-sizing: border-box;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+
+    @media (height < 500px) {
+      height: auto;
+      pointer-events: auto;
+    }
+  }
+
+  > * > * {
+    position: absolute;
+    margin: 0;
+    pointer-events: auto;
+
+    @media (height < 500px) {
+      position: static;
+    }
+  }
+
+  /* with motion: the runway, every layer held on screen while it lasts */
+  &.specs-scrub {
+    --after: 0px;
+
+    height: calc(var(--stage) * 2.2);
+
+    > * {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: var(--stage);
+    }
+
+    @media (height < 500px) {
+      height: auto;
+
+      > * {
+        position: relative;
+        height: auto;
+      }
+    }
+  }
+
+  /* ---------- heading, corner marks, the car and its drawing, the first group label ---------- */
+  > .default-content-wrapper:first-child {
+    @media (height < 500px) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+
+      /* one column: the car and its dimension lines share its second row */
+      > * {
+        grid-column: 1;
+      }
+    }
+
+    > h2 {
+      top: 84px;
+      inset-inline: 0;
+      width: max-content;
+      max-width: 94%;
+      margin-inline: auto;
+      font-family: var(--font-family-display);
+      font-size: 24px;
+      font-weight: var(--font-weight-medium);
+      line-height: 1;
+      letter-spacing: normal;
+      text-align: center;
+      text-transform: uppercase;
+      text-wrap: balance;
+
+      @media (width >= 900px) {
+        top: 104px;
+        font-size: clamp(26px, 3.125vw, 44px);
+        white-space: nowrap;
+      }
+
+      @media (height < 500px) {
+        grid-row: 1;
+      }
+    }
+
+    /* the corner marks (Figma 8983:6819, 8983:6822): desktop only, above the heading */
+    > p:not(:has(picture, img), .specs-car, .specs-dims) {
+      display: none;
+      top: 36px;
+      left: 64px;
+      font-family: var(--font-family-base);
+      font-size: 10px;
+      line-height: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgb(0 0 0 / 62%);
+
+      @media (width >= 900px) {
+        display: block;
+
+        &:nth-of-type(2n) {
+          top: 52px;
+        }
+
+        &:nth-of-type(n + 3) {
+          right: 64px;
+          left: auto;
+          text-align: right;
+        }
+      }
+
+      @media (height < 500px) {
+        display: none;
+      }
+    }
+
+    > h3 {
+      top: var(--g1);
+    }
+  }
+
+  /* the car and its dimension lines share one box (classes from spec-table-showcase.js) */
+  > .default-content-wrapper > :is(.specs-car, .specs-dims) {
+    top: var(--car-top);
+    inset-inline: 0;
+    width: var(--car-w);
+    height: var(--car-h);
+    margin-inline: auto;
+
+    @media (height < 500px) {
+      grid-row: 2;
+      margin-top: 16px;
+    }
+  }
+
+  /* phones and tablets: the car turned upright; desktop and short screens: flat */
+  > .default-content-wrapper > .specs-car img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: var(--car-h);
+    max-width: none;
+    height: auto;
+    transform: translate(-50%, -50%) rotate(-90deg);
+
+    @media (width >= 900px), (height < 500px) {
+      position: static;
+      width: 100%;
+      transform: none;
+    }
+  }
+
+  > .default-content-wrapper > .specs-dims {
+    z-index: 1;
+    pointer-events: none;
+
+    > picture {
+      display: block;
+    }
+
+    :is(img, svg) {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  /* phone or desktop drawing */
+  > .default-content-wrapper > .specs-dims-desk {
+    display: none;
+
+    @media (width >= 900px), (height < 500px) {
+      display: block;
+
+      :is(img, svg) {
+        width: calc(100% * 1640 / 1448);
+        max-width: none;
+      }
+    }
+  }
+
+  > .default-content-wrapper > .specs-dims-phone {
+    @media (width >= 900px), (height < 500px) {
+      display: none;
+    }
+  }
+
+  /* inline drawing */
+  > .default-content-wrapper > .specs-dims > .specs-drawing {
+    overflow: visible;
+    color: #111;
+
+    /* Safari fix */
+    :is(path, line, polyline) {
+      fill: none;
+      stroke: currentcolor;
+      stroke-width: 3;
+      stroke-opacity: 0.45;
+
+      @media (width >= 900px) {
+        stroke-width: 1.5;
+      }
+
+      @media (height < 500px) {
+        stroke-width: 2;
+      }
+    }
+
+    circle {
+      fill: currentcolor;
+      stroke: none;
+    }
+
+    text {
+      fill: currentcolor;
+      font-family: var(--font-family-base);
+      font-size: 30px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      fill-opacity: 0.62;
+
+      @media (width >= 900px) {
+        font-size: 15px;
+      }
+
+      @media (height < 500px) {
+        font-size: 24px;
+      }
+    }
+  }
+
+  /* dimension lines fade in on arrival */
+  &.specs-arrive > .default-content-wrapper > .specs-dims {
+    :is(svg > g, img) {
+      animation: specs-dims-in 0.3s linear 1.25s backwards;
+    }
+
+    svg > g:nth-child(2) {
+      animation-delay: 1.31s;
+    }
+
+    svg > g:nth-child(3) {
+      animation-delay: 1.37s;
+    }
+  }
+
+  /* ---------- spec groups ---------- */
+  > .default-content-wrapper > h3 {
+    inset-inline: var(--inset);
+    font-family: var(--font-family-base);
+    font-size: 12px;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    letter-spacing: 0.045em;
+    text-align: left;
+    text-transform: uppercase;
+    color: rgb(0 0 0 / 55%);
+
+    @media (height < 500px) {
+      grid-row: 3;
+      margin: 24px 0 8px;
+    }
+  }
+
+  > .spec-table-wrapper > .spec-table {
+    inset-inline: var(--inset);
+  }
+
+  > .default-content-wrapper:first-child + .spec-table-wrapper > .spec-table {
+    top: calc(var(--g1) + 23.6px);
+  }
+
+  > .spec-table-wrapper + .default-content-wrapper > h3 {
+    top: calc(var(--g1) + 113.6px);
+  }
+
+  > .spec-table-wrapper ~ .spec-table-wrapper > .spec-table {
+    top: calc(var(--g1) + 137.2px);
+  }
+
+  @media (width >= 900px) {
+    > .default-content-wrapper:first-child > h3,
+    > .default-content-wrapper:first-child + .spec-table-wrapper > .spec-table {
+      inset-inline: var(--side) calc(50% + var(--gap-half));
+    }
+
+    > .spec-table-wrapper + .default-content-wrapper > h3,
+    > .spec-table-wrapper ~ .spec-table-wrapper > .spec-table {
+      inset-inline: calc(50% + var(--gap-half)) var(--side);
+    }
+
+    > .default-content-wrapper:first-child + .spec-table-wrapper > .spec-table,
+    > .spec-table-wrapper ~ .spec-table-wrapper > .spec-table {
+      top: calc(var(--g1) + 27.6px);
+    }
+
+    > .spec-table-wrapper + .default-content-wrapper > h3 {
+      top: var(--g1);
+    }
+  }
+
+  /* tiles */
+  .spec-table {
+    dl {
+      flex-direction: row;
+      gap: 6px;
+      border-top: 0;
+
+      @media (width >= 900px) {
+        gap: 8px;
+      }
+    }
+
+    dl > div {
+      display: flex;
+      flex: 1 1 0;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      box-sizing: border-box;
+      min-width: 0;
+      height: 72px;
+      padding: 12px 10px;
+      border-bottom: 0;
+      border-radius: 12px;
+      background-color: rgb(240 240 240);
+      text-align: left;
+
+      @media (width >= 900px) {
+        height: 87px;
+        padding: 16px 24px;
+        border-radius: 18px;
+      }
+
+      @media (900px <= width < 1200px) {
+        padding: 14px 12px;
+      }
+    }
+
+    dd {
+      order: -1;
+      font-family: var(--font-family-display);
+      font-size: clamp(13px, 4vw, 15px);
+      font-weight: var(--font-weight-regular);
+      line-height: normal;
+      letter-spacing: normal;
+      white-space: nowrap;
+      color: var(--color-black);
+
+      @media (width >= 900px) {
+        font-size: 20px;
+      }
+
+      @media (900px <= width < 1200px) {
+        font-size: clamp(16px, 1.65vw, 20px);
+      }
+    }
+
+    /* ellipsis */
+    :is(dd, dt),
+    :is(dd, dt) > * {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* #5e5e5e on the #f0f0f0 tile: 5.7:1 (the design's #6f6f6f is 4.4:1) */
+    dt {
+      font-size: 12px;
+      line-height: normal;
+      letter-spacing: normal;
+      text-transform: none;
+      color: rgb(94 94 94);
+
+      @media (width >= 900px) {
+        font-size: 15px;
+      }
+
+      @media (900px <= width < 1200px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  /* ---------- closing title, brochure button and popup, "See full specs" ---------- */
+  > .default-content-wrapper:last-child {
+    > h2 {
+      bottom: calc(var(--foot) + 150px);
+      inset-inline: var(--inset);
+      font-family: var(--font-family-display);
+      font-size: clamp(19px, 5.4vw, 22px);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.15;
+      letter-spacing: normal;
+      text-align: center;
+      text-transform: uppercase;
+      text-wrap: balance;
+
+      @media (width >= 900px) {
+        top: calc(var(--stage) * 0.69 + var(--after));
+        bottom: auto;
+        inset-inline: 0;
+        width: min(700px, 80%);
+        margin-inline: auto;
+        font-size: 28px;
+        line-height: 34px;
+      }
+
+      /* short desktops (the Figma frame, 1280 × 720): smaller, 14px over the brochure button */
+      @media (width >= 900px) and (height <= 800px) {
+        top: auto;
+        bottom: calc(190px + var(--lift));
+        font-size: 24px;
+        line-height: 30px;
+      }
+
+      @media (width >= 1700px) and (height > 800px) {
+        width: min(860px, 80%);
+        font-size: 36px;
+        line-height: 42px;
+      }
+
+      @media (height < 500px) {
+        margin-top: 32px;
+      }
+    }
+
+    /* brochure button and popup */
+    > p:not(:has(a)) {
+      bottom: var(--broch-b);
+      inset-inline: 0;
+      display: flex;
+      align-items: center;
+      width: max-content;
+      min-height: 44px;
+      margin-inline: auto;
+      font-family: var(--font-family-base);
+      font-size: 12px;
+      font-weight: var(--font-weight-medium);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #111;
+
+      @media (height < 500px) {
+        margin-top: 12px;
+      }
+    }
+
+    > .brochure-label > .brochure-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      font: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      white-space: nowrap;
+      color: inherit;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &::before {
+        content: '';
+        flex: 0 0 auto;
+        width: 14px;
+        height: 14px;
+        background-color: currentcolor;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12m0 0 5-5m-5 5-5-5M4 21h16'/%3E%3C/svg%3E") center / contain no-repeat;
+      }
+
+      &:hover,
+      &:focus-visible,
+      &[aria-expanded='true'] {
+        opacity: 1;
+      }
+    }
+
+    /* the popup, 8px above the button */
+    > p:has(> a + a) {
+      bottom: calc(var(--broch-b) + 52px);
+      left: 50%;
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-sizing: border-box;
+      min-width: 236px;
+      padding: 6px;
+      border-radius: 18px;
+      background-color: #fff;
+      box-shadow: 0 18px 50px rgb(0 0 0 / 14%), 0 0 0 1px rgb(0 0 0 / 6%);
+      transform: translateX(-50%);
+
+      @media (height < 500px) {
+        position: absolute;
+      }
+
+      > a:any-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 46px;
+        padding: 0 14px;
+        border-radius: 12px;
+        font-family: var(--font-family-base);
+        font-size: 14px;
+        font-weight: var(--font-weight-medium);
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #111;
+        transition: background-color 0.2s;
+
+        &::before {
+          content: '';
+          flex: 0 0 auto;
+          width: 18px;
+          height: 18px;
+          background-color: currentcolor;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v11.5m0 0 4.5-4.5M12 15l-4.5-4.5M4.5 20.5h15'/%3E%3C/svg%3E") center / contain no-repeat;
+        }
+
+        &[href*="wa.me"]::before,
+        &[href*="whatsapp"]::before {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.4-4.3A8.5 8.5 0 1 1 20.5 11.7Z'/%3E%3Cpath d='M9.2 8.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.5 1.9 2.6 2.4.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.3.5 0 .6-.3 1.3-.9 1.6-.6.3-1.6.4-3.3-.4a9.4 9.4 0 0 1-3.9-3.7c-.8-1.4-.6-2.5-.1-3.1Z'/%3E%3C/svg%3E");
+        }
+      }
+
+      > a:is(:hover, :focus-visible) {
+        outline: none;
+        background-color: rgb(242 242 240);
+        text-decoration: none;
+        color: #111;
+      }
+    }
+
+    &.brochure > .brochure-links {
+      visibility: hidden;
+      opacity: 0;
+      clip-path: inset(100% 0 0 round 18px);
+      transition:
+        clip-path 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.2s,
+        visibility 0s 0.35s;
+    }
+
+    &.brochure.is-open > .brochure-links {
+      visibility: visible;
+      opacity: 1;
+      clip-path: inset(0 round 18px);
+      transition:
+        clip-path 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.2s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &.brochure > .brochure-links,
+      &.brochure.is-open > .brochure-links {
+        transition: none;
+      }
+    }
+
+    > p:has(> a:only-child) {
+      bottom: calc(var(--foot) + 20px);
+      inset-inline: var(--inset);
+
+      @media (width >= 900px) {
+        bottom: calc(var(--cta-b) + var(--lift));
+        inset-inline: 0;
+        width: max-content;
+        min-width: 206px;
+        margin-inline: auto;
+      }
+
+      @media (height < 500px) {
+        margin-top: 16px;
+      }
+
+      > a:any-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        height: 52px;
+        padding: 0 24px;
+        border: 1px solid #111;
+        border-radius: 8px;
+        background-color: transparent;
+        font-family: var(--font-family-base);
+        font-size: 16px;
+        font-weight: var(--font-weight-regular);
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: #111;
+      }
+
+      > a:is(:hover, :focus-visible) {
+        border-color: #111;
+        background-color: transparent;
+        text-decoration: none;
+        color: #111;
+      }
+    }
+  }
+}
+
+/* ---------- two cars ---------- */
+main > .section.light.specs-two-cars:has(.spec-table.showcase) {
+  /* car proportions (set from the images) */
+  --car1-ar: calc(277.53 / 236.05);
+  --car2-ar: calc(523.17 / 236.05);
+  --cars-w1: calc(var(--cars-h1) * var(--car1-ar));
+  --cars-w2: calc(var(--cars-h1) * var(--car2-ar));
+
+  /* phones: stacked */
+  --cars-h1: min((100vw - 40px) / var(--car1-ar), (100vw - 40px) / var(--car2-ar));
+  --cars-gap: 36px;
+  --cars-h: calc(var(--cars-h1) * 2 + var(--cars-gap));
+  --cars-top: calc(var(--stage) / 2 - 10px - var(--cars-h) / 2);
+  --foot: max(44px, var(--floater-clear, 0px) - 20px);
+
+  /* the groups from the foot; without motion what comes after the pair moves down below it */
+  --g1-at: calc(var(--stage) - var(--foot) - 449.2px);
+  --g1: calc(var(--g1-at) + var(--after));
+  --shift: max(0px, var(--cars-top) + var(--cars-h) + 32px - var(--g1-at));
+
+  /* 768px and up: side by side in one row, 24px apart, centred 52% down the screen */
+  @media (width >= 768px) {
+    --cars-row: min(1320px, 92vw, (var(--stage) - 240px) * 3.39);
+    --cars-gap: 24px;
+    --cars-h1: calc((var(--cars-row) - var(--cars-gap)) / (var(--car1-ar) + var(--car2-ar)));
+    --cars-h: var(--cars-h1);
+    --cars-top: calc(var(--stage) * 0.52 - var(--cars-h1) / 2);
+  }
+
+  /* desktop groups */
+  @media (width >= 900px) {
+    --g1-at: calc(var(--stage) - 387.6px);
+    --broch-b: calc(128px + var(--lift));
+    --cta-b: 71px;
+  }
+
+  @media (width >= 900px) and (height > 800px) {
+    --g1-at: calc(var(--stage) - 434.6px);
+  }
+
+  > .default-content-wrapper > :is(.specs-car, .specs-dims) {
+    top: var(--cars-top);
+    width: var(--cars-w1);
+    height: var(--cars-h1);
+
+    @media (height < 500px) {
+      justify-self: start;
+      width: calc((100% - 16px) * var(--car1-ar) / (var(--car1-ar) + var(--car2-ar)));
+      height: auto;
+    }
+  }
+
+  > .default-content-wrapper > :is(.specs-car-2, .specs-dims-2) {
+    top: calc(var(--cars-top) + var(--cars-h1) + var(--cars-gap));
+    width: var(--cars-w2);
+
+    @media (width >= 768px) {
+      top: var(--cars-top);
+    }
+
+    @media (height < 500px) {
+      justify-self: end;
+      width: calc((100% - 16px) * var(--car2-ar) / (var(--car1-ar) + var(--car2-ar)));
+    }
+  }
+
+  @media (width >= 768px) {
+    > .default-content-wrapper > :is(.specs-car-1, .specs-dims-1) {
+      inset-inline: calc(50% - var(--cars-row) / 2) auto;
+      margin-inline: 0;
+    }
+
+    > .default-content-wrapper > :is(.specs-car-2, .specs-dims-2) {
+      inset-inline: calc(50% - var(--cars-row) / 2 + var(--cars-w1) + var(--cars-gap)) auto;
+      margin-inline: 0;
+    }
+  }
+
+  @media (height < 500px) {
+    > .default-content-wrapper > :is(.specs-car, .specs-dims) {
+      margin-inline: 0;
+    }
+  }
+
+  /* the car over its ground shadow (prototype .specs-view::before, ::after) */
+  > .default-content-wrapper > .specs-car {
+    --shadow-l: 14%;
+    --shadow-r: 14.7%;
+
+    @media (height < 500px) {
+      position: relative;
+    }
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: var(--shadow-l);
+      right: var(--shadow-r);
+      pointer-events: none;
+    }
+
+    &::before {
+      top: 78.5%;
+      height: 10%;
+      background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 24%), rgb(0 0 0 / 10%) 55%, transparent 100%);
+      filter: blur(6px);
+    }
+
+    &::after {
+      top: 81.6%;
+      height: 3.4%;
+      margin: 0 3%;
+      background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 42%), transparent 100%);
+      filter: blur(3px);
+    }
+
+    :is(picture, img) {
+      position: relative;
+      inset: auto;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: none;
+
+      @media (height < 500px) {
+        height: auto;
+      }
+    }
+  }
+
+  > .default-content-wrapper > .specs-car-2 {
+    --shadow-l: 6.7%;
+    --shadow-r: 13.2%;
+  }
+
+  /* drawing fits its car */
+  > .default-content-wrapper > .specs-dims {
+    > picture,
+    :is(img, svg) {
+      height: 100%;
+    }
+
+    img {
+      object-fit: contain;
+    }
+
+    @media (height < 500px) {
+      > picture,
+      :is(img, svg) {
+        height: auto;
+      }
+    }
+  }
+
+  /* the closing title on two lines (Figma 422px at 24px), the buttons as the design */
+  > .default-content-wrapper:last-child {
+    > h2 {
+      @media (width >= 900px) {
+        width: min(17.6em, 80%);
+      }
+
+      @media (width >= 900px) and (height <= 800px) {
+        bottom: calc(181px + var(--lift));
+      }
+    }
+  }
+}
+/* stylelint-enable no-descending-specificity */
+
+@keyframes specs-dims-in {
+  from {
+    opacity: 0;
+  }
+}

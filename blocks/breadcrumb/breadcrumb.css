@@ -1,0 +1,33 @@
+/* Spec: Figma article detail — mobile 4547:7511, desktop 4547:8622 */
+.breadcrumb {
+  font-family: var(--text-font-family);
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-gray-50);
+}
+
+.breadcrumb :is(p, ol) {
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumb li {
+  display: inline;
+}
+
+/* the separator, after every step (the design ends the trail with one);
+   empty alt text so screen readers skip it */
+.breadcrumb li::after {
+  content: '\00a0/\00a0' / '';
+}
+
+.breadcrumb a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--color-white);
+}

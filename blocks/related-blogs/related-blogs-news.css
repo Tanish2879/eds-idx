@@ -1,0 +1,276 @@
+/* Related Blogs "News" style (class "news"), loaded by related-blogs.js only when the block
+   has the class; the Default style is untouched (everything here is scoped to .news).
+   Design: the dealer prototype's newsroom panel (#news) in a light section: the eyebrow
+   (default content before the block), the uppercase heading left and a black View all
+   button right, then three cards: rounded image, uppercase title and one grey line
+   "Category · 28 Oct 2026. Description" (related-blogs.js folds category + date into it).
+   Desktop follows the prototype's 1280 x 720 frame scaled to fit the screen (--rbn-u, as the
+   source's --u): head at 116 and cards at 228 of 720, 64 from the screen edges. The
+   prototype only scales that frame down on phones (4px text), so below 900px the panel uses
+   readable sizes on a 390 x 844 frame, the cards in a swipe row clear of the price bar.
+   Greys are #666 instead of the source's #808080 to keep AA contrast on the light ground. */
+
+/* ---------- section: the eyebrow and the panel's place in the one-screen fold ---------- */
+main > .section:has(> .related-blogs-wrapper > .related-blogs.news) {
+  --rbn-u: clamp(0.85px, min(100vw / 390, 100svh / 844), 1.3px);
+  --rbn-side: calc(20 * var(--rbn-u));
+  --rbn-ink: var(--color-black);
+  --rbn-quiet: var(--color-gray-60);
+
+  /* phones: centred between the floating header and the price bar, as the source centres
+     its frame */
+  justify-content: center;
+  padding: calc(100 * var(--rbn-u)) 0 calc(88 * var(--rbn-u));
+}
+
+main > .section:has(> .related-blogs-wrapper > .related-blogs.news) > .default-content-wrapper {
+  max-width: none;
+  margin: 0;
+  padding: 0 var(--rbn-side) calc(10 * var(--rbn-u));
+  text-align: start;
+}
+
+/* eyebrow ("From the newsroom") */
+main > .section:has(> .related-blogs-wrapper > .related-blogs.news) > .default-content-wrapper > p {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: max(12px, calc(12 * var(--rbn-u)));
+  line-height: 1.26;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--rbn-quiet);
+}
+
+/* ---------- block ---------- */
+.related-blogs.news {
+  gap: calc(24 * var(--rbn-u));
+  padding: 0 var(--rbn-side);
+  background-color: transparent;
+  color: var(--rbn-ink);
+}
+
+.related-blogs.news .related-blogs-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(16 * var(--rbn-u));
+}
+
+/* two lines, as the source's 463-wide box (14.5em of its 32) */
+.related-blogs.news .related-blogs-heading {
+  max-width: 14.5em;
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-medium);
+  font-size: calc(24 * var(--rbn-u));
+  line-height: 0.985;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-align: start;
+  color: var(--rbn-ink);
+}
+
+/* black button; the hover is the letter glitch only (the source never recolours it) */
+main .related-blogs.news a.related-blogs-view-all.button:any-link {
+  flex: 0 0 auto;
+  min-width: calc(168 * var(--rbn-u));
+  height: max(44px, calc(44 * var(--rbn-u)));
+  padding: 0 calc(24 * var(--rbn-u));
+  border: 0;
+  border-radius: calc(8 * var(--rbn-u));
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-regular);
+  font-size: max(12px, calc(12 * var(--rbn-u)));
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+}
+
+main .related-blogs.news a.related-blogs-view-all.button:any-link:hover,
+main .related-blogs.news a.related-blogs-view-all.button:any-link:focus-visible {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+main .related-blogs.news a.related-blogs-view-all.button:any-link:focus-visible {
+  outline: 2px solid var(--rbn-ink);
+  outline-offset: 3px;
+}
+
+/* phones: a swipe row running to the screen edges */
+.related-blogs.news .related-blogs-cards {
+  gap: calc(12 * var(--rbn-u));
+  margin: 0 calc(-1 * var(--rbn-side));
+  padding: 0 var(--rbn-side);
+  scroll-padding-inline: var(--rbn-side);
+}
+
+.related-blogs.news .related-blogs-card {
+  flex: 0 0 calc(290 * var(--rbn-u));
+}
+
+.related-blogs.news .related-blogs-card-link {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--rbn-u));
+  height: auto;
+  color: inherit;
+}
+
+.related-blogs.news .related-blogs-card-media {
+  position: relative;
+  flex: none;
+  aspect-ratio: 417 / 270;
+  border-radius: calc(12 * var(--rbn-u));
+  background-color: #eee;
+}
+
+.related-blogs.news .related-blogs-card-media img {
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.related-blogs.news .related-blogs-card-link:hover .related-blogs-card-media img {
+  transform: scale(1.04);
+}
+
+.related-blogs.news .related-blogs-card-link:focus-visible {
+  outline: 2px solid var(--rbn-ink);
+  outline-offset: 4px;
+  border-radius: calc(12 * var(--rbn-u));
+}
+
+/* no card surface: title, then the grey meta + description line */
+.related-blogs.news .related-blogs-card-body {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.related-blogs.news .related-blogs-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--rbn-u));
+}
+
+.related-blogs.news .related-blogs-card-title {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: calc(16 * var(--rbn-u));
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--rbn-ink);
+}
+
+/* four lines at most on phones, three on desktop (the source's), so a long summary can't
+   run into the price bar */
+.related-blogs.news .related-blogs-card-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: max(12px, calc(14 * var(--rbn-u)));
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--rbn-quiet);
+}
+
+/* editor-only placeholder (no articles) */
+.related-blogs.news .related-blogs-empty {
+  color: var(--rbn-quiet);
+  text-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .related-blogs.news .related-blogs-card-link:hover .related-blogs-card-media img {
+    transform: none;
+  }
+}
+
+/* ---------- desktop: the 1280 x 720 frame ---------- */
+@media (width >= 900px) {
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.news) {
+    --rbn-u: min(100vw / 1280, 100svh / 720);
+    --rbn-side: calc(64 * var(--rbn-u));
+
+    /* the frame is centred in the screen; the head starts 116 down it */
+    justify-content: flex-start;
+    padding: calc(max(0px, (100svh - 720 * var(--rbn-u)) / 2) + 116 * var(--rbn-u)) 0 0;
+  }
+
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.news) > .default-content-wrapper {
+    padding-bottom: calc(16 * var(--rbn-u));
+  }
+
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.news) > .default-content-wrapper > p {
+    font-size: max(11px, calc(12 * var(--rbn-u)));
+  }
+
+  /* head → cards: 18, then each card's own 24 */
+  .related-blogs.news {
+    gap: calc(18 * var(--rbn-u));
+  }
+
+  .related-blogs.news .related-blogs-heading {
+    font-size: calc(32 * var(--rbn-u));
+  }
+
+  main .related-blogs.news a.related-blogs-view-all.button:any-link {
+    height: calc(48 * var(--rbn-u));
+    font-size: max(11px, calc(12 * var(--rbn-u)));
+  }
+
+  .related-blogs.news .related-blogs-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(20 * var(--rbn-u));
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .related-blogs.news .related-blogs-card {
+    padding-top: calc(24 * var(--rbn-u));
+  }
+
+  .related-blogs.news .related-blogs-card-link {
+    gap: calc(32 * var(--rbn-u));
+  }
+
+  .related-blogs.news .related-blogs-card-media {
+    height: calc(240 * var(--rbn-u));
+    aspect-ratio: auto;
+    border-radius: calc(16 * var(--rbn-u));
+  }
+
+  .related-blogs.news .related-blogs-card-link:focus-visible {
+    border-radius: calc(16 * var(--rbn-u));
+  }
+
+  .related-blogs.news .related-blogs-card-top {
+    gap: calc(16 * var(--rbn-u));
+  }
+
+  .related-blogs.news .related-blogs-card-title {
+    font-size: max(14px, calc(20 * var(--rbn-u)));
+  }
+
+  .related-blogs.news .related-blogs-card-desc {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: max(12px, calc(14 * var(--rbn-u)));
+  }
+}

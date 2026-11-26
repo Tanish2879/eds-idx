@@ -6,6 +6,41 @@
     ]
   },
   {
+    "id": "text",
+    "rte": {
+      "toolbar": {
+        "format": ["bold", "italic", "underline", "strike", "code_inline", "text_color"],
+        "alignment": ["left", "center", "right", "justify"],
+        "direction": ["rtl", "ltr"],
+        "indentation": ["indent", "outdent"],
+        "blocks": ["paragraph", "h1", "h2", "h3", "h4", "h5", "h6", "code_block", "blockquote"],
+        "list": ["bullet_list", "ordered_list"],
+        "insert": ["link", "unlink", "image", "table", "special_characters"],
+        "sr_script": ["superscript", "subscript"],
+        "editor": ["removeformat", "clean_unsupported_tags", "paste_text", "fullscreen", "find_and_replace"],
+        "sections": ["blocks", "format", "alignment", "direction", "indentation", "list", "insert", "sr_script", "editor"]
+      }
+    }
+  },
+  {
+    "id": "richtext",
+    "components": [],
+    "rte": {
+      "toolbar": {
+        "format": ["bold", "italic", "underline", "strike", "code_inline", "text_color"],
+        "alignment": ["left", "center", "right", "justify"],
+        "direction": ["rtl", "ltr"],
+        "indentation": ["indent", "outdent"],
+        "blocks": ["paragraph", "h1", "h2", "h3", "h4", "h5", "h6", "code_block", "blockquote"],
+        "list": ["bullet_list", "ordered_list"],
+        "insert": ["link", "unlink", "image", "table", "special_characters"],
+        "sr_script": ["superscript", "subscript"],
+        "editor": ["removeformat", "clean_unsupported_tags", "paste_text", "fullscreen", "find_and_replace"],
+        "sections": ["blocks", "format", "alignment", "direction", "indentation", "list", "insert", "sr_script", "editor"]
+      }
+    }
+  },
+  {
     "...": "./_section.json#/filters"
   },
   {

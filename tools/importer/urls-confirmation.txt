@@ -1,3 +1,0 @@
-http://localhost:3000/drafts/jsw/confirmation/source-variant-a.html
-http://localhost:3000/drafts/jsw/confirmation/source-variant-b.html
-http://localhost:3000/drafts/jsw/confirmation/source-payment-failed.html

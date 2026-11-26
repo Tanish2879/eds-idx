@@ -6,6 +6,153 @@
     ]
   },
   {
+    "id": "text",
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike",
+          "code_inline",
+          "text_color"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "direction": [
+          "rtl",
+          "ltr"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "code_block",
+          "blockquote"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "table",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "clean_unsupported_tags",
+          "paste_text",
+          "fullscreen",
+          "find_and_replace"
+        ],
+        "sections": [
+          "blocks",
+          "format",
+          "alignment",
+          "direction",
+          "indentation",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    }
+  },
+  {
+    "id": "richtext",
+    "components": [],
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike",
+          "code_inline",
+          "text_color"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "direction": [
+          "rtl",
+          "ltr"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "code_block",
+          "blockquote"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "table",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "clean_unsupported_tags",
+          "paste_text",
+          "fullscreen",
+          "find_and_replace"
+        ],
+        "sections": [
+          "blocks",
+          "format",
+          "alignment",
+          "direction",
+          "indentation",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    }
+  },
+  {
     "id": "section",
     "components": [
       "text",
@@ -16,74 +163,45 @@
       "cards",
       "columns",
       "fragment",
-      "hero-fullbleed",
-      "carousel-showcase",
-      "carousel-marquee",
-      "carousel-dealer",
-      "cards-timeline",
-      "hero-interactive",
-      "parallax-collage",
-      "hero-video",
-      "engine-showcase",
-      "blog-carousel",
-      "reservation-form",
-      "confirmation",
-      "payment-failed",
-      "careers-hero",
-      "job-board",
-      "careers-perks",
-      "jsw-footer",
-      "jsw-nav",
+      "social-deck",
+      "countdown",
+      "register-form",
+      "strip-teaser",
+      "featured-blogs",
+      "content-listing",
+      "related-blogs",
+      "article-carousel",
+      "breadcrumb",
+      "article-info",
+      "spec-table",
+      "table",
+      "stats-production",
+      "featured-intro",
+      "events",
+      "embed",
+      "video",
       "interactive-showcase",
-      "collage"
+      "tabs",
+      "accordion",
+      "floater"
     ]
   },
   {
-    "id": "blog-carousel",
+    "id": "accordion",
     "components": [
-      "blog-carousel-item"
+      "accordion-item"
     ]
   },
   {
-    "id": "cards-timeline",
+    "id": "article-carousel",
     "components": [
-      "cards-timeline-card"
+      "article-carousel-tab"
     ]
   },
   {
     "id": "cards",
     "components": [
       "card"
-    ]
-  },
-  {
-    "id": "careers-perks",
-    "components": [
-      "careers-perk"
-    ]
-  },
-  {
-    "id": "carousel-dealer",
-    "components": [
-      "carousel-dealer-item"
-    ]
-  },
-  {
-    "id": "carousel-marquee",
-    "components": [
-      "carousel-marquee-item"
-    ]
-  },
-  {
-    "id": "carousel-showcase",
-    "components": [
-      "carousel-showcase-item"
-    ]
-  },
-  {
-    "id": "collage",
-    "components": [
-      "collage-image"
     ]
   },
   {
@@ -102,20 +220,166 @@
     ]
   },
   {
-    "id": "engine-showcase",
+    "id": "content-listing",
     "components": [
-      "engine-showcase-item"
+      "content-listing-tab"
     ]
   },
   {
-    "id": "engine-showcase-full",
-    "components": []
+    "id": "events",
+    "components": [
+      "event"
+    ]
   },
   {
-    "id": "hero-interactive",
+    "id": "hero",
     "components": [
-      "hero-interactive-slide"
-    ]
+      "hero-slide"
+    ],
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike",
+          "code_inline",
+          "text_color"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "direction": [
+          "rtl",
+          "ltr"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "code_block",
+          "blockquote"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "table",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "clean_unsupported_tags",
+          "paste_text",
+          "fullscreen",
+          "find_and_replace"
+        ],
+        "sections": [
+          "blocks",
+          "format",
+          "alignment",
+          "direction",
+          "indentation",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    }
+  },
+  {
+    "id": "hero-full",
+    "components": [],
+    "rte": {
+      "toolbar": {
+        "format": [
+          "bold",
+          "italic",
+          "underline",
+          "strike",
+          "code_inline",
+          "text_color"
+        ],
+        "alignment": [
+          "left",
+          "center",
+          "right",
+          "justify"
+        ],
+        "direction": [
+          "rtl",
+          "ltr"
+        ],
+        "indentation": [
+          "indent",
+          "outdent"
+        ],
+        "blocks": [
+          "paragraph",
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "code_block",
+          "blockquote"
+        ],
+        "list": [
+          "bullet_list",
+          "ordered_list"
+        ],
+        "insert": [
+          "link",
+          "unlink",
+          "image",
+          "table",
+          "special_characters"
+        ],
+        "sr_script": [
+          "superscript",
+          "subscript"
+        ],
+        "editor": [
+          "removeformat",
+          "clean_unsupported_tags",
+          "paste_text",
+          "fullscreen",
+          "find_and_replace"
+        ],
+        "sections": [
+          "blocks",
+          "format",
+          "alignment",
+          "direction",
+          "indentation",
+          "list",
+          "insert",
+          "sr_script",
+          "editor"
+        ]
+      }
+    }
   },
   {
     "id": "interactive-showcase",
@@ -128,39 +392,65 @@
     "components": []
   },
   {
-    "id": "job-board",
+    "id": "social-deck",
     "components": [
-      "job-board-search",
-      "job-board-filters",
-      "job-board-job"
+      "social-card"
     ]
   },
   {
-    "id": "jsw-footer",
+    "id": "social-deck-full",
+    "components": []
+  },
+  {
+    "id": "spec-table",
     "components": [
-      "jsw-footer-column",
-      "jsw-footer-social-link"
+      "spec-row"
     ]
   },
   {
-    "id": "jsw-nav",
+    "id": "table-2-columns",
     "components": [
-      "jsw-nav-brand",
-      "jsw-nav-links",
-      "jsw-nav-button"
+      "table-col-2"
     ]
   },
   {
-    "id": "parallax-collage",
+    "id": "table-3-columns",
     "components": [
-      "parallax-collage-image"
+      "table-col-3"
     ]
   },
   {
-    "id": "reservation-form",
+    "id": "table-4-columns",
     "components": [
-      "reservation-form-field",
-      "reservation-form-dropdown"
+      "table-col-4"
     ]
+  },
+  {
+    "id": "table-5-columns",
+    "components": [
+      "table-col-5"
+    ]
+  },
+  {
+    "id": "table-6-columns",
+    "components": [
+      "table-col-6"
+    ]
+  },
+  {
+    "id": "table-7-columns",
+    "components": [
+      "table-col-7"
+    ]
+  },
+  {
+    "id": "tabs",
+    "components": [
+      "tab"
+    ]
+  },
+  {
+    "id": "tabs-full",
+    "components": []
   }
 ]

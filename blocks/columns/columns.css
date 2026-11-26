@@ -1,4 +1,4 @@
-.columns > div {
+.columns>div {
   display: flex;
   flex-direction: column;
 }
@@ -7,27 +7,288 @@
   width: 100%;
 }
 
-.columns > div > div {
+.columns>div>div {
   order: 1;
 }
 
-.columns > div > .columns-img-col {
+.columns>div>.columns-img-col {
   order: 0;
 }
 
-.columns > div > .columns-img-col img {
+.columns>div>.columns-img-col img {
   display: block;
 }
 
-@media (width >= 900px) {
-  .columns > div {
+@media (width >=900px) {
+  .columns>div {
     align-items: center;
     flex-direction: unset;
     gap: 24px;
   }
 
-  .columns > div > div {
+  .columns>div>div {
     flex: 1;
     order: unset;
+  }
+}
+
+/* Thank-you variant — full-bleed split (image one side, content the other) */
+main {
+  .section:has(.columns.thank-you) {
+    overflow-x: clip;
+    margin: 0;
+    padding: 0;
+
+    .columns-wrapper,
+    > .default-content-wrapper {
+      max-width: unset;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .columns.thank-you {
+    --tu: clamp(0.6px, 100svh / 940, 1px);
+
+    /* Scoped button variables for dark surface */
+    --button-solid-bg: var(--button-solid-bg-on-dark);
+    --button-solid-color: var(--color-black); /* Figma label #000 (nodes 3029:2621 / 3897) */
+    --button-solid-hover-bg: var(--button-solid-hover-bg-on-dark);
+
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    width: 100vw;
+    max-width: 100vw;
+    min-height: 100svh;
+    margin-inline: calc(50% - 50vw);
+    background-color: #0a0a0a;
+    color: var(--color-white);
+    text-align: center;
+
+    @media (width >=900px) {
+      --tu: clamp(0.62px, 100svh / 1116, 1px);
+    }
+
+    &[data-aue-resource] {
+      height: 1000px;
+    }
+
+    > div {
+      flex: 1 1 auto;
+      min-height: 0;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .ty-media {
+      position: relative;
+      flex: 0 0 calc(309 * var(--tu));
+      min-height: 0;
+      overflow: hidden;
+
+      /* desktop: half the screen, as the register form's image column, so
+         the content column beside it is the same width as the form's */
+      @media (width >=900px) {
+        flex: 1 1 50%;
+        min-width: 0;
+        border-radius: calc(22 * var(--tu));
+      }
+
+      p,
+      picture {
+        margin: 0;
+      }
+
+      img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      picture:nth-of-type(2),
+      p:nth-of-type(2) picture {
+        display: none;
+      }
+
+      @media (width < 900px) {
+        picture:nth-of-type(2),
+        p:nth-of-type(2) picture {
+          display: block;
+        }
+
+        picture:first-of-type:not(:last-of-type),
+        p:first-of-type:not(:last-of-type) picture {
+          display: none;
+        }
+      }
+    }
+
+    .ty-content {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: calc(24 * var(--tu));
+      min-height: 0;
+      padding: calc(40 * var(--tu)) calc(24 * var(--tu));
+      text-align: center;
+      overflow-y: auto;
+
+      /* desktop: the other half, laid out as the register form's content
+         column (.register-form .content): no side padding, its text capped at
+         653 design px below */
+      @media (width >=900px) {
+        flex: 1 1 50%;
+        min-width: 0;
+        gap: calc(48 * var(--tu));
+        padding: calc(80 * var(--tu)) 0;
+      }
+
+      /* Figma constrains the content group to a fixed frame: 335px mobile (node
+         1349:4196) / 653px desktop (node 1349:3806). Cap the paragraph blocks
+         (eyebrow, subtext) to that width so they wrap inside the design width;
+         align-items:center keeps them centred. The icon and button keep their
+         intrinsic size (so the pill button doesn't stretch to the frame). */
+      > p {
+        width: calc(335 * var(--tu));
+        max-width: 100%;
+
+        @media (width >=900px) {
+          width: calc(653 * var(--tu));
+        }
+      }
+
+      /* check-mark icon wrapper (a <p> holding only a picture) — no margins so
+         the column flex gap owns its spacing */
+      p:has(> picture) {
+        margin-top: 0;
+        margin-inline: 0;
+      }
+
+      /* check-mark icon — the only image in the content column. Target it directly
+         (not p > picture img) so the size applies regardless of delivery wrapping.
+         56px mobile, 96px desktop (Figma nodes 1349:4198 / 3807). */
+      img {
+        width: calc(56 * var(--tu));
+        height: calc(56 * var(--tu));
+
+        @media (width >=900px) {
+          width: calc(96 * var(--tu));
+          height: calc(96 * var(--tu));
+        }
+      }
+
+      /* subtext — the paragraph after the title (classed .ty-text in columns.js).
+         Figma: New Science Regular, mobile 14/19 -0.02em (node 3029:3894),
+         desktop 20/28 -0.01em (node 3029:2620). */
+      .ty-text {
+        margin: 0;
+        max-width: calc(569 * var(--tu));
+        font-family: var(--font-family-base);
+        font-weight: var(--font-weight-regular);
+        font-size: calc(14 * var(--tu));
+        line-height: calc(19 / 14);
+        letter-spacing: -0.02em;
+        text-align: center;
+        color: rgb(255 255 255 / 60%);
+
+        @media (width >=900px) {
+          font-size: calc(20 * var(--tu));
+          line-height: calc(28 / 20);
+          letter-spacing: -0.01em;
+          color: var(--color-gray-30);
+        }
+      }
+
+      /* brand eyebrow — the first line at the top of the content column.
+         Mobile 14px, desktop 20px. New Science Extended per the Figma design. */
+      > p:first-child {
+        margin: 0;
+        font-family: var(--font-family-display);
+        font-weight: var(--font-weight-medium);
+        font-size: calc(14 * var(--tu));
+        line-height: 1.1;
+        letter-spacing: 0;
+        text-align: center;
+        text-transform: uppercase;
+        color: var(--color-white);
+
+        @media (width >=900px) {
+          font-size: calc(20 * var(--tu));
+        }
+      }
+    }
+
+    /* Figma mobile groups the content as 32 / 24 / 32 gaps (icon→heading /
+       heading→subtext / subtext→button, node 1349:4196). Our DOM is flat siblings
+       with a uniform 24px flex gap, so add 8px (proportional) on the icon (bottom)
+       and button (top) to lift those two gaps to 32px. Mobile only — desktop 48px. */
+    @media (width < 900px) {
+      .ty-content p:has(> picture) {
+        margin-bottom: calc(8 * var(--tu));
+      }
+
+      .ty-content .ty-cta {
+        margin-top: calc(8 * var(--tu));
+      }
+    }
+
+    /* title (classed .ty-title in columns.js, any heading level) — Figma:
+       New Science Medium, mobile 24/32 -0.01em (node 3029:3892), desktop 40/48
+       0.01em (node 3029:2619). Width capped to the content frame (335 / 653). */
+    .ty-title {
+      width: calc(335 * var(--tu));
+      max-width: 100%;
+      margin: 0;
+      font-family: var(--font-family-display);
+      font-weight: var(--font-weight-medium);
+      font-size: calc(24 * var(--tu));
+      line-height: calc(32 / 24);
+      letter-spacing: -0.01em;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--color-white);
+
+      @media (width >=900px) {
+        width: calc(653 * var(--tu));
+        font-size: calc(40 * var(--tu));
+        line-height: calc(48 / 40);
+        letter-spacing: 0.01em;
+      }
+    }
+
+    /* Solid CTA — white pill + New Science label. Proportional size/height so it
+       scales with the panel; color tokens (--button-solid-*) reuse the global
+       button rules and hover/focus states from styles.css. */
+    a.button.primary,
+    button.button.primary {
+      min-width: calc(197 * var(--tu));
+      height: calc(48 * var(--tu));
+      padding: 0 calc(24 * var(--tu));
+      border-radius: calc(12 * var(--tu));
+      font-family: var(--font-family-base);
+      font-size: calc(14 * var(--tu));
+      line-height: calc(20 / 14);
+      letter-spacing: 0;
+      text-transform: uppercase;
+
+      @media (width >=900px) {
+        min-width: calc(172 * var(--tu));
+        height: calc(64 * var(--tu));
+        padding: 0 calc(19 * var(--tu));
+        font-size: calc(16 * var(--tu));
+        line-height: calc(22 / 16);
+      }
+    }
   }
 }

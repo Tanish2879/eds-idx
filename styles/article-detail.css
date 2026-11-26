@@ -1,0 +1,498 @@
+/* Article detail section styles ("Article Hero", "Article Body") — for any
+   kind of article (blog post, news, press release), loaded only on pages that
+   use them.
+   Spec: Figma article detail — mobile 375 (4547:7509), desktop 1280 (4547:8619). */
+
+/* every rule is scoped to one section style, so cross-section specificity
+   ordering doesn't apply */
+/* stylelint-disable no-descending-specificity */
+
+/* free-scrolling pages (see section-styles.js): sections size to their content */
+body.free-scroll main > .section {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* below 900px: one centred column, at most this wide */
+main > .section:is(.article-hero, .article-body) {
+  --article-column: 600px;
+}
+
+/* ===================================================================
+ * Article Hero: Image · Breadcrumb · Title · Article Info, in any order. The
+ * section is one grid; the wrappers (including Universal Editor's richtext
+ * wrappers) and Article Info dissolve (display: contents), so each piece is
+ * placed by grid area.
+ * =================================================================== */
+main > .section.article-hero {
+  display: grid;
+  grid-template-columns: minmax(0, var(--article-column));
+  grid-template-areas:
+    "crumb"
+    "image"
+    "meta"
+    "title"
+    "byline";
+  justify-content: center;
+  gap: 19px;
+
+  /* the header is fixed over the page: start below its nav, with the
+     design's gap */
+  padding: calc(var(--nav-offset) + 27px) var(--spacing-20) 0;
+}
+
+main > .section.article-hero > div,
+.section.article-hero .default-content-wrapper > div[data-aue-type="richtext"],
+.section.article-hero .article-info {
+  display: contents;
+}
+
+.section.article-hero .default-content-wrapper > *,
+.section.article-hero .default-content-wrapper > div[data-aue-type="richtext"] > * {
+  margin: 0;
+}
+
+.section.article-hero .breadcrumb {
+  grid-area: crumb;
+}
+
+.section.article-hero .article-info-meta {
+  grid-area: meta;
+}
+
+.section.article-hero .article-info-byline {
+  grid-area: byline;
+}
+
+.section.article-hero .default-content-wrapper > :is(p:has(> picture), picture) {
+  grid-area: image;
+}
+
+.section.article-hero .default-content-wrapper > :is(p:has(> picture), picture) img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 335 / 239;
+  object-fit: cover;
+  border-radius: var(--radius-16);
+}
+
+.section.article-hero .default-content-wrapper > :is(h1, h2),
+.section.article-hero .default-content-wrapper > div[data-aue-type="richtext"] > :is(h1, h2) {
+  grid-area: title;
+  font-family: var(--text-font-family);
+  font-weight: var(--font-weight-regular);
+  font-size: 32px;
+  line-height: 38px;
+  letter-spacing: -0.01em;
+  color: var(--color-white);
+}
+
+/* 900px up: image left, text right, scaled from the 1280px design (64px
+   margin, 760px image, 24px gap, 400px text, 32px margin). The title grows
+   from 24px at 900px to the design's 30px at 1280px, so the narrower text
+   column doesn't stretch it to twice the lines; the rest of the type keeps
+   its size. Row 4 takes the image's spare height, at least 24px. */
+@media (width >= 900px) {
+  main > .section.article-hero {
+    grid-template:
+      "image crumb" auto
+      "image title" auto
+      "image byline" auto
+      "image ." minmax(24px, 1fr)
+      "image meta" auto
+      / minmax(0, 760fr) minmax(0, 400fr);
+    gap: 0 calc(24 / 1184 * 100%);
+    justify-content: stretch;
+    padding: calc(var(--nav-offset) + 38px) 3.6% 0 5%;
+  }
+
+  .section.article-hero .default-content-wrapper > :is(h1, h2),
+  .section.article-hero .default-content-wrapper > div[data-aue-type="richtext"] > :is(h1, h2) {
+    margin-top: var(--spacing-12);
+    font-size: clamp(24px, calc(24px + (100vw - 900px) * 6 / 380), 30px);
+    line-height: 1.4;
+    letter-spacing: -0.05em;
+  }
+
+  .section.article-hero .article-info-byline {
+    margin-top: 23px;
+  }
+
+  /* grows (cropped) to match a taller text column */
+  .section.article-hero .default-content-wrapper > :is(p:has(> picture), picture) img {
+    height: 100%;
+    aspect-ratio: 760 / 532;
+  }
+}
+
+/* Universal Editor: Article Info keeps a box of its own, so it can be
+   selected — under the title, spanning down to the image's bottom edge on
+   desktop (on mobile its date row sits below the byline, not above the title) */
+body:has([data-aue-resource]) .section.article-hero .article-info {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  grid-area: byline;
+}
+
+@media (width >= 900px) {
+  body:has([data-aue-resource]) .section.article-hero .article-info {
+    grid-row: byline-start / meta-end;
+    justify-content: space-between;
+    gap: var(--spacing-24);
+  }
+}
+
+/* ===================================================================
+ * Article Body: headings, text, images and blocks (e.g. Spec Table); an
+ * all-italic paragraph is a callout, and the contents are built from the h2s
+ * (article-detail/article-body.js). The section is the grid,
+ * its wrappers dissolve (display: contents), so the contents can stay sticky
+ * beside everything in it. Contents: mobile 4547:6724 / 4547:6914 (closed /
+ * open).
+ * =================================================================== */
+main > .section.article-body {
+  /* desktop: the contents' offset from the top of the screen (below the
+     fixed nav); the reading line a heading must pass to become current */
+  --article-toc-top: calc(var(--nav-offset) + var(--spacing-24));
+  --article-toc-active-line: 30%;
+  --article-toc-float-bottom: 22px;
+  --article-toc-float-side: var(--spacing-20);
+
+  display: grid;
+  grid-template-columns: minmax(0, var(--article-column));
+  place-content: start center;
+  padding: var(--spacing-40) var(--spacing-20) var(--spacing-64);
+}
+
+main > .section.article-body > div {
+  display: contents;
+}
+
+/* bottom margins only, so a hidden element never leaves a gap */
+.section.article-body .default-content-wrapper > *,
+.section.article-body > div > .block {
+  margin: 0 0 var(--spacing-20);
+}
+
+.section.article-body > div:last-child > :last-child {
+  margin-bottom: 0;
+}
+
+.section.article-body .default-content-wrapper > :has(+ h2),
+.section.article-body > div:has(+ .default-content-wrapper > h2:first-child) > :last-child {
+  margin-bottom: var(--spacing-40);
+}
+
+.section.article-body .default-content-wrapper > :is(h3, h4, h5, h6):has(+ p),
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(h3, h4, h5, h6):has(+ p) {
+  margin-bottom: var(--spacing-12);
+}
+
+.section.article-body .default-content-wrapper > p.article-callout:has(+ p > picture) {
+  margin-bottom: 36px;
+}
+
+/* contents below 900px: a card floating at the bottom, opening upward */
+.section.article-body > .article-toc {
+  --article-toc-inset: max(var(--article-toc-float-side), calc((100% - var(--article-column)) / 2));
+
+  position: fixed;
+  right: var(--article-toc-inset);
+  bottom: var(--article-toc-float-bottom);
+  left: var(--article-toc-inset);
+  z-index: 10;
+  box-sizing: border-box;
+  max-height: calc(100svh - 2 * var(--article-toc-float-bottom));
+  margin: 0;
+  padding: var(--spacing-16) var(--spacing-20); /* 48px tall closed (Figma 4547:6903) */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--radius-16);
+  background-color: var(--color-gray-90);
+  font-family: var(--text-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: 24px;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+.section.article-body > .article-toc.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+
+.section.article-body .article-toc-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--text-font-family);
+  font-size: var(--body-font-size-xs);
+  line-height: 16px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-gray-50);
+  cursor: pointer;
+}
+
+.section.article-body .article-toc-toggle svg {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease;
+}
+
+.section.article-body .article-toc-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.section.article-body .article-toc ul {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin: var(--spacing-16) 0 0;
+  padding: 15px 0 0;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+  list-style: none;
+}
+
+.section.article-body .article-toc ul[hidden] {
+  display: none;
+}
+
+.section.article-body .article-toc a {
+  font-family: var(--text-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: 24px;
+  color: var(--color-white);
+  text-decoration: none;
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.section.article-body .article-toc a[aria-current="location"] {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .section.article-body .article-toc a:hover {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section.article-body > .article-toc,
+  .section.article-body .article-toc a,
+  .section.article-body .article-toc-toggle svg {
+    transition: none;
+  }
+}
+
+/* in Universal Editor the card sits inline instead of over the content */
+@media (width < 900px) {
+  body:has([data-aue-resource]) .section.article-body > .article-toc {
+    position: static;
+    max-height: none;
+    margin-bottom: var(--spacing-40);
+  }
+}
+
+.section.article-body .default-content-wrapper > :is(h2, h3, h4, h5, h6),
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(h2, h3, h4, h5, h6) {
+  /* contents links scroll a heading to just below the fixed nav */
+  scroll-margin-top: calc(var(--nav-offset) + var(--spacing-24));
+  font-family: var(--text-font-family);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0;
+  color: var(--color-white);
+}
+
+.section.article-body .default-content-wrapper > h2,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > h2 {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.section.article-body .default-content-wrapper > h3,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > h3 {
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+}
+
+.section.article-body .default-content-wrapper > :is(h4, h5, h6),
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(h4, h5, h6) {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--body-font-size-m);
+  line-height: 24px;
+}
+
+.section.article-body .default-content-wrapper > :is(p, ul, ol),
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(p, ul, ol) {
+  font-family: var(--text-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: 24px;
+  color: rgb(255 255 255 / 50%);
+}
+
+.section.article-body .default-content-wrapper > p a,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > p a {
+  color: inherit;
+}
+
+.section.article-body .default-content-wrapper > p:has(> picture) img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 745 / 448;
+  object-fit: cover;
+  border-radius: var(--radius-16);
+}
+
+.section.article-body .default-content-wrapper > ul,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > ul {
+  padding: 0;
+  list-style: none;
+}
+
+.section.article-body .default-content-wrapper > ul > li + li,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > ul > li + li {
+  margin-top: var(--spacing-24);
+}
+
+.section.article-body .default-content-wrapper > ul > li::before,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > ul > li::before {
+  content: '•\00a0\00a0';
+}
+
+.section.article-body .default-content-wrapper > p.article-callout,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > p.article-callout {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 15px 15px 15px 19px;
+  border-left: 4px solid #1085ac;
+  background-color: rgb(16 133 172 / 10%);
+}
+
+.section.article-body .default-content-wrapper > p.article-callout em,
+.section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > p.article-callout em {
+  font-style: normal;
+}
+
+/* 900px up: contents left, article right, scaled from the 1280px design
+   (64px margin, 301px contents, 92px gap, 563px article, 260px margin); the
+   type keeps its size. The contents span every row of the grid. */
+@media (width >= 900px) {
+  main > .section.article-body {
+    grid-template-columns: minmax(0, 301fr) minmax(0, 563fr);
+    column-gap: calc(92 / 956 * 100%);
+    justify-content: stretch;
+    padding: 65px calc(260 / 1280 * 100%) 96px 5%;
+  }
+
+  .section.article-body .default-content-wrapper > *,
+  .section.article-body > div > .block {
+    grid-column: 2;
+    margin: 0 0 30px;
+  }
+
+  .section.article-body > div:has(+ .default-content-wrapper > h2:first-child) > :last-child {
+    margin-bottom: 30px;
+  }
+
+  .section.article-body .default-content-wrapper > :is(h3, h4, h5, h6):has(+ p),
+  .section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(h3, h4, h5, h6):has(+ p) {
+    margin-bottom: 18px;
+  }
+
+  .section.article-body .default-content-wrapper > p.article-callout:has(+ p > picture) {
+    margin-bottom: 30px;
+  }
+
+  /* the sticky left column (no card, toggle or hiding) */
+  .section.article-body > .article-toc,
+  .section.article-body > .article-toc.is-hidden {
+    position: sticky;
+    inset: var(--article-toc-top) auto auto;
+    z-index: auto;
+    grid-column: 1;
+    grid-row: 1 / span 999;
+    align-self: start;
+    max-height: none;
+    margin: 38px 0 0;
+    padding: 0;
+    overflow: visible;
+    border-radius: 0;
+    background: none;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition: none;
+    line-height: 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .section.article-body .article-toc-toggle {
+    display: none;
+  }
+
+  .section.article-body .article-toc ul,
+  .section.article-body .article-toc ul[hidden] {
+    display: flex;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .section.article-body .article-toc a {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  .section.article-body .default-content-wrapper > :is(h2, h3),
+  .section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(h2, h3) {
+    font-size: 30px;
+    line-height: 42px;
+    letter-spacing: -0.05em;
+  }
+
+  .section.article-body .default-content-wrapper > :is(h4, h5, h6),
+  .section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(h4, h5, h6) {
+    font-weight: var(--font-weight-regular);
+    font-size: var(--body-font-size-m);
+    line-height: 22px;
+  }
+
+  .section.article-body .default-content-wrapper > :is(p, ul, ol),
+  .section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > :is(p, ul, ol) {
+    line-height: 22px;
+  }
+
+  .section.article-body .default-content-wrapper > p:has(> picture) img {
+    aspect-ratio: 563 / 332;
+  }
+
+  .section.article-body .default-content-wrapper > ul > li + li,
+  .section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > ul > li + li {
+    margin-top: 22px;
+  }
+
+  .section.article-body .default-content-wrapper > p.article-callout,
+  .section.article-body .default-content-wrapper > div[data-aue-type="richtext"] > p.article-callout {
+    min-height: 65px;
+    padding: 0 0 0 18px;
+    border: 0;
+    border-left: 3px solid #1085ac;
+    letter-spacing: -0.01em;
+  }
+}

@@ -1,0 +1,451 @@
+/* /blocks/events/events.css */
+
+/* Events block: upcoming events carousel (Figma Opt 21 desktop, Newsroom mobile) */
+
+/* Full-bleed, full-screen band: release the global 1200px wrapper cap */
+main > .section.events-container {
+  & > .events-wrapper {
+    max-width: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Scope each selector in the block with `.block.events` to avoid accidental conflicts outside the block */
+
+/* Mobile (Figma 402×874 frame). Every size is Figma px × --ev-u, so the whole
+   layout scales down to fit one screen under the fixed header. */
+.block.events {
+  --ev-u: clamp(0.7px, min(100vw / 402, 100svh / 874), 1px); /* same unit as the header */
+  --ev-top: calc(134 * var(--ev-u)); /* header pill bottom (44 + 50) + 40 */
+  --ev-title-size: calc(40 * var(--ev-u));
+  --ev-title-lh: calc(48 * var(--ev-u));
+  --ev-stage-gap: calc(46 * var(--ev-u)); /* heading bottom → centred city */
+  --ev-stage-h: calc(482 * var(--ev-u));
+  --ev-card-w: calc(290 * var(--ev-u));
+  --ev-gap: calc(32 * var(--ev-u));
+  --ev-lift: calc(63 * var(--ev-u)); /* side cards sit lower than the centred one */
+  --ev-head-h: calc(29 * var(--ev-u));
+
+  /* Figma: New Science Extended for the heading and mobile city, regular New
+     Science for the desktop city and the description */
+  --ev-text-font: 'new-science', new-science-fallback, 'Anek Latin', roboto-condensed, arial, sans-serif;
+  --ev-city-font: var(--display-font-family);
+  --ev-city-size: calc(24 * var(--ev-u));
+  --ev-city-lh: calc(29 * var(--ev-u));
+  --ev-city-ls: -0.03em;
+  --ev-date-top: calc(-2 * var(--ev-u)); /* Figma sets the date 2px above the city */
+  --ev-date-inset: 0px;
+  --ev-media-gap: calc(18 * var(--ev-u));
+  --ev-media-inset: 0px;
+  --ev-media-h: calc(220 * var(--ev-u));
+  --ev-media-h-active: calc(314 * var(--ev-u));
+  --ev-radius: calc(16 * var(--ev-u));
+  --ev-info-gap: calc(18 * var(--ev-u));
+  --ev-info-shift: calc(-2 * var(--ev-u)); /* Figma starts the text 2px left of the image */
+  --ev-desc-size: calc(20 * var(--ev-u));
+  --ev-desc-lh: calc(28 * var(--ev-u));
+  --ev-desc-ls: -0.01em;
+  --ev-desc-w: none;
+  --ev-venue-w: none;
+  --ev-ease: cubic-bezier(0.33, 1, 0.68, 1); /* ease-out cubic: starts at 3× its average speed (the script times settles on this) */
+  --ev-duration: 600ms;
+
+  position: relative;
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+
+  /* the header is fixed over the page, so the heading starts below it */
+  padding-top: var(--ev-top);
+  color: #e6e6e6;
+  user-select: none;
+
+  /* Desktop (Figma 1728×1000 "Opt 21") */
+  @media (width >= 900px) {
+    /* the height budget is the 1000 Figma frame plus the arrows under the
+       cards (~60), so they still fit on short laptop screens */
+    --ev-u: clamp(0.5px, min(100vw / 1728, 100svh / 1060), 1px);
+    --ev-top: calc(175 * var(--ev-u)); /* header pill (40 + 55) + 80 */
+    --ev-title-size: calc(100 * var(--ev-u));
+    --ev-title-lh: calc(90 * var(--ev-u));
+    --ev-stage-gap: calc(75 * var(--ev-u)); /* heading text bottom → city text (Figma draws the city 5px above its 78px-down card frame) */
+    --ev-stage-h: calc(594 * var(--ev-u));
+    --ev-card-w: calc(453 * var(--ev-u));
+    --ev-gap: calc(64 * var(--ev-u));
+    --ev-lift: calc(83 * var(--ev-u));
+    --ev-head-h: calc(32 * var(--ev-u));
+    --ev-city-font: var(--ev-text-font);
+    --ev-city-size: calc(32 * var(--ev-u));
+    --ev-city-lh: calc(32 * var(--ev-u));
+    --ev-city-ls: -0.02em;
+    --ev-date-top: calc(-8 * var(--ev-u)); /* Figma sets the date 8px above the city */
+    --ev-date-inset: calc(40 * var(--ev-u));
+    --ev-media-gap: calc(28 * var(--ev-u));
+    --ev-media-inset: calc(1 * var(--ev-u));
+    --ev-media-h: calc(327 * var(--ev-u));
+    --ev-media-h-active: calc(438 * var(--ev-u));
+    --ev-radius: calc(20 * var(--ev-u));
+    --ev-info-gap: calc(24 * var(--ev-u)); /* image → description text (its frame is 32px down, the text 8px above it) */
+    --ev-info-shift: 0px;
+    --ev-desc-size: calc(24 * var(--ev-u));
+    --ev-desc-lh: calc(32 * var(--ev-u));
+    --ev-desc-ls: 0;
+    --ev-desc-w: calc(242 * var(--ev-u));
+    --ev-venue-w: calc(185 * var(--ev-u));
+  }
+
+  & .events-title {
+    max-width: calc(100% - 2 * var(--spacing-16));
+    margin: 0 auto;
+    font-family: var(--font-family-display);
+    font-size: var(--ev-title-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--ev-title-lh);
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-white);
+
+    /* the heading's mask: hides the text while it waits above the heading box
+       (small margins keep the resting glyphs' tops and descenders unclipped) */
+    clip-path: inset(-0.2em -50vw -0.35em);
+  }
+
+  /* Entrance (Figma prototype Opt 66 → Opt 67): the heading drops 190px into
+     its mask while the cards rise 80px and fade in. The script drives both
+     from the section's scroll position (--enter for the cards, --enter-title
+     for the heading, which starts once the snap is 3/4 in), so they land
+     together with the section snap. */
+  & .events-title-text {
+    display: inline-block;
+    transform: translateY(calc(-190 * var(--ev-u) * (1 - var(--enter-title, var(--enter, 1)))));
+  }
+
+  & .events-stage {
+    position: relative;
+    height: var(--ev-stage-h);
+    margin-top: var(--ev-stage-gap);
+    opacity: min(1, calc(var(--enter, 1) * 1.6)); /* fully visible by 60% in */
+    transform: translateY(calc(80 * var(--ev-u) * (1 - var(--enter, 1))));
+    touch-action: pan-y; /* JS owns horizontal drags, the browser owns vertical scroll */
+    cursor: grab;
+  }
+
+  &.is-dragging .events-stage {
+    cursor: grabbing;
+  }
+
+  /* previous / next arrows, centred under the cards (source: 44px buttons on
+     its 1280 frame = 59.4 Figma px here on desktop; fixed 44px on phones);
+     they enter with the cards */
+  & .events-nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: calc(34 * var(--ev-u));
+    opacity: min(1, calc(var(--enter, 1) * 1.6));
+    transform: translateY(calc(80 * var(--ev-u) * (1 - var(--enter, 1))));
+
+    @media (width >= 900px) {
+      gap: calc(14.85 * var(--ev-u));
+      margin-top: calc(48 * var(--ev-u));
+    }
+
+    button {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 12px;
+      color: var(--color-white);
+      background: rgb(255 255 255 / 20%);
+      cursor: pointer;
+      transition: background-color 0.2s, opacity 0.3s;
+
+      &:hover,
+      &:focus-visible {
+        background: rgb(255 255 255 / 30%);
+      }
+
+      @media (width >= 900px) {
+        width: max(40px, calc(59.4 * var(--ev-u)));
+        height: max(40px, calc(59.4 * var(--ev-u)));
+        border-radius: calc(16.2 * var(--ev-u));
+      }
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+
+      @media (width >= 900px) {
+        width: max(14px, calc(21.6 * var(--ev-u)));
+        height: max(14px, calc(21.6 * var(--ev-u)));
+      }
+    }
+  }
+
+  & .events-track {
+    position: relative;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    column-gap: var(--ev-gap); /* read by the script as the card spacing */
+  }
+
+  /* --t: 1 for the centred (big) card, 0 for side cards; the script eases it
+     in between while a drag or swipe is in progress.
+     --g: 1 turns the image grayscale; set for events whose date has passed,
+     today's and upcoming events stay in colour wherever they sit. */
+  & .event {
+    --t: 0;
+    --g: 0;
+    --ev-y: calc(var(--ev-lift) * (1 - var(--t)));
+
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--ev-card-w);
+    margin-left: calc(var(--ev-card-w) / -2);
+    transform: translate(calc(var(--offset, 0) * (var(--ev-card-w) + var(--ev-gap)) + var(--drag, 0px)), var(--ev-y));
+    transition: transform var(--ev-duration) var(--ev-ease);
+    backface-visibility: hidden; /* keeps iOS Safari from flashing the layer while it moves */
+  }
+
+  & .event.is-past {
+    --g: 1;
+  }
+
+  /* keyboard focus sits on the centred card (the arrow keys step the carousel) */
+  & .event:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: calc(12 * var(--ev-u));
+    border-radius: var(--ev-radius);
+  }
+
+  /* GPU layers only while a finger / mouse is moving the row (the
+     browser promotes cards on its own during the settle animation); a permanent
+     layer on every card exhausts iPhone graphics memory and makes cards blink */
+  &.is-dragging .event {
+    will-change: transform;
+  }
+
+  & .event-head {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-16);
+    height: var(--ev-head-h);
+  }
+
+  & .event-city {
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--ev-city-font);
+    font-size: var(--ev-city-size);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--ev-city-lh);
+    letter-spacing: var(--ev-city-ls);
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #e6e6e6;
+  }
+
+  & .event-date {
+    position: relative;
+    top: var(--ev-date-top);
+    flex-shrink: 0;
+    margin: 0 var(--ev-date-inset) 0 0;
+    font-family: var(--font-family-base);
+    font-size: calc(20 * var(--ev-u));
+    line-height: calc(28 * var(--ev-u));
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgb(230 230 230 / 50%);
+  }
+
+  & .event-media {
+    /* side cards' images are inset --ev-media-inset each side (Figma 451 of 453) */
+    width: calc(100% - 2 * var(--ev-media-inset) * (1 - var(--t)));
+    height: calc(var(--ev-media-h) + (var(--ev-media-h-active) - var(--ev-media-h)) * var(--t));
+    margin: var(--ev-media-gap) auto 0;
+    overflow: hidden;
+    border-radius: var(--ev-radius);
+    background-color: var(--color-gray-90);
+    transition: width var(--ev-duration) var(--ev-ease), height var(--ev-duration) var(--ev-ease);
+
+    /* Safari can drop the rounded clip of an animating card for a frame (square
+       corners flash); isolation + a mask keep the corners clipped */
+    isolation: isolate;
+    mask-image: radial-gradient(#fff, #000);
+
+    & picture,
+    & img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* grayscale lives on the photo only, not on the whole moving card: a
+       filtered element that moves is redrawn every frame, which flickers on
+       iPhone (the date and city text are already neutral grey) */
+    & img {
+      filter: grayscale(var(--g));
+      transition: filter var(--ev-duration) var(--ev-ease);
+    }
+  }
+
+  /* no image: the alt text sits centred in the image area */
+  & .event-media-alt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0;
+    padding: calc(24 * var(--ev-u));
+    font-family: var(--ev-text-font);
+    font-size: calc(14 * var(--ev-u));
+    line-height: calc(20 * var(--ev-u));
+    text-align: center;
+    color: rgb(230 230 230 / 50%);
+  }
+
+  /* follow the finger / mouse exactly; ease only on release */
+  &.is-dragging .event,
+  &.is-dragging .event-media,
+  &.is-dragging .event-media img,
+  & .event.no-anim,
+  & .event.no-anim .event-media,
+  & .event.no-anim .event-media img {
+    transition: none;
+  }
+
+  /* side cards slide to the centre when clicked */
+  &:not(.is-dragging) .event:not(.is-active) {
+    cursor: pointer;
+  }
+
+  /* description + venue: only shown for the centred event; stacked on mobile,
+     side by side on desktop */
+  & .event-info {
+    display: flex;
+    flex-direction: column;
+    gap: calc(7 * var(--ev-u));
+    margin: var(--ev-info-gap) 0 0 var(--ev-info-shift);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 250ms ease, visibility 250ms;
+
+    @media (width >= 900px) {
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: calc(26 * var(--ev-u));
+    }
+  }
+
+  & .event.is-active .event-info {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 250ms;
+  }
+
+  & .event-description {
+    max-width: var(--ev-desc-w);
+    margin: 0;
+    font-family: var(--ev-text-font);
+    font-size: var(--ev-desc-size);
+    line-height: var(--ev-desc-lh);
+    letter-spacing: var(--ev-desc-ls);
+    color: #e6e6e6;
+  }
+
+  & .event-venue {
+    max-width: var(--ev-venue-w);
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--ev-u));
+    line-height: calc(20 * var(--ev-u));
+    color: rgb(230 230 230 / 50%);
+
+    @media (width >= 900px) {
+      padding-top: calc(3 * var(--ev-u));
+      text-align: right;
+    }
+  }
+
+  & .events-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .event,
+    & .event-media,
+    & .event-media img,
+    & .event-info {
+      transition: none;
+    }
+  }
+}
+
+/* ---------- Light section (section style "light", styles/section-light.css) ----------
+   Colours only, measured from the source's light Events panel: heading
+   #2e2e2e, card head (city + date) #121212, description #000, venue #000 at
+   80%, image placeholder #ddd. The source has no arrows here, so they take
+   its light Socials arrows: rgb(0 0 0 / 7%) tile, #121212 glyph, 12% on
+   hover / focus. Sizes, spacing and type are unchanged. */
+.section.light .block.events {
+  color: rgb(18 18 18);
+
+  & .events-title {
+    color: rgb(46 46 46);
+  }
+
+  & .events-nav button {
+    color: rgb(18 18 18);
+    background: rgb(0 0 0 / 7%);
+
+    &:hover,
+    &:focus-visible {
+      background: rgb(0 0 0 / 12%);
+    }
+  }
+
+  & .event:focus-visible {
+    outline-color: rgb(18 18 18);
+  }
+
+  & .event-city,
+  & .event-date {
+    color: rgb(18 18 18);
+  }
+
+  & .event-media {
+    background-color: rgb(221 221 221);
+  }
+
+  & .event-media-alt,
+  & .event-venue {
+    color: rgb(0 0 0 / 80%);
+  }
+
+  & .event-description {
+    color: rgb(0 0 0);
+  }
+}

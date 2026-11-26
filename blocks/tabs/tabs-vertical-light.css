@@ -1,0 +1,493 @@
+/* Tabs "Vertical" in a Light section (tabs-vertical-light.js) */
+
+main > .section.light:has(.tabs.vertical) {
+  --tv-screen: 100svh;
+
+  /* phones: the heading's top (Figma 8983:7030: 84px; the section hides the header) */
+  --tv-top: 84px;
+
+  body:has([data-aue-resource]) & {
+    --tv-screen: 900px;
+  }
+}
+
+main > .section.light:has(> .tabs-wrapper > .tabs.vertical) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  row-gap: 14px;
+  padding: var(--tv-top, 84px) 20px 24px;
+
+  > .default-content-wrapper,
+  > .tabs-wrapper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  > .default-content-wrapper > h2 {
+    margin: 0;
+    color: #2e2e2e;
+    font-family: var(--font-family-display);
+    font-size: 24px;
+    font-weight: var(--font-weight-medium, 500);
+    line-height: 1.05;
+    letter-spacing: normal;
+    text-transform: uppercase;
+    text-wrap: balance;
+    display: -webkit-box;
+    max-width: 11.8em;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--tv-head-lines, 3);
+  }
+}
+
+@media (width >= 900px) {
+  main > .section.light:where(:has(.tabs.vertical)) {
+    --tv-head-lines: 4;
+  }
+}
+
+main > .section.light.is-tv-tight {
+  --tv-name-lines: 1;
+}
+
+main > .section.light.is-tv-tightest {
+  --tv-line-lines: 2;
+  --tv-head-lines: 2;
+}
+
+.section.light .tabs.vertical {
+  --tabs-panel-padding: 6px 0 0;
+
+  /* the image fills the screen down to the tab text and thumbnails (Figma: 335 x 417 at 375 x 815) */
+  --tv-media-max: max(220px, var(--tv-screen, 100svh) - var(--tv-top, 84px) - 314px);
+  --tv-media-h: min(100% * 4 / 3, var(--tv-media-max));
+
+  position: relative;
+  padding-top: calc(var(--tv-media-h) + 14px);
+}
+
+.section.light .tabs.vertical > .tabs-list {
+  display: block;
+  overflow: visible;
+  border: 0;
+}
+
+.section.light .tabs.vertical > .tabs-list > .tabs-tab {
+  display: block;
+  padding: 0;
+  color: rgb(0 0 0 / 45%);
+  font-size: 20px;
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: normal;
+  transition: color 0.3s;
+}
+
+.section.light .tabs.vertical > .tabs-list > .tabs-tab:not([aria-selected='true']) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.section.light .tabs.vertical > .tabs-list > .tabs-tab::after {
+  display: none;
+}
+
+.section.light .tabs.vertical .tabs-tab-label {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--tv-name-lines, 2);
+}
+
+.section.light .tabs.vertical > .tabs-list > .tabs-tab:hover {
+  color: rgb(0 0 0 / 60%);
+}
+
+.section.light .tabs.vertical > .tabs-list > .tabs-tab[aria-selected='true'] {
+  color: var(--color-black);
+}
+
+.section.light .tabs.vertical .tabs-panel-content > :not(.tabs-media) {
+  display: -webkit-box;
+  max-width: 16em;
+  margin: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  color: rgb(0 0 0 / 62%);
+  font-size: 14px;
+  line-height: 1.45;
+  text-wrap: balance;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--tv-line-lines, 3);
+}
+
+.section.light .tabs.vertical .tabs-panel-content > :not(.tabs-media) ~ :not(.tabs-media) {
+  display: none;
+}
+
+.section.light .tabs.vertical :is(.tabs-panel-content, .tabs-panel) > .tabs-media {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  max-width: none;
+  max-height: var(--tv-media-max);
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background-color: rgb(30 30 30);
+  animation: tabs-vertical-fade 0.6s;
+}
+
+.section.light .tabs.vertical .tabs-media :is(picture, img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.section.light .tabs.vertical .tabs-media img {
+  object-fit: cover;
+}
+
+.section.light .tabs.vertical .tabs-media > p {
+  height: 100%;
+  margin: 0;
+}
+
+@keyframes tabs-vertical-fade {
+  from { opacity: 0; }
+}
+
+.section.light .tabs.vertical > .tabs-thumbs {
+  display: grid;
+  grid-template-columns: repeat(var(--tabs-count, 7), minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.section.light .tabs.vertical .tabs-thumb {
+  position: relative;
+  aspect-ratio: 0.78 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: rgb(30 30 30);
+  opacity: 0.38;
+  filter: grayscale(1);
+  cursor: pointer;
+  transition: opacity 0.3s, filter 0.3s;
+}
+
+.section.light .tabs.vertical .tabs-thumb:hover {
+  opacity: 0.7;
+}
+
+.section.light .tabs.vertical .tabs-thumb.is-active {
+  opacity: 1;
+  filter: none;
+}
+
+.section.light .tabs.vertical .tabs-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.section.light .tabs.vertical.is-motion :is(.tabs-panel-content, .tabs-panel) > .tabs-media {
+  animation: none;
+}
+
+.section.light .tabs.vertical .tabs-media > :is(picture, img) {
+  position: relative;
+  z-index: 1;
+}
+
+.section.light .tabs.vertical .tabs-media > .tabs-media-prev {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.section.light .tabs.vertical .tabs-media > .tabs-media-prev img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.section.light .tabs.vertical > .tabs-list > :is(.tabs-tab-more, .tabs-bar) {
+  display: none;
+}
+
+.section.light .tabs.vertical > .tabs-note {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 5;
+  margin: 0;
+  padding: var(--spacing-12) var(--spacing-16);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-4);
+  background-color: var(--light-color);
+  color: var(--text-color);
+  font-family: var(--font-family-base);
+  font-size: var(--body-font-size-s);
+  line-height: 1.4;
+  cursor: pointer;
+
+  > span,
+  > .hint {
+    display: block;
+  }
+
+  > .hint {
+    opacity: 0.7;
+  }
+
+  &:empty {
+    display: none;
+  }
+}
+
+@media (width >= 600px) {
+  main > .section.light:has(> .tabs-wrapper > .tabs.vertical) {
+    align-content: center;
+    row-gap: 24px;
+    padding: calc(var(--nav-offset, 90px) + 12px) 40px 32px;
+
+    > .default-content-wrapper > h2 {
+      font-size: clamp(26px, 2.5vw, 36px);
+      line-height: 1;
+    }
+  }
+
+  .section.light .tabs.vertical {
+    --tv-media-max: min(var(--tv-screen, 100svh) * 0.6, var(--tv-screen, 100svh) - var(--nav-offset, 90px) - 360px);
+  }
+}
+
+@media (width >= 900px) {
+  main > .section.light:has(.tabs.vertical) {
+    --tv-frame-max: calc(var(--tv-screen) - 2 * var(--nav-offset, 90px) - 20px);
+    --tv-frame: min(var(--tv-screen) - 208px, var(--tv-frame-max));
+    --tv-h: min(var(--tv-frame) - 114px, (100vw - 128px - 48px - 360px) / 1.11);
+    --tv-thumb-w: calc((var(--tv-h) - (var(--tabs-count, 7) - 1) * 8px) / var(--tabs-count, 7) * 0.78);
+  }
+
+  main > .section.light:has(> .tabs-wrapper > .tabs.vertical) {
+    padding: 0 64px;
+  }
+
+  .section.light .tabs.vertical {
+    --tabs-panel-padding: 10px 0 0 26px;
+    --tv-rows: calc(var(--tabs-count, 7) * 2);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--tv-thumb-w) var(--tv-h);
+    grid-template-rows: 1fr;
+    grid-auto-rows: auto;
+    gap: 0 24px;
+    align-items: start;
+    height: var(--tv-h);
+    padding-top: 0;
+  }
+
+  .section.light .tabs.vertical::before {
+    content: '';
+    grid-column: 1;
+    grid-row: 1 / span calc(var(--tv-rows) + 1);
+    align-self: stretch;
+    border-inline-start: 1px solid rgb(0 0 0 / 12%);
+  }
+
+  .section.light .tabs.vertical > .tabs-list {
+    display: grid;
+    grid-column: 1;
+    grid-row: 2 / span var(--tv-rows);
+    grid-template-rows: subgrid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .section.light .tabs.vertical > .tabs-list > .tabs-tab,
+  .section.light .tabs.vertical > .tabs-list > .tabs-tab:not([aria-selected='true']) {
+    position: relative;
+    grid-row: calc(var(--tab-index) * 2 + 1);
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0 0 0 26px;
+    overflow: visible;
+    clip-path: none;
+    font-size: clamp(20px, 1.95vw, 28px);
+    white-space: normal;
+  }
+
+  .section.light .tabs.vertical > .tabs-list > .tabs-tab:not(:first-child) {
+    margin-top: 14px;
+  }
+
+  .section.light .tabs.vertical > .tabs-list > .tabs-tab[aria-selected='true'],
+  .section.light .tabs.vertical > .tabs-panel {
+    box-shadow: inset 2px 0 rgb(17 17 17);
+  }
+
+  .section.light .tabs.vertical > .tabs-panel {
+    grid-area: auto;
+    grid-column: 1;
+    grid-row: calc(var(--tab-index) * 2 + 3);
+  }
+
+  .section.light .tabs.vertical .tabs-panel-content > :not(.tabs-media) {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .section.light .tabs.vertical :is(.tabs-panel-content, .tabs-panel) > .tabs-media {
+    inset: 0 0 auto auto;
+    width: var(--tv-h);
+    height: var(--tv-h);
+    max-height: none;
+    aspect-ratio: auto;
+  }
+
+  .section.light .tabs.vertical > .tabs-thumbs {
+    grid-column: 2;
+    grid-row: 1 / span calc(var(--tv-rows) + 1);
+    grid-template-rows: repeat(var(--tabs-count, 7), minmax(0, 1fr));
+    grid-template-columns: none;
+    gap: 8px;
+    align-self: stretch;
+    margin: 0;
+  }
+
+  .section.light .tabs.vertical .tabs-thumb {
+    aspect-ratio: auto;
+  }
+}
+
+@media (width >= 900px) {
+  main > .section.light.is-tv-tighter .tabs.vertical > .tabs-list > .tabs-tab {
+    font-size: 20px;
+  }
+
+  main > .section.light.is-tv-tighter .tabs.vertical > .tabs-list > .tabs-tab:not(:first-child) {
+    margin-top: 10px;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list {
+    position: relative;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list > .tabs-tab-more {
+    display: block;
+    grid-row: calc(var(--tab-index) * 2 + 2);
+    height: 0;
+    overflow: hidden;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list > .tabs-tab-more > div {
+    padding: 10px 0 0 26px;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list > .tabs-tab-more p {
+    display: -webkit-box;
+    max-width: 16em;
+    margin: 0;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    color: rgb(0 0 0 / 62%);
+    font-size: 15px;
+    line-height: 1.55;
+    text-wrap: balance;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: var(--tv-line-lines, 3);
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list > .tabs-tab-more > div > :not(:first-child) {
+    display: none;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list > .tabs-bar {
+    position: absolute;
+    top: 0;
+    left: 1px;
+    display: block;
+    width: 2px;
+    height: 0;
+    background-color: rgb(17 17 17);
+    pointer-events: none;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-list > .tabs-tab[aria-selected='true'],
+  .section.light .tabs.vertical.is-motion > .tabs-panel {
+    box-shadow: none;
+  }
+
+  .section.light .tabs.vertical.is-motion > .tabs-panel {
+    grid-row: 1;
+    align-self: start;
+    height: 0;
+    padding: 0;
+  }
+
+  .section.light .tabs.vertical.is-motion .tabs-panel-content > :not(.tabs-media) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (width >= 1024px) and (height <= 860px) {
+  main > .section.light:has(.tabs.vertical) {
+    --tv-frame: min(var(--tv-screen) - 176px, var(--tv-frame-max));
+  }
+}
+
+@media (width >= 1200px) {
+  main > .section.light:has(.tabs.vertical) {
+    --tv-h: min(var(--tv-frame), (100vw - 128px - 48px - 360px) / 1.11);
+  }
+
+  main > .section.light:has(> .tabs-wrapper > .tabs.vertical) {
+    grid-template-areas: 'stage';
+
+    > .default-content-wrapper,
+    > .tabs-wrapper {
+      grid-area: stage;
+    }
+
+    > .default-content-wrapper {
+      position: relative;
+      z-index: 1;
+      align-self: start;
+      box-sizing: border-box;
+      width: calc(100% - var(--tv-h) - var(--tv-thumb-w) - 48px);
+      padding-left: 26px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section.light .tabs.vertical :is(.tabs-panel-content, .tabs-panel) > .tabs-media {
+    animation: none;
+  }
+
+  .section.light .tabs.vertical > .tabs-list > .tabs-tab,
+  .section.light .tabs.vertical .tabs-thumb {
+    transition: none;
+  }
+}

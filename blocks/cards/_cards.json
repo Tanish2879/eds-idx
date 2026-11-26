@@ -38,29 +38,17 @@
       "fields": [
         {
           "component": "select",
-          "valueType": "string",
           "name": "classes",
           "label": "Style",
-          "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
+          "description": "Default - a grid of cards.\nCarousel - auto-rotates; recommended: 6 to 12 cards.\nTimeline - 6 to 10 cards.\nPillars - up to 6 cards, JPG or PNG images only.\nRoller - 3 to 6 cards, one per scroll step.\nRail - a horizontally scrolling row of fixed-width cards, any number.\nFeatures - cards that open their details in a pop-up, with a Next button to the next card.\n  Image cards (Technology, Safety), any number, in a sideways-scrolling row: the picture fills the card; its title shows on one line, its short line on two; the rest shows in the pop-up (title 2 lines, text 6 lines on phones, 8 on desktop).\n  Stat tiles (Performance), 1 or more: 1 to 4 tiles fill the row; with 5 or more, 4 show at a time (pages of 4, 2 x 2, on phones) and arrows move to the rest. Value in bold, up to 16 characters (e.g. 590 Nm); label up to 2 lines; in the pop-up, title up to 3 lines and description up to 250 characters. The section's figure: up to 4 digits and a 4-letter unit (e.g. 359 PS).\n  Longer texts end in … on the page (Universal Editor shows them whole). Card text order: see the card's Text field.",
           "options": [
             { "name": "Default", "value": "" },
             { "name": "Carousel", "value": "carousel" },
             { "name": "Timeline", "value": "timeline" },
             { "name": "Pillars", "value": "pillars" },
-            { "name": "Roller", "value": "roller" }
-          ]
-        },
-        {
-          "component": "select",
-          "valueType": "string",
-          "name": "classes_animation",
-          "label": "Animation Direction",
-          "description": "Select the scroll animation direction for the cards.",
-          "value": "horizontal",
-          "condition": { "===": [{ "var": "classes" }, "pillars"] },
-          "options": [
-            { "name": "Horizontal", "value": "horizontal" },
-            { "name": "Vertical", "value": "vertical" }
+            { "name": "Roller", "value": "roller" },
+            { "name": "Rail", "value": "rail" },
+            { "name": "Features", "value": "features" }
           ]
         }
       ]
@@ -88,7 +76,7 @@
           "name": "text",
           "value": "",
           "label": "Text",
-          "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description",
+          "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description. Carousel in a Light section: 1. Label 2. Title as a heading 3. Description 4. Link. Features: 1. Title as a heading (image card, one line), or in bold for a stat tile (up to 16 characters, e.g. 590 Nm) 2. Short line (two lines) 3. and on: the detail, shown with the image when the card is opened; a heading first is the detail title (up to 3 lines on a stat tile), and a stat tile shows up to 250 characters of the rest. Longer texts end in … on the page.",
           "valueType": "string"
         }
       ]

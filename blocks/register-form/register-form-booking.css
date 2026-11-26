@@ -1,0 +1,1243 @@
+/* Register Form "Booking" style, loaded by register-form.js only when the style is used: the
+   dealer's quote request, its details and review steps (register-form-booking.js), in the dealer "Get in touch" look: a light form beside the map
+   card. Desktop follows the prototype's 1280 × 720 frame (1u = 1px there, scaling with the
+   screen); phones follow the dealer mobile design's 375 frame (1u = 1 design px fitted to the
+   screen width, as its --u, never below 0.8px) and its order: the heading, the details, the map
+   card, then Continue; the pop-ups are centred cards there (the phone block at the end). */
+
+.register-form-wrapper:has(> .register-form.booking) {
+  background-color: transparent;
+}
+
+.register-form.booking {
+  --rfb-u: clamp(0.8px, min(100vw / 375, 100svh / 640), 1.6px);
+  --rfb-ink: var(--color-black);
+  --rfb-key: var(--rfb-ink); /* filled and outlined buttons */
+  --rfb-field: #f2f2f2;
+  --rfb-muted: var(--color-gray-60); /* #666: AA on white and on the fields */
+  --rfb-quiet: var(--color-gray-50); /* #808080: large text only */
+  --rfb-line: var(--color-gray-10);
+  --rfb-err: #d92626;
+  --rfb-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* the base form's dark-theme colours, on light */
+  --rf-field-bg: var(--rfb-field);
+  --rf-muted: var(--rfb-muted);
+  --rf-placeholder: var(--rfb-muted);
+  --rf-notice: var(--rfb-muted);
+  --rf-notice-mobile: var(--rfb-muted);
+  --rf-consent-text: var(--rfb-muted);
+  --rf-error: var(--rfb-err);
+  --rf-error-bg: var(--color-white);
+  --rf-error-border: var(--rfb-err);
+  --rf-change-number-text: var(--rfb-ink);
+
+  color: var(--rfb-ink);
+  background-color: transparent;
+
+  @media (width >= 900px) {
+    --rfb-u: max(0.75px, min(100vw / 1280, 100svh / 720));
+
+    /* the map card on the right, the form on the left: 466 + 60 + 625 in the frame */
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: calc(60 * var(--rfb-u));
+  }
+
+  /* --- the map card --- */
+  .media {
+    flex: 0 1000 calc(200 * var(--rfb-u));
+    min-height: calc(120 * var(--rfb-u));
+    margin: calc(20 * var(--rfb-u)) calc(20 * var(--rfb-u)) 0;
+    border-radius: calc(20 * var(--rfb-u));
+    background-color: #f3f3f3;
+
+    /* the dealer's pin: a pulsing halo around a dot ringed in white */
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: 1;
+      left: calc(50% + 6.5 * var(--rfb-u));
+      top: calc(50% + 4 * var(--rfb-u));
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    &::before {
+      width: calc(40 * var(--rfb-u));
+      height: calc(40 * var(--rfb-u));
+      margin: calc(-20 * var(--rfb-u)) 0 0 calc(-20 * var(--rfb-u));
+      background: rgb(0 0 0 / 14%);
+      animation: register-form-booking-ping 2.2s ease-out infinite;
+    }
+
+    &::after {
+      width: calc(12 * var(--rfb-u));
+      height: calc(12 * var(--rfb-u));
+      margin: calc(-6 * var(--rfb-u)) 0 0 calc(-6 * var(--rfb-u));
+      background: var(--rfb-ink);
+      box-shadow:
+        0 0 0 calc(2 * var(--rfb-u)) var(--color-white),
+        0 0 0 calc(14 * var(--rfb-u)) rgb(0 0 0 / 14%);
+    }
+
+    @media (width >= 900px) {
+      flex: 0 0 calc(625 * var(--rfb-u));
+      height: calc(590 * var(--rfb-u));
+      margin: 0;
+      border-radius: calc(20 * var(--rfb-u));
+    }
+  }
+
+  /* --- with a Map Address: the Google map of it (register-form-booking.js buildMap), in grey,
+     over the authored image; the pin on the address (the map's centre) and its pop-up --- */
+  .media.has-map {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .booking-map-frame {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    filter: grayscale(1) contrast(0.92) brightness(1.04);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .media.is-map-loaded .booking-map-frame {
+    opacity: 1;
+  }
+
+  /* the pin: a black dot ringed in white on a grey disc (46u), in a pulsing faint halo (88u) */
+  .booking-map-pin {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: calc(14 * var(--rfb-u));
+    height: calc(14 * var(--rfb-u));
+    margin: calc(-7 * var(--rfb-u)) 0 0 calc(-7 * var(--rfb-u));
+    border-radius: 50%;
+    background: #0a0a0a;
+    box-shadow:
+      0 0 0 calc(2.5 * var(--rfb-u)) var(--color-white),
+      0 0 0 calc(16 * var(--rfb-u)) rgb(0 0 0 / 16%);
+    pointer-events: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: calc(88 * var(--rfb-u));
+      height: calc(88 * var(--rfb-u));
+      margin: calc(-44 * var(--rfb-u)) 0 0 calc(-44 * var(--rfb-u));
+      border-radius: 50%;
+      background: rgb(0 0 0 / 6%);
+      animation: register-form-booking-ping 2.2s ease-out infinite;
+    }
+  }
+
+  /* the pop-up: the name over the address, a white card with a notch, 58u above the pin */
+  .booking-map-tip {
+    position: absolute;
+    z-index: 3;
+    bottom: calc(50% + 58 * var(--rfb-u));
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: calc(4 * var(--rfb-u));
+    max-width: calc(100% - 32px);
+    padding: calc(12 * var(--rfb-u)) calc(14 * var(--rfb-u));
+    border-radius: calc(8 * var(--rfb-u));
+    background: var(--color-white);
+    box-shadow: 0 calc(4 * var(--rfb-u)) calc(16 * var(--rfb-u)) rgb(0 0 0 / 8%);
+    color: #0a0a0a;
+    font-family: var(--font-family-base);
+    white-space: nowrap;
+    transform: translateX(-50%);
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: calc(14 * var(--rfb-u));
+      height: calc(8 * var(--rfb-u));
+      margin-left: calc(-7 * var(--rfb-u));
+      background: var(--color-white);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+  }
+
+  .booking-map-name {
+    overflow: hidden;
+    font-size: calc(14 * var(--rfb-u));
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    text-overflow: ellipsis;
+  }
+
+  .booking-map-address {
+    overflow: hidden;
+    color: var(--rfb-muted);
+    font-size: calc(11 * var(--rfb-u));
+    line-height: 1.3;
+    text-overflow: ellipsis;
+  }
+
+  /* the whole card opens the address in Google Maps */
+  .booking-map-open {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    border-radius: inherit;
+
+    &:focus-visible {
+      outline: 2px solid var(--rfb-ink);
+      outline-offset: -4px;
+    }
+  }
+
+  /* --- the form column --- */
+  .content {
+    display: flex;
+    flex-direction: column;
+    padding: calc(20 * var(--rfb-u)) calc(20 * var(--rfb-u)) calc(24 * var(--rfb-u));
+
+    @media (width >= 900px) {
+      /* room around the 466u column so the scroll box doesn't clip the focus rings; the
+         form runs 1u lower than the map card, as in the frame */
+      flex: 0 0 calc(466 * var(--rfb-u) + 64px);
+      height: calc(591 * var(--rfb-u) + 8px);
+      margin: -4px -32px calc(-4px - var(--rfb-u));
+      padding: 4px 32px;
+      align-items: stretch;
+      justify-content: flex-start;
+
+      .heading,
+      .intro,
+      .form,
+      .notice,
+      .back {
+        width: auto;
+      }
+    }
+  }
+
+  /* the display font's caps (New Science Extended from Typekit) sit 0.12em lower in their line
+     box than in the design's font files: the heading and the pop-up titles are drawn that much
+     higher, so their letters land where the design has them (their boxes don't move) */
+  .heading,
+  .booking-modal-title {
+    translate: 0 -0.12em;
+  }
+
+  /* two lines: the first in ink, "Meridian Motors" in grey */
+  .heading {
+    margin: 0 0 calc(16 * var(--rfb-u));
+    color: var(--rfb-quiet);
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(24 * var(--rfb-u));
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+
+    &::first-line {
+      color: var(--rfb-ink);
+    }
+
+    @media (width >= 900px) {
+      margin-bottom: calc(15.6 * var(--rfb-u));
+      font-size: calc(32 * var(--rfb-u));
+    }
+  }
+
+  .intro {
+    margin: 0 0 calc(16 * var(--rfb-u));
+    color: var(--rfb-muted);
+    font-size: calc(14 * var(--rfb-u));
+    line-height: 1.45;
+  }
+
+  .form {
+    flex: 1 0 auto;
+  }
+
+  /* --- steps --- */
+  .booking-step:not([hidden]),
+  .fields:not([hidden]) {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .booking-step-title {
+    margin: calc(7 * var(--rfb-u)) 0 0;
+    padding-bottom: calc(7 * var(--rfb-u));
+    color: var(--rfb-ink);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(20 * var(--rfb-u));
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .field {
+    gap: 0;
+  }
+
+  .error {
+    margin: calc(6 * var(--rfb-u)) 0 0;
+    color: var(--rfb-err);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(12 * var(--rfb-u));
+    line-height: 1.2;
+  }
+
+  /* --- the buttons at the foot of each step --- */
+  .booking-actions {
+    display: flex;
+    gap: calc(8 * var(--rfb-u));
+    margin-top: auto;
+    padding-top: calc(16 * var(--rfb-u));
+  }
+
+  /* filled: black; the hover is the letter glitch (scripts/utils/glitch.js), not a colour */
+  .submit,
+  .back-home {
+    border: 0;
+    background: var(--rfb-key);
+    color: var(--color-white);
+
+    &:hover:not(:disabled) {
+      background: var(--rfb-key);
+      transform: none;
+    }
+
+    &:disabled {
+      background: var(--rfb-key);
+      color: var(--color-white);
+      opacity: 0.4;
+    }
+  }
+
+  /* outlined; no hover fill (the design's outlined buttons keep a clear background) */
+  .booking-back,
+  .booking-back.change {
+    border: 1px solid var(--rfb-key);
+    background: transparent;
+    color: var(--rfb-key);
+  }
+
+  .booking-actions .submit,
+  .booking-back,
+  .otp .submit,
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 0;
+    height: calc(48 * var(--rfb-u));
+    margin: 0;
+    padding: 0 calc(24 * var(--rfb-u));
+    border-radius: calc(8 * var(--rfb-u));
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(12 * var(--rfb-u));
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+
+    &:focus-visible {
+      outline: 2px solid var(--rfb-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  .booking-actions .submit,
+  .booking-actions .booking-back {
+    flex: 1 1 0;
+  }
+
+  /* --- step 1: details --- */
+  .row {
+    gap: calc(8 * var(--rfb-u));
+  }
+
+  .fields > .row,
+  .fields > .field {
+    margin-top: calc(12 * var(--rfb-u));
+  }
+
+  .input {
+    height: calc(48 * var(--rfb-u));
+    padding: 0 calc(16 * var(--rfb-u));
+    border: 0;
+    border-radius: calc(8 * var(--rfb-u));
+    background: var(--rfb-field);
+    color: var(--rfb-ink);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+
+    /* 16px on phones keeps iOS Safari from zooming in on focus */
+    font-size: max(16px, calc(12 * var(--rfb-u)));
+    transition: box-shadow 0.2s, background 0.2s;
+
+    &::placeholder {
+      color: var(--rfb-muted);
+    }
+
+    &:focus {
+      outline: none;
+      background: var(--color-white);
+      box-shadow: inset 0 0 0 1px var(--rfb-ink);
+    }
+
+    &:autofill {
+      -webkit-text-fill-color: var(--rfb-ink);
+      caret-color: var(--rfb-ink);
+      box-shadow: inset 0 0 0 1000px var(--rfb-field);
+    }
+
+    /* stylelint-disable-next-line property-no-vendor-prefix, selector-no-vendor-prefix */
+    &:-webkit-autofill {
+      -webkit-text-fill-color: var(--rfb-ink);
+      caret-color: var(--rfb-ink);
+      box-shadow: inset 0 0 0 1000px var(--rfb-field);
+    }
+
+    @media (width >= 900px) {
+      height: calc(48 * var(--rfb-u));
+      padding: 0 calc(16 * var(--rfb-u));
+      font-size: calc(12 * var(--rfb-u));
+    }
+  }
+
+  /* the static +91 */
+  .input.code {
+    flex: 0 0 calc(48 * var(--rfb-u));
+    padding: 0;
+    color: var(--rfb-muted);
+    text-align: center;
+
+    @media (width >= 900px) {
+      flex: 0 0 calc(48 * var(--rfb-u));
+    }
+  }
+
+  /* placeholders only, no floating label (each field keeps its visually hidden label) */
+  .float {
+    display: none;
+  }
+
+  .field.is-filled,
+  .field:focus-within {
+    .input:not(.code) {
+      padding-top: 0;
+    }
+
+    .input::placeholder {
+      color: var(--rfb-muted);
+    }
+  }
+
+  .field.has-error .input:not(.code) {
+    border-color: transparent;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--rfb-err);
+  }
+
+  .field:has(.input:autofill) .input:not(.code) {
+    padding-top: 0;
+  }
+
+  /* stylelint-disable-next-line selector-no-vendor-prefix */
+  .field:has(.input:-webkit-autofill) .input:not(.code) {
+    padding-top: 0;
+  }
+
+  .field:has(.consent) {
+    margin-top: calc(41 * var(--rfb-u));
+
+    @media (width >= 900px) {
+      margin-top: calc(41 * var(--rfb-u));
+    }
+  }
+
+  /* error lines take the room above the consent, so the buttons stay in view */
+  .fields:has(.has-error) .field:has(.consent) {
+    margin-top: calc(16 * var(--rfb-u));
+  }
+
+  .consent {
+    gap: calc(8 * var(--rfb-u));
+    align-items: flex-start;
+    color: var(--rfb-muted);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(12 * var(--rfb-u));
+    line-height: 1.2;
+    letter-spacing: 0;
+    cursor: pointer;
+
+    @media (width >= 900px) {
+      gap: calc(8 * var(--rfb-u));
+      color: var(--rfb-muted);
+      font-size: calc(12 * var(--rfb-u));
+      line-height: 1.2;
+    }
+  }
+
+  .consent-check {
+    display: grid;
+    place-items: center;
+    width: calc(16 * var(--rfb-u));
+    height: calc(16 * var(--rfb-u));
+    margin: 0;
+    border: 1px solid var(--rfb-key);
+    border-radius: calc(4 * var(--rfb-u));
+    background: transparent;
+
+    &:checked {
+      border-color: var(--rfb-key);
+      background: var(--rfb-key);
+    }
+
+    &:checked::after {
+      width: calc(6 * var(--rfb-u));
+      height: calc(3 * var(--rfb-u));
+      margin: 0;
+      border: solid var(--color-white);
+      border-width: 0 0 1.5px 1.5px;
+      transform: rotate(-45deg) translate(calc(0.5 * var(--rfb-u)), calc(-0.5 * var(--rfb-u)));
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--rfb-ink);
+      outline-offset: 2px;
+    }
+
+    @media (width >= 900px) {
+      width: calc(16 * var(--rfb-u));
+      height: calc(16 * var(--rfb-u));
+      border: 1px solid var(--rfb-key);
+
+      &:checked::after {
+        width: calc(6 * var(--rfb-u));
+        height: calc(3 * var(--rfb-u));
+      }
+    }
+  }
+
+  .field.has-error .consent-check {
+    border-color: var(--rfb-err);
+  }
+
+  /* the privacy notice, above the buttons of the details and review steps */
+  .notice {
+    margin: calc(12 * var(--rfb-u)) 0 0;
+    color: var(--rfb-muted);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(12 * var(--rfb-u));
+    line-height: 1.2;
+    letter-spacing: 0;
+    opacity: 1;
+
+    @media (width >= 900px) {
+      margin-top: calc(12 * var(--rfb-u));
+      color: var(--rfb-muted);
+      opacity: 1;
+      font-size: calc(12 * var(--rfb-u));
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+  }
+
+  .status {
+    margin: calc(8 * var(--rfb-u)) 0 0;
+    color: var(--rfb-muted);
+    font-size: calc(12 * var(--rfb-u));
+
+    &.is-error {
+      color: var(--rfb-err);
+    }
+  }
+
+  /* --- the Request sent pop-up's rows --- */
+  .booking-summary {
+    display: flex;
+    flex-direction: column;
+    margin: calc(10 * var(--rfb-u)) 0 0;
+
+    dt {
+      padding-top: calc(8 * var(--rfb-u));
+      color: var(--rfb-muted);
+      font-size: calc(12 * var(--rfb-u));
+      line-height: 1.2;
+    }
+
+    dd {
+      margin: calc(6 * var(--rfb-u)) 0 0;
+      padding-bottom: calc(8 * var(--rfb-u));
+      border-bottom: 1px solid var(--rfb-line);
+      color: var(--rfb-ink);
+      font-size: calc(14 * var(--rfb-u));
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  /* --- OTP --- */
+  .back {
+    margin: 0 0 calc(16 * var(--rfb-u));
+    color: var(--rfb-ink);
+    font-size: calc(12 * var(--rfb-u));
+    letter-spacing: 0.03em;
+
+    &:focus-visible {
+      outline: 2px solid var(--rfb-ink);
+      outline-offset: 2px;
+    }
+
+    @media (width >= 900px) {
+      margin-bottom: calc(16 * var(--rfb-u));
+    }
+  }
+
+  .otp-head {
+    gap: calc(8 * var(--rfb-u));
+    margin: calc(7 * var(--rfb-u)) 0 calc(28 * var(--rfb-u));
+    color: var(--rfb-muted);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(12 * var(--rfb-u));
+    line-height: 1.5;
+    letter-spacing: 0;
+
+    @media (width >= 900px) {
+      gap: calc(8 * var(--rfb-u));
+      font-size: calc(12 * var(--rfb-u));
+      line-height: 1.5;
+    }
+  }
+
+  .otp-number {
+    color: var(--rfb-ink);
+  }
+
+  .change,
+  .resend-link {
+    color: var(--rfb-ink);
+    font-family: var(--font-family-base);
+    font-size: calc(12 * var(--rfb-u));
+    letter-spacing: 0;
+    text-transform: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--rfb-ink);
+      outline-offset: 2px;
+    }
+
+    @media (width >= 900px) {
+      font-size: calc(12 * var(--rfb-u));
+    }
+  }
+
+  .otp-boxes {
+    gap: calc(12 * var(--rfb-u));
+  }
+
+  .otp-box {
+    max-width: calc(64 * var(--rfb-u));
+    height: calc(64 * var(--rfb-u));
+    border: 1px solid #e1e1e1;
+    border-radius: calc(8 * var(--rfb-u));
+    background: #f4f4f4;
+    color: var(--rfb-ink);
+    caret-color: var(--rfb-ink);
+    font-size: max(16px, calc(24 * var(--rfb-u)));
+    transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:focus {
+      border-color: var(--rfb-ink);
+      background: var(--color-white);
+      box-shadow: 0 0 0 1px var(--rfb-ink);
+    }
+
+    &.is-error {
+      border-color: var(--rfb-err);
+      background: var(--color-white);
+      color: var(--rfb-err);
+    }
+
+    @media (width >= 900px) {
+      font-size: calc(24 * var(--rfb-u));
+    }
+  }
+
+  .otp-error,
+  .resend {
+    min-height: calc(16 * var(--rfb-u));
+    margin: calc(14 * var(--rfb-u)) 0 0;
+    font-size: calc(12 * var(--rfb-u));
+    line-height: calc(16 * var(--rfb-u));
+    text-align: center;
+
+    @media (width >= 900px) {
+      font-size: calc(12 * var(--rfb-u));
+    }
+  }
+
+  .resend {
+    color: var(--rfb-muted);
+  }
+
+  .otp:has(.otp-error:not([hidden])) .resend {
+    color: var(--rfb-err);
+
+    @media (width >= 900px) {
+      margin-top: calc(14 * var(--rfb-u));
+    }
+  }
+
+  /* --- the pop-ups (OTP, Request sent): <dialog>s over the details, as the dealer design's
+     cards (520u wide, 40u padding, 24u corners) on a dimmed, slightly blurred page --- */
+
+  /* the details stay in view behind a pop-up; the base form's Back (OTP to details) gives way
+     to the pop-up's Change number and close button */
+  &:is(.is-otp, .is-success) .fields[data-screen='fields'] {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &:is(.is-otp, .is-success) .back {
+    display: none;
+  }
+
+  /* the base form hides these on its OTP and success screens; here they stay behind the pop-up */
+  &:is(.is-otp, .is-success) :is(.heading, .intro, .notice) {
+    display: block;
+  }
+
+  .booking-modal {
+    box-sizing: border-box;
+    width: min(calc(520 * var(--rfb-u)), calc(100vw - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: calc(40 * var(--rfb-u));
+    overflow: auto;
+    border: 0;
+    border-radius: calc(24 * var(--rfb-u));
+    background: var(--color-white);
+    color: var(--rfb-ink);
+    box-shadow: none;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.35s, transform 0.5s var(--rfb-ease), overlay 0.35s allow-discrete, display 0.35s allow-discrete;
+
+    &::backdrop {
+      background: rgb(0 0 0 / 32%);
+      backdrop-filter: blur(2px);
+      transition: opacity 0.35s, overlay 0.35s allow-discrete, display 0.35s allow-discrete;
+    }
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(calc(24 * var(--rfb-u))) scale(0.98);
+
+      &::backdrop {
+        opacity: 0;
+      }
+    }
+
+    @media (width < 600px) {
+      padding: 28px 20px;
+    }
+
+    > .otp:not([hidden]),
+    > .success:not([hidden]) {
+      position: static;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+    }
+
+    .booking-actions {
+      gap: calc(10 * var(--rfb-u));
+      margin-top: calc(28 * var(--rfb-u));
+      padding-top: 0;
+    }
+
+    .booking-actions .submit,
+    .booking-actions .booking-back {
+      width: auto;
+      height: calc(44 * var(--rfb-u));
+      margin: 0;
+      text-decoration: none;
+    }
+
+  }
+
+  .booking-modal-title {
+    margin: 0;
+    padding-right: calc(32 * var(--rfb-u));
+    color: var(--rfb-ink);
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(24 * var(--rfb-u));
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .booking-modal-close {
+    position: absolute;
+    top: calc(16 * var(--rfb-u));
+    right: calc(16 * var(--rfb-u));
+    display: grid;
+    place-items: center;
+    width: calc(32 * var(--rfb-u));
+    height: calc(32 * var(--rfb-u));
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    svg {
+      width: calc(12 * var(--rfb-u));
+      height: calc(12 * var(--rfb-u));
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background: #f2f2f2;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--rfb-ink);
+      outline-offset: 2px;
+    }
+  }
+
+  /* OTP: the "code sent on …" line under the title, one line of text with the number in it as
+     the design has it; the boxes centred */
+  .booking-modal .otp-head {
+    display: block;
+    margin: calc(14 * var(--rfb-u)) 0 0;
+  }
+
+  .booking-modal .otp-number {
+    color: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .booking-modal .otp-head .change {
+    display: none;
+  }
+
+  .booking-modal .otp-actions .change,
+  .booking-modal .booking-actions .change {
+    display: inline-flex;
+    font-size: calc(12 * var(--rfb-u));
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .booking-modal .otp-boxes {
+    justify-content: center;
+    margin: calc(28 * var(--rfb-u)) auto 0;
+  }
+
+  /* Request sent */
+  .booking-modal-sub {
+    margin: calc(14 * var(--rfb-u)) 0 0;
+    color: var(--rfb-muted);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(12 * var(--rfb-u));
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .booking-sent-rows {
+    margin-top: calc(20 * var(--rfb-u));
+  }
+
+  .booking-sent-status {
+    display: flex;
+    align-items: center;
+    gap: calc(10 * var(--rfb-u));
+    margin: calc(22 * var(--rfb-u)) 0 0;
+    color: var(--rfb-ink);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(12 * var(--rfb-u));
+    line-height: 1.3;
+
+    /* the waiting ring */
+    &::before {
+      content: '';
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      width: calc(9 * var(--rfb-u));
+      height: calc(9 * var(--rfb-u));
+      border: 1.5px solid var(--rfb-key);
+      border-radius: 50%;
+    }
+  }
+
+  /* --- phones: the dealer mobile design (#touch, its details step #s-det). Positions are the
+     design's, its text boxes trimmed to the caps: New Science's caps sit (lh − 1) / 2 + 0.22em
+     below its line box and its baseline (lh − 1) / 2 + 0.06em above the box's foot, so a gap
+     between two texts there is the design's minus those two --- */
+  @media (width < 900px) {
+    --rfb-ink: #121212;
+    --rfb-key: #0a0a0a;
+
+    /* the 343u column, centred once the frame stops growing */
+    --rfb-gutter: max(calc(16 * var(--rfb-u)), (100vw - 343 * var(--rfb-u)) / 2);
+
+    /* heading at the top, Continue at the foot, the map card taking the room between; if the
+       details outgrow the screen the map goes first, then the column scrolls */
+    .content {
+      flex: 1 1 auto;
+      min-height: 0;
+
+      /* the heading's box at 77.6 (its caps at 84, under the floating header) */
+      padding: calc(77.6 * var(--rfb-u)) var(--rfb-gutter) 0;
+    }
+
+    .heading {
+      margin-bottom: 0;
+      letter-spacing: 0;
+    }
+
+    .form,
+    .fields:not([hidden]),
+    &:is(.is-otp, .is-success) .fields[data-screen='fields'] {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    /* "Tell us about you": its caps at 149, where the design's tabs start (ours has none) */
+    .booking-step-title {
+      margin: calc(11.4 * var(--rfb-u)) 0 0;
+      padding-bottom: 0;
+      font-weight: var(--font-weight-regular);
+      font-size: calc(20 * var(--rfb-u));
+      line-height: 1.3;
+    }
+
+    /* the fields 20 below its baseline, 12 apart */
+    .booking-step-title + :is(.row, .field) {
+      margin-top: calc(15.6 * var(--rfb-u));
+    }
+
+    .input {
+      font-weight: var(--font-weight-regular);
+
+      /* 14u, never below 16px: iOS Safari zooms in on focus below that */
+      font-size: max(16px, calc(14 * var(--rfb-u)));
+    }
+
+    .input.code {
+      flex: 0 0 calc(64 * var(--rfb-u));
+      padding: 0 0 0 calc(16 * var(--rfb-u));
+      color: var(--rfb-ink);
+      text-align: left;
+    }
+
+    .field:has(.consent) {
+      margin-top: calc(24 * var(--rfb-u));
+    }
+
+    .consent {
+      font-weight: var(--font-weight-regular);
+      line-height: 1.4;
+    }
+
+    /* the DPDP notice: the design's fine print, 18 under the consent */
+    .notice {
+      margin-top: calc(18 * var(--rfb-u));
+      font-weight: var(--font-weight-regular);
+      font-size: calc(11 * var(--rfb-u));
+      line-height: 1.45;
+    }
+
+    /* the map card (#mapC), moved here by register-form-booking.js: up to 206 tall, 16 under
+       the notice, the pin where the design has it */
+    .media {
+      flex: 1 1 calc(206 * var(--rfb-u));
+      min-height: 0;
+      max-height: calc(206 * var(--rfb-u));
+      margin: calc(16 * var(--rfb-u)) 0 0;
+      border-radius: calc(20 * var(--rfb-u));
+      background-color: #eee;
+
+      &::before,
+      &::after {
+        left: calc(174 * var(--rfb-u));
+        top: calc(50% + 15 * var(--rfb-u));
+      }
+
+      &.is-tiny {
+        visibility: hidden;
+      }
+
+      /* with the Google map: tall enough for the pin's pop-up (the column scrolls if need be) */
+      &.has-map {
+        min-height: calc(176 * var(--rfb-u));
+        visibility: visible;
+      }
+    }
+
+    /* the pop-up closer to the pin on the phone's shorter map */
+    .booking-map-tip {
+      bottom: calc(50% + 32 * var(--rfb-u));
+      padding: calc(10 * var(--rfb-u)) calc(12 * var(--rfb-u));
+    }
+
+    /* Continue: 48 tall, 20 above the foot of the screen (and the home bar); the status line
+       goes above it, so the button keeps the bottom room even when the column scrolls */
+    .fields > .booking-actions {
+      order: 2;
+      padding: calc(21 * var(--rfb-u)) 0 calc(20 * var(--rfb-u) + env(safe-area-inset-bottom, 0px));
+    }
+
+    .fields > .status {
+      order: 1;
+    }
+
+    .booking-actions .submit,
+    .booking-back,
+    .otp .submit,
+    .back-home {
+      letter-spacing: 0.02em;
+    }
+
+    /* the pop-ups: the design's 343 card (24 padding and corners), centred on the screen as
+       its .sheet is, rising a little into place */
+    .booking-modal {
+      width: min(calc(343 * var(--rfb-u)), calc(100vw - 32px));
+      max-height: calc(100dvh - 32px);
+      margin: auto;
+      padding: calc(24 * var(--rfb-u));
+      border-radius: calc(24 * var(--rfb-u));
+
+      /* the phone design dims the page without blurring it */
+      &::backdrop {
+        backdrop-filter: none;
+      }
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(calc(24 * var(--rfb-u))) scale(0.98);
+      }
+
+      .booking-actions {
+        gap: calc(8 * var(--rfb-u));
+        margin-top: calc(20 * var(--rfb-u));
+      }
+
+      .booking-actions .submit,
+      .booking-actions .booking-back {
+        height: calc(48 * var(--rfb-u));
+      }
+
+      /* Request sent: the design's one full-width button; ours are two (the authored link,
+         then Done), one under the other so a long link text still fits */
+      .success .booking-actions {
+        flex-direction: column;
+      }
+
+      .success .booking-actions :is(.submit, .booking-back) {
+        flex: 0 0 auto;
+        align-self: stretch;
+        width: 100%;
+      }
+    }
+
+    .booking-modal-title {
+      font-size: calc(24 * var(--rfb-u));
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .success .booking-modal-title {
+      font-size: calc(20 * var(--rfb-u));
+      line-height: 1.15;
+    }
+
+    .booking-modal .otp-head,
+    .booking-modal-sub {
+      margin-top: calc(16 * var(--rfb-u));
+      font-weight: var(--font-weight-regular);
+      line-height: 1.35;
+    }
+
+    /* six boxes (the design has four) share its 295 row, 60 tall */
+    .booking-modal .otp-boxes {
+      gap: calc(8 * var(--rfb-u));
+      margin: calc(20 * var(--rfb-u)) 0 0;
+    }
+
+    .otp-box {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: calc(60 * var(--rfb-u));
+      height: calc(60 * var(--rfb-u));
+      border-color: transparent;
+      background: var(--rfb-field);
+
+      &:focus {
+        border-color: var(--rfb-key);
+        background: var(--color-white);
+        box-shadow: none;
+      }
+    }
+
+    .otp-error,
+    .resend {
+      margin-top: calc(14 * var(--rfb-u));
+      line-height: calc(16 * var(--rfb-u));
+      text-align: left;
+    }
+
+    /* Request sent: each row 14 under its value, ruled */
+    .booking-sent-rows {
+      margin-top: calc(14 * var(--rfb-u));
+    }
+
+    .booking-summary {
+      margin-bottom: 0;
+
+      dt {
+        padding-top: 0;
+        line-height: normal;
+      }
+
+      dd {
+        margin: calc(6 * var(--rfb-u)) 0 calc(14 * var(--rfb-u));
+        padding-bottom: calc(14 * var(--rfb-u));
+        border-bottom-color: rgb(18 18 18 / 10%);
+        line-height: 1.3;
+      }
+    }
+
+    /* the waiting ring holds a pulsing dot, 1.5px inside its 1px border */
+    .booking-sent-status {
+      position: relative;
+      margin-top: 0;
+
+      &::before {
+        border-width: 1px;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 2.5px;
+        box-sizing: border-box;
+        width: calc(9 * var(--rfb-u) - 5px);
+        height: calc(9 * var(--rfb-u) - 5px);
+        border-radius: 50%;
+        background: var(--rfb-key);
+        translate: 0 -50%;
+        animation: register-form-booking-pulse 1.6s ease-in-out infinite;
+      }
+    }
+
+    /* no close button on the phone pop-up: Change number (and Esc) take you back */
+    .booking-modal-close {
+      display: none;
+    }
+
+    .booking-actions .submit:disabled {
+      opacity: 0.35;
+    }
+
+    /* pressed buttons dip, as the design's */
+    .booking-actions :is(.submit, .booking-back):active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .booking-actions :is(.submit, .booking-back) {
+      transition: background 0.2s, color 0.2s, opacity 0.2s, transform 0.2s;
+    }
+  }
+
+  /* with the map, the image's own pin gives way to the map's (last: it outranks the pins) */
+  .media.has-map::before,
+  .media.has-map::after {
+    content: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .media::before,
+    .booking-map-pin::before,
+    .booking-sent-status::after {
+      animation: none;
+    }
+
+    .booking-map-frame {
+      transition: none;
+    }
+
+    .booking-modal,
+    .booking-modal::backdrop {
+      transition: none;
+    }
+  }
+}
+
+@keyframes register-form-booking-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes register-form-booking-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,250 @@
+.countdown-container .countdown-wrapper {
+  max-width: unset;
+  padding: 0;
+
+  .countdown {
+    --cd-bg: #000;
+    --cd-label-color: #a5a5a5;
+    --cd-digit-color: #dfdfdf;
+
+    /* Dimming of the digits and colons. Applied to them directly (not the
+       whole timer) so the unit labels can keep their own opacity. */
+    --cd-dim: 0.2;
+
+    /* New Science Extended (the wide cut) per Figma — global display family. */
+    --cd-font-family: var(--font-family-display);
+
+    position: relative;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 17.6vh 24px 24px;
+    background-color: var(--cd-bg);
+    overflow: hidden;
+    text-align: center;
+
+    /* author mode: fixed height so the resizing UE iframe can't feed
+       viewport units back into an infinite scroll */
+
+    /* &[data-aue-resource] {
+      min-height: 0;
+      height: 800px;
+    } */
+
+    .countdown-backdrop {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    picture.countdown-backdrop img,
+    video.countdown-backdrop {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(30px);
+      animation: countdown-drift 24s ease-in-out infinite alternate;
+      transform-origin: center;
+    }
+
+    > *:not(picture, video) {
+      position: relative;
+      z-index: 2;
+    }
+
+    .countdown-label {
+      margin: 0 0 0.75vw;
+      color: var(--cd-label-color);
+      font-family: var(--cd-font-family);
+      font-weight: 400;
+      font-style: normal;
+      font-size: clamp(30px, 3.74vw, 68px);
+      line-height: 1;
+      letter-spacing: -0.045em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .countdown-timer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 1.1vw, 22px);
+      color: var(--cd-digit-color);
+      font-family: var(--cd-font-family);
+      font-weight: 400;
+      font-size: clamp(64px, 8.29vw, 150px);
+      line-height: 1.4;
+      letter-spacing: -0.05em;
+      font-variant-numeric: tabular-nums;
+      transform: translateY(28px);
+      transition: transform 0.8s ease 0.1s;
+    }
+
+    /* revealed once JS adds .is-visible */
+    &.is-visible .countdown-label {
+      opacity: 1;
+      transform: none;
+    }
+
+    &.is-visible .countdown-timer {
+      transform: none;
+    }
+
+    .countdown-unit b,
+    .countdown-sep {
+      opacity: var(--cd-dim);
+    }
+
+    .countdown-unit {
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+
+      /* fixed 2-digit slot so proportional numerals can't reflow the row:
+         every value 00–99 occupies the same width and the centered timer
+         holds a constant width regardless of which digits show */
+      flex: 0 0 auto;
+      width: 2ch;
+    }
+
+    .countdown-unit b {
+      display: inline-block;
+      font-weight: 400;
+    }
+
+    .countdown-unit b.is-ticking {
+      animation: countdown-tick 0.5s ease;
+    }
+
+    /* full unit names are visually hidden but read by screen readers */
+    .countdown-unit .countdown-unit-name {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .countdown-sep {
+      color: var(--cd-digit-color);
+      font-size: clamp(40px, 5.51vw, 100px);
+    }
+
+    /* visible unit captions (DAY / HRS / MIN / SEC), centred over their digit
+       pair. Mobile per Figma (M 94): 10px / 11px, -1%, ~4.5px above the
+       digit box. */
+    .countdown-unit-label {
+      position: absolute;
+      top: -4.5px;
+      left: 50%;
+      display: block;
+      font-family: var(--font-family-base);
+      font-size: 10px;
+      line-height: 11px;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--color-white);
+      opacity: 0.3;
+      transform: translateX(-50%);
+    }
+
+    /* tablet: no design — give the labels the same clearance under the title
+       as on phones (the base 0.75vw gap would put them against it) */
+    @media (width >= 600px) and (width < 900px) {
+      .countdown-label {
+        margin-bottom: 20px;
+      }
+    }
+
+    @media (width >= 900px) {
+      .countdown-label {
+        margin-bottom: 37px; /* Figma title → timer gap; clears the unit labels */
+      }
+
+      /* label-s role, 7px above the digit box */
+      .countdown-unit-label {
+        top: -7px;
+        font-size: var(--type-label-s-size);
+        line-height: var(--type-label-s-line-height);
+        letter-spacing: var(--type-label-s-tracking);
+      }
+    }
+
+    @media (width < 600px) {
+      --cd-dim: 0.3;
+
+      padding: 17.6vh 20px 40px;
+
+      .countdown-label {
+        margin: 0 0 20px;
+        font-size: 28px;
+        line-height: 1.28;
+        letter-spacing: -0.045em;
+      }
+
+      .countdown-timer {
+        gap: 2px;
+        font-size: 36px;
+        line-height: 1.4;
+      }
+
+      .countdown-unit {
+        width: 2ch;
+      }
+
+      .countdown-sep {
+        font-size: 29.4px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .countdown-label,
+      .countdown-timer {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      picture.countdown-backdrop img,
+      .countdown-unit b.is-ticking {
+        animation: none;
+      }
+    }
+  }
+}
+
+/* opacity is relative to --cd-dim so the pulse ends at the digits' resting
+   opacity instead of flashing to full white */
+@keyframes countdown-tick {
+  0% {
+    transform: translateY(0.08em) scale(0.96);
+    opacity: calc(var(--cd-dim) * 0.55);
+  }
+
+  100% {
+    transform: none;
+    opacity: var(--cd-dim);
+  }
+}
+
+@keyframes countdown-drift {
+  0% {
+    transform: scale(1.05) translate3d(-1.5%, 0, 0);
+  }
+
+  100% {
+    transform: scale(1.12) translate3d(1.5%, -1%, 0);
+  }
+}

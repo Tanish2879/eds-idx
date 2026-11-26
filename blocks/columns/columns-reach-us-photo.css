@@ -1,0 +1,498 @@
+/* Columns "Reach Us (Photo)" style (classes "reach-us photo"), loaded by columns.js only when
+   both classes are present, after columns-reach-us.css. Reach Us's layout over a dark photo
+   (and optional muted film) backdrop instead of its teal gradient; see
+   columns-reach-us-photo.js. Plain Reach Us is untouched.
+   Design: the dealer prototype's "Visit" panel (#garage), as it rests once its film has played:
+   the garage blurred (48px) and zoomed (1.14) under a radial shade, the title in New Science
+   Extended over a full-width rule, the groups at the frame's 64 | 587 | 946 columns, rows at
+   188 and 340 of 720. Desktop sizes are the frame's px x --ru (the scale at which the
+   1280 x 720 frame fits the screen, columns-reach-us.css). Below 900px it follows the dealer
+   mobile design's #garage (its 375 frame, the phone block below), arrival included. */
+
+main > .section:has(.columns.reach-us.photo) {
+  /* the prototype's #gDim (25% → 55%), deeper so white text keeps AA contrast over the lit
+     frame: below desktop the groups run down over the bright middle of the photo */
+  --reach-us-photo-shade:
+    radial-gradient(
+      80% 70% at 50% 60%,
+      rgb(20 20 20 / 60%),
+      rgb(0 0 0 / 70%)
+    );
+  --reach-us-photo-blur: 48px;
+  --reach-us-photo-zoom: 1.14;
+  --reach-us-photo-title-font: var(--font-family-display);
+  --reach-us-photo-note-size: 13px; /* showroom intro, directions line */
+  --reach-us-photo-note-lh: 1.5;
+  --reach-us-photo-note-color: rgb(255 255 255 / 90%);
+  --reach-us-photo-note-gap: 6px; /* address → directions */
+  --reach-us-photo-intro-gap: 14px; /* showroom label → intro */
+  --reach-us-photo-intro-width: none;
+
+  /* Reach Us's tokens, as the prototype's panel */
+  --reach-us-pad-top: 128px; /* clear of the floating header */
+  --reach-us-title-size: 28px;
+  --reach-us-title-lh: 1.2;
+  --reach-us-title-ls: 0.01em;
+  --reach-us-title-color: var(--color-white);
+  --reach-us-label-color: var(--color-white);
+  --reach-us-muted-color: var(--color-white);
+  --reach-us-label-size: 16px;
+  --reach-us-label-lh: 1.22; /* the font's normal line height */
+  --reach-us-label-ls: 0;
+  --reach-us-info-lh: 1.22;
+  --reach-us-info-ls: -0.01em;
+  --reach-us-info-offset: 0px;
+  --reach-us-value-size: 16px;
+  --reach-us-value-lh: 1.5;
+  --reach-us-address-lh: 1.5;
+  --reach-us-address-width: none;
+  --reach-us-divider-width: 1px;
+  --reach-us-divider-color: rgb(255 255 255 / 30%);
+  --reach-us-title-gap: 17px;
+  --reach-us-divider-gap: 32px;
+  --reach-us-label-gap: 12px;
+  --reach-us-label-gap-tight: 12px;
+  --reach-us-row-gap: 24px;
+  --reach-us-col-gap: 24px;
+
+  position: relative;
+  isolation: isolate;
+  background: #0b0b0b;
+
+  /* title: New Science Extended, white, over the full-width rule. The rule is drawn by the
+     heading's wrapper (so it can be drawn in on its own, below); Reach Us's border keeps its
+     place */
+  & > .reach-us-head {
+    position: relative;
+
+    & :is(h1, h2, h3, h4, h5, h6) {
+      border-bottom-color: transparent;
+      font-family: var(--reach-us-photo-title-font);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: var(--reach-us-gutter);
+      bottom: var(--reach-us-divider-gap);
+      left: var(--reach-us-gutter);
+      height: var(--reach-us-divider-width);
+      background: var(--reach-us-divider-color);
+      transform-origin: left center;
+    }
+  }
+
+  /* the backdrop cell, laid across the whole section behind its content */
+  & .columns.reach-us.photo > div > .reach-us-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    max-width: none; /* Reach Us caps the intro cell's width */
+    margin: 0;
+    overflow: hidden;
+    pointer-events: none;
+
+    p,
+    picture {
+      margin: 0;
+    }
+
+    /* blurred and zoomed in, as the prototype's panel once the lights are on */
+    .reach-us-backdrop-img,
+    .reach-us-backdrop-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0; /* not Reach Us's gap between a cell's parts: the film lies on its poster */
+      object-fit: cover;
+      filter: blur(var(--reach-us-photo-blur));
+      transform: scale(var(--reach-us-photo-zoom));
+    }
+
+    /* the film's link is only its source; the hint only shows on arrival (below) */
+    .reach-us-backdrop-link,
+    .reach-us-photo-hint {
+      display: none;
+    }
+
+    /* darkens the photo so the text reads over it */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--reach-us-photo-shade);
+    }
+  }
+
+  /* the grid is Reach Us's: one column on phones; from tablet At the showroom across the top,
+     then Address | Opening hours and Phone | WhatsApp */
+  & .columns.reach-us.photo {
+    /* At the showroom: medium label, smaller intro copy */
+    & > div:first-child > div:first-child {
+      & p {
+        font-size: var(--reach-us-photo-note-size);
+        line-height: var(--reach-us-photo-note-lh);
+      }
+
+      & :is(h2, h3, h4, h5, h6) + p {
+        max-width: var(--reach-us-photo-intro-width);
+        margin-top: var(--reach-us-photo-intro-gap);
+      }
+    }
+
+    /* Address: the directions line under it, smaller and softer */
+    & > div:first-child > div:nth-child(2) p + p {
+      margin-top: var(--reach-us-photo-note-gap);
+      color: var(--reach-us-photo-note-color);
+      font-size: var(--reach-us-photo-note-size);
+      line-height: var(--reach-us-photo-note-lh);
+    }
+
+    /* Opening hours: days and times read as one value, line under line */
+    & > div:first-child > div:nth-child(3) p + p {
+      margin-top: 0;
+    }
+  }
+
+  @media (width >= 600px) {
+    --reach-us-pad-top: 160px;
+    --reach-us-title-size: 40px;
+    --reach-us-photo-intro-width: 480px;
+    --reach-us-row-gap: 40px;
+    --reach-us-col-gap: 48px;
+  }
+
+  /* desktop: the prototype's 1280 x 720 frame, centred on the screen. Its side edges stretch to
+     the window (64 in from each side), the middle and right columns shifting out with them */
+  @media (width >= 900px) {
+    --reach-us-photo-shade:
+      radial-gradient(
+        80% 70% at 50% 60%,
+        rgb(20 20 20 / 45%),
+        rgb(0 0 0 / 65%)
+      );
+    --reach-us-photo-ex: max(0px, (100vw - 1280 * var(--ru)) / 2);
+    --reach-us-photo-note-size: calc(12 * var(--ru));
+    --reach-us-photo-note-gap: calc(6 * var(--ru));
+    --reach-us-photo-intro-gap: calc(14 * var(--ru));
+    --reach-us-photo-intro-width: calc(309 * var(--ru));
+    --reach-us-gutter: calc(64 * var(--ru));
+    --reach-us-pad-top: max(96px, (100svh - 720 * var(--ru)) / 2 + 102 * var(--ru));
+    --reach-us-title-size: calc(30 * var(--ru));
+    --reach-us-label-size: calc(16 * var(--ru));
+    --reach-us-value-size: calc(16 * var(--ru));
+    --reach-us-address-width: calc(283 * var(--ru));
+    --reach-us-title-gap: calc(17 * var(--ru)); /* title box ends at 138, rule at 155 */
+
+    /* groups at 188; New Science (Typekit) draws its letters about 2px (1.8 frame px) lower in
+       the line box than the design's font files, so the groups start that much higher */
+    --reach-us-divider-gap: calc(31.2 * var(--ru) - 1px);
+    --reach-us-label-gap: calc(12 * var(--ru));
+    --reach-us-label-gap-tight: calc(12 * var(--ru));
+    --reach-us-row-gap: 0px;
+    --reach-us-col-gap: 0px;
+
+    /* the title's caps where the frame has them: New Science Extended (Typekit) sits 0.12em
+       lower in its line box than the design's font files; its box keeps its place (a relative
+       offset, as the arrival animates its translate) */
+    & > .reach-us-head :is(h1, h2, h3, h4, h5, h6) {
+      position: relative;
+      top: -0.12em;
+    }
+
+    & .columns.reach-us.photo {
+      /* 64 → 587 → 946 → 1216 of the frame */
+      grid-template-columns:
+        calc(523 * var(--ru) + 1.4 * var(--reach-us-photo-ex))
+        calc(359 * var(--ru) + 0.6 * var(--reach-us-photo-ex))
+        minmax(0, 1fr);
+
+      /* Phone and WhatsApp start 152 below the first groups (340 − 188) */
+      grid-template-rows: minmax(calc(152 * var(--ru)), auto) auto;
+
+      /* the cell after the backdrop stays in its own column (columns-reach-us-photo.js) */
+      & > div > .reach-us-after-backdrop {
+        grid-column-start: var(--reach-us-backdrop-col);
+      }
+    }
+  }
+
+  /* phones: the dealer mobile design's #garage once lit (#gCol), on its 375 frame (1u = 1 design
+     px fitted to the screen width, as its --u, never below 0.8px): the title, the rule 30 under
+     it, then At the showroom and Address across, Opening hours | Phone over WhatsApp in its
+     174 | rest grid, 40 between groups. Its text boxes are trimmed to the caps; New Science's caps
+     sit (lh − 1) / 2 + 0.22em under its line box and its baseline (lh − 1) / 2 + 0.06em above
+     the box's foot, so each gap below is the design's minus those */
+  @media (width < 900px) {
+    --reach-us-photo-u: clamp(0.8px, min(100vw / 375, 100svh / 640), 1.6px);
+    --reach-us-photo-note-size: calc(12 * var(--reach-us-photo-u)); /* directions (.vs) */
+    --reach-us-photo-note-lh: 1.5;
+    --reach-us-photo-note-color: rgb(255 255 255 / 75%);
+    --reach-us-photo-note-gap: calc(5.96 * var(--reach-us-photo-u)); /* 14 baseline → caps */
+    --reach-us-photo-intro-gap: calc(6.64 * var(--reach-us-photo-u));
+    --reach-us-photo-intro-width: none;
+    --reach-us-photo-value-color: rgb(255 255 255 / 80%);
+    --reach-us-gutter: max(calc(16 * var(--reach-us-photo-u)), (100vw - 343 * var(--reach-us-photo-u)) / 2);
+    --reach-us-pad-top: calc(76.72 * var(--reach-us-photo-u)); /* the title's caps at 82 */
+    --reach-us-pad-bottom: calc(40 * var(--reach-us-photo-u) + env(safe-area-inset-bottom, 0px));
+    --reach-us-title-size: calc(24 * var(--reach-us-photo-u));
+    --reach-us-title-lh: 1;
+    --reach-us-title-ls: 0;
+    --reach-us-title-gap: calc(28.56 * var(--reach-us-photo-u)); /* rule 30 under the baseline */
+    --reach-us-divider-gap: calc(34.88 * var(--reach-us-photo-u)); /* first label's caps 40 under */
+    --reach-us-label-size: calc(16 * var(--reach-us-photo-u));
+    --reach-us-label-lh: 1.22;
+    --reach-us-info-lh: 1.22;
+    --reach-us-info-ls: 0;
+    --reach-us-label-gap: calc(6.64 * var(--reach-us-photo-u)); /* value's caps 14 under */
+    --reach-us-label-gap-tight: var(--reach-us-label-gap);
+    --reach-us-value-size: calc(14 * var(--reach-us-photo-u));
+    --reach-us-value-lh: 1.22;
+    --reach-us-address-lh: 1.22;
+    --reach-us-row-gap: 0px;
+    --reach-us-col-gap: 0px;
+
+    /* the arrival's values on the phone frame (the timeline is the mobile design's gTl) */
+    --reach-us-photo-hint-bottom: calc(28 * var(--reach-us-photo-u) + env(safe-area-inset-bottom, 0px));
+    --reach-us-photo-hint-font: var(--font-family-base);
+    --reach-us-photo-hint-size: calc(11 * var(--reach-us-photo-u));
+    --reach-us-photo-hint-ls: 0.06em;
+    --reach-us-photo-hint-in: 0.2s; /* the phone hint has no transition of its own */
+    --reach-us-photo-hint-back: 0.111s;
+    --reach-us-photo-hint-ease: var(--reach-us-photo-ease-hint);
+    --reach-us-photo-media-in: 1.1s;
+    --reach-us-photo-rule-delay: 1s;
+    --reach-us-photo-item-delay: 0.95s;
+    --reach-us-photo-media-back: 0.611s;
+    --reach-us-photo-media-back-delay: 0.278s;
+    --reach-us-photo-hint-back-delay: 0.944s;
+    --reach-us-photo-rise: calc(24 * var(--reach-us-photo-u));
+
+    & .columns.reach-us.photo {
+      grid-template-columns: calc(174 * var(--reach-us-photo-u)) minmax(0, 1fr);
+
+      & > div > div {
+        & :is(h2, h3, h4, h5, h6) {
+          font-weight: var(--font-weight-medium);
+        }
+
+        & :is(p, li) {
+          color: var(--reach-us-photo-value-color);
+          font-weight: var(--font-weight-regular);
+        }
+      }
+
+      /* At the showroom, Address: across */
+      & > div:first-child > div:first-child {
+        grid-area: 1 / 1 / 2 / -1;
+
+        & p {
+          color: rgb(255 255 255 / 85%);
+          font-size: var(--reach-us-value-size);
+          line-height: var(--reach-us-value-lh);
+        }
+      }
+
+      & > div:first-child > div:nth-child(2) {
+        grid-area: 2 / 1 / 3 / -1;
+        margin-top: calc(32.36 * var(--reach-us-photo-u));
+
+        & p:first-of-type {
+          color: var(--color-white);
+        }
+      }
+
+      /* Opening hours on the left, its times in white; Phone over WhatsApp on the right */
+      & > div:first-child > div:nth-child(3) {
+        grid-area: 3 / 1 / 5 / 2;
+        margin-top: calc(31.04 * var(--reach-us-photo-u));
+
+        & p:nth-of-type(n + 2) {
+          color: var(--color-white);
+        }
+      }
+
+      & > div:nth-child(2) > div:nth-child(2) {
+        grid-area: 3 / 2 / 4 / 3;
+        margin-top: calc(31.04 * var(--reach-us-photo-u));
+      }
+
+      & > div:nth-child(2) > div:nth-child(3) {
+        grid-area: 4 / 2 / 5 / 3;
+        margin-top: calc(22.36 * var(--reach-us-photo-u)); /* 30 under Phone's baseline */
+      }
+    }
+  }
+
+  /* the Dealer footer in the fold (footer.js moves it into .reach-us-photo-footer), as the
+     dealer prototypes' #garage: under the groups on the same backdrop, its own padding ending
+     the fold. Desktop: at the foot of the 720 frame (its rule at 460). Phones: straight after
+     the groups, as the mobile design's #gCol */
+  &:has(> .reach-us-photo-footer) {
+    --reach-us-pad-bottom: 0px;
+
+    & > .reach-us-photo-footer {
+      padding: 0;
+    }
+
+    @media (width >= 900px) {
+      --reach-us-pad-bottom: max(0px, (100svh - 720 * var(--ru)) / 2);
+
+      & > .reach-us-photo-footer {
+        margin-top: auto;
+      }
+    }
+  }
+
+  /* with the snap, the fold with the footer is one screen; content taller than that (phones)
+     scrolls inside it once lit, 1:1 as the mobile design's column, over the backdrop held in
+     place (fixed, and clipped to the fold) */
+  html.snap-active &:has(> .reach-us-photo-footer) {
+    height: 100vh;
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  html.snap-active &.reach-us-photo-scrolls:has(> .reach-us-photo-footer):not(.reach-us-photo-arrival) {
+    overflow: hidden auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    clip-path: inset(0);
+
+    & .columns.reach-us.photo > div > .reach-us-backdrop {
+      position: fixed;
+    }
+  }
+
+  /* the arrival (columns-reach-us-photo.js): state 0 (.reach-us-photo-arrival) shows the film
+     sharp with the content hidden and a hint; state 1 is everything above.
+     Timings are the prototype's timeline (s): the hint fades out 0–0.2 (0–0.4 on desktop, where
+     it has a 0.4s transition of its own), the photo blurs and
+     zooms and the shade comes in 0.3–1.2 (power2.inOut), the rule draws 0.7–1.6 (expo.out),
+     the title and groups rise 24 and fade in 0.6s each from 0.65, 0.04 apart (power3.out).
+     Back to state 0 plays it in reverse at 1.8x. Phones take the mobile design's values (the
+     variables set above): the photo 0.3–1.4, the rule from 1, the groups from 0.95 */
+  @media (prefers-reduced-motion: no-preference) {
+    --reach-us-photo-ease-media: cubic-bezier(0.45, 0, 0.55, 1); /* power2.inOut */
+    --reach-us-photo-ease-rule: cubic-bezier(0.16, 1, 0.3, 1); /* expo.out */
+    --reach-us-photo-ease-rule-back: cubic-bezier(0.7, 0, 0.84, 0); /* expo.in */
+    --reach-us-photo-ease-item: cubic-bezier(0.215, 0.61, 0.355, 1); /* power3.out */
+    --reach-us-photo-ease-item-back: cubic-bezier(0.55, 0.055, 0.675, 0.19); /* power3.in */
+    --reach-us-photo-ease-hint: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* power1.out */
+
+    /* the hint, centred near the bottom (prototype #gHint) */
+    & .columns.reach-us.photo > div > .reach-us-backdrop .reach-us-photo-hint {
+      display: block;
+      position: absolute;
+      bottom: var(--reach-us-photo-hint-bottom, calc(28 * var(--ru)));
+      left: 50%;
+      z-index: 1;
+      translate: -50% 0;
+      color: rgb(255 255 255 / 60%);
+      font-family: var(--reach-us-photo-hint-font, 'Roboto Mono', ui-monospace, menlo, monospace);
+      font-size: var(--reach-us-photo-hint-size, calc(10 * var(--ru)));
+      font-weight: var(--font-weight-regular);
+      line-height: normal;
+      letter-spacing: var(--reach-us-photo-hint-ls, calc(0.4 * var(--ru)));
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+
+      /* desktop: the prototype's 0.2s fade runs under the hint's own 0.4s transition, so it
+         leaves over about 0.45s, easing in and out */
+      transition: opacity var(--reach-us-photo-hint-in, 0.45s) var(--reach-us-photo-hint-ease, ease-in-out);
+    }
+
+    & .columns.reach-us.photo > div > .reach-us-backdrop {
+      .reach-us-backdrop-img,
+      .reach-us-backdrop-video {
+        transition:
+          filter var(--reach-us-photo-media-in, 0.9s) var(--reach-us-photo-ease-media) 0.3s,
+          transform var(--reach-us-photo-media-in, 0.9s) var(--reach-us-photo-ease-media) 0.3s;
+      }
+
+      &::after {
+        transition: opacity var(--reach-us-photo-media-in, 0.9s) var(--reach-us-photo-ease-media) 0.3s;
+      }
+    }
+
+    & > .reach-us-head::after {
+      transition: transform 0.9s var(--reach-us-photo-ease-rule) var(--reach-us-photo-rule-delay, 0.7s);
+    }
+
+    & .reach-us-photo-item {
+      --reach-us-photo-item-in: 0.6s var(--reach-us-photo-ease-item) calc(var(--reach-us-photo-item-delay, 0.65s) + 0.04s * var(--reach-us-photo-i, 0));
+
+      transition:
+        opacity var(--reach-us-photo-item-in),
+        translate var(--reach-us-photo-item-in),
+        visibility var(--reach-us-photo-item-in);
+    }
+
+    /* state 0 */
+    &.reach-us-photo-arrival {
+      & .columns.reach-us.photo > div > .reach-us-backdrop {
+        .reach-us-backdrop-img,
+        .reach-us-backdrop-video {
+          filter: blur(0);
+          transform: none;
+          transition-duration: var(--reach-us-photo-media-back, 0.5s);
+          transition-delay: var(--reach-us-photo-media-back-delay, 0.222s);
+        }
+
+        .reach-us-photo-hint {
+          opacity: 1;
+          transition-duration: var(--reach-us-photo-hint-back, 0.4s);
+          transition-timing-function: var(--reach-us-photo-hint-ease, ease);
+          transition-delay: var(--reach-us-photo-hint-back-delay, 0.778s);
+        }
+
+        &::after {
+          opacity: 0;
+          transition-duration: var(--reach-us-photo-media-back, 0.5s);
+          transition-delay: var(--reach-us-photo-media-back-delay, 0.222s);
+        }
+      }
+
+      & > .reach-us-head::after {
+        transform: scaleX(0);
+        transition: transform 0.5s var(--reach-us-photo-ease-rule-back);
+      }
+
+      & .reach-us-photo-item {
+        visibility: hidden;
+        opacity: 0;
+        translate: 0 var(--reach-us-photo-rise, calc(24 * var(--ru)));
+        transition-duration: 0.333s;
+        transition-timing-function: var(--reach-us-photo-ease-item-back);
+        transition-delay: calc(0.194s - 0.022s * var(--reach-us-photo-i, 0));
+      }
+    }
+
+    /* a state set at once (arriving, or a change of window size); as specific as the rules
+       above, and after them */
+    &.reach-us-photo-instant {
+      & .columns.reach-us.photo > div > .reach-us-backdrop {
+        :is(.reach-us-backdrop-img, .reach-us-backdrop-video, .reach-us-photo-hint),
+        &::after {
+          transition: none;
+        }
+      }
+
+      & > .reach-us-head::after,
+      & .reach-us-photo-item {
+        transition: none;
+      }
+    }
+  }
+}
+
+/* an empty section after the fold with the footer (e.g. one left by a page metadata table)
+   takes no room: the fold ends the page */
+main > .section:has(.columns.reach-us.photo):has(> .reach-us-photo-footer) ~ .section:not(:has(*)) {
+  height: 0;
+  min-height: 0;
+  padding: 0;
+}

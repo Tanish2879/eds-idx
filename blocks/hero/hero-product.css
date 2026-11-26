@@ -1,0 +1,854 @@
+/* Hero "Product" style (product launch page), loaded by hero.js only when the style is used.
+   Full-screen backdrop (the whole scene, e.g. the car in its landscape), the logo and a big
+   centred title, a frosted "Watch the film" card and the price line with the buttons. Values from the Code T launch page (codet-design-prototype). */
+
+main > .section.hero-container .hero-wrapper .hero.product {
+  --product-gutter: 20px;
+  --product-top: 96px; /* clear of the floating header */
+  --product-radius: 18px;
+  --product-ink-soft: rgb(255 255 255 / 75%);
+
+  /* the screen the title is fitted to; in Universal Editor the hero's fixed editor height
+     (hero.css), as the editor frame grows with the page */
+  --product-screen: 100svh;
+
+  /* the display face (Adobe Fonts kit) sets its glyphs 0.14em lower in the line than the
+     source's font files (ascent 1.11em, not 0.8em): lifted back, without moving the layout */
+  --product-glyph-lift: -0.14em;
+
+  align-items: stretch;
+  padding: 0;
+
+  /* the scene (sky and car in one image), slightly zoomed. Small screens, as in the Figma
+     (Mobile / 01 Hero, 375 × 815): zoomed 1.0564x and lifted 2.75% of the hero's height, so
+     the car sits higher and its ground still reaches the bottom edge */
+  .bg .bg-img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-position: 61.4% 100%;
+    scale: 1.0564;
+    translate: 0 -2.75%;
+  }
+
+  /* depth of field: the scene blurs towards the bottom, in two steps */
+  .bg::before,
+  .bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .bg::before {
+    backdrop-filter: blur(2.5px);
+    mask-image: linear-gradient(transparent 58%, #000 84%);
+  }
+
+  .bg::after {
+    backdrop-filter: blur(6px);
+    mask-image: linear-gradient(transparent 76%, #000);
+  }
+
+  .content {
+    /* static, so the card places against the hero itself */
+    position: static;
+    display: grid;
+    grid-template:
+      'logo' auto
+      'title' auto
+      '.' 1fr
+      'film' auto
+      'buy' auto
+      / minmax(0, 1fr);
+    box-sizing: border-box;
+    padding: var(--product-top) var(--product-gutter)
+      calc(var(--product-gutter) + env(safe-area-inset-bottom));
+    text-align: center;
+  }
+
+  .product-logo {
+    grid-area: logo;
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    line-height: 0;
+
+    picture,
+    img {
+      display: block;
+      margin: 0 auto;
+    }
+
+    img {
+      width: 136px;
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  .content > :is(.heading, .heading-group) {
+    grid-area: title;
+    position: relative;
+    z-index: 1;
+    margin: 14px 0 0;
+  }
+
+  /* the title on two lines, the longer one below ("Meet the / Smart Giant") */
+  .content .heading {
+    max-inline-size: 10em;
+    margin-inline: auto;
+    font-family: var(--font-family-display);
+    font-size: clamp(30px, 9.4vw, 44px);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    translate: 0 var(--product-glyph-lift);
+  }
+
+  /* no scroll cue on the launch page's opener: the card and the buttons hold the bottom */
+  > .scroll {
+    display: none;
+  }
+
+  .product-buy {
+    grid-area: buy;
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+
+  /* the price line: hidden on small screens, as on the launch page */
+  .product-price {
+    display: none;
+    margin: 0;
+    font-family: var(--font-family-base);
+    font-size: 11px;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    letter-spacing: 0.045em;
+    text-align: end;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 72%);
+    text-shadow: 0 1px 16px rgb(0 0 0 / 30%);
+    opacity: 1;
+
+    strong {
+      display: block;
+      margin-top: 4px;
+      font-family: var(--font-family-display);
+      font-size: 21px;
+      font-weight: var(--font-weight-regular);
+      line-height: 1;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      color: var(--color-white);
+    }
+
+    /* the footnote mark after the amount (hero-product.js) */
+    sup {
+      margin-left: 1px;
+      font-size: 0.55em;
+      vertical-align: top;
+    }
+  }
+
+  .product-buy .cta-wrapper {
+    width: auto;
+    margin: 0;
+  }
+
+  .product-buy .cta.button {
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    height: 52px;
+    padding: 0 24px;
+    border-radius: var(--radius-8);
+    font-size: var(--button-font-size);
+    font-weight: var(--font-weight-regular);
+    letter-spacing: 0.02em;
+  }
+
+  .product-buy .cta-icon {
+    display: none;
+  }
+
+  /* the "Watch the film" card: thumbnail and copy; one button covers it */
+  .product-film {
+    grid-area: film;
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    padding: 8px 16px 8px 8px;
+    border-radius: var(--product-radius);
+    background: rgb(255 255 255 / 14%);
+    color: var(--color-white);
+    text-align: start;
+    backdrop-filter: blur(24px) saturate(1.2);
+  }
+
+  .product-film-media {
+    position: relative;
+    flex: 0 0 auto;
+    display: block;
+    width: 88px;
+    height: 64px;
+    border-radius: calc(var(--product-radius) - 8px);
+    overflow: hidden;
+    background: #222;
+    line-height: 0;
+
+    picture,
+    img,
+    video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .film-badge {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 12%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
+    translate: -50% -50%;
+    backdrop-filter: blur(3px);
+    transition: background-color 0.25s;
+
+    svg {
+      width: 10px;
+      height: 10px;
+      margin-left: 2px;
+      color: var(--color-white);
+    }
+  }
+
+  .product-film:hover .film-badge {
+    background: rgb(255 255 255 / 26%);
+  }
+
+  .product-film-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .product-film-eyebrow,
+  .product-film-text {
+    margin: 0;
+    font-family: var(--font-family-base);
+  }
+
+  .product-film-eyebrow {
+    font-size: 12px;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    color: var(--product-ink-soft);
+
+    /* the heading stays on one line at every width */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .product-film-text {
+    /* stylelint-disable-next-line value-no-vendor-prefix */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.4;
+    color: rgb(255 255 255 / 90%);
+  }
+
+  .product-film-open {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  .product-film-open:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 3px;
+  }
+
+  @media (width >= 900px) {
+    /* the source sizes the title at 5.6vw (at most 110px), then shrinks it (to no less than
+       80%) and lifts the logo and title (to no less than 96px from the top, at most 15% down)
+       so they end 28px above the car's roof, at about 0.409 of the screen's height: fitted
+       here from the screen's height and width (within 2px at 1280 × 800 to 1920 × 1080;
+       78px at 1440 × 900) */
+    --product-gutter: 64px;
+    --product-logo-w: clamp(160px, 13.5vw, 230px);
+    --product-title-size: clamp(
+      min(4.48vw, 88px),
+      0.2053 * var(--product-screen) - 1.83vw - 79.79px,
+      min(5.6vw, 110px)
+    );
+    --product-top: clamp(
+      96px,
+      0.409 * var(--product-screen) - 52px - 0.2647 * var(--product-logo-w)
+        - 2.16 * var(--product-title-size),
+      0.15 * var(--product-screen)
+    );
+
+    /* when even the smallest title would reach the roof, the source lowers the car instead
+       (by what is missing, over the 1.045 zoom): here the scene, by at most 2% of the screen,
+       so the zoom still covers its top edge */
+    --product-drop: clamp(
+      1px,
+      (148px + 0.2647 * var(--product-logo-w) + 2.16 * var(--product-title-size)
+        - 0.409 * var(--product-screen)) / 1.045,
+      0.02 * var(--product-screen)
+    );
+
+    /* no bottom shade: the price line carries its own text shadow */
+    &::after {
+      content: none;
+    }
+
+    /* its ground on the bottom edge */
+    .bg .bg-img {
+      object-position: center calc(100% + var(--product-drop));
+      scale: 1.045;
+      translate: none;
+    }
+
+    .content {
+      grid-template:
+        'logo logo' auto
+        'title title' auto
+        '. .' 1fr
+        'film buy' auto
+        / minmax(0, 1fr) auto;
+      align-items: end;
+      column-gap: 24px;
+    }
+
+    .product-logo img {
+      width: var(--product-logo-w);
+    }
+
+    .content > :is(.heading, .heading-group) {
+      margin-top: 24px;
+    }
+
+    .content .heading {
+      font-size: var(--product-title-size);
+    }
+
+    .product-film {
+      justify-self: start;
+      box-sizing: border-box;
+      width: min(460px, 40vw);
+      gap: 18px;
+      margin-bottom: 0;
+      padding: 8px 22px 8px 8px;
+    }
+
+    .product-film-media {
+      width: 132px;
+      height: 92px;
+    }
+
+    .product-film-text {
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .product-buy {
+      flex-direction: row;
+      align-items: center;
+      justify-self: end;
+    }
+
+    .product-price {
+      display: block;
+    }
+
+    .product-buy .cta.button {
+      width: auto;
+      min-width: 206px;
+    }
+  }
+
+  &[data-aue-resource] {
+    --product-screen: var(--hero-editor-height, 900px);
+  }
+}
+
+/* --- the load intro (hero-product.js playIntro: .product-intro, then .is-intro-playing) ---
+   The Code T prototype's: a white veil fades (0.5s power2.out) as, over the light page, the
+   hero opens from a card (inset 36% 31%, radius 24px) to full screen, 1.7s expo.inOut from
+   0.15s, its scene settling from 1.32x (2s); from 1.45s the logo and the title's lines rise
+   out of their masks (1.1s power4.out, 0.1s apart), then the button (1.8s) and the price
+   (1.88s) fade up 18px (0.7s power3.out) and the film card rises 24px out of an 8px blur
+   (1.85s, 0.8s). Until it plays (the photo, logo and fonts in, at most 2.6s) it holds its
+   first frame: veiled. Only clipped, veiled and moved: everything is painted from the start. */
+@media (prefers-reduced-motion: no-preference) {
+  main > .section.hero-container:has(> .hero-wrapper > .hero.product.product-intro) {
+    background-color: #fcfdfc;
+  }
+
+  main > .section.hero-container .hero-wrapper .hero.product.product-intro {
+    --intro-expo: cubic-bezier(0.87, 0, 0.13, 1);
+    --intro-power2: cubic-bezier(0.33, 1, 0.68, 1);
+    --intro-power3: cubic-bezier(0.25, 1, 0.5, 1);
+    --intro-power4: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* the veil (the prototype's loader) */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      height: auto;
+      background: #fcfdfc;
+      pointer-events: none;
+    }
+
+    /* the masks the logo and the lines rise out of; the lines keep room for the display
+       face's glyphs, which sit low in their line */
+    .product-logo {
+      overflow: clip;
+    }
+
+    .heading .product-line {
+      display: block;
+      overflow: clip;
+      overflow-clip-margin: 0.14em;
+    }
+
+    .heading .product-line-inner {
+      display: block;
+    }
+
+    /* the first frame, until it plays */
+    &:not(.is-intro-playing) {
+      clip-path: inset(36% 31% round 24px);
+
+      > .bg {
+        scale: 1.32;
+      }
+    }
+
+    &.is-intro-playing {
+      animation: product-intro-open 1.7s var(--intro-expo) 0.15s backwards;
+
+      &::after {
+        animation: product-intro-veil 0.5s var(--intro-power2) forwards;
+      }
+
+      > .bg {
+        animation: product-intro-settle 2s var(--intro-expo) 0.15s backwards;
+      }
+
+      .product-logo picture {
+        animation: product-intro-line 1.1s var(--intro-power4) 1.45s backwards;
+      }
+
+      /* --intro-elapsed: how far in the lines were split again (hero-product.js) */
+      .heading .product-line-inner {
+        animation: product-intro-line 1.1s var(--intro-power4)
+          calc(1.55s + var(--i, 0) * 0.1s - var(--intro-elapsed, 0s)) backwards;
+      }
+
+      /* a title playIntro couldn't split (inline markup): it fades in whole */
+      .heading:not(:has(.product-line)) {
+        animation: product-intro-fade 1.1s var(--intro-power4) 1.55s backwards;
+      }
+
+      .product-buy .cta-wrapper {
+        animation: product-intro-fade-up 0.7s var(--intro-power3) 1.8s backwards;
+      }
+
+      .product-price {
+        animation: product-intro-fade-up 0.7s var(--intro-power3) 1.88s backwards;
+      }
+
+      .product-film {
+        animation: product-intro-card 0.8s var(--intro-power3) 1.85s backwards;
+      }
+    }
+  }
+}
+
+@keyframes product-intro-open {
+  from {
+    clip-path: inset(36% 31% round 24px);
+  }
+
+  to {
+    clip-path: inset(0 round 0);
+  }
+}
+
+@keyframes product-intro-veil {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes product-intro-settle {
+  from {
+    scale: 1.32;
+  }
+}
+
+@keyframes product-intro-line {
+  from {
+    translate: 0 115%;
+  }
+}
+
+@keyframes product-intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes product-intro-fade-up {
+  from {
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+
+@keyframes product-intro-card {
+  from {
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 24px;
+    filter: blur(8px);
+  }
+}
+
+/* --- the page's end bar (Code T prototype: .cta / .cta__bar) ---
+   The last section of a page that opens with the Product hero, when it holds default content
+   only: a heading, the brochure links and their label, a "Find a dealer" link, then the two
+   buttons. It sits here because it belongs to the product page this hero opens, and this file
+   loads only there. hero-product.js turns the brochure links into a menu
+   (scripts/utils/brochure.js). The bar is only as tall as its content, so the footer shows
+   below it, as on the source. */
+main:has(.hero.product) > .section:last-of-type:not(:has([data-block-name])) {
+  --end-ink: #e7e7e7;
+
+  position: relative;
+  z-index: 2; /* the brochure menu opens over the footer */
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  justify-content: flex-start;
+
+  /* the heading clear of the site header's bar (--nav-offset): snapped to, the bar is at the
+     screen's top, and the header comes back over it on a move up */
+  padding: max(40px, var(--nav-offset, 90px) + 16px) 20px 32px;
+  background-color: #000;
+  color: var(--end-ink);
+
+  > .default-content-wrapper {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'title title'
+      'label dealer'
+      'actions actions';
+    align-items: center;
+    column-gap: 20px;
+    flex: none;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    overflow: visible; /* section-snap.js may mark the short bar .has-text-scroll */
+    font-family: var(--font-family-base);
+
+    > * {
+      margin: 0;
+    }
+
+    > h2 {
+      grid-area: title;
+      color: inherit;
+      font-family: var(--font-family-display);
+      font-size: 26px;
+      font-weight: var(--font-weight-medium, 500);
+      line-height: 1.1;
+      letter-spacing: normal;
+      text-transform: uppercase;
+
+      /* the display face sits 0.14em low in its line (see the hero above): lifted back */
+      translate: 0 -0.14em;
+    }
+
+    > .brochure-label,
+    > p:has(> a:only-child) {
+      display: flex;
+      margin-top: 14px;
+    }
+
+    > .brochure-label {
+      grid-area: label;
+    }
+
+    > p:has(> a:only-child) {
+      grid-area: dealer;
+    }
+
+    /* the brochure links: a frosted menu opening below the button */
+    > .brochure-links {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      z-index: 6;
+      grid-area: label;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-sizing: border-box;
+      min-width: 236px;
+      padding: 6px;
+      border-radius: 18px;
+      background-color: rgb(18 18 18 / 66%);
+      box-shadow: inset 0 0 0 1px rgb(255 255 255 / 14%);
+      backdrop-filter: blur(28px) saturate(1.3);
+      visibility: hidden;
+      opacity: 0;
+      clip-path: inset(0 0 100% round 18px);
+      transition:
+        clip-path 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.2s,
+        visibility 0s 0.35s;
+
+      a:any-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 46px;
+        padding: 0 14px;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: var(--font-weight-medium, 500);
+        letter-spacing: 0.02em;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition: background-color 0.2s;
+
+        &::before {
+          content: '';
+          flex: 0 0 auto;
+          width: 18px;
+          height: 18px;
+          background-color: currentcolor;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5v11.5m0 0 4.5-4.5M12 15l-4.5-4.5M4.5 20.5h15'/%3E%3C/svg%3E") center / contain no-repeat;
+        }
+
+        &[href*='wa.me']::before {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.4-4.3A8.5 8.5 0 1 1 20.5 11.7Z'/%3E%3Cpath d='M9.2 8.6c.2-.5.5-.5.8-.5h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.5 1.9 2.6 2.4.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.2.1.3.3.3.5 0 .6-.3 1.3-.9 1.6-.6.3-1.6.4-3.3-.4a9.4 9.4 0 0 1-3.9-3.7c-.8-1.4-.6-2.5-.1-3.1Z'/%3E%3C/svg%3E");
+        }
+
+        &:hover,
+        &:focus-visible {
+          background-color: rgb(255 255 255 / 12%);
+          outline: none;
+        }
+      }
+    }
+
+    &.brochure.is-open > .brochure-links {
+      visibility: visible;
+      opacity: 1;
+      clip-path: inset(0 round 18px);
+      transition:
+        clip-path 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.2s;
+    }
+
+    /* the brochure button and the dealer link: small, uppercase, an icon before */
+    .brochure-toggle,
+    > p > a:only-child:any-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font-family: var(--font-family-base);
+      font-size: 12px;
+      font-weight: var(--font-weight-medium, 500);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0.7;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &::before {
+        content: '';
+        flex: 0 0 auto;
+        width: 14px;
+        height: 14px;
+        background-color: currentcolor;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12m0 0 5-5m-5 5-5-5M4 21h16'/%3E%3C/svg%3E") center / contain no-repeat;
+      }
+
+      &:hover,
+      &:focus-visible,
+      &[aria-expanded='true'] {
+        opacity: 1;
+      }
+    }
+
+    > p > a:only-child:any-link::before {
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12Z'/%3E%3Ccircle cx='12' cy='10' r='2.6'/%3E%3C/svg%3E");
+    }
+
+    /* the two buttons: outlined, then light with the authored icon at the end */
+    > p:last-child:has(> a + a) {
+      grid-area: actions;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    > p:last-child > a:any-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-sizing: border-box;
+      width: 100%;
+      height: 52px;
+      padding: 0 24px;
+      border: 1px solid var(--end-ink);
+      border-radius: 8px;
+      background-color: transparent;
+      color: var(--end-ink);
+      font-family: var(--font-family-base);
+      font-size: 16px;
+      font-weight: var(--font-weight-regular, 400);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: background-color 0.25s, color 0.25s;
+    }
+
+    > p:last-child > a:any-link:last-child {
+      justify-content: space-between;
+      border-width: 0;
+      background-color: var(--end-ink);
+      color: #000;
+    }
+
+    > p:last-child > a:any-link:hover,
+    > p:last-child > a:any-link:focus-visible {
+      background-color: rgb(231 231 231 / 12%);
+    }
+
+    > p:last-child > a:any-link:last-child:hover,
+    > p:last-child > a:any-link:last-child:focus-visible {
+      background-color: #fff;
+    }
+
+    > p:last-child > a:any-link :is(picture, img) {
+      display: block;
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  @media (width >= 600px) {
+    > .default-content-wrapper > p:last-child:has(> a + a) {
+      flex-direction: row;
+      gap: 16px;
+    }
+
+    > .default-content-wrapper > p:last-child > a:any-link {
+      width: auto;
+      min-width: 206px;
+    }
+  }
+
+  /* from 900px: the heading and its links at the left, the buttons at the right, along the foot */
+  @media (width >= 900px) {
+    padding: max(64px, var(--nav-offset, 90px) + 16px) 64px 64px;
+
+    > .default-content-wrapper {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas:
+        'title title actions'
+        'label dealer actions';
+      column-gap: 24px;
+
+      > h2 {
+        font-size: 32px;
+        line-height: 36px;
+      }
+
+      > .brochure-label,
+      > p:has(> a:only-child) {
+        margin-top: 4px;
+      }
+
+      .brochure-toggle,
+      > p > a:only-child:any-link {
+        min-height: 0;
+      }
+
+      /* the source's brochure button is only as tall as its icon, at the top of the row, so
+         its label sits 2px above the dealer link's: moved up, its target kept */
+      .brochure-toggle {
+        translate: 0 -2px;
+      }
+
+      > p:last-child:has(> a + a) {
+        align-self: end;
+        margin-top: 0;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    > .default-content-wrapper > .brochure-links,
+    > .default-content-wrapper.brochure.is-open > .brochure-links {
+      transition: none;
+    }
+  }
+}
