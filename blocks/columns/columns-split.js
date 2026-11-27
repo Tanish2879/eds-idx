@@ -167,23 +167,15 @@ const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)')
  * the page's section snap (or a tap) wipes it away to the second.
  * @param {Element} block
  * @param {Element} frame the pane row
- * @param {Array<object|null>} playbacks the panes' videos (left, right), from decoratePane
  */
-function wireSides(block, frame, playbacks = []) {
+function wireSides(block, frame) {
   let side = '';
   let movedAt = 0;
-  // only the pane in focus plays its video; with neither in focus (desktop, the seam in the
-  // middle) both play
-  const play = () => playbacks.forEach((playback, i) => {
-    const pane = i ? 'right' : 'left';
-    playback?.setPaused((side === 'left' || side === 'right') && side !== pane);
-  });
   const set = (next) => {
     if (next === side) return;
     side = next;
     movedAt = performance.now();
     frame.dataset.side = next;
-    play();
   };
   const rest = () => (desktop() ? 'none' : 'left');
   set(rest());
@@ -244,7 +236,7 @@ export default function decorateSplit(block) {
   const panes = [...paneRow.children];
   panes[0]?.classList.add('split-left');
   panes[1]?.classList.add('split-right');
-  const playbacks = panes.map((cell) => decoratePane(cell, authoring).playback);
+  panes.forEach((cell) => decoratePane(cell, authoring));
 
   const seam = document.createElement('span');
   seam.className = 'split-seam';
@@ -252,5 +244,5 @@ export default function decorateSplit(block) {
   paneRow.append(seam);
 
   rows.forEach((row) => decorateFilm(row, authoring));
-  if (!authoring && panes.length > 1) wireSides(block, paneRow, playbacks);
+  if (!authoring && panes.length > 1) wireSides(block, paneRow);
 }

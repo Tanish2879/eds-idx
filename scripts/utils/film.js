@@ -13,32 +13,6 @@ const previews = new Set();
 let filmOpen = false;
 const syncPreviews = () => previews.forEach((sync) => sync());
 
-// iOS in Low Power Mode starts no video, even muted, unless a tap starts it (a scroll isn't
-// one), so previews stay on their poster. A tap anywhere then starts the refused ones and wakes
-const refused = new Set();
-const unloaded = new Set();
-let tapsWatched = false;
-const onTap = () => {
-  unloaded.forEach((video) => {
-    if (video.src) {
-      unloaded.delete(video);
-      return;
-    }
-    video.play().catch(() => {});
-    video.pause();
-  });
-  const retry = [...refused];
-  refused.clear();
-  retry.forEach((sync) => sync());
-};
-const watchTaps = () => {
-  if (tapsWatched) return;
-  tapsWatched = true;
-  ['touchend', 'click'].forEach((type) => {
-    document.addEventListener(type, onTap, { capture: true, passive: true });
-  });
-};
-
 /**
  * Whether the page is open in Universal Editor (videos stay still there, content stays editable).
  * @param {Element} el an element of the block
@@ -105,15 +79,11 @@ export function playWhileVisible(video, target = video) {
         video.preload = 'auto';
         video.src = video.dataset.src;
       }
-      video.play().catch((e) => {
-        if (e?.name === 'NotAllowedError') refused.add(sync);
-      });
+      video.play().catch(() => {});
     } else if (video.src) {
       video.pause();
     }
   };
-  if (!video.src) unloaded.add(video);
-  watchTaps();
   // really on screen: with full-screen sections the next one sits right at the viewport's edge,
   // which counts as intersecting (zero area) and would load its film before anyone gets there
   new IntersectionObserver(([entry]) => {

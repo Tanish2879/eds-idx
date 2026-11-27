@@ -66,19 +66,6 @@ function colourOf(part) {
   return '';
 }
 
-const MEDIA = 'img, picture, video, canvas, svg';
-
-// what the section shows at an edge (clientY): a picture or video there gives null (no strip,
-// so it can't draw a line across it)
-function edgeColourOf(part, clientY) {
-  const wide = window.innerWidth * 0.9;
-  const layers = document.elementsFromPoint(window.innerWidth / 2, clientY)
-    .filter((el) => part.contains(el) && el.getBoundingClientRect().width >= wide);
-  const layer = layers.find((el) => el.matches(MEDIA) || paintOf(el) !== '');
-  if (!layer) return colourOf(part);
-  return layer.matches(MEDIA) ? null : paintOf(layer);
-}
-
 export function initBarTint(main) {
   if (!CSS.supports('-webkit-touch-callout', 'none')) return;
   if (document.querySelector('[data-aue-resource]')) return;
@@ -101,11 +88,10 @@ export function initBarTint(main) {
     const end = Math.max(0, document.body.offsetHeight - window.innerHeight);
     const y = Math.min(Math.max(0, window.scrollY), end);
     const view = screen.offsetHeight || window.innerHeight;
-    [['top', 0.5], ['bottom', view - 0.5]].forEach(([edge, clientY]) => {
-      const at = y + clientY;
+    [['top', y + 0.5], ['bottom', y + view - 0.5]].forEach(([edge, at]) => {
       const part = parts.find((el) => el.offsetTop <= at && el.offsetTop + el.offsetHeight > at);
       if (!part) return;
-      const colour = edgeColourOf(part, clientY);
+      const colour = colourOf(part);
       if (colour === tinted[edge]) return;
       tinted[edge] = colour;
       if (colour) document.body.style.setProperty(`--bar-tint-${edge}`, colour);
@@ -189,17 +175,6 @@ export default async function initSectionSnap(main) {
   gsap.registerPlugin(Observer, ScrollToPlugin);
 
   const footer = document.querySelector('footer');
-  // the screen's height as the sections size themselves (100svh, the bars shown). Not
-  const viewProbe = document.createElement('div');
-  viewProbe.style.cssText = 'position:absolute;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
-  viewProbe.setAttribute('aria-hidden', 'true');
-  document.body.append(viewProbe);
-  // measured once and on resize, not on every scroll event (a read there can force layout)
-  let viewHeight = 0;
-  const measureView = () => { viewHeight = viewProbe.offsetHeight || window.innerHeight; };
-  measureView();
-  window.addEventListener('resize', measureView, { passive: true });
-  const viewH = () => viewHeight || window.innerHeight;
   // the footer's scroll-margin-top (footer.css)
   const footerRoom = () => (footer ? parseFloat(getComputedStyle(footer).scrollMarginTop) || 0 : 0);
 
@@ -208,7 +183,7 @@ export default async function initSectionSnap(main) {
     const stops = sections.map((section) => section.offsetTop
       + (blockScrollRegistry.get(section)?.stopOffset?.() ?? 0));
     if (footer && footer.offsetHeight > 0) {
-      const vh = viewH();
+      const vh = window.innerHeight;
       const footerBottom = footer.offsetTop + footer.offsetHeight;
       const footerTarget = Math.min(footer.offsetTop - footerRoom(), footerBottom - vh);
       stops.push(Math.max(footerTarget, stops[stops.length - 1]));
@@ -218,12 +193,12 @@ export default async function initSectionSnap(main) {
 
   // .scroll-runway sections scroll natively while they fill the screen
   const runways = sections.filter((section) => section.classList.contains('scroll-runway'));
-  const runwayEnd = (section) => section.offsetTop + section.offsetHeight - viewH();
+  const runwayEnd = (section) => section.offsetTop + section.offsetHeight - window.innerHeight;
 
   // A footer that doesn't fit below the header reads like a runway
   const footerIndex = sections.length;
   const footerTall = () => !!footer
-    && footer.offsetHeight + footerRoom() > viewH() + 1;
+    && footer.offsetHeight + footerRoom() > window.innerHeight + 1;
   const activeRunways = () => (footerTall() ? [...runways, footer] : runways);
   // where a runway starts: a section's top, or the footer's stop
   const runwayTop = (el) => (el === footer ? footer.offsetTop - footerRoom() : el.offsetTop);
@@ -245,7 +220,7 @@ export default async function initSectionSnap(main) {
     const y = Math.min(Math.max(0, window.scrollY), Math.max(0, end - window.innerHeight));
     // no strip below once the page is at the footer (on its stop, or in it when it scrolls)
     const footerStop = footer
-      ? Math.min(runwayTop(footer), footer.offsetTop + footer.offsetHeight - viewH())
+      ? Math.min(runwayTop(footer), footer.offsetTop + footer.offsetHeight - window.innerHeight)
       : Infinity;
     const inFooter = y >= footerStop - 1;
     const below = inFooter ? 0 : end - y - barCover.offsetHeight;
@@ -282,13 +257,6 @@ export default async function initSectionSnap(main) {
   // the element a stop belongs to: a section, or the footer for the final stop
   const stopElement = (i) => sections[i] || footer;
 
-  // touch screens: a swipe is answered faster and the move starts at speed (it carries on the
-  // keep the slower glide
-  const touchScreen = window.matchMedia('(pointer: coarse)');
-  const SNAP = () => (touchScreen.matches
-    ? { duration: 0.75, ease: 'power3.out' }
-    : { duration: 1.2, ease: 'power2.inOut' });
-
   // `align` (anchor links) also re-aligns a page that arrived off-stop at the same section
   const goTo = (target, align = false, motion = {}) => {
     const stops = getStops();
@@ -299,16 +267,15 @@ export default async function initSectionSnap(main) {
     const y = motion.step && clamped < index && runways.includes(sections[clamped])
       ? runwayEnd(sections[clamped])
       : stops[clamped];
-    // view: the screen height runway ends are measured with (wave-cut.js)
-    const move = { from: stopElement(index), to: stopElement(clamped), view: viewH() };
+    const move = { from: stopElement(index), to: stopElement(clamped) };
     index = clamped;
     animating = true;
     document.dispatchEvent(new CustomEvent('snap:start', { detail: move }));
     // the Observer stays enabled through the tween so native scroll can't fight it
     gsap.to(window, {
       scrollTo: { y, autoKill: false },
-      duration: motion.duration ?? SNAP().duration,
-      ease: motion.ease ?? SNAP().ease,
+      duration: motion.duration ?? 1.2,
+      ease: motion.ease ?? 'power2.inOut',
       onUpdate: placeBarCover,
       onComplete: () => {
         animating = false;
@@ -325,53 +292,11 @@ export default async function initSectionSnap(main) {
   let lastNativeAt = -Infinity; // last wheel event handled by an inner scroller
   // A wheel delta that continues a momentum tail
   const isDecaying = (mag, prev) => (mag < NOTCH_MIN ? mag <= prev + 1 : mag < prev);
-  // wheel speed (px/ms): median of recent per-event speeds, so merges and spikes can't fake a swipe
-  const RISE_MIN = 0.8;
-  const SPEED_GAP_MAX = 40;
-  const wheelLog = [];
-  let wheelRates = 0;
-  let wheelSpeed = 0;
-  let wheelPeak = 0;
-  let slowest = Infinity;
-  let pastPeak = false;
-  window.addEventListener('wheel', (e) => {
-    // event time, not handling time
-    const now = e.timeStamp || performance.now();
-    const prev = wheelLog[wheelLog.length - 1];
-    if (!prev || now - prev.at > QUIET_MS) {
-      wheelLog.length = 0;
-      wheelPeak = 0;
-      pastPeak = false;
-    }
-    const mag = Math.abs(e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY);
-    const last = wheelLog[wheelLog.length - 1];
-    const gap = last ? now - last.at : Infinity;
-    // a gap wider than a trackpad's (8-33ms) gives no speed
-    wheelLog.push({ at: now, rate: gap <= SPEED_GAP_MAX ? mag / Math.max(4, gap) : null });
-    if (wheelLog.length > 6) wheelLog.shift();
-    const rates = wheelLog.map(({ rate }) => rate).filter((r) => r !== null).sort((x, y) => x - y);
-    wheelRates = rates.length;
-    wheelSpeed = rates.length ? rates[Math.floor(rates.length / 2)] : 0;
-    if (pastPeak) {
-      slowest = Math.min(slowest, wheelSpeed);
-    } else {
-      wheelPeak = Math.max(wheelPeak, wheelSpeed);
-      slowest = wheelSpeed;
-      pastPeak = wheelSpeed < wheelPeak * 0.7;
-    }
-  }, { capture: true, passive: true });
-  // a new swipe: the speed rising again (momentum only slows)
-  const swipeRose = () => pastPeak && wheelRates >= 3 && wheelSpeed >= RISE_MIN
-    && wheelSpeed > slowest * 2;
-  // only the next swipe counts
-  const waitForRise = () => { pastPeak = false; wheelPeak = wheelSpeed; slowest = wheelSpeed; };
   let locked = false;
-  // after leaving a .runway-stop runway, each step needs a new swipe
-  let tailHold = false;
   let unlockTimer;
   const armUnlock = () => {
     clearTimeout(unlockTimer);
-    unlockTimer = setTimeout(() => { locked = false; tailHold = false; }, QUIET_MS);
+    unlockTimer = setTimeout(() => { locked = false; }, QUIET_MS);
   };
   const lock = () => {
     locked = true;
@@ -383,7 +308,6 @@ export default async function initSectionSnap(main) {
   window.addEventListener('touchstart', () => {
     clearTimeout(unlockTimer);
     locked = false;
-    tailHold = false;
     touchDown = true;
     touchStepped = false;
   }, { capture: true, passive: true });
@@ -500,12 +424,6 @@ export default async function initSectionSnap(main) {
   const noSnapSections = sections.filter((section) => section.classList.contains('no-snap')
     && !section.classList.contains('scroll-runway'));
   const noSnapVisible = new Set();
-  // in or beside one, an inner scroll at its end carries on into the page (styles.css):
-  // otherwise a swipe on it into the free scroll moved nothing
-  sections.forEach((section, i) => {
-    const near = [sections[i - 1], section, sections[i + 1]];
-    section.classList.toggle('chains-scroll', near.some((s) => noSnapSections.includes(s)));
-  });
 
   const textArea = (section) => section.querySelector(':scope > .default-content-wrapper');
   const textSections = sections.filter((section) => section.children.length === 1
@@ -625,12 +543,10 @@ export default async function initSectionSnap(main) {
       // step from the runway, not from the stop updateObserverState resynced to
       index = runwayIndex;
       lock();
-      if (stopElement(runwayIndex)?.classList.contains('runway-stop')) tailHold = true;
       const stops = getStops();
       const target = Math.min(Math.max(runwayIndex + direction, 0), stops.length - 1);
-      const remaining = Math.abs(stops[target] - window.scrollY) / viewH();
-      const full = SNAP().duration;
-      goTo(target, false, { duration: Math.min(full, Math.max(full / 2, remaining * full)) });
+      const remaining = Math.abs(stops[target] - window.scrollY) / window.innerHeight;
+      goTo(target, false, { duration: Math.min(1.2, Math.max(0.6, remaining * 1.2)) });
     };
     const glideStep = () => {
       const y = window.scrollY;
@@ -647,37 +563,21 @@ export default async function initSectionSnap(main) {
       glide = requestAnimationFrame(glideStep);
     };
 
-    let lastWheelAt = -Infinity;
     window.addEventListener('wheel', (e) => {
       if (!inRunway || animating || e.ctrlKey || navOpen()) return;
       const section = stopElement(runwayIndex);
       const top = runwayTop(section);
       const end = runwayEnd(section);
       const delta = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
-      const now = performance.now();
-      // a new gesture: after a pause, or the speed rising again
-      const fresh = now - lastWheelAt > QUIET_MS || swipeRose();
-      lastWheelAt = now;
-      const from = targetY ?? window.scrollY;
-      const next = from + delta;
+      const next = (targetY ?? window.scrollY) + delta;
       // out into a No Snap section: this wheel event scrolls the page natively
       const way = (next > end + 1 && 1) || (next < top - 1 && -1);
       if (way && intoNoSnap(way)) { release(); return; }
       if (e.cancelable) e.preventDefault();
       else return; // already latched natively (rare): left to the scroll listener
-      // a .runway-stop section holds a swipe at its edge; only a new one leaves it
-      const holds = section.classList?.contains('runway-stop');
-      const atEdge = (edge) => Math.abs(from - edge) <= 1;
-      const leaves = (edge) => !holds || (fresh && atEdge(edge));
       // the footer ends the page: past its end there is nothing to hand over to
-      if (way > 0 && runwayIndex < footerIndex && leaves(end)) {
-        waitForRise();
-        handOver(1);
-        return;
-      }
-      if (way < 0 && runwayIndex > 0 && leaves(top)) { waitForRise(); handOver(-1); return; }
-      // the swipe that reaches the edge stops there
-      if (holds && way && !atEdge(way > 0 ? end : top)) waitForRise();
+      if (next > end + 1 && runwayIndex < footerIndex) { handOver(1); return; }
+      if (next < top - 1 && runwayIndex > 0) { handOver(-1); return; }
       const clamped = Math.min(Math.max(next, top), end);
       if (!glide && Math.abs(delta) < SMOOTH_MIN) {
         window.scrollTo(0, clamped);
@@ -687,89 +587,6 @@ export default async function initSectionSnap(main) {
       targetY = clamped;
       if (!glide) glide = requestAnimationFrame(glideStep);
     }, { capture: true, passive: false });
-
-    // touch in a .runway-stop runway is driven here too, so iOS momentum can't carry past its edge
-    const TOUCH_SLOP = 6;
-    let drag = null;
-    let coast = 0;
-    const stopCoast = () => { cancelAnimationFrame(coast); coast = 0; };
-    const holdsTouch = () => inRunway && !animating && !navOpen()
-      && !!stopElement(runwayIndex)?.classList?.contains('runway-stop');
-    const sideways = (el) => {
-      for (let node = el; node && node !== document.body; node = node.parentElement) {
-        const ox = getComputedStyle(node).overflowX;
-        if ((ox === 'auto' || ox === 'scroll') && node.scrollWidth > node.clientWidth) return true;
-      }
-      return false;
-    };
-    window.addEventListener('touchstart', (e) => {
-      stopCoast();
-      drag = null;
-      const el = e.composedPath ? e.composedPath()[0] : e.target;
-      if (e.touches.length !== 1 || !holdsTouch() || isSelfScrollable(el) || sideways(el)) return;
-      const t = e.touches[0];
-      drag = {
-        x: t.clientX, y: t.clientY, lastY: t.clientY, from: window.scrollY, at: performance.now(), v: 0, axis: '',
-      };
-    }, { capture: true, passive: true });
-    window.addEventListener('touchmove', (e) => {
-      if (!drag || e.touches.length !== 1) return;
-      if (!holdsTouch() || (!e.cancelable && !drag.axis)) { drag = null; return; }
-      const t = e.touches[0];
-      if (!drag.axis) {
-        const dx = Math.abs(t.clientX - drag.x);
-        const dy = Math.abs(t.clientY - drag.y);
-        if (dx < TOUCH_SLOP && dy < TOUCH_SLOP) { e.preventDefault(); return; }
-        drag.axis = dy > dx ? 'y' : 'x';
-      }
-      if (drag.axis !== 'y') return;
-      if (e.cancelable) e.preventDefault();
-      const section = stopElement(runwayIndex);
-      const top = runwayTop(section);
-      const end = runwayEnd(section);
-      const now = performance.now();
-      const delta = drag.lastY - t.clientY; // finger up = page down
-      const v = delta / Math.max(1, now - drag.at);
-      drag.v = drag.v * 0.2 + v * 0.8;
-      drag.lastY = t.clientY;
-      drag.at = now;
-      const next = window.scrollY + delta;
-      const way = (next > end + 1 && 1) || (next < top - 1 && -1);
-      // only a swipe that started at the edge leaves
-      const edge = way > 0 ? end : top;
-      const canLeave = way > 0 ? runwayIndex < footerIndex : runwayIndex > 0;
-      if (way && canLeave && Math.abs(drag.from - edge) <= 1) {
-        drag = null;
-        handOver(way);
-        return;
-      }
-      window.scrollTo(0, Math.min(Math.max(next, top), end));
-      placeBarCover();
-    }, { capture: true, passive: false });
-    const endDrag = () => {
-      if (!drag) return;
-      // momentum, stopping at the edge
-      let v = performance.now() - drag.at > 80 || drag.axis !== 'y' ? 0 : drag.v;
-      drag = null;
-      let last = performance.now();
-      const run = (now) => {
-        const dt = Math.max(1, now - last);
-        last = now;
-        v *= 0.995 ** dt;
-        if (Math.abs(v) < 0.02 || !holdsTouch()) { stopCoast(); return; }
-        const section = stopElement(runwayIndex);
-        const top = runwayTop(section);
-        const end = runwayEnd(section);
-        const y = Math.min(Math.max(window.scrollY + v * dt, top), end);
-        window.scrollTo(0, y);
-        placeBarCover();
-        if (y === top || y === end) { stopCoast(); return; }
-        coast = requestAnimationFrame(run);
-      };
-      coast = requestAnimationFrame(run);
-    };
-    window.addEventListener('touchend', endDrag, { capture: true, passive: true });
-    window.addEventListener('touchcancel', () => { drag = null; }, { capture: true, passive: true });
 
     const onRunwayScroll = () => {
       const y = window.scrollY;
@@ -798,33 +615,11 @@ export default async function initSectionSnap(main) {
         if (Math.abs(window.scrollY - stop) >= 2) window.scrollTo({ top: stop, behavior: 'instant' });
         return;
       }
-      // a finger still on the screen drags the page natively, and a touch scroll can't be
-      if (touchDown) return;
       handOver(direction);
     };
     window.addEventListener('scroll', onRunwayScroll, { passive: true });
     document.addEventListener('snap:end', onRunwayScroll);
     onRunwayScroll();
-
-    // a move started from outside the runway code (a link, the side navigation, window.snap)
-    // leaves the runway too: still marked inside it, the page was sent on again on arrival
-    document.addEventListener('snap:start', () => {
-      if (!inRunway) return;
-      release();
-    });
-
-    // the finger lifted outside the runway it was dragging: snap on, the way it left. The page
-    ['touchend', 'touchcancel'].forEach((type) => {
-      window.addEventListener(type, (e) => {
-        if (e.touches.length || !inRunway || animating) return;
-        const y = window.scrollY;
-        const section = stopElement(runwayIndex);
-        if (!section || withinRunway(section, y, 1)) return;
-        html.classList.add('snap-locked');
-        window.scrollTo({ top: y, behavior: 'instant' });
-        handOver(y < runwayTop(section) ? -1 : 1);
-      }, { passive: true });
-    });
 
     // the footer changes height (it loads late, its accordion opens and closes)
     if (footer) {
@@ -899,19 +694,6 @@ export default async function initSectionSnap(main) {
   };
   let zoneVScroller = null;
   let zonePaged = false;
-  // a No Snap section partly on screen (`index` is stale there): the stop a swipe on `scroller`
-  // pages to, -1 when the browser scrolls it. Back to its section's own stop first; resting on
-  // that stop with the list at its end, on to a snapping neighbour
-  const freePageTarget = (scroller, direction) => {
-    const own = sections.findIndex((section) => section.contains(scroller));
-    if (own < 0 || noSnapSections.includes(sections[own])) return -1;
-    const ahead = (getStops()[own] - window.scrollY) * direction;
-    if (ahead >= 2) return own;
-    const next = sections[own + direction];
-    if (ahead <= -2 || canScrollFurther(scroller, direction)
-      || !next || noSnapSections.includes(next)) return -1;
-    return own + direction;
-  };
   window.addEventListener('touchstart', (e) => {
     zoneAxis = '';
     zoneScroller = null;
@@ -937,10 +719,7 @@ export default async function initSectionSnap(main) {
     if (zoneFirstMove) {
       zoneFirstMove = false;
       const onBoundary = boundaryFree(1) || boundaryFree(-1);
-      // (not a list with room that way: preventing the first move would freeze it)
-      const listMoves = zoneVScroller && canScrollFurther(zoneVScroller, towards);
-      if (onBoundary && !boundaryFree(towards) && !zoneScroller && !listMoves
-        && e.cancelable) e.preventDefault();
+      if (onBoundary && !boundaryFree(towards) && !zoneScroller && e.cancelable) e.preventDefault();
     }
     if (!zoneAxis) {
       const dx = Math.abs(e.touches[0].clientX - zoneX);
@@ -953,17 +732,13 @@ export default async function initSectionSnap(main) {
         e.stopPropagation();
         return;
       }
-      if (zoneAxis === 'y' && zoneVScroller && overOverlay) {
-        const free = noSnapVisible.size > 0;
-        const target = free ? freePageTarget(zoneVScroller, towards) : -1;
-        if (free ? target >= 0 : !canScrollFurther(zoneVScroller, towards)) {
-          zonePaged = true;
-          e.stopPropagation();
-          if (e.cancelable) e.preventDefault();
-          if (free) goTo(target, true);
-          else handleDirection(towards);
-          return;
-        }
+      if (zoneAxis === 'y' && zoneVScroller && overOverlay
+        && !canScrollFurther(zoneVScroller, towards)) {
+        zonePaged = true;
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+        handleDirection(towards);
+        return;
       }
     }
     if (zoneAxis === 'x') {
@@ -997,9 +772,7 @@ export default async function initSectionSnap(main) {
     const mag = Math.abs(e.deltaY);
     if (locked) {
       // momentum only decays, so after the tween a strong or growing delta is a new gesture
-      const isNew = tailHold ? swipeRose() : (mag >= NOTCH_MIN || mag > lastMag * 1.5);
-      if (!animating && mag >= NEW_GESTURE_MIN && isNew) {
-        if (tailHold) waitForRise();
+      if (!animating && mag >= NEW_GESTURE_MIN && (mag >= NOTCH_MIN || mag > lastMag * 1.5)) {
         clearTimeout(unlockTimer);
         locked = false;
       } else {
@@ -1128,8 +901,7 @@ export default async function initSectionSnap(main) {
 
   // recompute after resize and layout shifts (the footer loads lazily, images settle by load)
   if (document.readyState !== 'complete') window.addEventListener('load', syncIndex, { once: true });
-  // not mid-move: iOS Safari resizes as its bars change, and the move's target is already the index
-  window.addEventListener('resize', () => { if (!animating) syncIndex(); });
+  window.addEventListener('resize', () => { syncIndex(); });
 
   const typingField = (el) => el?.closest?.('input:not([type="checkbox"], [type="radio"], [type="button"], [type="submit"]), textarea, select, [contenteditable="true"]');
   const engineIdle = () => {
@@ -1140,10 +912,8 @@ export default async function initSectionSnap(main) {
   };
   // after leaving a text field: its section, held until the keyboard has closed (-1: none)
   let keyboardSection = -1;
-  // out of a No Snap zone with the finger still down: settles when it lifts
-  let exitPending = false;
   const restingOff = () => engineIdle() && !typingField(document.activeElement)
-    && keyboardSection < 0 && !exitPending;
+    && keyboardSection < 0;
   const jumpTo = (i) => {
     const top = getStops()[i];
     if (top === undefined) return;
@@ -1155,28 +925,6 @@ export default async function initSectionSnap(main) {
     syncIndex();
     jumpTo(index);
   };
-  const holdAfterExit = () => {
-    lock();
-    exitHoldUntil = performance.now() + EXIT_HOLD_MS;
-    window.setTimeout(syncLock, EXIT_HOLD_MS + 20);
-  };
-  // touch: stop the momentum where it is, then glide to the nearest stop (a jump there shook)
-  const glideOutOfZone = () => {
-    exitPending = false;
-    if (animating || inRunway || noSnapVisible.size > 0 || navOpen()) return;
-    syncIndex();
-    holdAfterExit();
-    html.classList.add('snap-locked');
-    window.scrollTo({ top: window.scrollY, behavior: 'instant' });
-    const away = Math.abs(getStops()[index] - window.scrollY) / viewH();
-    const full = SNAP().duration;
-    goTo(index, true, { duration: Math.min(full, Math.max(full / 2, away * full)) });
-  };
-  ['touchend', 'touchcancel'].forEach((type) => {
-    window.addEventListener(type, (e) => {
-      if (!e.touches.length && exitPending) glideOutOfZone();
-    }, { passive: true });
-  });
   const refreshNoSnap = () => {
     if (!noSnapSections.length) return;
     const wasIn = noSnapVisible.size > 0;
@@ -1193,18 +941,11 @@ export default async function initSectionSnap(main) {
     barCover?.classList.toggle('is-off', noSnapVisible.size > 0);
     if (wasIn && noSnapVisible.size === 0 && !animating && !inRunway) {
       // scrolled out of a No Snap zone: stop on the stop reached and hold there briefly
-      if (!touchScreen.matches) {
-        syncIndex();
-        jumpTo(index);
-        holdAfterExit();
-      } else if (touchDown) {
-        exitPending = true;
-        // this swipe has had its move
-        touchStepped = true;
-        holdAfterExit();
-      } else {
-        glideOutOfZone();
-      }
+      syncIndex();
+      jumpTo(index);
+      lock();
+      exitHoldUntil = performance.now() + EXIT_HOLD_MS;
+      window.setTimeout(syncLock, EXIT_HOLD_MS + 20);
     }
     if (changed) updateObserverState();
     else syncLock();

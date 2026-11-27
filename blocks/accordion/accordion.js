@@ -165,48 +165,6 @@ const COMBAT_EASE = {
 };
 
 /**
- * While an item opens, keeps it in view: the list it scrolls in (the section's list, when it
- * scrolls inside a screen-tall section) or, without one, the page follows it as it grows, so
- * its question and its whole answer show; an answer taller than the room keeps its question
- * at the top. It eases after the item as it opens, for about as long as the opening lasts
- * @param {HTMLDetailsElement} details
- */
-function keepInView(details) {
-  let scroller = null;
-  for (let el = details.parentElement; el && el !== document.body; el = el.parentElement) {
-    const { overflowY } = getComputedStyle(el);
-    if (overflowY === 'auto' || overflowY === 'scroll') {
-      scroller = el;
-      break;
-    }
-  }
-  const smooth = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-  const until = performance.now() + 900;
-  const step = () => {
-    if (!details.open || details.classList.contains('is-closing')) return;
-    const box = details.getBoundingClientRect();
-    let top = 0;
-    let bottom = window.innerHeight;
-    if (scroller) {
-      const room = scroller.getBoundingClientRect();
-      top = Math.max(top, room.top);
-      bottom = Math.min(bottom, room.bottom);
-    }
-    // below the room: up by what is hidden, but never the question above the top
-    let by = box.top < top
-      ? box.top - top
-      : Math.max(0, Math.min(box.bottom - bottom, box.top - top));
-    if (Math.abs(by) > 0.5) {
-      if (smooth) by = Math.sign(by) * Math.max(1, Math.abs(by) * 0.3);
-      if (scroller) scroller.scrollTop += by;
-      else window.scrollBy(0, by);
-    }
-    if (performance.now() < until) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-
-/**
  * @param {Element} block
  * @param {HTMLDetailsElement[]} items
  */
@@ -297,22 +255,15 @@ export default function decorate(block) {
     if (contentLength) tooLong.push(`item ${i + 1}: its content (${contentLength} of ${MAX_CHARS.content} characters)`);
   });
 
-  // Combat theme: the first question starts open, as on the source. Quietly: the page stays put
-  if (document.body.classList.contains('combat') && items.length) {
-    items[0].dataset.quietOpen = '';
-    items[0].open = true;
-  }
+  // Combat theme: the first question starts open, as on the source
+  if (document.body.classList.contains('combat') && items.length) items[0].open = true;
 
   // one item open at a time (one still closing, Combat motion, closes when it is done)
   items.forEach((details) => details.addEventListener('toggle', () => {
-    const quiet = 'quietOpen' in details.dataset;
-    delete details.dataset.quietOpen;
     if (details.open) {
       items.forEach((other) => {
         if (other !== details && !other.classList.contains('is-closing')) other.open = false;
       });
-      // the opened question and its answer come into view (not on load, nor in the editor)
-      if (!editing && !quiet) keepInView(details);
     }
   }));
   const prototypeMotion = document.body.classList.contains('combat') || block.closest('.section.light');

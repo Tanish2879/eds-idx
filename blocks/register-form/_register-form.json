@@ -74,7 +74,7 @@
           "valueType": "string",
           "name": "requestSent",
           "label": "Request Sent Pop-up",
-          "description": "Booking only, when no Thank-you link. Heading = title; bold-label paragraphs = rows; plain paragraph = status; link = outlined button.",
+          "description": "Booking only (used when the Thank-you Page Link is empty). The heading is the pop-up's title (e.g. Request sent to Meridian Motors); each paragraph starting with a bold label is a row (e.g. **Dealer** Meridian Motors, Plot 14, Sector 54, Golf Course Road, Gurgaon); a plain paragraph is the status line (e.g. Waiting for Meridian Motors to call you); a link is the outlined button beside Done (e.g. Explore the Combat to #combat). The visitor's email and contact are added automatically.",
           "condition": { "===": [{ "var": "classes" }, "booking"] }
         },
         {
@@ -90,67 +90,19 @@
           "valueType": "string",
           "name": "mapAddress",
           "label": "Map Address",
-          "description": "Booking only. Address the map shows and marks; also the pop-up's second line. Replaces the Decorative Image; clicking opens Google Maps.",
+          "description": "Booking only. The address the Google map shows and marks, e.g. Plot 14, Sector 54, Gurgaon; also the pop-up's second line. With it the map replaces the Decorative Image (which stays as the fallback); clicking the map opens the address in Google Maps.",
           "condition": { "===": [{ "var": "classes" }, "booking"] }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "mapCoordinates",
-          "label": "Map Coordinates",
-          "description": "Booking only. Latitude, longitude, comma-separated (degrees or decimal). Map clicks and Get directions go here, else to the Map Address.",
-          "condition": { "===": [{ "var": "classes" }, "booking"] }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "wayfindRegion",
-          "label": "Find Us: Region",
-          "description": "Find Us Card only. Under the pin on the map drawing, e.g. Gurugram · Haryana.",
-          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "wayfindCity",
-          "label": "Find Us: City",
-          "description": "Find Us Card only. Beside the pin icon under the address, e.g. Gurugram, India.",
-          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "wayfindPin",
-          "label": "Find Us: PIN Code",
-          "description": "Find Us Card only. The postal code, e.g. 122011 (shown as PIN 122011).",
-          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "wayfindNote",
-          "label": "Find Us: Closing Line",
-          "description": "Find Us Card only. The line along the card's foot, e.g. We look forward to meeting you.",
-          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
         },
         {
           "component": "select",
           "name": "classes",
           "label": "Style",
-          "description": "Default: registration form. Booking: dealer quote request (email optional) with OTP and Request Sent pop-ups; the Decorative Image is the map.",
+          "description": "Default: the registration form. Booking: the dealer microsite's quote request: the details (email optional, pincode as in Default), then the OTP and the Request Sent pop-ups; the lead is sent with source Dealer Microsite and channel Digital. The Decorative Image is the map beside it.",
           "value": "",
           "options": [
             { "name": "Default", "value": "" },
             { "name": "Booking", "value": "booking" }
           ]
-        },
-        {
-          "component": "boolean",
-          "valueType": "boolean",
-          "name": "classes_wayfind",
-          "label": "Find Us Card",
-          "description": "Booking only. Shows a Find us card instead of the map: drawing, dealer name, address, city, PIN and Get directions. The form is unchanged.",
-          "condition": { "===": [{ "var": "classes" }, "booking"] }
         }
       ]
     }

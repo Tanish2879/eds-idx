@@ -489,20 +489,15 @@ footer .footer {
       }
     }
 
-    /* phones and tablets: a little smaller than the header logo on every screen, 22.88 high
-       to its 26 (sized like it, with the header's scale unit: 1px at Figma's 402 x 874).
-       Desktop: Figma "JSW Motors Full White" lockup, 182 x 22.88 */
     .mark {
-      width: auto;
-      max-width: 100%;
-      height: calc(22.88 * clamp(0.7px, min(100vw / 402, 100svh / 874), 1px));
+      width: calc(187 * var(--f-u));
+      height: calc(15 * var(--f-u));
       object-fit: contain;
       object-position: left center;
 
       @media (width >= 900px) {
-        width: calc(182 * var(--f-u));
-        max-width: none;
-        height: calc(22.88 * var(--f-u));
+        width: calc(148 * var(--f-u));
+        height: calc(12 * var(--f-u));
       }
     }
 
@@ -619,7 +614,7 @@ footer .footer {
     --footer-columns-bg: #090909;
     --footer-legal-color: rgb(254 253 254 / 50%);
     --footer-divider-color: rgb(255 255 255 / 10%);
-    --footer-legal-font: var(--font-family-base);
+    --footer-legal-font: 'Roboto Mono', ui-monospace, monospace;
 
     /* the design's sky: black at the top into teal near the horizon */
     --footer-sky: linear-gradient(
@@ -630,13 +625,10 @@ footer .footer {
       #d3dddc 100%
     );
 
-    /* phones and tablets: the design's 815px, but never taller than the screen less the room kept above it for the header  */
-    --footer-fit: min(815px, 100svh - 80px);
-
     aspect-ratio: auto;
-    min-height: var(--footer-fit);
+    min-height: 815px;
     padding: 0;
-    background: var(--footer-sky) center bottom -12px / 100% 827px no-repeat, var(--footer-columns-bg);
+    background: var(--footer-sky) 50% 0 / 100% 827px no-repeat, var(--footer-columns-bg);
 
     /* phones: the photo is drawn at the design's 375 scale (55% of the 1280 frame) along
        the bottom, its top fading into the sky and its foot into the dark ground */
@@ -746,7 +738,7 @@ footer .footer {
       align-items: stretch;
       gap: 0;
       box-sizing: border-box;
-      min-height: var(--footer-fit);
+      min-height: 815px;
       margin: 0;
       padding: 40px 20px 22px;
     }

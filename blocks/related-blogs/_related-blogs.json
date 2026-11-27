@@ -38,14 +38,14 @@
           "valueType": "string",
           "name": "index",
           "label": "Query Index Path",
-          "description": "Index to read articles from, e.g. /news-index.json, or another site's full index URL (articles then link there; it must allow CORS)."
+          "description": "Index to read articles from, e.g. /news-index.json. Another site's index can be given as a full URL (e.g. https://www.jswmotors.com/news-index.json for a dealer site): its articles then link to that site. That site must allow this one to read it (CORS)."
         },
         {
           "component": "select",
           "valueType": "string",
           "name": "show",
           "label": "Show",
-          "description": "Current Page Tags: articles sharing this page's tags (hidden when it has none). Latest articles: the newest from the Root Path.",
+          "description": "Current Page Tags: articles sharing this page's tags (the block is hidden when the page has no tags). Latest articles: the newest articles from the Root Path, whatever their tags.",
           "value": "",
           "options": [
             {
@@ -76,7 +76,7 @@
           "valueType": "string",
           "name": "classes",
           "label": "Style",
-          "description": "Center: heading centred over the cards. Left: eyebrow and heading on the left. View all always sits right of the heading.",
+          "description": "Center (default): the heading centred over the cards. Left: the eyebrow and heading on the left, then title and summary under each image. In both, the View all button sits on the right of the heading.",
           "value": "",
           "options": [
             {

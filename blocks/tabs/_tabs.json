@@ -41,7 +41,7 @@
           "component": "multiselect",
           "name": "classes",
           "label": "Style",
-          "description": "Combine freely. Specs: a Fragment with a Columns block per tab. Locations: a Title and one image per tab. FAQ: one Accordion per tab after Tabs.",
+          "description": "Combine freely, e.g. Vertical + Pills. Accordion on mobile stacks the tabs below 600px. Specs lays out a spec comparison: give each tab a Fragment holding a Columns block (one column per model; row 1 the model names, every other cell a label and a value as two paragraphs). Locations shows each tab as an image tile: give each tab a city Title and one image as its Content; the open tab's image fills the section. FAQ puts text tabs above the accordions of a Light FAQ section: give each tab a Title, then add one Accordion block per tab after the Tabs block in the same section (the first accordion goes in the first tab, and so on), or give a tab a Fragment holding an Accordion. Vertical in a Product Page section: 3 to 7 tabs; at most 7, no more can be added after the 7th.",
           "options": [
             { "name": "Vertical", "value": "vertical" },
             { "name": "Pills", "value": "pills" },
@@ -123,22 +123,6 @@
           "name": "imageAlt",
           "label": "Image Alt Text",
           "value": ""
-        }
-      ]
-    },
-    {
-      "id": "tab-faq",
-      "fields": [
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "title",
-          "label": "Tab Title",
-          "required": true,
-          "description": "Short label shown on the tab. Its questions are the matching Accordion block after the Tabs block (the first accordion for the first tab, and so on).",
-          "validation": {
-            "maxLength": 40
-          }
         }
       ]
     }

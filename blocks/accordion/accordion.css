@@ -59,14 +59,12 @@
     }
   }
 
-  /* no grey or black flash on a tap (phones); the keyboard focus ring stays */
   .accordion-item-label {
     display: flex;
     align-items: baseline;
     padding: 24px 0;
     list-style: none;
     cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
 
     &::-webkit-details-marker {
       display: none;
@@ -470,10 +468,7 @@ main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark
   row-gap: 19.8px;
   padding: max(84px, var(--nav-offset, 0px) + 10px) 20px 32px;
 
-  /* min-width 0: a long word (or a tab bar wider than the screen) cuts or wraps in its column,
-     it does not widen it past the screen */
   > div {
-    min-width: 0;
     max-width: none;
     margin: 0;
     padding: 0;
@@ -513,7 +508,7 @@ main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark
       white-space: nowrap;
     }
 
-    /* two lines, then "…" (a word longer than the line breaks, so it ends in "…" too) */
+    /* two lines, then "…" */
     > h2 {
       display: -webkit-box;
       margin-top: 9.58px;
@@ -525,7 +520,6 @@ main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark
       line-height: 1;
       letter-spacing: normal;
       text-transform: uppercase;
-      overflow-wrap: anywhere;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
     }
@@ -539,7 +533,6 @@ main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark
       color: rgb(0 0 0 / 55%);
       font-size: 14px;
       line-height: 1.6;
-      overflow-wrap: anywhere;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
     }
@@ -619,23 +612,13 @@ main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark
     }
   }
 
-  /* the head at the left (5 parts), the list at the right (7 parts). The top: 32px under the
-     site header's bar (--nav-offset; the Figma's gap under its bar, 96 at least), plus half
-     of the screen's height past 720, so on taller screens the room left over is shared
-     between top and foot instead of all falling under the list (none in Universal Editor,
-     whose frame grows with the page) */
+  /* the head at the left (5 parts), the list at the right (7 parts) */
   @media (width >= 900px) {
-    --faq-top-extra: max(0px, (100svh - 720px) / 2);
-
-    body:has([data-aue-resource]) & {
-      --faq-top-extra: 0px;
-    }
-
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     grid-template-rows: minmax(0, 1fr);
     align-items: start;
     column-gap: 64px;
-    padding: calc(max(96px, var(--nav-offset, 0px) + 32px) + var(--faq-top-extra)) 64px 64px;
+    padding: 120px 64px 64px;
 
     > :is(.accordion-wrapper, .tabs-wrapper) {
       max-height: 100%;
@@ -657,6 +640,10 @@ main > .section:is(.faq-columns, .faq-center):is(:has(.block.accordion:not(.dark
         padding: 0 26px;
       }
     }
+  }
+
+  @media (width >= 900px) and (height <= 860px) {
+    padding-top: max(96px, var(--nav-offset, 0px) + 12px);
   }
 }
 
@@ -868,12 +855,10 @@ main > .section.light .block.accordion:not(.dark) {
     }
   }
 
-  /* phones: the answer 278 wide (34 in, 23 clear of the right side, where the site's page
-     scroller sits), 14 / 21.7 */
   .accordion-item-body {
     box-sizing: border-box;
     max-width: 640px;
-    padding: 0 23px 16px 34px;
+    padding: 0 0 16px 34px;
     color: var(--accordion-answer);
     font-size: 14px;
     line-height: 1.55;
@@ -909,12 +894,6 @@ main > .section.light .block.accordion:not(.dark) {
     }
   }
 
-  @media (600px <= width < 900px) {
-    .accordion-item-label {
-      padding-inline-end: 16px;
-    }
-  }
-
   /* phones: the question's box rounded up to whole pixels (21), 14 above it and 13.25 to the
      answer (48.25 a row) */
   @media (width < 600px) {
@@ -935,12 +914,6 @@ main > .section.light .block.accordion:not(.dark) {
 
     .accordion-item-question {
       min-height: round(up, var(--accordion-question-lh), 1px);
-    }
-  }
-
-  @media (width >= 900px) {
-    .accordion-item-label {
-      padding-inline-end: 40px;
     }
   }
 

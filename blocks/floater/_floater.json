@@ -37,7 +37,7 @@
           "valueType": "string",
           "name": "links",
           "label": "Links",
-          "description": "Bold = primary button, italic = secondary, plain = text link; with no button, the last link is primary. Brochure: two links, then a label line."
+          "description": "As anywhere on the site: bold = primary button, italic = secondary, plain = text link; with no button, the last link is the primary one. Brochure: its two links on one line, then a line with the label."
         },
         {
           "component": "select",
@@ -53,10 +53,6 @@
             {
               "name": "Dark",
               "value": "dark"
-            },
-            {
-              "name": "Dark Translucent",
-              "value": "dark-translucent"
             }
           ]
         }

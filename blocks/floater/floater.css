@@ -1,3 +1,5 @@
+/* Floater. Glass: Figma 8990:2159 (desktop), 8990:907 (phone). Dark: Figma 8983:6840. */
+
 .floater {
   --floater-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -213,7 +215,7 @@
     --button-radius: 12px;
   }
 
-  &:is(.dark, .dark-translucent) {
+  &.dark {
     --floater-control-h: 38px;
     --button-font-size: 12px;
     --button-line-height: 14px;
@@ -255,52 +257,6 @@
       padding: 0 12px;
     }
 
-    /* desktop and tablets: compact bar */
-    @media (width >= 600px) {
-      --floater-control-h: 36px;
-
-      gap: 24px;
-      min-height: 36px;
-      padding: 0 16px 0 14px;
-      border-radius: 12px;
-      background-color: rgb(16 16 18 / 80%);
-      box-shadow: 0 6px 22px rgb(0 0 0 / 18%);
-
-      .floater-intro {
-        padding-left: 0;
-        font-size: 11px;
-        font-weight: var(--font-weight-medium);
-        line-height: 11px;
-        letter-spacing: 0.08em;
-      }
-
-      /* 14.5px after the name, 20px before the first link */
-      .floater-rule {
-        margin: 0 -4px 0 -9.5px;
-      }
-
-      :is(.floater-link, .button:any-link) {
-        height: var(--floater-control-h);
-        margin-inline: -12px;
-        padding: 0 12px;
-        border: 0;
-        border-radius: var(--radius-8);
-        background-color: transparent;
-        font-family: var(--font-family-base);
-        font-size: 11px;
-        font-weight: var(--font-weight-medium);
-        line-height: 13px;
-        letter-spacing: 0.05em;
-        color: rgb(255 255 255 / 92%);
-      }
-
-      :is(.floater-link, .button:any-link):is(:hover, :focus-visible),
-      .floater-link[aria-expanded='true'] {
-        background-color: rgb(255 255 255 / 12%);
-        color: var(--color-white);
-      }
-    }
-
     @media (width < 600px) {
       right: 12px;
       left: 12px;
@@ -335,7 +291,8 @@
         padding: var(--button-padding);
       }
 
-      /* Name + Text + one button */
+      /* a bar with a Text and one button (no quick links), e.g. Name + price + Test drive:
+         the Name and Text stay, the button at the end */
       &:has(.floater-text):not(:has(.floater-link, .floater-brochure)) .floater-intro {
         display: flex;
         flex: 0 1 auto;
@@ -345,10 +302,6 @@
         padding-left: 12px;
       }
     }
-  }
-
-  &.dark-translucent {
-    background-color: rgb(16 16 18 / 80%);
   }
 
   @media (prefers-reduced-motion: reduce) {

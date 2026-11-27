@@ -78,7 +78,7 @@
           "valueType": "string",
           "name": "footer-style",
           "label": "Footer Style",
-          "description": "Default: the site footer. Dealer: the dealer footer (link columns, Connect icons, legal band). Unset, a footer with columns but no logo shows as Dealer.",
+          "description": "Default: the site footer's look. Dealer: the dealer site's footer (Explore / Book / Reach us columns, Connect icons, the legal lines and Privacy policy on a dark band). Left unset, a footer with link columns but no logo shows as Dealer.",
           "value": "",
           "options": [
             {
@@ -90,13 +90,6 @@
               "value": "dealer"
             }
           ]
-        },
-        {
-          "component": "text",
-          "valueType": "string",
-          "name": "dealercode",
-          "label": "Dealer Code",
-          "description": "Dealer pages only. The dealer's code, sent with every quote request from this page's Get in touch form (as dealerCodeSalesUnit), e.g. DLR00187."
         }
       ]
     }

@@ -40,7 +40,7 @@
           "component": "select",
           "name": "classes",
           "label": "Style",
-          "description": "Carousel: 6–12 cards. Timeline: 6–10. Pillars: up to 6, JPG/PNG only. Roller: 3–6. Rail and Features: any number; Features opens each card in a pop-up.",
+          "description": "Carousel auto-rotates; recommended: 6 to 12 cards. Timeline: 6 to 10 cards. Pillars: up to 6 cards, JPG or PNG images only. Roller: 3 to 6 cards, one per scroll step.",
           "options": [
             { "name": "Default", "value": "" },
             { "name": "Carousel", "value": "carousel" },
@@ -48,9 +48,20 @@
             { "name": "Pillars", "value": "pillars" },
             { "name": "Roller", "value": "roller" },
             { "name": "Rail", "value": "rail" },
-            { "name": "Features", "value": "features" },
-            { "name": "Features Classic", "value": "features-classic" }
+            { "name": "Features", "value": "features" }
           ]
+        },
+        {
+          "component": "select",
+          "name": "classes_pillars",
+          "label": "Pillars layout",
+          "description": "Pillars only: vertical or horizontal image transition on scroll.",
+          "value": "pillar-vertical",
+          "options": [
+            { "name": "Pillar Vertical", "value": "pillar-vertical" },
+            { "name": "Pillar Horizontal", "value": "pillar-horizontal" }
+          ],
+          "condition": { "===": [{ "var": "classes" }, "pillars"] }
         }
       ]
     },
@@ -77,7 +88,7 @@
           "name": "text",
           "value": "",
           "label": "Text",
-          "description": "Pillars: label, heading, text. Timeline: heading, text, italic location. Roller: heading, text. Features: title, short line, then the pop-up detail.",
+          "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description. Carousel in a Product Page section: 1. Label 2. Title as a heading 3. Description 4. Link. Features: 1. Title as a heading (or in bold for a stat tile, e.g. 590 Nm) 2. Short line 3. and on: the detail, shown with the image when the card is opened (a heading first is the detail title).",
           "valueType": "string"
         }
       ]

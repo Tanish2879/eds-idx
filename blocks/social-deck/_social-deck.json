@@ -41,7 +41,7 @@
           "valueType": "string",
           "name": "classes",
           "label": "Auto-scroll",
-          "description": "Rotates the deck at a fixed interval; needs 2 to 12 cards. Strip: a flat row with previous and next buttons, no auto-scroll.",
+          "description": "Automatically rotate the deck at a fixed interval. Requires min. 2 cards and max. 12 cards. Strip: a flat row of cards with previous and next buttons instead of the arc (no auto-scroll).",
           "value": "",
           "options": [
             {

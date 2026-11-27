@@ -15,8 +15,7 @@
 import {
   createLoopVideo, createPlayBadge, findVideoLink, openFilm, playWhileVisible,
 } from '../../scripts/utils/film.js';
-import { loadCSS } from '../../scripts/aem.js';
-import decorateReserve from '../../scripts/section-reserve.js';
+import decorateBrochure from '../../scripts/utils/brochure.js';
 import { inEditor } from '../../scripts/utils/common.js';
 
 const isPictureLine = (el) => el?.tagName === 'P' && !!el.querySelector('img')
@@ -129,23 +128,16 @@ function raiseFootnoteMark(amount) {
 }
 
 /**
- * The page's end bar: its last section, when that is default content only, takes the Reserve
- * Band section style (styles/section-reserve.css) without the author choosing it. Left alone
- * when a section already has the style.
+ * The page's end bar (hero-product.css): the last section, default content only (a heading,
+ * the brochure links and their label, a "Find a dealer" link, the two buttons). Its brochure
+ * links become a "Download the brochure" menu. Left as authored in Universal Editor.
  * @param {Element} block the hero
  */
 function decorateEndBar(block) {
-  const main = block.closest('main');
-  if (!main || main.querySelector(':scope > .section.reserve-band')) return;
-  // a section holding only the Floater doesn't count: the Floater takes it off the page, but
-  // it is still there while the hero loads
-  const end = [...main.querySelectorAll(':scope > .section')]
-    .reverse()
-    .find((section) => section.querySelector(':scope > :not(.floater-wrapper)'));
-  if (!end || end.querySelector('[data-block-name]')) return;
-  end.classList.add('reserve-band');
-  loadCSS(`${window.hlx.codeBasePath}/styles/section-reserve.css`);
-  decorateReserve(end);
+  const end = block.closest('main')?.querySelector(':scope > .section:last-of-type');
+  if (!end || inEditor() || end.querySelector('[data-block-name]')) return;
+  const content = end.querySelector(':scope > .default-content-wrapper');
+  if (content) decorateBrochure(content, 'end-brochure-links');
 }
 
 // --- the load intro (hero-product.css .product-intro, then .is-intro-playing) ---

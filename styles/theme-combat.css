@@ -651,8 +651,9 @@ body.combat main > .section.split > .default-content-wrapper p:last-child > a:on
    Wave In section style (scripts/wave-cut.js), which reveals them behind a wavy edge, timed to
    the snap move. The values below tune it as on the prototype: the covered fold's media sinks
    and zooms (--wave-sink, --wave-sink-zoom, of the screen height), its copy fades out early
-   (--wave-fade-out, px of drift). The revealed fold stays still behind the edge. Wave In only
-   reads them during a cut, so they change nothing at rest. */
+   (--wave-fade-out, px of drift), the revealed fold's content rises (--wave-rise, px) and its
+   photo settles (--wave-settle). Wave In only reads them during a cut, so they change nothing
+   at rest. */
 
 /* hero -> narrative: the hero photo sinks 8% as the copy lifts away */
 body.combat main > .section:has(.hero.showcase) {
@@ -665,17 +666,28 @@ body.combat main > .section:has(.hero.carousel) {
   --wave-sink: 0.04;
   --wave-sink-zoom: 0.1;
   --wave-fade-out: 0;
+  --wave-rise: 48;
 }
 
-/* PHEV -> performance: both halves sink */
+/* highlights -> exterior: a plain wave; the exterior stage rises further */
+body.combat main > .section.wave-in:has(.interactive-showcase) {
+  --wave-rise: 40;
+}
+
+/* PHEV -> performance: both halves sink; the performance photo settles from well below */
 body.combat main > .section:has(.columns.split) {
   --wave-sink: 0.055;
 }
 
-/* performance -> tech: the photo sinks and pushes in */
+/* performance -> tech: the photo sinks and pushes in; the tech heading rises 70px */
 body.combat main > .section:has(> .stats-production-wrapper) {
+  --wave-settle: 0.6;
   --wave-sink: 0.04;
   --wave-sink-zoom: 0.06;
+}
+
+body.combat main > .section.wave-in:has(.cards.rail) {
+  --wave-rise: 70;
 }
 
 /* site header: tucked away on a move down, back on a move up (power3.out, as on the prototype) */
@@ -715,7 +727,11 @@ body.combat-motion.header-hidden header .nav-wrapper {
   }
 
   /* tech and safety: the heading and intro rise 70-80px and fade in (power3.out); the cards
-     follow (blocks/cards/cards.css) */
+     follow (blocks/cards/cards.css). Behind the tech fold's wave the rise is ours, not the
+     wave's */
+  body.combat-motion main > .section.wave-in:has(.cards.rail) {
+    --wave-rise: 0;
+  }
 
   body.combat-motion main > .section:is(.is-arriving, .is-current):not([data-arrive='up']):has(.cards.rail) > .default-content-wrapper > * {
     --combat-rise-y: 80px;

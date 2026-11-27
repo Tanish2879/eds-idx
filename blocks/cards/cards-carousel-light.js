@@ -23,8 +23,6 @@ const DRAG_NEXT = 0.12;
 // sideways wheel px for one card, then a rest (ms) so one swipe moves one card
 const WHEEL_STEP = 40;
 const WHEEL_REST_MS = 650;
-// a pause this long in the wheel events ends a gesture: the next event is a new one
-const WHEEL_QUIET_MS = 200;
 // share of the section on screen for the arrow keys to move the strip
 const KEYS_IN_VIEW = 0.6;
 
@@ -491,14 +489,8 @@ function decorateStrip(block, ul, onChange) {
   stage.addEventListener('wheel', (e) => {
     if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
     e.preventDefault();
-    // when the event happened, not when it is handled: a busy page delivers a stream late
-    const now = e.timeStamp || performance.now();
-    // a gesture lasts while its events keep coming (a free-spinning or tilted mouse wheel, a
-    // trackpad's momentum): each one holds the rest, so its tail can't move a second card
-    if (now < wheelRest) {
-      wheelRest = Math.max(wheelRest, now + WHEEL_QUIET_MS);
-      return;
-    }
+    const now = performance.now();
+    if (now < wheelRest) return;
     wheel += e.deltaX;
     if (Math.abs(wheel) <= WHEEL_STEP) return;
     goTo(target + Math.sign(wheel));

@@ -296,28 +296,16 @@ main > .section.light .cards.carousel {
       margin: 0;
     }
 
-    /* the tag: white caps on a black chip, as the prototype's .feat-card__tag */
     .label {
-      align-self: flex-start;
-      max-width: 100%;
-      padding: 6px 10px 5px;
-      border-radius: 6px;
       overflow: hidden;
-      background: #111;
       font-size: 12px;
       font-weight: var(--font-weight-semibold);
-      line-height: 1.2;
-      letter-spacing: 0.08em;
+      line-height: 1.3;
+      letter-spacing: 0.045em;
       text-overflow: ellipsis;
       text-transform: uppercase;
       white-space: nowrap;
-      color: var(--color-white);
-
-      @media (width >= 600px) {
-        padding: 7px 12px 6px;
-        border-radius: 8px;
-        font-size: 14px;
-      }
+      color: rgb(0 0 0 / 55%);
     }
 
     .title {

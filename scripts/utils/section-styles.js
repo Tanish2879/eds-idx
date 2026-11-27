@@ -22,7 +22,6 @@ const SECTION_STYLES = {
   light: { css: 'section-light', colorOnly: true },
   statement: { css: 'section-statement', js: 'section-statement' },
   'hide-header': { css: 'header-hide', js: 'header-hide', colorOnly: true },
-  'reserve-band': { css: 'section-reserve', js: 'section-reserve' },
 };
 
 export const FREE_SCROLL_CLASS = 'free-scroll';

@@ -1,55 +1,17 @@
 // Cards "Features" style (product page: Performance, Technology, Safety).
 
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import snapRow from '../../scripts/utils/snap-row.js';
 
 // html class read by section-snap.js and styles.css to hold the page still (as blocks/modal)
 const OPEN_CLASS = 'is-modal-open';
 let uid = 0;
 
-// the most characters the texts may have (published page; Universal Editor keeps the whole
-// text): the section's figure and unit (e.g. "359" "PS"), a stat tile's value (e.g. "1.5L Turbo
-// GDI"), and a stat tile's description in its pop-up (250: at most six lines on phones, as the
-// Figma's compact panel, never a scroll). Longer ones end in "…"; the other texts are cut by
-// line (cards-features.css)
-const MAX_CHARS = {
-  figure: 4, unit: 4, value: 16, detail: 250,
-};
+// the most characters the one-word texts may have (published page; Universal Editor keeps the
+// whole text): the section's figure and unit (e.g. "359" "PS"), a stat tile's value (e.g.
+// "1.5L Turbo GDI"). Longer ones end in "…"; the other texts are cut by line (cards-features.css)
+const MAX_CHARS = { figure: 4, unit: 4, value: 16 };
 const clipText = (text, max) => (text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text);
-
-/**
- * Cuts a run of elements (rich text: paragraphs, lists) to `max` characters in all, at a word
- * where it can, ending in "…"; elements past the limit, and those left empty, are dropped
- * @param {Element[]} els
- * @param {number} max
- * @returns {Element[]} the elements that remain
- */
-function clipElements(els, max) {
-  const total = els.reduce((n, el) => n + el.textContent.replace(/\s+/g, ' ').trim().length, 0);
-  if (total <= max) return els;
-  let left = max;
-  els.forEach((el) => {
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-    const texts = [];
-    while (walker.nextNode()) texts.push(walker.currentNode);
-    texts.forEach((text) => {
-      const value = text.textContent.replace(/\s+/g, ' ');
-      if (left <= 0) {
-        text.remove();
-      } else if (value.trim().length <= left) {
-        left -= value.trim().length;
-      } else {
-        const cut = value.slice(0, Math.max(0, left - 1));
-        const atWord = cut.replace(/\s+\S*$/, '');
-        text.textContent = `${(atWord.length >= left / 2 ? atWord : cut).replace(/[\s.,;:–-]+$/, '')}…`;
-        left = 0;
-      }
-    });
-    [...el.querySelectorAll('*')].reverse().forEach((child) => {
-      if (!child.textContent.trim() && !child.querySelector('img, picture, br')) child.remove();
-    });
-  });
-  return els.filter((el) => el.textContent.trim());
-}
 
 const isHeading = (el) => /^H[1-6]$/.test(el?.tagName || '');
 const isAuthoring = (block) => !!block.closest('[data-aue-resource]')
@@ -115,23 +77,23 @@ function readCard(li, authoring) {
     detail[0].before(more);
     more.append(...detail);
   }
-  if (!detail.length && !img) return null;
-
-  const name = (detailTitle || title || line)?.textContent.trim() || '';
   const value = stat && !authoring && title.querySelector('strong, b');
   if (value && !value.children.length) {
     value.textContent = clipText(value.textContent.trim(), MAX_CHARS.value);
   }
-  const copy = detail.filter((el) => el !== detailTitle);
+  // no popup content: no "+" and nothing opens
+  if (!detail.length) {
+    li.classList.add('no-detail');
+    return null;
+  }
+
+  const name = (detailTitle || title || line)?.textContent.trim() || '';
   return {
     li,
     img,
     name,
     eyebrow: eyebrow?.textContent.trim() || '',
-    // a stat tile's description, as its pop-up shows it: a copy cut to MAX_CHARS.detail
-    body: stat && !authoring
-      ? clipElements(copy.map((el) => el.cloneNode(true)), MAX_CHARS.detail)
-      : copy,
+    body: detail.filter((el) => el !== detailTitle),
   };
 }
 
@@ -149,7 +111,6 @@ function buildDialog(stats) {
   const dialog = document.createElement('dialog');
   dialog.className = 'ft-detail';
   dialog.setAttribute('aria-labelledby', titleId);
-  dialog.tabIndex = -1;
   const close = '<button type="button" class="ft-close" aria-label="Close" autofocus><span class="ft-close-icon" aria-hidden="true"></span></button>';
   const media = '<div class="ft-media"><div class="ft-media-pic"></div></div>';
   const body = `<div class="ft-body"${stats ? ' aria-live="polite"' : ''}>
@@ -212,57 +173,12 @@ function clipTo(panel, card, radius) {
  * (cards-features.css). Anything else is left as authored.
  * @param {Element} block the cards block (stat tiles)
  */
-function fitToLines(el) {
-  if (!el || el.children.length || el.dataset.ftFit) return;
-  const full = el.textContent.replace(/\s+/g, ' ').trim();
-  if (!full) return;
-  el.dataset.ftFit = 'true';
-  const words = full.split(' ');
-  let width = -1;
-  const fit = () => {
-    el.classList.remove('ft-fit');
-    el.textContent = full;
-    const lines = parseInt(getComputedStyle(el).webkitLineClamp, 10);
-    if (!lines) return;
-    el.classList.add('ft-fit');
-    const lineHeight = parseFloat(getComputedStyle(el).lineHeight);
-    const fits = () => el.getBoundingClientRect().height <= lineHeight * lines + 0.5;
-    if (fits()) return;
-    let lo = 1;
-    let hi = words.length - 1;
-    while (lo < hi) {
-      const mid = Math.ceil((lo + hi) / 2);
-      el.textContent = `${words.slice(0, mid).join(' ')}…`;
-      if (fits()) lo = mid;
-      else hi = mid - 1;
-    }
-    el.textContent = `${words.slice(0, lo).join(' ').replace(/[\s.,;:–-]+$/, '')}…`;
-  };
-  const refit = () => {
-    const now = el.parentElement?.clientWidth ?? 0;
-    if (now === width) return;
-    width = now;
-    fit();
-  };
-  if (el.parentElement) {
-    new ResizeObserver(() => requestAnimationFrame(refit)).observe(el.parentElement);
-  }
-  const again = () => {
-    width = -1;
-    refit();
-  };
-  document.fonts?.ready.then(again);
-  document.fonts?.addEventListener?.('loadingdone', again);
-  refit();
-}
-
 function splitSectionFigure(block) {
   const content = block.closest('.section')?.querySelector(':scope > .default-content-wrapper');
   const holder = content && [...content.children]
     .find((el) => isBoldLine(el) || /^(STRONG|B)$/.test(el.tagName));
   const figure = holder?.matches('strong, b') ? holder : holder?.querySelector('strong, b');
   if (!figure || figure.children.length) return;
-  fitToLines(holder.nextElementSibling);
   const match = figure.textContent.trim().match(/^([\d.,]+)\s+(\S.*)$/);
   if (!match) {
     figure.textContent = clipText(figure.textContent.trim(), MAX_CHARS.figure + MAX_CHARS.unit + 1);
@@ -278,43 +194,6 @@ function splitSectionFigure(block) {
   unit.className = 'ft-figure-unit';
   unit.textContent = clipText(unitText, MAX_CHARS.unit);
   figure.replaceChildren(number, ' ', unit);
-}
-
-/**
- * Performance: a video authored in the section's picture place (a Video block, or a video in
- * its text) plays as its background, as the picture: muted, looping, inline, without
- * controls (cards-features.css sets it over the section). A video the Video block adds later
- * is caught as it comes. With reduced motion it stays on its first frame
- * @param {Element} block
- */
-function playSectionVideos(block) {
-  const section = block.closest('.section');
-  if (!section) return;
-  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const asBackground = (video) => {
-    if (video.closest('.cards') || video.dataset.ftBackground) return;
-    video.dataset.ftBackground = 'true';
-    video.controls = false;
-    video.removeAttribute('controls');
-    video.muted = true;
-    video.defaultMuted = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.setAttribute('playsinline', '');
-    video.setAttribute('aria-hidden', 'true');
-    video.tabIndex = -1;
-    video.disablePictureInPicture = true;
-    if (still) {
-      video.autoplay = false;
-      video.pause();
-      return;
-    }
-    video.autoplay = true;
-    video.play()?.catch(() => {});
-  };
-  section.querySelectorAll('video').forEach(asBackground);
-  new MutationObserver(() => section.querySelectorAll('video').forEach(asBackground))
-    .observe(section, { childList: true, subtree: true });
 }
 
 /**
@@ -348,129 +227,6 @@ function decorateProgress(block, ul) {
 }
 
 /**
- * Stat tiles, more than four: a light arrow at each end of the row, shown only while there is
- * more that way (and only while the row scrolls at all). A click moves on a view: the four
- * tiles across on desktop, a page of four on phones (the row's width and one gap)
- * @param {Element} block
- * @param {HTMLUListElement} ul
- */
-function wireRailArrows(block, ul) {
-  const arrow = (dir, label) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = `ft-rail-arrow ft-rail-${dir}`;
-    button.setAttribute('aria-label', label);
-    button.hidden = true;
-    block.append(button);
-    return button;
-  };
-  const prev = arrow('prev', 'Previous');
-  const next = arrow('next', 'Next');
-  let frame = 0;
-  const update = () => {
-    frame = 0;
-    const room = ul.scrollWidth - ul.clientWidth;
-    const at = Math.abs(ul.scrollLeft);
-    prev.hidden = room <= 1 || at <= 1;
-    next.hidden = room <= 1 || at >= room - 1;
-  };
-  const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-  const move = (dir) => {
-    const gap = parseFloat(getComputedStyle(ul).columnGap) || 0;
-    const smooth = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-    ul.scrollBy({ left: dir * (block.clientWidth + gap), behavior: smooth ? 'smooth' : 'auto' });
-  };
-  prev.addEventListener('click', () => move(-1));
-  next.addEventListener('click', () => move(1));
-  ul.addEventListener('scroll', schedule, { passive: true });
-  new ResizeObserver(schedule).observe(ul);
-  update();
-}
-
-/**
- * A row that scrolls sideways follows a mouse drag (touch and trackpads scroll it natively).
- * While dragged it does not snap; let go, it eases to the nearest stop, or the next one in the
- * drag's direction after a short flick. A drag does not open the tile it ends on
- * @param {HTMLUListElement} ul
- */
-function wireDragScroll(ul) {
-  let drag = null;
-  let timer = 0;
-  // snapping comes back once the row has reached its stop (it is one: no jump)
-  const settle = () => {
-    clearTimeout(timer);
-    ul.removeEventListener('scrollend', settle);
-    ul.classList.remove('is-dragging');
-  };
-  ul.addEventListener('dragstart', (e) => { if (drag) e.preventDefault(); });
-  ul.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    if (ul.scrollWidth <= ul.clientWidth + 1) return;
-    drag = {
-      id: e.pointerId, x: e.clientX, left: ul.scrollLeft, moved: false,
-    };
-  });
-  ul.addEventListener('pointermove', (e) => {
-    if (!drag || e.pointerId !== drag.id) return;
-    const dx = e.clientX - drag.x;
-    if (!drag.moved) {
-      if (Math.abs(dx) < 6) return;
-      drag.moved = true;
-      // a drag that starts while the row still eases to a stop takes over from there
-      clearTimeout(timer);
-      ul.removeEventListener('scrollend', settle);
-      drag.left = ul.scrollLeft;
-      ul.setPointerCapture(e.pointerId);
-      ul.classList.add('is-dragging', 'is-grabbing');
-      window.getSelection()?.removeAllRanges();
-    }
-    ul.scrollLeft = drag.left - dx;
-  });
-  const end = (e) => {
-    if (!drag || e.pointerId !== drag.id) return;
-    const { moved, left } = drag;
-    const dx = e.clientX - drag.x;
-    drag = null;
-    if (!moved) return;
-    ul.classList.remove('is-grabbing');
-    // the click that ends the drag opens nothing
-    const swallow = (ev) => { ev.preventDefault(); ev.stopPropagation(); };
-    ul.addEventListener('click', swallow, { capture: true, once: true });
-    setTimeout(() => ul.removeEventListener('click', swallow, { capture: true }), 0);
-    // the stops: the tiles that snap, where the row puts them (its scroll padding)
-    const pad = parseFloat(getComputedStyle(ul).scrollPaddingInlineStart) || 0;
-    const rowLeft = ul.getBoundingClientRect().left;
-    const room = ul.scrollWidth - ul.clientWidth;
-    const stops = [...ul.children]
-      .filter((li) => getComputedStyle(li).scrollSnapAlign !== 'none')
-      .map((li) => {
-        const at = ul.scrollLeft + li.getBoundingClientRect().left - rowLeft - pad;
-        return Math.min(room, Math.max(0, at));
-      });
-    if (!stops.length) {
-      settle();
-      return;
-    }
-    const nearest = (at) => stops
-      .reduce((best, s) => (Math.abs(s - at) < Math.abs(best - at) ? s : best));
-    let target = nearest(ul.scrollLeft);
-    // a short flick still moves on one stop, in its direction
-    if (target === nearest(left) && Math.abs(dx) > 40) {
-      const ahead = dx < 0
-        ? stops.find((s) => s > left + 1)
-        : [...stops].reverse().find((s) => s < left - 1);
-      if (ahead !== undefined) target = ahead;
-    }
-    const smooth = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
-    ul.addEventListener('scrollend', settle);
-    timer = setTimeout(settle, 700);
-    ul.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'auto' });
-  };
-  ul.addEventListener('pointerup', end);
-  ul.addEventListener('pointercancel', end);
-}
-
-/**
  * @param {Element} block the cards block
  * @param {HTMLUListElement} ul the decorated card list (cards.js)
  */
@@ -481,14 +237,9 @@ export default function decorateFeatures(block, ul) {
   const cards = items.map((li) => readCard(li, authoring)).filter(Boolean);
   // all stat tiles (Performance): a row of figures rather than image cards
   block.classList.toggle('is-stats', items.length > 0 && items.every((li) => li.classList.contains('is-stat')));
-  if (!authoring && block.classList.contains('is-stats')) {
-    splitSectionFigure(block);
-    ul.querySelectorAll('.ft-card.is-stat .ft-line').forEach(fitToLines);
-    playSectionVideos(block);
-    wireDragScroll(ul);
-    if (items.length > 4) wireRailArrows(block, ul);
-  }
+  if (!authoring && block.classList.contains('is-stats')) splitSectionFigure(block);
   if (!authoring && !block.classList.contains('is-stats')) decorateProgress(block, ul);
+  snapRow(ul);
   // in Universal Editor every card stays selectable: no dialog to cover the canvas
   if (authoring || !cards.length) return;
 
@@ -502,7 +253,6 @@ export default function decorateFeatures(block, ul) {
   const buttons = [];
   let current = 0;
   let opener = 0;
-  let byPointer = false;
   let closing = false;
   let swapping = false;
   let running = [];
@@ -541,8 +291,6 @@ export default function decorateFeatures(block, ul) {
     parts.eyebrow.hidden = !card.eyebrow;
     parts.title.textContent = card.name;
     parts.text.replaceChildren(...card.body.map((el) => el.cloneNode(true)));
-    // each card's copy from its start (it scrolls in the stat panel)
-    parts.body.scrollTop = 0;
     if (!stats) return;
 
     const after = cards[(i + 1) % cards.length];
@@ -630,10 +378,6 @@ export default function decorateFeatures(block, ul) {
     document.documentElement.classList.add(OPEN_CLASS);
     // native modal: focus moves in (to the close button), the page behind is inert
     dialog.showModal();
-    // Safari may scroll the dialog to the close button while the sheet is still below the
-    // screen (the CSS clips it, so it cannot; older Safari: put it back)
-    dialog.scrollTop = 0;
-    if (byPointer) dialog.focus({ preventScroll: true });
     if (!motion.matches) return;
     if (stats) openSheet();
     else openFromCard(cards[i]);
@@ -683,12 +427,7 @@ export default function decorateFeatures(block, ul) {
     swapping = false;
     document.documentElement.classList.remove(OPEN_CLASS);
     // back to the card that was opened
-    const back = buttons[opener];
-    if (byPointer) {
-      back.classList.add('is-quiet-focus');
-      back.addEventListener('blur', () => back.classList.remove('is-quiet-focus'), { once: true });
-    }
-    back.focus({ preventScroll: true, focusVisible: !byPointer });
+    buttons[opener].focus({ preventScroll: true });
   });
   parts.close.addEventListener('click', requestClose);
   parts.back.addEventListener('click', requestClose);
@@ -702,14 +441,12 @@ export default function decorateFeatures(block, ul) {
     button.setAttribute('aria-label', `More about ${card.name}`);
     button.innerHTML = '<span class="ft-open-icon" aria-hidden="true"></span>';
     buttons[i] = button;
-    button.addEventListener('keydown', () => button.classList.remove('is-quiet-focus'));
     // a stat tile's "+" follows its value; an image card's sits in its corner
     const statTitle = card.li.classList.contains('is-stat') && card.li.querySelector('.ft-title');
     (statTitle || card.li).append(button);
     // the whole card opens it; a key press on the button reaches here as a click too
     card.li.addEventListener('click', (e) => {
       if (e.target.closest('a')) return;
-      byPointer = e.detail > 0;
       open(i);
     });
     // the larger picture starts loading as the pointer or focus reaches the card

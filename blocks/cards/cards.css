@@ -766,26 +766,15 @@ body.combat .cards.carousel .carousel-track .card.is-active .card-body {
   transition-delay: calc(var(--carousel-move) / 2);
 }
 
-/* the tag: white caps on a black chip, as the prototype's .feat-card__tag */
 body.combat .cards.carousel .card-body > p:has(+ h2, + h3) {
-  align-self: flex-start;
   margin: 0;
-  padding: 6px 10px 5px;
-  border-radius: 6px;
-  background: #111;
   font-family: var(--font-family-base);
   font-size: 12px;
   font-weight: var(--font-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: 0.08em;
+  line-height: 1.3;
+  letter-spacing: 0.045em;
   text-transform: uppercase;
-  color: var(--color-white);
-
-  @media (width >= 768px) {
-    padding: 7px 12px 6px;
-    border-radius: 8px;
-    font-size: 14px;
-  }
+  color: rgb(0 0 0 / 55%);
 }
 
 body.combat .cards.carousel .card-body :is(h2, h3) {

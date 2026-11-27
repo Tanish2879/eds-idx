@@ -14,7 +14,6 @@ let idCounter = 0;
 export async function createModal(contentNodes) {
   const dialog = document.createElement('dialog');
   dialog.setAttribute('aria-modal', 'true');
-  dialog.tabIndex = -1; // can take the focus when it opens, but is not a tab stop
 
   const content = document.createElement('div');
   content.className = 'modal-content';
@@ -95,9 +94,6 @@ export async function createModal(contentNodes) {
     document.documentElement.classList.add(OPEN_CLASS);
     // native modal: focus moves inside, the rest of the page is inert, Escape closes
     dialog.showModal();
-    // the dialog itself takes the focus, not the first control (the close button): iOS drew
-    // its focus ring on the (X) at open. Tab then reaches the close button first
-    dialog.focus({ preventScroll: true });
     content.scrollTop = 0;
   };
 

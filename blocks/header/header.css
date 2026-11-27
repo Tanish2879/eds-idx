@@ -126,6 +126,7 @@ header:has(.header) {
     }
 
     .logo {
+      display: inline-flex;
       align-items: center;
       max-width: 100%;
       color: var(--background-color);

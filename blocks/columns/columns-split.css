@@ -114,21 +114,21 @@ main .section:has(.columns.split) {
     inset: 84px var(--split-gutter) auto;
     z-index: 3;
     margin: 0;
+    max-width: 160px;
     font-family: var(--font-family-display);
 
-    /* as the prototype on phones: one line across the width, at most 28px */
-    font-size: min(28px, calc((100vw - 2 * var(--split-gutter)) / 13.9));
-    font-weight: var(--font-weight-semibold);
+    /* as Figma on phones: 22px, wrapping within 160px */
+    font-size: 22px;
+    font-weight: var(--font-weight-medium);
     line-height: 1.05;
     letter-spacing: normal;
     text-transform: uppercase;
     color: var(--color-white);
-
-    /* the prototype's tight drop shadow, for depth; without its wide grey glow */
-    text-shadow: 0 1px 2px rgb(0 0 0 / 22%);
+    text-shadow: 0 2px 28px rgb(0 0 0 / 35%);
     pointer-events: none;
 
-    /* any length of label: long words break, at most 3 lines (2 from 900px), the rest cut off */
+    /* any length of label: long words break, at most 3 lines (2 from 900px), the rest cut off;
+       clipped up and down only, so the shadow isn't cut at the sides */
     overflow-wrap: anywhere;
     max-height: 3lh;
     overflow: visible clip;

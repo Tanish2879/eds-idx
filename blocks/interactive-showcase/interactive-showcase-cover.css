@@ -530,14 +530,10 @@ main > .section.has-view-tabs {
     gap: 0;
     width: auto;
     min-height: 0;
-
-    /* its top clear of the site header (and so its close button) */
-    max-height: calc(100% - var(--cover-foot) - env(safe-area-inset-bottom, 0px)
-      - max(76px, var(--interactive-showcase-header-cover, 0px) + 8px));
+    max-height: calc(100% - var(--cover-foot) - 24px - env(safe-area-inset-bottom, 0px));
     padding: 0;
     overflow: hidden auto;
     overscroll-behavior: contain;
-    scrollbar-width: none;
     border-radius: 24px;
     color: var(--color-white, #fff);
     background: rgb(255 255 255 / 35%);
@@ -573,10 +569,7 @@ main > .section.has-view-tabs {
 
   /* the point's photo: a square across the top (the close button sits over it) */
   .tooltip-media {
-    /* the photo gives way first: the card is capped below the header (.tooltip max-height),
-       so on a short screen the photo shrinks and the text and next row keep their place */
-    flex: 0 1 auto;
-    min-height: 0;
+    flex: none;
     aspect-ratio: 1;
     overflow: hidden;
     transition: opacity 0.2s ease;
@@ -725,43 +718,6 @@ main > .section.has-view-tabs {
   .tooltip.is-swapping :is(.tooltip-media, .tooltip-body, .tooltip-next) {
     opacity: 0;
     translate: 0 10px;
-  }
-
-  /* phones: photo, title, text and the next point on one screen, no scrolling. The photo is
-     16:9 and gives way on short screens; the title is cut to 30 characters
-     (interactive-showcase-cover.js), the text to three lines */
-  @media (width < 600px) {
-    /* tall enough that its close button (14px in, 44px) sits above the zoom slider (centred
-       on the screen, 104px tall, 8px clear), never beside it: the card's top reaches 118px
-       above the screen's middle, as far as the header and the screen's height allow */
-    .tooltip {
-      --tip-room: calc(var(--cover-foot) + env(safe-area-inset-bottom, 0px));
-
-      min-height: min(
-        calc(50% + 118px - var(--tip-room)),
-        calc(100% - var(--tip-room) - max(76px, var(--interactive-showcase-header-cover, 0px) + 8px))
-      );
-    }
-
-    /* the photo takes the extra height */
-    .tooltip-media {
-      flex: 1 1 auto;
-      aspect-ratio: auto;
-      height: calc((100cqw - 24px) * 9 / 16);
-      min-height: 0;
-    }
-
-    .tooltip-body {
-      flex: none;
-    }
-
-    .tooltip-text {
-      display: -webkit-box;
-      overflow: hidden;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-    }
   }
 
   /* ---- phones: the zoom slider (none from 600px); --cover-zoom-value is 0 (top) to 1 ---- */
@@ -972,14 +928,9 @@ main > .section.has-view-tabs {
     }
 
     .tooltip {
-      --tip-bottom: var(--cover-edge);
-
-      inset: auto var(--cover-edge) var(--tip-bottom) auto;
+      inset: auto var(--cover-edge) var(--cover-edge) auto;
       width: 340px;
-
-      /* as tall as the screen allows: from its bottom edge up to just below the header; the
-         photo takes up the slack, so the card grows into the free space */
-      max-height: calc(100svh - var(--tip-bottom) - max(84px, var(--interactive-showcase-header-cover, 0px) + 22px));
+      max-height: calc(100% - var(--cover-edge) - max(84px, var(--interactive-showcase-header-cover, 0px) + 22px));
     }
 
     .tooltip-body {
@@ -1005,7 +956,7 @@ main > .section.has-view-tabs {
     --cover-foot: 84px;
 
     .tooltip {
-      --tip-bottom: 24px;
+      bottom: 24px;
     }
 
     /* the photo gives way first, so the text still fits */

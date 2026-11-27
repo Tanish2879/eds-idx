@@ -1,4 +1,17 @@
-/* Spec Table "Showcase" in a Light section (Code T specs) */
+/* Spec Table "Showcase" in a Light section: Code T "by the numbers" (loaded by spec-table.js
+   only when a page uses it). Figma 8983:6817 / 8983:6850 (desktop first view / after the
+   scroll), 8983:7120 / 8983:7142 (phone); prototype codet-design-prototype.vercel.app
+   .fold--specs.
+   One screen, the stage, holds the heading, the corner marks, the top-view car under its
+   dimension lines, the two spec groups as tiles, the closing title, the brochure button and
+   "See full specs", each placed on it by content order. Every wrapper of the section is a full
+   stage layer, all stacked in one grid cell (their parts are positioned, the layers let clicks
+   through).
+   With motion, spec-table-showcase.js makes the section a scroll runway 1.2 screens long
+   (.specs-scrub, .scroll-runway): the layers stay pinned and the scroll plays the reveal.
+   Without it (Universal Editor, reduced motion) the section is the stage plus the car's travel
+   with everything shown, the parts after the car moved down by that travel. Under 500px tall
+   it is a plain stack that scrolls with the page. */
 
 /* stylelint-disable no-descending-specificity -- each rule places a different part */
 main > .section.light:has(.spec-table.showcase) {
@@ -12,15 +25,9 @@ main > .section.light:has(.spec-table.showcase) {
   /* how much of the car stays in view above the groups once it has risen */
   --half: 0.528;
 
-  /* Floater clearance */
-  --foot: max(52px, var(--floater-clear, 0px) - 20px);
+  /* the room the design keeps under "See full specs", and where the brochure button sits */
+  --foot: 52px;
   --broch-b: calc(var(--foot) + 92px);
-  --cta-b: 64px;
-  --lift: max(0px, var(--floater-clear, 0px) - var(--cta-b));
-
-  &.show-floater {
-    --floater-clear: calc(var(--floater-space, 0px) + 12px);
-  }
 
   /* how far the car rises; the static layout moves what comes after it down by as much */
   --shift: calc(var(--stage) / 2);
@@ -38,7 +45,8 @@ main > .section.light:has(.spec-table.showcase) {
   overflow: clip;
   color: #2e2e2e;
 
-  /* Universal Editor: fixed 900px screen */
+  /* in Universal Editor a fixed 900px screen (the site's editor height for full-screen blocks):
+     the editor's frame grows with the page, so a screen-based size would grow the page */
   &[data-aue-resource] {
     --specs-screen: 900px;
   }
@@ -47,7 +55,8 @@ main > .section.light:has(.spec-table.showcase) {
     --half: 0.449;
   }
 
-  /* desktop */
+  /* desktop: the car lies flat under the desktop dimension lines, the two groups side by side
+     at mid-screen, the closing title and the button centred under them */
   @media (width >= 900px) {
     --u: min(100vw / 1280, var(--stage) / 720);
     --car-w: min(880px, 66vw, (var(--stage) - 240px) * 1.335);
@@ -57,7 +66,7 @@ main > .section.light:has(.spec-table.showcase) {
     --side: 64px;
     --gap-half: 12px;
     --g1: calc(var(--stage) / 2 + var(--after));
-    --broch-b: calc(132px + var(--lift));
+    --broch-b: 132px;
   }
 
   /* narrow desktops: less room at the sides, so three tiles a group fit */
@@ -65,12 +74,14 @@ main > .section.light:has(.spec-table.showcase) {
     --side: 40px;
   }
 
-  /* short desktops */
+  /* short desktops: below about 720px tall the groups sit higher than mid-screen, so their
+     tiles stay 24px clear of the closing title */
   @media (width >= 900px) and (height <= 800px) {
     --g1: calc(min(var(--stage) / 2, var(--stage) - 359px) + var(--after));
   }
 
-  /* wide screens */
+  /* wide screens: a larger car (still sized to the screen's height, so a wide but short window
+     keeps it clear of the heading and the groups), the groups at most 1480px wide */
   @media (width >= 1700px) {
     --car-w: min(1120px, 58vw, (var(--stage) - 240px) * 1.335);
     --side: max(64px, (100% - 1480px) / 2);
@@ -88,7 +99,7 @@ main > .section.light:has(.spec-table.showcase) {
     display: block;
     height: auto;
     min-height: 100svh;
-    padding: calc(var(--nav-offset) + 16px) max(20px, (100% - 960px) / 2) max(40px, var(--floater-clear, 0px));
+    padding: calc(var(--nav-offset) + 16px) max(20px, (100% - 960px) / 2) 40px;
   }
 
   /* the layers */
@@ -263,7 +274,8 @@ main > .section.light:has(.spec-table.showcase) {
     }
   }
 
-  /* phone or desktop drawing */
+  /* the phone drawing, or the desktop one (1640 wide against the car's 1448: its width line
+     sits right of the car) where the car lies flat */
   > .default-content-wrapper > .specs-dims-desk {
     display: none;
 
@@ -283,17 +295,17 @@ main > .section.light:has(.spec-table.showcase) {
     }
   }
 
-  /* inline drawing */
+  /* the drawing shown inline (spec-table-showcase.js): thin grey lines and labels in the page's
+     font. Sizes are in the drawing's units, as the prototype sets them */
   > .default-content-wrapper > .specs-dims > .specs-drawing {
     overflow: visible;
     color: #111;
 
-    /* Safari fix */
     :is(path, line, polyline) {
       fill: none;
       stroke: currentcolor;
       stroke-width: 3;
-      stroke-opacity: 0.45;
+      opacity: 0.45;
 
       @media (width >= 900px) {
         stroke-width: 1.5;
@@ -315,7 +327,7 @@ main > .section.light:has(.spec-table.showcase) {
       font-size: 30px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      fill-opacity: 0.62;
+      opacity: 0.62;
 
       @media (width >= 900px) {
         font-size: 15px;
@@ -327,7 +339,9 @@ main > .section.light:has(.spec-table.showcase) {
     }
   }
 
-  /* dimension lines fade in on arrival */
+  /* arriving from above (spec-table-showcase.js): the car comes in with the section (the Wave
+     In cut fades it in by about 1.2s), then its dimension lines fade in one after another, as
+     on the prototype */
   &.specs-arrive > .default-content-wrapper > .specs-dims {
     :is(svg > g, img) {
       animation: specs-dims-in 0.3s linear 1.25s backwards;
@@ -342,7 +356,8 @@ main > .section.light:has(.spec-table.showcase) {
     }
   }
 
-  /* ---------- spec groups ---------- */
+  /* ---------- the two groups: one under the other (label 8px over its tiles, 18px between
+     them); on desktop side by side (label 12px over its tiles) ---------- */
   > .default-content-wrapper > h3 {
     inset-inline: var(--inset);
     font-family: var(--font-family-base);
@@ -397,7 +412,8 @@ main > .section.light:has(.spec-table.showcase) {
     }
   }
 
-  /* tiles */
+  /* the tiles: value over label, three a row (prototype .specs-tiles); phones 72px tall,
+     desktop 87px, with smaller text on narrow desktops so the values fit on one line */
   .spec-table {
     dl {
       flex-direction: row;
@@ -438,6 +454,9 @@ main > .section.light:has(.spec-table.showcase) {
     dd {
       order: -1;
       font-family: var(--font-family-display);
+
+      /* 15px from 375px wide (the design); a touch smaller on narrower phones, so
+         "1,100 km+" fits */
       font-size: clamp(13px, 4vw, 15px);
       font-weight: var(--font-weight-regular);
       line-height: normal;
@@ -452,15 +471,6 @@ main > .section.light:has(.spec-table.showcase) {
       @media (900px <= width < 1200px) {
         font-size: clamp(16px, 1.65vw, 20px);
       }
-    }
-
-    /* ellipsis */
-    :is(dd, dt),
-    :is(dd, dt) > * {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     /* #5e5e5e on the #f0f0f0 tile: 5.7:1 (the design's #6f6f6f is 4.4:1) */
@@ -508,7 +518,7 @@ main > .section.light:has(.spec-table.showcase) {
       /* short desktops (the Figma frame, 1280 × 720): smaller, 14px over the brochure button */
       @media (width >= 900px) and (height <= 800px) {
         top: auto;
-        bottom: calc(190px + var(--lift));
+        bottom: 190px;
         font-size: 24px;
         line-height: 30px;
       }
@@ -524,7 +534,9 @@ main > .section.light:has(.spec-table.showcase) {
       }
     }
 
-    /* brochure button and popup */
+    /* "Download the brochure" (a button from scripts/utils/brochure.js): a click opens the two
+       brochure links in a popup above it; a second click, Escape, or a click or focus elsewhere
+       closes it. In Universal Editor the label and the links show as authored */
     > p:not(:has(a)) {
       bottom: var(--broch-b);
       inset-inline: 0;
@@ -665,12 +677,13 @@ main > .section.light:has(.spec-table.showcase) {
       }
     }
 
+    /* "See full specs": outlined, dark on light */
     > p:has(> a:only-child) {
       bottom: calc(var(--foot) + 20px);
       inset-inline: var(--inset);
 
       @media (width >= 900px) {
-        bottom: calc(var(--cta-b) + var(--lift));
+        bottom: 64px;
         inset-inline: 0;
         width: max-content;
         min-width: 206px;
@@ -690,7 +703,6 @@ main > .section.light:has(.spec-table.showcase) {
         padding: 0 24px;
         border: 1px solid #111;
         border-radius: 8px;
-        background-color: transparent;
         font-family: var(--font-family-base);
         font-size: 16px;
         font-weight: var(--font-weight-regular);
@@ -702,181 +714,8 @@ main > .section.light:has(.spec-table.showcase) {
       }
 
       > a:is(:hover, :focus-visible) {
-        border-color: #111;
-        background-color: transparent;
         text-decoration: none;
         color: #111;
-      }
-    }
-  }
-}
-
-/* ---------- two cars ---------- */
-main > .section.light.specs-two-cars:has(.spec-table.showcase) {
-  /* car proportions (set from the images) */
-  --car1-ar: calc(277.53 / 236.05);
-  --car2-ar: calc(523.17 / 236.05);
-  --cars-w1: calc(var(--cars-h1) * var(--car1-ar));
-  --cars-w2: calc(var(--cars-h1) * var(--car2-ar));
-
-  /* phones: stacked */
-  --cars-h1: min((100vw - 40px) / var(--car1-ar), (100vw - 40px) / var(--car2-ar));
-  --cars-gap: 36px;
-  --cars-h: calc(var(--cars-h1) * 2 + var(--cars-gap));
-  --cars-top: calc(var(--stage) / 2 - 10px - var(--cars-h) / 2);
-  --foot: max(44px, var(--floater-clear, 0px) - 20px);
-
-  /* the groups from the foot; without motion what comes after the pair moves down below it */
-  --g1-at: calc(var(--stage) - var(--foot) - 449.2px);
-  --g1: calc(var(--g1-at) + var(--after));
-  --shift: max(0px, var(--cars-top) + var(--cars-h) + 32px - var(--g1-at));
-
-  /* 768px and up: side by side in one row, 24px apart, centred 52% down the screen */
-  @media (width >= 768px) {
-    --cars-row: min(1320px, 92vw, (var(--stage) - 240px) * 3.39);
-    --cars-gap: 24px;
-    --cars-h1: calc((var(--cars-row) - var(--cars-gap)) / (var(--car1-ar) + var(--car2-ar)));
-    --cars-h: var(--cars-h1);
-    --cars-top: calc(var(--stage) * 0.52 - var(--cars-h1) / 2);
-  }
-
-  /* desktop groups */
-  @media (width >= 900px) {
-    --g1-at: calc(var(--stage) - 387.6px);
-    --broch-b: calc(128px + var(--lift));
-    --cta-b: 71px;
-  }
-
-  @media (width >= 900px) and (height > 800px) {
-    --g1-at: calc(var(--stage) - 434.6px);
-  }
-
-  > .default-content-wrapper > :is(.specs-car, .specs-dims) {
-    top: var(--cars-top);
-    width: var(--cars-w1);
-    height: var(--cars-h1);
-
-    @media (height < 500px) {
-      justify-self: start;
-      width: calc((100% - 16px) * var(--car1-ar) / (var(--car1-ar) + var(--car2-ar)));
-      height: auto;
-    }
-  }
-
-  > .default-content-wrapper > :is(.specs-car-2, .specs-dims-2) {
-    top: calc(var(--cars-top) + var(--cars-h1) + var(--cars-gap));
-    width: var(--cars-w2);
-
-    @media (width >= 768px) {
-      top: var(--cars-top);
-    }
-
-    @media (height < 500px) {
-      justify-self: end;
-      width: calc((100% - 16px) * var(--car2-ar) / (var(--car1-ar) + var(--car2-ar)));
-    }
-  }
-
-  @media (width >= 768px) {
-    > .default-content-wrapper > :is(.specs-car-1, .specs-dims-1) {
-      inset-inline: calc(50% - var(--cars-row) / 2) auto;
-      margin-inline: 0;
-    }
-
-    > .default-content-wrapper > :is(.specs-car-2, .specs-dims-2) {
-      inset-inline: calc(50% - var(--cars-row) / 2 + var(--cars-w1) + var(--cars-gap)) auto;
-      margin-inline: 0;
-    }
-  }
-
-  @media (height < 500px) {
-    > .default-content-wrapper > :is(.specs-car, .specs-dims) {
-      margin-inline: 0;
-    }
-  }
-
-  /* the car over its ground shadow (prototype .specs-view::before, ::after) */
-  > .default-content-wrapper > .specs-car {
-    --shadow-l: 14%;
-    --shadow-r: 14.7%;
-
-    @media (height < 500px) {
-      position: relative;
-    }
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      left: var(--shadow-l);
-      right: var(--shadow-r);
-      pointer-events: none;
-    }
-
-    &::before {
-      top: 78.5%;
-      height: 10%;
-      background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 24%), rgb(0 0 0 / 10%) 55%, transparent 100%);
-      filter: blur(6px);
-    }
-
-    &::after {
-      top: 81.6%;
-      height: 3.4%;
-      margin: 0 3%;
-      background: radial-gradient(50% 50% at 50% 50%, rgb(0 0 0 / 42%), transparent 100%);
-      filter: blur(3px);
-    }
-
-    :is(picture, img) {
-      position: relative;
-      inset: auto;
-      z-index: 1;
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transform: none;
-
-      @media (height < 500px) {
-        height: auto;
-      }
-    }
-  }
-
-  > .default-content-wrapper > .specs-car-2 {
-    --shadow-l: 6.7%;
-    --shadow-r: 13.2%;
-  }
-
-  /* drawing fits its car */
-  > .default-content-wrapper > .specs-dims {
-    > picture,
-    :is(img, svg) {
-      height: 100%;
-    }
-
-    img {
-      object-fit: contain;
-    }
-
-    @media (height < 500px) {
-      > picture,
-      :is(img, svg) {
-        height: auto;
-      }
-    }
-  }
-
-  /* the closing title on two lines (Figma 422px at 24px), the buttons as the design */
-  > .default-content-wrapper:last-child {
-    > h2 {
-      @media (width >= 900px) {
-        width: min(17.6em, 80%);
-      }
-
-      @media (width >= 900px) and (height <= 800px) {
-        bottom: calc(181px + var(--lift));
       }
     }
   }

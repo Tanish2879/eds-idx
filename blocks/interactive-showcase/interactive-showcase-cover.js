@@ -33,8 +33,6 @@ const VIEW_FADE_MS = 500;
 // the detail panel's text swaps (going to the next point) and its closing
 const SWAP_MS = 200;
 const CLOSE_MS = 350;
-// phones: the detail panel's titles are cut to this many characters, so the panel fits one screen
-const TITLE_MAX = 30;
 
 const ARROW = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path fill="currentColor" d="M16.07 11.69l-5.63 5.63a.62.62 0 0 1-.88 0l-5.63-5.63a.62.62 0 0 1 .88-.88l4.56 4.56V3.13a.62.62 0 0 1 1.25 0v12.24l4.56-4.56a.62.62 0 0 1 .89.88z"/></svg>';
 const CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M19.28 18.22a.75.75 0 1 1-1.06 1.06L12 13.06l-6.22 6.22a.75.75 0 0 1-1.06-1.06L10.94 12 4.72 5.78a.75.75 0 0 1 1.06-1.06L12 10.94l6.22-6.22a.75.75 0 1 1 1.06 1.06L13.06 12z"/></svg>';
@@ -49,28 +47,6 @@ function el(tag, className, attrs = {}) {
 const slug = (text) => text.toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '')
   .trim()
   .replace(/[\s_]+/g, '-');
-
-/** text cut to max characters at a word, ending in an ellipsis (counted in max) */
-const cut = (text, max) => {
-  if (text.length <= max) return text;
-  const head = text.slice(0, max);
-  const space = head.lastIndexOf(' ');
-  return `${(space > 0 ? head.slice(0, space) : head.slice(0, max - 1)).replace(/[\s,;:.-]+$/, '')}…`;
-};
-
-/** shows text, cut on phones; screen readers still get all of it */
-const setTitle = (node, text) => {
-  const short = window.matchMedia(WIDE).matches ? text : cut(text, TITLE_MAX);
-  if (short === text) {
-    node.textContent = text;
-    return;
-  }
-  const shown = el('span', '', { 'aria-hidden': 'true' });
-  shown.textContent = short;
-  const full = el('span', 'visually-hidden');
-  full.textContent = text;
-  node.replaceChildren(shown, full);
-};
 
 /** the Cover showcase block directly in a section, if it has one */
 const coverOf = (section) => (section?.matches?.('main > .section')
@@ -323,7 +299,7 @@ export default function decorateCover(block, {
   const stage = block.querySelector('.stage');
   const copy = block.querySelector('.copy');
   const rail = block.querySelector('.thumbs');
-  // full-bleed media to the Wave In cut, not content (wave-cut.js)
+  // settled with the Wave In cut as full-bleed media are, not risen as content (wave-cut.js)
   stage.classList.add('backdrop');
   rail?.setAttribute('aria-label', label ? `${label} colours` : 'Colours');
 
@@ -496,7 +472,7 @@ export default function decorateCover(block, {
   const fill = (item, n) => {
     const { spots } = items[item];
     const { spot } = spots[n];
-    setTitle(tipTitle, spot.title);
+    tipTitle.textContent = spot.title;
     tipText.textContent = spot.text;
     tipText.hidden = !spot.text;
     const image = imageOf(item, n);
@@ -505,7 +481,7 @@ export default function decorateCover(block, {
     tooltip.classList.toggle('has-media', Boolean(image));
     next.hidden = spots.length < 2;
     const after = (n + 1) % spots.length;
-    setTitle(nextLabel, spots[after]?.spot.title || '');
+    nextLabel.textContent = spots[after]?.spot.title || '';
     setImage(nextThumb, imageOf(item, after));
   };
 
@@ -571,10 +547,7 @@ export default function decorateCover(block, {
     if (e.key === 'Escape' && open) closeDetail({ refocus: true });
   });
   window.addEventListener('resize', () => {
-    if (!open) return;
-    // the titles are cut on phones only (turning a tablet, say)
-    fill(open.item, open.n);
-    zoomTo(items[open.item].spots[open.n].btn);
+    if (open) zoomTo(items[open.item].spots[open.n].btn);
   });
 
   /* ---- a colour picked: crossfade (the base block has switched the panels) ---- */

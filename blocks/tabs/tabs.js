@@ -30,7 +30,10 @@ async function loadPanelFragment(panel) {
 }
 
 /**
- * FAQ and the spec sheet pop-up: arrows at the ends of an overflowing tab bar.
+ * FAQ style: when the tabs don't fit their column (any screen), an arrow at each end of the
+ * bar moves it sideways by most of its width; each shows only while there is more that way.
+ * The bar still scrolls by swipe and trackpad, and the selected tab is kept in full view.
+ * The arrows are for pointers only: the keyboard moves through the tabs with the arrow keys.
  * @param {HTMLElement} block
  * @param {HTMLElement} list the tab bar
  */
@@ -377,10 +380,6 @@ export default async function decorate(block) {
     if (imageCell?.querySelector('picture, img')) imageCell.classList.add('tabs-panel-image');
     else if (imageCell && !editing) imageCell.remove();
 
-    if (editing && block.classList.contains('faq') && row.dataset.aueModel === 'tab') {
-      row.dataset.aueModel = 'tab-faq';
-    }
-
     row.className = 'tabs-panel';
     row.id = `tabpanel-${id}`;
     row.setAttribute('role', 'tabpanel');
@@ -392,6 +391,7 @@ export default async function decorate(block) {
     button.className = 'tabs-tab';
     button.id = `tab-${id}`;
     button.textContent = title || `Tab ${i + 1}`;
+    if (!title) button.dataset.untitled = '';
     button.setAttribute('role', 'tab');
     button.setAttribute('aria-controls', row.id);
 
@@ -477,11 +477,6 @@ export default async function decorate(block) {
   if (!editing && block.classList.contains('specs')
     && (document.body.classList.contains('combat') || lightSheet)) {
     wireCombatSpecsMotion(block, list, buttons, panels);
-  }
-  // the spec sheet pop-up (a Side Panel page): arrows on its tab bar
-  if (block.classList.contains('specs') && block.closest('.section.side-panel')
-    && (document.body.classList.contains('combat') || lightSheet)) {
-    wireTabScroll(block, list);
   }
   if (!editing && block.classList.contains('vertical') && document.body.classList.contains('combat')) {
     wireCombatComfortMotion(block, list, buttons, panels, select);

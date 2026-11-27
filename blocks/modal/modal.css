@@ -54,11 +54,6 @@ html.is-modal-open {
   outline-offset: 2px;
 }
 
-/* the dialog takes the focus when it opens (modal.js): no ring on the whole panel */
-.modal dialog:focus-visible {
-  outline: none;
-}
-
 /* close button: 44px hit area, X drawn in CSS */
 .modal .close-button {
   position: absolute;
