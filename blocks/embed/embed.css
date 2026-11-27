@@ -1,0 +1,269 @@
+.embed {
+  --embed-ratio: 16 / 9;
+
+  width: 100%;
+  max-width: 960px;
+  margin: 32px auto;
+}
+
+.embed.ratio-4-3 {
+  --embed-ratio: 4 / 3;
+}
+
+.embed.ratio-1-1 {
+  --embed-ratio: 1;
+}
+
+/* vertical video (YouTube Shorts, reels): keep it phone-sized on desktop */
+.embed.ratio-9-16 {
+  --embed-ratio: 9 / 16;
+
+  max-width: 405px;
+}
+
+.embed .embed-frame,
+.embed .embed-placeholder {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--embed-ratio);
+  overflow: hidden;
+  background-color: var(--color-black);
+}
+
+.embed .embed-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.embed .embed-placeholder {
+  cursor: pointer;
+}
+
+.embed .embed-placeholder picture,
+.embed .embed-placeholder img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.embed .embed-play {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  color: var(--color-black);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* play triangle */
+.embed .embed-play::before {
+  content: '';
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border-block: 12px solid transparent;
+  border-inline-start: 20px solid currentcolor;
+  transform: translate(-35%, -50%);
+}
+
+.embed .embed-play:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 4px;
+}
+
+.embed .embed-play:focus-visible,
+.embed .embed-placeholder:hover .embed-play {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.embed.embed-twitter .twitter-tweet {
+  margin-inline: auto;
+}
+
+/* X post: card shown until widgets.js has drawn the post */
+.embed .embed-post.is-loading .twitter-tweet {
+  position: absolute;
+  inset: 0 auto auto 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.embed .embed-skeleton {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 240px;
+  padding: 16px;
+  border: 1px solid var(--color-gray-200, #d9d9d9);
+  border-radius: 12px;
+  background-color: var(--color-white);
+}
+
+.embed .embed-skeleton span {
+  display: block;
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #eee 25%, #f7f7f7 50%, #eee 75%) 0 0 / 200% 100%;
+  animation: embed-shimmer 1.4s linear infinite;
+}
+
+.embed .embed-skeleton span:first-child {
+  width: 40%;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.embed .embed-skeleton span:nth-child(3) {
+  width: 80%;
+}
+
+.embed .embed-skeleton span:last-child {
+  flex: 1;
+  border-radius: 8px;
+}
+
+.embed .embed-skeleton .embed-status {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background-color: var(--color-white);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 12%);
+  color: var(--color-black);
+  font-size: 14px;
+  transform: translate(-50%, -50%);
+}
+
+.embed .embed-skeleton .embed-status i {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ddd;
+  border-top-color: var(--color-accent, #000);
+  border-radius: 50%;
+  animation: embed-spin 0.8s linear infinite;
+}
+
+.embed .embed-skeleton .embed-status b {
+  font-weight: 500;
+}
+
+@keyframes embed-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes embed-shimmer {
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .embed .embed-skeleton span,
+  .embed .embed-skeleton .embed-status i {
+    animation: none;
+  }
+}
+
+.embed.embed-empty {
+  display: none;
+}
+
+/* Even space above the embed, on every screen.
+   The section's wrappers centre themselves with auto margins, which share out whatever free
+   height is left, so the gap between the text and the embed changed with the screen height.
+   Here the wrappers keep no vertical margin (the section still centres the whole stack) and
+   the only space above the embed is this fixed gap. embed.js counts it when it fits the embed. */
+main > .section:has(.embed) {
+  --embed-gap: 24px;
+}
+
+main > .section:has(.embed) > div {
+  margin-block: 0;
+}
+
+main > .section:has(.embed) > .default-content-wrapper > :last-child {
+  margin-bottom: 0;
+}
+
+main > .section:has(.embed) .embed {
+  margin-block: var(--embed-gap) 0;
+}
+
+@media (width >= 900px) {
+  main > .section:has(.embed) {
+    --embed-gap: 32px;
+  }
+}
+
+/* Snapped section: fit the embed to the screen (embed.js sets --embed-room) */
+body:not(.free-scroll) main > .section:not(.no-snap) .embed {
+  --embed-wph: 1.7778;
+  --embed-max: 960px;
+  --embed-room: max(180px, calc(100svh - 300px));
+
+  max-width: min(var(--embed-max), calc(var(--embed-room) * var(--embed-wph)));
+
+  &.ratio-4-3 {
+    --embed-wph: 1.3333;
+  }
+
+  &.ratio-1-1 {
+    --embed-wph: 1;
+  }
+
+  &.ratio-9-16 {
+    --embed-wph: 0.5625;
+    --embed-max: 405px;
+  }
+
+  /* X post: no ratio, scrolls inside */
+  &.embed-twitter {
+    max-width: 550px;
+    max-height: var(--embed-room);
+    overflow-y: auto;
+  }
+}
+
+/* Shield over a player */
+main .embed {
+  .embed-post {
+    position: relative;
+  }
+
+  .embed-shield {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    /* YouTube/Vimeo: control strips stay open */
+    &.is-api {
+      top: min(60px, 25%);
+      bottom: min(136px, 50%);
+    }
+  }
+}
+
+/* Shield is active only while snapping */
+html.snap-active main > .section:not(.no-snap) .embed .embed-shield {
+  &:not(.is-off) {
+    pointer-events: auto;
+  }
+
+  &.is-api:not(.is-off) {
+    cursor: pointer;
+  }
+}

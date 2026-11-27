@@ -1,0 +1,31 @@
+/* Section style "Light" (models/_section.json, scripts/utils/section-styles.js):
+   a light, off-white section with dark text, between the site's default dark
+   sections. Loaded only on pages that use it. Blocks inside follow it through
+   --section-bg / currentColor; outlined buttons swap to their on-light values. */
+
+main > .section.light {
+  --section-bg: var(--section-light-bg, #fcfdfc);
+  --section-ink: var(--section-light-ink, #191919);
+
+  background-color: var(--section-bg);
+  color: var(--section-ink);
+}
+
+main > .section.light > .default-content-wrapper :where(h1, h2, h3, h4, h5, h6, p, li) {
+  color: inherit;
+}
+
+main > .section.light a.button.secondary,
+main > .section.light button.button.secondary {
+  border-color: var(--button-outlined-border);
+  color: var(--button-outlined-color);
+}
+
+main > .section.light a.button.secondary:hover,
+main > .section.light a.button.secondary:focus-visible,
+main > .section.light button.button.secondary:hover,
+main > .section.light button.button.secondary:focus-visible {
+  border-color: var(--button-outlined-border);
+  background-color: var(--button-outlined-hover-bg);
+  color: var(--button-outlined-color);
+}

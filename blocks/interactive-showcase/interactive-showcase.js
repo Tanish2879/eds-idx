@@ -15,10 +15,13 @@
  * it from here into its centre card on scroll.
  */
 
-// at most this many + points per powertrain (the client's limit): further bullets are ignored
-const MAX_HOTSPOTS = 6;
-// at most this many items (thumbnails): further items are not shown
-const MAX_ITEMS = 3;
+import { loadCSS } from '../../scripts/aem.js';
+import snapRow from '../../scripts/utils/snap-row.js';
+
+// at most this many + points per item: further bullets are ignored
+const MAX_HOTSPOTS = 8;
+// at most this many items (thumbnails, e.g. one per paint colour): further items are not shown
+const MAX_ITEMS = 8;
 // a module beside its + is the design's 272px wide where it fits; where it does not (a + in
 // the middle of a phone's card) it narrows to the room there is, down to this
 const MIN_TOOLTIP_WIDTH = 180;
@@ -29,8 +32,8 @@ const MAX_CHARS = {
   title: 40,
   itemTitle: 40,
   description: 160,
-  hotspotTitle: 24,
-  hotspotText: 120,
+  hotspotTitle: 40,
+  hotspotText: 200,
 };
 let instance = 0;
 
@@ -53,7 +56,7 @@ function normalizeCoordinate(value) {
 /**
  * the + points, one bullet each: "x, y | TITLE | description". x and y are percentages of the
  * showcase image from its bottom-left corner, like the first quadrant of a graph (x to the
- * right, y upwards); the + button's top-left corner sits on that point. A missing x or y is 0;
+ * right, y upwards); the + button is centred on that point. A missing x or y is 0;
  * only the first MAX_HOTSPOTS bullets are used (none is fine). Returned y is from the top, as
  * the stylesheet places it.
  */
@@ -70,6 +73,9 @@ function parseHotspots(cell) {
       y: 100 - normalizeCoordinate(y),
       title,
       text: text.join(' | '),
+      // the point's photo: a link in its bullet (its title linked to the image); the Cover
+      // style shows it in the detail panel
+      image: li.querySelector('a[href]')?.getAttribute('href') || '',
     };
   });
 }
@@ -87,13 +93,14 @@ function clip(text, max) {
 }
 
 /**
- * a plain-text field's element with its text cut to `max` characters (clip); its paragraph,
- * where it has one, is kept. Returns the text's length if it was cut, else 0
+ * a field's element with its text cut to `max` characters (clip); its paragraph or heading
+ * (a description may be a heading, e.g. a caption), where it has one, is kept. Returns the
+ * text's length if it was cut, else 0
  */
 function clipField(node, max) {
   const { length } = node.textContent.trim();
   if (length <= max) return 0;
-  const holder = node.querySelector('p') || node;
+  const holder = node.querySelector('p, h1, h2, h3, h4, h5, h6') || node;
   holder.textContent = clip(node.textContent, max);
   [...node.children].forEach((child) => {
     if (child !== holder && !child.contains(holder)) child.remove();
@@ -368,17 +375,222 @@ function displayCopy(node) {
   return copy;
 }
 
+/* ---------- Combat motion ----------
+ * The Combat page (body.combat) plays the design prototype's exterior / interior motion:
+ *   view switch   the new image comes in from a blur (18px, 104%) as the old one blurs away
+ *                 (to 102%), 0.85s power2.inOut, instead of the vertical slide (slideImages)
+ *   caption       the old caption blurs (8px) and drops 10px away in 0.3s, then the new one
+ *                 comes back the same way in 0.5s
+ *   hotspots      appear from a blur (10px, 40%) one after another (0.55s, 60ms apart) once
+ *                 the section has nearly arrived (combat:move, scripts/combat-motion.js) and
+ *                 after a view switch; they shrink away (0.3s, 30ms apart) as the page moves
+ *                 on, or the view switches
+ * Only with motion allowed (checked at each change); otherwise the views swap at once.
+ */
+const COMBAT_EASE = {
+  power2In: 'cubic-bezier(0.32, 0, 0.67, 0)',
+  power2InOut: 'cubic-bezier(0.65, 0, 0.35, 1)',
+  power3Out: 'cubic-bezier(0.25, 1, 0.5, 1)',
+};
+// the hotspots come in when this much of the section's 1.2s arrival has played (the prototype's
+// 78% of its move)
+const COMBAT_SPOTS_AFTER = 940;
+
+/**
+ * @param {object} opts
+ * @param {Element} opts.block
+ * @param {Element} opts.section
+ * @param {Element} opts.stage
+ * @param {object[]} opts.items {row, textCell, figure, spots}
+ * @param {function(): number} opts.currentIndex
+ * @param {function(): void} opts.closeTooltip
+ * @returns {{change: function(number, number): void}}
+ */
+function combatViewMotion({
+  block, section, stage, items, currentIndex, closeTooltip,
+}) {
+  const { body } = document;
+  const motionOk = () => window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  block.classList.add('combat-view');
+
+  // hotspots: .spots-off hides those of an image (interactive-showcase.css)
+  const spotAnims = new Map();
+  const stopSpots = (item) => {
+    (spotAnims.get(item) || []).forEach((a) => a.cancel());
+    spotAnims.delete(item);
+  };
+  const spotsIn = (item) => {
+    stopSpots(item);
+    item.figure.classList.remove('spots-off');
+    if (!motionOk()) return;
+    spotAnims.set(item, item.spots.map(({ btn }, i) => btn.animate([
+      { opacity: 0, scale: '0.4', filter: 'blur(10px)' },
+      { opacity: 1, scale: '1', filter: 'blur(0px)' },
+    ], {
+      duration: 550, delay: i * 60, easing: COMBAT_EASE.power3Out, fill: 'backwards',
+    })));
+  };
+  const spotsOut = (item, {
+    to = 0.4, blur = 6, duration = 300, each = 30,
+  } = {}) => {
+    stopSpots(item);
+    if (item.figure.classList.contains('spots-off')) return;
+    if (!motionOk() || !item.spots.length) {
+      item.figure.classList.add('spots-off');
+      return;
+    }
+    const anims = item.spots.map(({ btn }, i) => btn.animate([
+      { opacity: 0, scale: String(to), filter: `blur(${blur}px)` },
+    ], { duration, delay: i * each, fill: 'forwards' }));
+    spotAnims.set(item, anims);
+    Promise.all(anims.map((a) => a.finished)).then(() => {
+      item.figure.classList.add('spots-off');
+      stopSpots(item);
+    }).catch(() => {
+      // interrupted: what interrupted it takes over
+    });
+  };
+  const hideSpots = (item) => {
+    stopSpots(item);
+    item.figure.classList.add('spots-off');
+  };
+  // a hidden + reached with the keyboard shows them all
+  stage.addEventListener('focusin', (e) => {
+    const item = items.find(({ figure }) => figure.contains(e.target));
+    if (item?.figure.classList.contains('spots-off') && e.target.matches('.hotspot')) spotsIn(item);
+  });
+
+  // arrival: the hotspots come in late in the move here, and go as the page moves on
+  let arrival = 0;
+  const current = () => items[currentIndex()];
+  document.addEventListener('combat:move', ({ detail: { from, to } }) => {
+    if (from === to) return;
+    if (from === section) {
+      clearTimeout(arrival);
+      closeTooltip();
+      spotsOut(current());
+    } else if (to === section) {
+      hideSpots(current());
+      clearTimeout(arrival);
+      arrival = setTimeout(() => spotsIn(current()), COMBAT_SPOTS_AFTER);
+    }
+  });
+  document.addEventListener('combat:arrive', ({ detail }) => {
+    const item = current();
+    if (detail.section === section) {
+      clearTimeout(arrival);
+      if (item.figure.classList.contains('spots-off')) spotsIn(item);
+    } else if (!spotAnims.has(item)) hideSpots(item);
+  });
+  const here = () => !body.classList.contains('combat-motion') || section?.classList.contains('is-current');
+
+  // view switch
+  let viewAnims = [];
+  let viewDone = null;
+  const crossfade = (from, to) => {
+    viewAnims.forEach((a) => a.cancel());
+    viewAnims = [];
+    items.forEach(({ row }) => row.classList.remove('is-outgoing'));
+    from.row.classList.add('is-outgoing');
+    const timing = { duration: 850, easing: COMBAT_EASE.power2InOut };
+    const incoming = to.figure.animate([
+      { opacity: 0, filter: 'blur(18px)', scale: '1.04' },
+      { opacity: 1, filter: 'blur(0px)', scale: '1' },
+    ], timing);
+    const outgoing = from.figure.animate([
+      { opacity: 1, filter: 'blur(0px)', scale: '1' },
+      { opacity: 0, filter: 'blur(18px)', scale: '1.02' },
+    ], { ...timing, fill: 'forwards' });
+    viewAnims = [incoming, outgoing];
+    const done = incoming.finished;
+    viewDone = done;
+    done.then(() => {
+      if (viewDone !== done) return;
+      from.row.classList.remove('is-outgoing');
+      outgoing.cancel();
+      viewAnims = [];
+      if (here()) spotsIn(to);
+    }).catch(() => {
+      // interrupted by the next switch
+    });
+  };
+
+  // caption: the one on screen goes, then the new one comes
+  let shown = null;
+  let captionTimer = 0;
+  let captionAnims = [];
+  const frameOf = (node) => {
+    const cs = getComputedStyle(node);
+    return {
+      opacity: cs.opacity,
+      filter: cs.filter === 'none' ? 'blur(0px)' : cs.filter,
+      translate: cs.translate === 'none' ? '0 0' : cs.translate,
+    };
+  };
+  const swapCaption = (coming) => {
+    clearTimeout(captionTimer);
+    const leaving = shown;
+    // (select() has hidden it already; its styles still read where it is in its fade)
+    const leavingFrom = leaving ? frameOf(leaving) : null;
+    captionAnims.forEach((a) => a.cancel());
+    captionAnims = [];
+    shown = coming;
+    if (!coming || !leaving || leaving === coming || !motionOk()) return;
+    // select() has shown the new caption: the old one stays until it has gone
+    coming.hidden = true;
+    leaving.hidden = false;
+    captionAnims.push(leaving.animate([leavingFrom, {
+      opacity: 0, filter: 'blur(8px)', translate: '0 10px',
+    }], { duration: 300, easing: COMBAT_EASE.power2In, fill: 'forwards' }));
+    captionTimer = setTimeout(() => {
+      captionAnims.forEach((a) => a.cancel());
+      leaving.hidden = true;
+      coming.hidden = false;
+      captionAnims = [coming.animate([
+        { opacity: 0, filter: 'blur(8px)', translate: '0 10px' },
+        { opacity: 1, filter: 'blur(0px)', translate: '0 0' },
+      ], { duration: 500, easing: COMBAT_EASE.power3Out, fill: 'backwards' })];
+    }, 350);
+  };
+
+  return {
+    change(fromIndex, toIndex) {
+      const from = items[fromIndex];
+      const to = items[toIndex];
+      if (!to) return;
+      if (!from || from === to) {
+        shown = to.textCell || null;
+        return;
+      }
+      swapCaption(to.textCell || null);
+      if (!motionOk()) {
+        stopSpots(from);
+        if (here()) spotsIn(to);
+        return;
+      }
+      spotsOut(from, {
+        to: 0.5, duration: 250, each: 20,
+      });
+      hideSpots(to);
+      crossfade(from, to);
+    },
+  };
+}
+
 /**
  * loads and decorates the block
  * @param {Element} block The block element
  */
-export default function decorate(block) {
+export default async function decorate(block) {
   instance += 1;
   const id = `interactive-showcase-${instance}`;
   const section = block.closest('.section');
+  // Cover style: full-bleed, built on in interactive-showcase-cover.js (see the end)
+  const cover = block.classList.contains('cover');
   if (section) {
     section.dataset.interactiveShowcaseTheme = 'light';
-    if (!section.id && !document.getElementById('nev-tech')) section.id = 'nev-tech';
+    // (a Cover section is named after its view instead, interactive-showcase-cover.js)
+    if (!cover && !section.id && !document.getElementById('nev-tech')) section.id = 'nev-tech';
   }
 
   const rows = [...block.children];
@@ -389,6 +601,14 @@ export default function decorate(block) {
     || (!r.dataset.aueModel && (r.querySelector('picture, li') || r.children.length > 2)));
   const headRow = parentRow || rows.find((r) => !itemRows.includes(r));
   const editing = Boolean(block.closest('[data-aue-resource]'));
+  // Cover style: its View name and button rows (both Cover only, after the title row), handed
+  // to interactive-showcase-cover.js; the stylesheet is fetched while the block is built
+  const coverStyles = cover ? loadCSS(`${window.hlx.codeBasePath}/blocks/interactive-showcase/interactive-showcase-cover.css`) : null;
+  const fieldRows = rows.filter((r) => r !== headRow && !itemRows.includes(r));
+  const buttonRow = fieldRows.find((r) => r.querySelector('[data-aue-prop="link"], a'));
+  const labelRow = fieldRows.find((r) => r.querySelector('[data-aue-prop="label"]'))
+    || fieldRows.find((r) => r !== buttonRow);
+  const coverParts = { labelRow, buttonRow };
   // items after the MAX_ITEMS-th are left out; in the editor they stay in the block (hidden) so
   // they can still be found and removed in the content tree
   const extraRows = itemRows.splice(MAX_ITEMS);
@@ -400,7 +620,7 @@ export default function decorate(block) {
     block.dataset.aueFilter = full ? 'interactive-showcase-full' : 'interactive-showcase';
   }
 
-  // Item field cells are separate in the model: title is text and description multi-line text.
+  // Item field cells are separate in the model: title is text and description is a textarea.
   // The parent model has only a title. Keep a fallback for published markup without UE field
   // attributes.
   const fieldCell = (row, name) => [...(row?.children || [])].find((cell) => (
@@ -429,6 +649,7 @@ export default function decorate(block) {
   const texts = el('div', 'texts', { 'aria-live': 'polite' });
   const thumbs = el('div', 'thumbs', { role: 'tablist', 'aria-label': 'Showcase items' });
   detail.append(counter, texts, thumbs);
+  snapRow(thumbs, '.thumb');
   if (editing && extraRows.length) {
     const extra = el('div', 'extra-items');
     extra.hidden = true;
@@ -490,6 +711,23 @@ export default function decorate(block) {
    * narrow does it open just below or above the hotspot, centred on it and nudged in, the
    * hotspot keeping its own box. Up or down: the one that fits, else the one with more room.
    */
+  /**
+   * opening upwards beside its + (desktop), the description's last line stops short of the
+   * minus in the bottom corner (interactive-showcase.css). It is three lines in the design; a
+   * longer one (up to MAX_CHARS.hotspotText) takes as many as it needs, up to its line limit:
+   * that count is --interactive-showcase-tip-lines, measured at the tooltip's current width
+   * (left unset at three lines or fewer, so those stay as designed)
+   */
+  const fitTipLines = () => {
+    tipText.style.removeProperty('--interactive-showcase-tip-lines');
+    const style = getComputedStyle(tipText);
+    const line = parseFloat(style.lineHeight);
+    const most = parseInt(style.getPropertyValue('--interactive-showcase-lines'), 10) || 3;
+    if (!line || tooltip.dataset.align !== 'bottom') return;
+    const lines = Math.min(most, Math.round(tipText.scrollHeight / line));
+    if (lines > 3) tipText.style.setProperty('--interactive-showcase-tip-lines', lines);
+  };
+
   const placeTooltip = () => {
     if (!openSpot) return;
     const spot = openSpot.getBoundingClientRect();
@@ -504,6 +742,7 @@ export default function decorate(block) {
     const set = (side, align) => {
       tooltip.dataset.side = side;
       tooltip.dataset.align = align;
+      fitTipLines();
       return tooltip.getBoundingClientRect();
     };
     const fitsAcross = (b) => b.left >= area.left && b.right <= area.right;
@@ -645,10 +884,11 @@ export default function decorate(block) {
       || (cells.length >= 3 ? cells[cells.length - 1] : null);
     let titleCell = fieldCell(row, 'title');
     let descriptionCell = fieldCell(row, 'description');
-    // Published markup may not carry data-aue-prop. Find the separate title/description cells
-    // by their content when Universal Editor field attributes are absent.
+    // Published markup may not carry data-aue-prop. The cells then come in the model's order:
+    // title, then description (which may be a heading, e.g. a caption, so a heading does not
+    // mark the title).
     const contentCells = cells.filter((c) => c !== mediaCell && c !== hotCell);
-    if (!titleCell) titleCell = contentCells.find((c) => c.querySelector('h2, h3, h4')) || contentCells[0] || null;
+    if (!titleCell) titleCell = contentCells[0] || null;
     if (!descriptionCell) descriptionCell = contentCells.find((c) => c !== titleCell) || null;
     if (descriptionCell === titleCell) descriptionCell = null;
     const pictures = [...(mediaCell?.querySelectorAll('picture') || [])];
@@ -684,11 +924,15 @@ export default function decorate(block) {
       });
       btn.style.setProperty('--interactive-showcase-x', `${spot.x}%`);
       btn.style.setProperty('--interactive-showcase-y', `${spot.y}%`);
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (openSpot === btn) closeTooltip({ animate: true });
-        else openTooltip(btn, spot);
-      });
+      // Cover hook: its + points open the Cover's detail panel instead of this tooltip
+      // (interactive-showcase-cover.js binds them)
+      if (!cover) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (openSpot === btn) closeTooltip({ animate: true });
+          else openTooltip(btn, spot);
+        });
+      }
       figure.append(btn);
       return { btn, spot };
     });
@@ -787,11 +1031,45 @@ export default function decorate(block) {
     items[from].row.style.transform = `translateY(${-dir * 100}%)`;
   };
 
+  // Combat motion: the views cross-fade instead of sliding (not for Cover)
+  const combatView = document.body.classList.contains('combat') && !cover && !editing && items.length
+    ? combatViewMotion({
+      block, section, stage, items, currentIndex: () => current, closeTooltip,
+    })
+    : null;
+
+  /**
+   * more thumbnails than the tray's row holds (up to MAX_ITEMS, e.g. one per paint colour): the
+   * tray scrolls sideways (interactive-showcase.css). Its edges with thumbnails past them are
+   * marked (.more-before / .more-after, faded there), and the selected thumbnail is kept in view,
+   * clear of the fade. A tray that holds them all (three, as designed) is left as it is
+   */
+  const FADE = 24;
+  const trayEdges = () => {
+    const end = thumbs.scrollWidth - thumbs.clientWidth;
+    thumbs.classList.toggle('more-before', end > 1 && thumbs.scrollLeft > 1);
+    thumbs.classList.toggle('more-after', end > 1 && thumbs.scrollLeft < end - 1);
+  };
+  const revealThumb = (tab, smooth) => {
+    if (thumbs.scrollWidth - thumbs.clientWidth <= 1) return;
+    const t = tab.getBoundingClientRect();
+    const r = thumbs.getBoundingClientRect();
+    let dx = 0;
+    if (t.left < r.left + FADE) dx = t.left - r.left - FADE;
+    else if (t.right > r.right - FADE) dx = t.right - r.right + FADE;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (dx) thumbs.scrollBy({ left: dx, behavior: smooth && !calm ? 'smooth' : 'instant' });
+  };
+  thumbs.addEventListener('scroll', trayEdges, { passive: true });
+  if (window.ResizeObserver) new ResizeObserver(trayEdges).observe(thumbs);
+
   const select = (index, focus = false) => {
     const from = current;
     current = (index + items.length) % items.length;
     closeTooltip();
-    if (items[from] && items[current]) slideImages(from, current);
+    // Cover hook: its images crossfade instead of sliding (interactive-showcase-cover.css); the
+    // Combat theme cross-fades them too (combatViewMotion)
+    if (!cover && !combatView && items[from] && items[current]) slideImages(from, current);
     items.forEach(({ row, textCell, tab }, i) => {
       const active = i === current;
       row.classList.toggle('is-active', active);
@@ -802,9 +1080,15 @@ export default function decorate(block) {
       tab.setAttribute('aria-selected', active ? 'true' : 'false');
       tab.tabIndex = active ? 0 : -1;
     });
+    combatView?.change(from, current);
     counter.textContent = `${current + 1}/${items.length}`;
     counterSlack();
     if (focus) items[current].tab.focus();
+    revealThumb(items[current].tab, from !== current);
+    // Cover hook: tells interactive-showcase-cover.js which item is shown now
+    if (cover) {
+      block.dispatchEvent(new CustomEvent('interactive-showcase:select', { detail: { from, to: current } }));
+    }
   };
   // again once the fonts are in, and as the counter's size changes with the screen
   document.fonts?.ready.then(counterSlack);
@@ -838,7 +1122,8 @@ export default function decorate(block) {
   if (editing) {
     block.classList.add('editing');
     editorScreen(block);
-  } else if (section && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+  } else if (!cover && section && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    // the white card's entrance (Cover is full-bleed and enters with its section style)
     curtain(section, block);
   }
   if (items.length) select(0);
@@ -850,6 +1135,17 @@ export default function decorate(block) {
     refitSpots?.();
     if (openSpot) placeTooltip();
   });
+
+  // Cover: the full-bleed layout, swatches, view switch and button (interactive-showcase-cover.js)
+  if (cover) {
+    const [{ default: decorateCover }] = await Promise.all([
+      import('./interactive-showcase-cover.js'),
+      coverStyles,
+    ]);
+    decorateCover(block, {
+      ...coverParts, items, select, editing, tooltip,
+    });
+  }
 
   // Universal Editor only: drag / nudge the + points and save their x, y (hotspot-editor.js)
   if (block.classList.contains('editing') && items.length) {

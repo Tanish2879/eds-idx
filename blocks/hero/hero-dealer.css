@@ -1,0 +1,626 @@
+/* Hero "Dealer" style (a dealer's storefront page), loaded by hero.js only when the style is
+   used. Full-screen showroom photo, the status line, the dealer's name, the address, two buttons
+   and a small product card (hero-dealer.js).
+   Desktop is drawn on the design's 1280 × 720 frame, scaled by --u to fit the screen (as the
+   source does): the copy bottom left, the card bottom right (the fixed price bar is hidden on
+   the hero, as in the design: its section has no "Show Floater").
+   Phone follows the mobile design's 375 × 640 frame, scaled by --u: the card at the top under
+   the site header, the copy and two full-width stacked buttons at the foot. The design trims
+   its text to the caps and baseline; the margins here are its gaps less our font's space above
+   the caps and below the baseline. */
+
+main > .section.hero-container .hero-wrapper .hero.dealer {
+  --dealer-status-color: var(--color-white);
+  --dealer-address-color: rgb(242 242 242 / 60%);
+  --dealer-card-color: var(--color-gray-10);
+  --dealer-card-bg: rgb(255 255 255 / 5%);
+  --dealer-photo-bg: rgb(41 41 41 / 50%);
+  --dealer-photo-glow: rgb(255 255 255 / 40%);
+  --dealer-outline: rgb(255 255 255 / 90%);
+
+  /* GSAP's expo.inOut, power3.out and power4.out, as the source's opening */
+  --dealer-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  --dealer-power3: cubic-bezier(0.25, 1, 0.5, 1);
+  --dealer-power4: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* the card's foot (--dealer-card-foot) can sit higher than the copy's (--dealer-foot) */
+  --dealer-card-foot: var(--dealer-foot);
+
+  /* behind the photo while it opens */
+  background-color: #1d1f22;
+
+  @media (width < 900px) {
+    /* the 375 × 640 frame: 16 from the sides, the copy 20 from the foot, the card 14 under
+       the header (whose foot is --nav-offset, styles.css) */
+    --u: clamp(0.85px, min(100vw / 375, 100svh / 640), 1.3px);
+    --dealer-foot: calc(20 * var(--u) + env(safe-area-inset-bottom));
+    --dealer-address-color: rgb(255 255 255 / 75%);
+    --dealer-card-color: var(--color-white);
+
+    /* a touch deeper than the design's 45%, to keep the "[ New ]" tag at AA over the photo */
+    --dealer-card-bg: rgb(0 0 0 / 55%);
+
+    padding: calc(var(--nav-offset) + 14 * var(--u)) calc(16 * var(--u)) var(--dealer-foot);
+  }
+
+  @media (width >= 900px) {
+    /* the 1280 × 720 frame: 64 from the sides, the copy 52 and the card 59 from the foot */
+    --u: min(100vw / 1280, 100svh / 720);
+    --dealer-foot: calc(52 * var(--u));
+    --dealer-card-foot: calc(59 * var(--u));
+
+    padding: 0 calc(64 * var(--u)) var(--dealer-foot);
+  }
+
+  /* a darker foot, so the copy reads over the photo (on desktop a touch deeper than the
+     design's 45% → 55%, to keep the status line and the address at AA over the lit glass) */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    height: auto;
+    z-index: 0;
+    pointer-events: none;
+
+    @media (width < 900px) {
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 48%, rgb(0 0 0 / 55%) 100%);
+    }
+
+    @media (width >= 900px) {
+      background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 40%, rgb(0 0 0 / 60%) 100%);
+    }
+  }
+
+  /* the photo sits 9% higher than the screen, as in the design */
+  .bg {
+    @media (width >= 900px) {
+      top: -9%;
+    }
+  }
+
+  .content {
+    display: flex;
+    text-align: start;
+
+    /* the full height: the card at the top, the copy at the foot */
+    @media (width < 900px) {
+      flex-direction: column;
+      align-self: stretch;
+      justify-content: space-between;
+      gap: calc(24 * var(--u));
+    }
+
+    @media (width >= 900px) {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: calc(24 * var(--u));
+    }
+  }
+
+  .dealer-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+
+    @media (width >= 600px) and (width < 900px) {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    @media (width >= 900px) {
+      flex: 0 1 calc(525 * var(--u));
+      max-width: none;
+    }
+  }
+
+  .subtext {
+    text-transform: none;
+    opacity: 1;
+  }
+
+  /* status line: "Closed today ▪ Opens Monday, 10am" */
+  .dealer-status {
+    order: -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.3;
+    letter-spacing: 0;
+    color: var(--dealer-status-color);
+
+    @media (width < 900px) {
+      gap: calc(10 * var(--u));
+      font-size: calc(14 * var(--u));
+      font-weight: var(--font-weight-regular);
+      line-height: 1.21;
+      letter-spacing: -0.01em;
+    }
+
+    @media (width >= 900px) {
+      gap: calc(8 * var(--u));
+      font-size: calc(20 * var(--u));
+    }
+  }
+
+  .dealer-dot {
+    display: block;
+    flex: 0 0 auto;
+    margin: 0;
+    background-color: var(--color-accent);
+
+    /* centred on the caps, which sit 1 below the middle of the line */
+    @media (width < 900px) {
+      width: calc(6 * var(--u));
+      height: calc(6 * var(--u));
+      margin-top: calc(2 * var(--u));
+      border-radius: calc(2 * var(--u));
+    }
+
+    @media (width >= 900px) {
+      width: calc(8 * var(--u));
+      height: calc(8 * var(--u));
+      border-radius: calc(2 * var(--u));
+    }
+  }
+
+  .heading {
+    margin: 0;
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.25;
+    letter-spacing: 0;
+    text-transform: uppercase;
+
+    /* 14 from the status line's baseline to the caps */
+    @media (width < 900px) {
+      margin-top: calc(0.7 * var(--u));
+      font-size: calc(32 * var(--u));
+    }
+
+    @media (width >= 900px) {
+      margin-top: calc(14 * var(--u));
+      font-size: calc(40 * var(--u));
+      line-height: 1.25;
+    }
+  }
+
+  .dealer-address {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0;
+    color: var(--dealer-address-color);
+
+    /* 18 from the title's baseline to the caps */
+    @media (width < 900px) {
+      margin-top: calc(7.7 * var(--u));
+      font-size: calc(14 * var(--u));
+      font-weight: var(--font-weight-regular);
+      line-height: 1.22;
+      letter-spacing: -0.01em;
+    }
+
+    @media (width >= 900px) {
+      margin-top: calc(12 * var(--u));
+      font-size: calc(20 * var(--u));
+      line-height: 1.3;
+    }
+  }
+
+  .cta-wrapper {
+    flex-direction: row;
+    justify-content: flex-start;
+
+    /* stacked, full width, 20 under the address's baseline */
+    @media (width < 900px) {
+      flex-direction: column;
+      gap: calc(9 * var(--u));
+      margin: calc(17.5 * var(--u)) 0 0;
+    }
+
+    @media (width >= 900px) {
+      gap: calc(12 * var(--u));
+      width: auto;
+      margin: calc(32 * var(--u)) 0 0;
+    }
+  }
+
+  /* light "Book a test drive" and outlined "Get a quote", text only; their hover is the
+     letter glitch alone (hero-dealer.js opts the outlined one in) */
+  .cta.button {
+    justify-content: center;
+    width: auto;
+    border-radius: calc(8 * var(--u));
+    font-weight: var(--font-weight-regular);
+    line-height: 1;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+
+    @media (width < 900px) {
+      flex: 0 0 auto;
+      width: 100%;
+      height: max(44px, calc(48 * var(--u)));
+      padding: 0 calc(16 * var(--u));
+      font-size: max(11px, calc(12 * var(--u)));
+      letter-spacing: 0.02em;
+    }
+
+    @media (width >= 900px) {
+      flex: 0 0 auto;
+      gap: calc(8 * var(--u));
+      width: auto;
+      height: max(40px, calc(48 * var(--u)));
+      padding: 0 calc(24 * var(--u));
+      font-size: max(11px, calc(12 * var(--u)));
+    }
+  }
+
+  .cta.button:not(.cta-secondary) {
+    color: var(--color-gray-90);
+    background-color: var(--color-white);
+
+    @media (width >= 900px) {
+      min-width: calc(192 * var(--u));
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-white);
+    }
+  }
+
+  .cta-secondary.button {
+    color: var(--color-white);
+    background-color: transparent;
+    border: 1px solid var(--dealer-outline);
+
+    @media (width < 900px) {
+      border-color: var(--color-white);
+    }
+
+    @media (width >= 900px) {
+      min-width: calc(153 * var(--u));
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: transparent;
+    }
+  }
+
+  .cta.button:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+  }
+
+  .cta-icon {
+    display: none;
+  }
+
+  /* the product card: copy and photo side by side (the photo first on the phone) */
+  .dealer-card {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    color: var(--color-white);
+    background-color: var(--dealer-card-bg);
+
+    @media (width < 900px) {
+      order: -1;
+      align-items: center;
+      gap: calc(12 * var(--u));
+      min-height: calc(100 * var(--u));
+      padding: calc(6 * var(--u)) calc(12 * var(--u)) calc(6 * var(--u)) calc(6 * var(--u));
+      border-radius: calc(16 * var(--u));
+      backdrop-filter: blur(12px);
+    }
+
+    @media (width >= 600px) and (width < 900px) {
+      max-width: 480px;
+    }
+
+    @media (width >= 900px) {
+      flex: 0 0 auto;
+      gap: calc(24 * var(--u));
+      width: calc(432 * var(--u));
+      height: calc(172 * var(--u));
+      min-height: 0;
+      margin-bottom: calc(var(--dealer-card-foot) - var(--dealer-foot));
+      padding: calc(6 * var(--u)) calc(6 * var(--u)) calc(6 * var(--u)) calc(16 * var(--u));
+      border-radius: calc(24 * var(--u));
+      backdrop-filter: blur(50px);
+    }
+  }
+
+  .dealer-card-copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    /* the title's caps 13 from the card's top */
+    @media (width < 900px) {
+      flex: 1 1 auto;
+      align-self: stretch;
+      padding: calc(4.4 * var(--u)) 0 0;
+    }
+
+    @media (width >= 900px) {
+      flex: 0 0 calc(204 * var(--u));
+      padding: calc(14 * var(--u)) 0;
+    }
+  }
+
+  .dealer-card-copy p {
+    margin: 0;
+  }
+
+  .dealer-card-copy .dealer-card-title {
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+
+    @media (width < 900px) {
+      font-size: calc(12 * var(--u));
+      line-height: 1.1;
+      letter-spacing: 0.03em;
+    }
+
+    @media (width >= 900px) {
+      margin-bottom: auto;
+      padding-bottom: calc(12 * var(--u));
+      font-size: calc(16 * var(--u));
+      line-height: 0.95;
+    }
+  }
+
+  .dealer-card-tag {
+    color: var(--color-teal-500);
+
+    @media (width < 900px) {
+      color: var(--color-accent);
+    }
+  }
+
+  /* the first line after the title (the price), then the copy */
+  .dealer-card-text {
+    font-weight: var(--font-weight-medium);
+    color: var(--dealer-card-color);
+
+    @media (width < 900px) {
+      font-size: calc(12 * var(--u));
+      line-height: 1.5;
+    }
+
+    @media (width >= 900px) {
+      font-size: calc(14 * var(--u));
+      line-height: 1.45;
+    }
+  }
+
+  /* the price's caps 18 under the title's baseline */
+  .dealer-card-copy .dealer-card-title + .dealer-card-text {
+    @media (width < 900px) {
+      margin-top: calc(11.7 * var(--u));
+    }
+  }
+
+  /* the copy's caps 12 under the price's baseline */
+  .dealer-card-copy .dealer-card-text + .dealer-card-text {
+    font-size: calc(12 * var(--u));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+
+    @media (width < 900px) {
+      max-width: calc(215 * var(--u));
+      margin-top: calc(2.6 * var(--u));
+      color: rgb(255 255 255 / 75%);
+    }
+
+    @media (width >= 900px) {
+      margin-top: calc(8 * var(--u));
+    }
+  }
+
+  /* the photo: framed as in the design (on desktop the image overflows its box, cropped to
+     the car; on the phone a square, the car a touch left of and below the centre) */
+  .dealer-card-media {
+    position: relative;
+    flex: 0 0 auto;
+    display: block;
+    overflow: hidden;
+
+    @media (width < 900px) {
+      order: -1;
+      width: calc(88 * var(--u));
+      height: calc(88 * var(--u));
+      border-radius: calc(12 * var(--u));
+    }
+
+    @media (width >= 900px) {
+      width: calc(182 * var(--u));
+      height: calc(160 * var(--u));
+      margin-left: auto;
+      border-radius: calc(20 * var(--u));
+      background-color: var(--dealer-photo-bg);
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: inset 0 0 calc(12 * var(--u)) calc(3 * var(--u)) var(--dealer-photo-glow);
+        pointer-events: none;
+      }
+    }
+  }
+
+  .dealer-card-img {
+    display: block;
+    max-width: none;
+    object-fit: cover;
+
+    @media (width < 900px) {
+      width: 100%;
+      height: 100%;
+      object-position: 46% 60%;
+    }
+
+    @media (width >= 900px) {
+      position: absolute;
+      top: -21.875%;
+      left: -73.626%;
+      width: 217.582%;
+      height: 139.375%;
+    }
+  }
+
+  /* the title's lines (hero-dealer.js splits it for the entrance): each rises out of its own
+     mask, which keeps room for the glyphs below the baseline */
+  .dealer-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+
+  .dealer-line-inner {
+    display: block;
+  }
+
+  /* entrance, the source's opening. Desktop: the photo opens from a centred rounded window
+     (inset 31% 36% of the screen, 28px round; 1.7s expo.inOut from 0.15s) as it settles from
+     1.32x (2s); from 1.45s the title rises out of its mask (1.1s power4.out), then the status
+     line, the address, the buttons and the card fade up 30 (0.8s power3.out, 0.06s apart, from
+     1.85s). Phone: the photo settles from 1.08x (1.6s power3.out, from 0.15s), the card drops
+     in 16 (0.8s, 0.35s), the status line rises 16 (0.6s, 0.45s), the title's lines rise out of
+     their masks (0.9s, 0.08s apart, from 0.5s), the address and the buttons 20 (0.7s, 0.7s and
+     0.78s); the status dot pulses. A title not split (yet) fades in whole; the line delays
+     discount the time the split took (--dealer-elapsed) */
+  @media (prefers-reduced-motion: no-preference) {
+    .bg-picture {
+      display: block;
+    }
+
+    :is(.dealer-status, .dealer-address, .cta-wrapper, .dealer-card) {
+      animation: hero-dealer-rise var(--dealer-rise-time) var(--dealer-power3) backwards;
+    }
+
+    .heading {
+      animation: hero-dealer-fade var(--dealer-line-time) var(--dealer-line-ease) var(--dealer-line-at) backwards;
+    }
+
+    .dealer-line-inner {
+      animation: hero-dealer-line var(--dealer-line-time) var(--dealer-line-ease)
+        calc(var(--dealer-line-at) + var(--i, 0) * var(--dealer-line-gap) - var(--dealer-elapsed, 0s)) backwards;
+    }
+
+    @media (width >= 900px) {
+      --dealer-rise: calc(30 * var(--u));
+      --dealer-rise-time: 0.8s;
+      --dealer-line-at: 1.45s;
+      --dealer-line-time: 1.1s;
+      --dealer-line-ease: var(--dealer-power4);
+      --dealer-line-gap: 0.1s;
+      --dealer-line-from: 110%;
+
+      .bg {
+        animation: hero-dealer-open 1.7s var(--dealer-expo) 0.15s backwards;
+      }
+
+      .bg-picture {
+        --dealer-scale: 1.32;
+
+        animation: hero-dealer-settle 2s var(--dealer-expo) 0.15s backwards;
+      }
+
+      .dealer-status { animation-delay: 1.85s; }
+      .dealer-address { animation-delay: 1.91s; }
+      .cta-wrapper { animation-delay: 1.97s; }
+      .dealer-card { animation-delay: 2.03s; }
+    }
+
+    @media (width < 900px) {
+      --dealer-line-at: 0.5s;
+      --dealer-line-time: 0.9s;
+      --dealer-line-ease: var(--dealer-power3);
+      --dealer-line-gap: 0.08s;
+      --dealer-line-from: 105%;
+
+      .bg-picture {
+        --dealer-scale: 1.08;
+
+        animation: hero-dealer-settle 1.6s var(--dealer-power3) 0.15s backwards;
+      }
+
+      .dealer-card {
+        --dealer-rise: calc(-16 * var(--u));
+        --dealer-rise-time: 0.8s;
+
+        animation-delay: 0.35s;
+      }
+
+      .dealer-status {
+        --dealer-rise: calc(16 * var(--u));
+        --dealer-rise-time: 0.6s;
+
+        animation-delay: 0.45s;
+      }
+
+      :is(.dealer-address, .cta-wrapper) {
+        --dealer-rise: calc(20 * var(--u));
+        --dealer-rise-time: 0.7s;
+      }
+
+      .dealer-address { animation-delay: 0.7s; }
+      .cta-wrapper { animation-delay: 0.78s; }
+
+      .dealer-dot {
+        animation: hero-dealer-pulse 2.4s ease-in-out infinite;
+      }
+    }
+  }
+
+  /* split or played: the title's own fade is done with; once the entrance is over
+     (.dealer-entered), nothing replays it when the layout changes */
+  .heading:is(:has(.dealer-line), .dealer-risen),
+  &.dealer-entered :is(.bg, .bg-picture, .dealer-status, .heading, .dealer-address, .cta-wrapper, .dealer-card) {
+    animation: none;
+  }
+
+  /* editing: everything in place at once */
+  &[data-aue-resource] :is(.bg, .bg-picture, .dealer-status, .dealer-dot, .heading, .dealer-line-inner, .dealer-address, .cta-wrapper, .dealer-card) {
+    animation: none;
+  }
+}
+
+/* the window: inset 31% 36% of the screen, on the photo's box, 9% taller and raised 9% */
+@keyframes hero-dealer-open {
+  from { clip-path: inset(calc(40% / 1.09) 36% calc(31% / 1.09) round 28px); }
+  to { clip-path: inset(0 round 0); }
+}
+
+@keyframes hero-dealer-settle {
+  from { scale: var(--dealer-scale, 1.32); }
+}
+
+@keyframes hero-dealer-rise {
+  from {
+    opacity: 0;
+    translate: 0 var(--dealer-rise, 24px);
+  }
+}
+
+@keyframes hero-dealer-fade {
+  from { opacity: 0; }
+}
+
+@keyframes hero-dealer-line {
+  from { translate: 0 var(--dealer-line-from, 110%); }
+}
+
+@keyframes hero-dealer-pulse {
+  50% { opacity: 0.35; }
+}

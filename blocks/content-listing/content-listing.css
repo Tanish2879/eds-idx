@@ -1,0 +1,464 @@
+main .section.content-listing-container {
+  --bl-u: clamp(0.85px, 100vw / 375, 1.15px);
+
+  @media (width >= 600px) {
+    --bl-u: 1px;
+  }
+
+  /* Section wrapper */
+  & > .content-listing-wrapper {
+    max-width: none;
+    padding: 0 calc(20 * var(--bl-u));
+  }
+
+  /* Full-height listing */
+  &:has(.content-listing) {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: visible;
+  }
+
+  /* Title wrapper: 124 from the top of the page (below the fixed header) */
+  & > .default-content-wrapper:has(> h1) {
+    width: fit-content;
+    max-width: 100%;
+    padding: 0;
+    margin: calc(124 * var(--bl-u)) auto 0;
+  }
+
+  /* Page title — 40/48 */
+  & > .default-content-wrapper h1 {
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 auto;
+    padding-inline-end: 0.03em;
+    font-family: var(--text-font-family);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(40 * var(--bl-u));
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-white);
+  }
+}
+
+/* Universal Editor: the canvas iframe is as tall as the page, so vh/svh
+   resolves against that height and the section above balloons without end.
+   styles.css resets section min-height in the editor, but the rule above is
+   more specific, so reset it again here. */
+body:has([data-aue-resource]) main .section.content-listing-container:has(.content-listing) {
+  min-height: auto;
+}
+
+/* Content Listing block */
+.content-listing {
+  background-color: #0a0a0a;
+  color: var(--color-white);
+  padding: var(--spacing-48) 0;
+
+  /* Filter tabs — 16/19.2, wrapping centred rows (22 apart, 15 between rows);
+     307 wide so the four default tabs sit in two rows of two */
+  & .tab-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(15 * var(--bl-u)) calc(22 * var(--bl-u));
+    justify-content: center;
+    max-width: calc(307 * var(--bl-u));
+    margin: 0 auto calc(24 * var(--bl-u));
+    padding: 0;
+    border: 0;
+
+    & button {
+      background: none;
+      border: 0;
+      padding: 0;
+      font-family: var(--text-font-family);
+      font-size: calc(16 * var(--bl-u));
+      line-height: 1.2;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgb(255 255 255 / 50%);
+      cursor: pointer;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: var(--color-white);
+      }
+
+      &[aria-selected="true"] {
+        color: var(--color-accent);
+
+        &::before {
+          content: '[' / '';
+        }
+
+        &::after {
+          content: ']' / '';
+        }
+      }
+    }
+  }
+
+  /* Card grid — one column, 52 between cards */
+  & .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: calc(52 * var(--bl-u));
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* the card (and its link) fills the grid row, so cards in a row match */
+  & .blog-card {
+    display: flex;
+    margin: 0;
+
+    & .blog-card-link {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: calc(22 * var(--bl-u));
+      text-decoration: none;
+      color: inherit;
+
+      /* 335×271, radius 20 */
+      & .blog-card-media {
+        border-radius: calc(20 * var(--bl-u));
+        overflow: hidden;
+        aspect-ratio: 335 / 271;
+
+        & img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
+      }
+
+      &:hover .blog-card-media img {
+        transform: scale(1.03);
+      }
+    }
+  }
+
+  /* Card meta — category left, DD MON ■ YYYY right; 14/18.9 */
+  & .blog-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-16);
+    font-family: var(--text-font-family);
+    font-size: calc(14 * var(--bl-u));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--color-gray-50);
+  }
+
+  & .blog-card-date {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(9 * var(--bl-u));
+    margin-left: auto;
+  }
+
+  & .blog-card-date-sep {
+    width: calc(7 * var(--bl-u));
+    height: calc(7 * var(--bl-u));
+    background: var(--color-accent);
+    flex: 0 0 auto;
+  }
+
+  /* Card title — 24/32.4 */
+  & .blog-card-title {
+    margin: 0;
+    font-family: var(--text-font-family);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(24 * var(--bl-u));
+    line-height: 1.35;
+    letter-spacing: normal;
+    color: var(--color-white);
+  }
+
+  /* Card description — 14/18.9, white 50%; up to 5 lines, then "…" */
+  & .blog-card-desc {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    overflow: hidden;
+    margin: 0;
+    font-family: var(--text-font-family);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(14 * var(--bl-u));
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    color: rgb(255 255 255 / 50%);
+  }
+
+  & .content-listing-sentinel {
+    height: 1px;
+  }
+
+  /* Empty state */
+  & .content-listing-empty {
+    margin: var(--spacing-32) 0 0;
+    font-family: var(--text-font-family);
+    font-size: 14px;
+    color: var(--color-gray-50);
+    text-align: center;
+  }
+
+  /* Editor-only warning: more tabs than the published listing shows */
+  & .content-listing-limit {
+    position: relative;
+    z-index: 10; /* above the sticky tab bar (z-index 5) */
+    margin-top: var(--spacing-48);
+    font-size: 18px;
+    font-weight: var(--font-weight-bold);
+    color: #ff4d4d;
+  }
+
+  /* Loader */
+  & .content-listing-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-12);
+    padding: var(--spacing-32) 0;
+    font-family: var(--text-font-family);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--color-gray-50);
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  /* Spinner */
+  & .content-listing-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgb(255 255 255 / 20%);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: content-listing-spin 0.7s linear infinite;
+  }
+
+  @media (width >= 600px) and (width < 900px) {
+    & .cards {
+      grid-template-columns: repeat(2, 1fr);
+      gap: calc(52 * var(--bl-u)) calc(24 * var(--bl-u));
+    }
+
+    /* fixed text boxes (title 3 lines, description 5) keep a row level */
+    & .blog-card-title {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      overflow: hidden;
+      height: 3lh;
+    }
+
+    & .blog-card-desc {
+      height: 5lh;
+    }
+  }
+
+  @media (width >= 900px) {
+    padding: var(--spacing-96) 0;
+
+    /* one row — 14/18.9, 24 apart */
+    & .tab-list {
+      gap: calc(24 * var(--bl-u));
+      max-width: none;
+      margin-bottom: calc(43 * var(--bl-u));
+
+      & button {
+        font-size: max(12px, calc(14 * var(--bl-u)));
+        line-height: 1.35;
+        letter-spacing: 0.03em;
+      }
+    }
+
+    /* three columns, 24 apart; no wider than the 1920 layout on huge screens */
+    & .cards {
+      grid-template-columns: repeat(3, 1fr);
+      gap: calc(32 * var(--bl-u)) calc(24 * var(--bl-u));
+      max-width: calc(1152 * var(--bl-u));
+      margin: 0 auto;
+    }
+
+    & .blog-card {
+      container-type: inline-size;
+
+      & .blog-card-link {
+        gap: 0;
+
+        /* 368×259, radius 16 */
+        & .blog-card-media {
+          border-radius: calc(16 * var(--bl-u));
+          aspect-ratio: 368 / 259;
+        }
+      }
+
+      /* 12/15.6, 14 below the image */
+      & .blog-card-meta {
+        margin-top: calc(14 * var(--bl-u));
+        font-size: max(11px, calc(12 * var(--bl-u)));
+        line-height: 1.3;
+      }
+
+      & .blog-card-date {
+        gap: calc(7 * var(--bl-u));
+      }
+
+      & .blog-card-date-sep {
+        width: calc(6 * var(--bl-u));
+        height: calc(6 * var(--bl-u));
+      }
+
+      /* 24/28.8, 16 below the meta; always 2 lines (then "…") so a row's
+         cards match */
+      & .blog-card-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        overflow: hidden;
+        height: 2lh;
+        margin-top: calc(16 * var(--bl-u));
+        font-size: max(20px, calc(24 * var(--bl-u)));
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+      }
+
+      /* 12/18, white 40%, 9 below the title; always 2 lines (then "…") */
+      & .blog-card-desc {
+        height: 2lh;
+        margin-top: calc(9 * var(--bl-u));
+        font-size: max(11px, calc(12 * var(--bl-u)));
+        line-height: 1.5;
+        letter-spacing: normal;
+        color: rgb(255 255 255 / 40%);
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+      }
+    }
+  }
+}
+
+/* Listing spacing below page title: 25 to the cards */
+main .section.content-listing-container > .default-content-wrapper + .content-listing-wrapper .content-listing {
+  padding-top: calc(25 * var(--bl-u));
+}
+
+/* Hide single tab outside UE */
+body:not(:has([data-aue-resource])) .content-listing .tab-list-single {
+  display: none;
+}
+
+/* with tabs: 15 below the title */
+@media (width < 900px) {
+  main .section.content-listing-container .content-listing:has(> .tab-list:not(.tab-list-single)) {
+    padding-top: calc(15 * var(--bl-u));
+  }
+}
+
+@keyframes content-listing-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content-listing .content-listing-spinner {
+    animation-duration: 2s;
+  }
+}
+
+@media (width >= 900px) {
+  main .section.content-listing-container {
+    /* 1px at the 1280 frame; up to 1.5px at 1920 */
+    --bl-u: clamp(0.7px, 100vw / 1280, 1.5px);
+
+    /* 119 from the top of the page */
+    & > .default-content-wrapper:has(> h1) {
+      margin-top: calc(119 * var(--bl-u));
+    }
+
+    /* 64/57.6 */
+    & > .default-content-wrapper h1 {
+      font-size: calc(64 * var(--bl-u));
+      line-height: 0.9;
+    }
+
+    /* 53 below the title to the cards */
+    & > .default-content-wrapper + .content-listing-wrapper .content-listing {
+      padding-top: calc(53 * var(--bl-u));
+    }
+
+    /* 64 side margins */
+    & > .content-listing-wrapper {
+      padding: 0 calc(64 * var(--bl-u));
+    }
+  }
+
+  /* with tabs: 35 below the title */
+  main .section.content-listing-container .content-listing:has(> .tab-list:not(.tab-list-single)) {
+    padding-top: calc(35 * var(--bl-u));
+
+    & > .tab-list {
+      --tab-list-unit: clamp(0.8px, (min(100vw / 1728, 100svh / 1117) + 1px) / 2, 1px);
+
+      position: sticky;
+      top: calc(154 * var(--tab-list-unit));
+      z-index: 5;
+
+      &.is-stuck {
+        background-color: #0a0a0a;
+        box-shadow: 0 0 0 100vmax #0a0a0a;
+        clip-path: inset(calc(-154 * var(--tab-list-unit)) -100vmax -24px);
+      }
+    }
+  }
+}
+
+/* Enable Animation */
+main .section.content-listing-container.content-listing-animate {
+  /* the clipping boxes, lifted once the rise is done (focus rings) */
+  &:not(.is-done) > .default-content-wrapper:has(> h1),
+  &:not(.is-done) .content-listing .blog-card {
+    overflow: clip;
+  }
+
+  & > .default-content-wrapper > h1,
+  & .content-listing .blog-card-link {
+    transform: translateY(100%);
+  }
+
+  /* reveal: only the rise into place is animated */
+  &.is-visible > .default-content-wrapper > h1,
+  &.is-visible .content-listing .blog-card-link {
+    transform: none;
+    transition: transform 0.7s cubic-bezier(0.6, 0, 0.4, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main .section.content-listing-container.content-listing-animate {
+    & > .default-content-wrapper > h1,
+    & .content-listing .blog-card-link {
+      transform: none;
+      transition: none;
+    }
+  }
+}

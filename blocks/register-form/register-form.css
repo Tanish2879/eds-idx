@@ -1,0 +1,945 @@
+.register-form-container,
+.register-form-container .register-form-wrapper {
+  max-width: unset;
+  padding: 0;
+  background-color: var(--color-black);
+}
+
+.register-form {
+  --rf-field-bg: rgb(255 255 255 / 10%);
+  --rf-muted: rgb(255 255 255 / 60%);
+  --rf-placeholder: rgb(255 255 255 / 30%);
+  --rf-notice: #bababa;
+  --rf-error: #fb6464;
+  --rf-error-bg: rgb(255 0 38 / 10%);
+  --rf-error-border: rgb(255 79 105 / 50%);
+  --rf-u: clamp(0.6px, 100svh / 940, 1px);
+  --rf-change-number-text: #595959;
+
+  /* privacy copy (consent + notice) follows the Figma mobile 375 × 911 frame
+     instead: 1 at 375 × 911, scaling with the screen, never below 0.75 so it
+     stays readable (desktop uses the 1280 × 720 frame, below) */
+  --rf-privacy-u: clamp(0.75px, min(100vw / 375, 100svh / 911), 1.5px);
+  --rf-consent-text: #f2f2f2;
+  --rf-notice-mobile: #666;
+
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  color: var(--color-white);
+  background-color: var(--color-black);
+
+  @media (width >= 900px) {
+    flex-direction: row;
+
+    --rf-u: clamp(0.62px, 100svh / 1116, 1px);
+
+    /* desktop privacy copy follows the Figma 1280 × 720 frame: 1 at
+       1280 × 720, scaling with the screen (1.5 at 1920 × 1080) */
+    --rf-privacy-u: clamp(0.75px, min(100vw / 1280, 100svh / 720), 1.5px);
+  }
+
+  &[data-aue-resource] {
+    height: 1000px;
+  }
+
+  /* mobile: 300 design px tall when there's room; on short screens it gives
+     up height first (much higher shrink weight than .content), so the fixed
+     15px intro and 18px heading floor never push the form off the screen.
+     Only below 150 does .content start to scroll, as before */
+  .media {
+    position: relative;
+    flex: 0 1000 calc(300 * var(--rf-u));
+    min-height: calc(150 * var(--rf-u));
+    margin: calc(12 * var(--rf-u)) calc(12 * var(--rf-u)) 0;
+    border-radius: calc(32 * var(--rf-u));
+    background-color: var(--color-black);
+    overflow: hidden;
+
+    picture,
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @media (width >= 900px) {
+      flex: 1 1 50%;
+      box-sizing: border-box;
+      min-width: 0;
+      min-height: 0;
+      height: auto;
+      margin: 0;
+      border-radius: 0;
+    }
+  }
+
+  .content {
+    padding: calc(32 * var(--rf-u)) 8.2%;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+
+    /* snapping sections only: No Snap ones, and one followed by a No Snap section (the snap
+       leaves that boundary to native scroll), must let the scroll carry on into the page */
+    main > .section:not(.no-snap, :has(+ .section.no-snap)) & {
+      overscroll-behavior: contain;
+    }
+
+    @media (width >= 900px) {
+      flex: 1 1 50%;
+      min-width: 0;
+      padding: calc(80 * var(--rf-u)) 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: safe center;
+      overflow-y: auto;
+
+      .heading,
+      .intro,
+      .form,
+      .notice,
+      .back {
+        width: calc(653 * var(--rf-u));
+        max-width: 100%;
+      }
+    }
+  }
+
+  /* Figma: New Science on mobile, New Science Extended on desktop */
+  .heading {
+    margin: 0 0 calc(24 * var(--rf-u));
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: max(18px, calc(20 * var(--rf-u))); /* stays above the 15px intro on short phones */
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+
+    @media (width >= 900px) {
+      margin-bottom: calc(32 * var(--rf-u));
+      font-family: var(--font-family-display);
+      font-size: calc(40 * var(--rf-u));
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+    }
+  }
+
+  .intro {
+    margin: 0 0 calc(32 * var(--rf-u));
+    color: var(--rf-muted);
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: 15px; /* client: fixed on mobile, beside the 16px fields; desktop stays fluid below */
+    line-height: 1.43;
+    letter-spacing: -0.005em;
+
+    @media (width >= 900px) {
+      margin-bottom: calc(48 * var(--rf-u));
+      font-weight: var(--font-weight-regular);
+      font-size: calc(20 * var(--rf-u));
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+    }
+  }
+
+  &.is-success {
+    .heading,
+    .intro {
+      display: none;
+    }
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+
+    &.is-busy {
+      cursor: progress;
+    }
+  }
+
+  .fields:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    gap: calc(8 * var(--rf-u));
+
+    @media (width >= 900px) {
+      gap: calc(16 * var(--rf-u));
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: calc(8 * var(--rf-u));
+
+    &:has(.consent) {
+      margin-top: calc(24 * var(--rf-u));
+
+      @media (width >= 900px) {
+        margin-top: calc(6 * var(--rf-u));
+      }
+    }
+  }
+
+  .row {
+    display: flex;
+    gap: calc(8 * var(--rf-u));
+
+    @media (width >= 900px) {
+      gap: calc(16 * var(--rf-u));
+    }
+  }
+
+  .names {
+    .field {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  .input.code {
+    flex: 0 0 calc(80 * var(--rf-u));
+    text-align: left;
+
+    /* the static +91 reads as placeholder text, not a typed value */
+    font-family: var(--font-family-base);
+    color: var(--rf-placeholder);
+    cursor: default;
+
+    @media (width >= 900px) {
+      flex: 0 0 calc(108 * var(--rf-u));
+    }
+  }
+
+  .input-wrap {
+    position: relative;
+    display: block;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .input {
+    width: 100%;
+    height: calc(50 * var(--rf-u));
+    padding: 0 calc(20 * var(--rf-u));
+    border: 1px solid transparent;
+    border-radius: calc(12 * var(--rf-u));
+    background: var(--rf-field-bg);
+    color: var(--color-white);
+
+    /* value, placeholder and floating label are all New Science (Figma UAT) */
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: max(16px, calc(16 * var(--rf-u)));
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, background 0.15s ease, padding-top 0.12s ease;
+
+    &::placeholder {
+      color: var(--rf-placeholder);
+      font-family: var(--font-family-base);
+      font-weight: var(--font-weight-medium);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-white);
+    }
+
+    /* Browsers paint autofilled inputs with their own light background (the
+       lavender tint) and dark text, which wrecks the dark field and hides the
+       white label/value. The background can't be set directly, so override it
+       with a large inset box-shadow in the field colour, and force the text
+       colour with -webkit-text-fill-color. The long transition delay keeps the
+       override from being repainted away. Split into standard + -webkit rules
+       so one unsupported selector can't invalidate both. */
+    &:autofill {
+      -webkit-text-fill-color: var(--color-white);
+      caret-color: var(--color-white);
+      box-shadow: inset 0 0 0 1000px #1a1a1a;
+      transition: background-color 600000s 0s, color 600000s 0s;
+    }
+
+    /* stylelint-disable-next-line property-no-vendor-prefix, selector-no-vendor-prefix */
+    &:-webkit-autofill {
+      -webkit-text-fill-color: var(--color-white);
+      caret-color: var(--color-white);
+      box-shadow: inset 0 0 0 1000px #1a1a1a;
+      transition: background-color 600000s 0s, color 600000s 0s;
+    }
+
+    @media (width >= 900px) {
+      height: calc(64 * var(--rf-u));
+      padding: 0 calc(20 * var(--rf-u));
+
+      /* the 16px floor is only for the iOS Safari zoom-on-focus bug below;
+         desktop keeps the original uncapped fluid size */
+      font-size: calc(16 * var(--rf-u));
+    }
+  }
+
+  .float {
+    position: absolute;
+    left: calc(20 * var(--rf-u));
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--rf-placeholder);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(10 * var(--rf-u));
+    text-transform: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: top 0.12s ease, opacity 0.12s ease;
+
+    @media (width >= 900px) {
+      left: calc(20 * var(--rf-u));
+    }
+  }
+
+  /* the label rises (and the text drops below it) as soon as the field takes
+     focus, not on the first keystroke — otherwise the typed text jumped down
+     on the first letter and back up when cleared, and on iOS that caret jump
+     also made Safari re-scroll the page */
+  .field.is-filled,
+  .field:focus-within {
+    .float {
+      top: calc(14 * var(--rf-u));
+      opacity: 1;
+    }
+
+    .input:not(.code) {
+      padding-top: calc(16 * var(--rf-u));
+    }
+
+    .input::placeholder {
+      color: transparent;
+    }
+  }
+
+  /* Browser autofill doesn't reliably fire input/change, so JS can't add
+     .is-filled for autofilled values and the label stays hidden. Mirror the
+     filled state in pure CSS via the autofill pseudo-class so the floating
+     label rises for autofilled fields too. Both the standard :autofill and
+     WebKit's :-webkit-autofill are listed (Chrome/Safari still use the prefix);
+     they're split into separate rules because one unsupported selector would
+     otherwise invalidate the whole list. */
+  .field:has(.input:autofill) {
+    .float {
+      top: calc(14 * var(--rf-u));
+      opacity: 1;
+    }
+
+    .input:not(.code) {
+      padding-top: calc(16 * var(--rf-u));
+    }
+  }
+
+  /* stylelint-disable-next-line selector-no-vendor-prefix */
+  .field:has(.input:-webkit-autofill) {
+    .float {
+      top: calc(14 * var(--rf-u));
+      opacity: 1;
+    }
+
+    .input:not(.code) {
+      padding-top: calc(16 * var(--rf-u));
+    }
+  }
+
+  .error {
+    display: none;
+    margin: 0;
+    color: var(--rf-error);
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(12 * var(--rf-u));
+    line-height: 1.33;
+
+    @media (width >= 900px) {
+      font-size: calc(14 * var(--rf-u));
+    }
+  }
+
+  .field.has-error {
+    .error {
+      display: block;
+    }
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    .input:not(.code) {
+      background: var(--rf-error-bg);
+      border-color: var(--rf-error-border);
+    }
+  }
+
+  .consent {
+    display: flex;
+    gap: calc(9 * var(--rf-u));
+    align-items: flex-start;
+    color: var(--rf-consent-text);
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(12 * var(--rf-privacy-u)); /* Figma 375: 12 / 17 */
+    line-height: 1.4167;
+    letter-spacing: 0.01em;
+
+    @media (width >= 900px) {
+      gap: calc(16 * var(--rf-u));
+      color: var(--color-white);
+      font-size: calc(11 * var(--rf-privacy-u)); /* Figma 1280: 11 / 15 */
+      line-height: 1.3636;
+    }
+  }
+
+  .consent-check {
+    appearance: none;
+    margin: calc(3 * var(--rf-u)) 0 0;
+    width: calc(16 * var(--rf-u));
+    height: calc(16 * var(--rf-u));
+    flex-shrink: 0;
+    border: 1px solid rgb(255 255 255 / 40%);
+    border-radius: calc(4 * var(--rf-u));
+    background: transparent;
+    cursor: pointer;
+
+    &:checked {
+      background: var(--color-white);
+      border-color: var(--color-white);
+    }
+
+    &:checked::after {
+      content: '';
+      display: block;
+      width: calc(4 * var(--rf-u));
+      height: calc(8 * var(--rf-u));
+      margin: calc(1 * var(--rf-u)) auto 0;
+      border: solid var(--color-black);
+      border-width: 0 calc(2 * var(--rf-u)) calc(2 * var(--rf-u)) 0;
+      transform: rotate(45deg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-white);
+      outline-offset: 2px;
+    }
+
+    @media (width >= 900px) {
+      width: calc(21 * var(--rf-u));
+      height: calc(21 * var(--rf-u));
+      border: 2px solid rgb(255 255 255 / 20%);
+
+      &:checked::after {
+        width: calc(5 * var(--rf-u));
+        height: calc(10 * var(--rf-u));
+      }
+    }
+  }
+
+  .consent-text a {
+    color: inherit;
+  }
+
+  .submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    min-width: calc(197 * var(--rf-u));
+    height: calc(48 * var(--rf-u));
+    margin-top: calc(16 * var(--rf-u));
+    padding: 0 calc(24 * var(--rf-u));
+    border: none;
+    border-radius: calc(12 * var(--rf-u));
+    background: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--rf-u));
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.15s ease, background 0.15s ease;
+
+    &:disabled {
+      background: rgb(255 255 255 / 55%);
+      color: var(--color-black);
+      cursor: not-allowed;
+    }
+
+    /* hover changes colour only — no lift/translate, per design. 80% white
+       per the Figma glitch hover (letter flicker in scripts/utils/glitch.js) */
+    &:hover:not(:disabled) {
+      background: rgb(255 255 255 / 80%);
+    }
+
+    @media (width >= 900px) {
+      min-width: calc(172 * var(--rf-u));
+      height: calc(64 * var(--rf-u));
+      padding: 0 calc(19 * var(--rf-u));
+      font-size: calc(16 * var(--rf-u));
+      letter-spacing: 0;
+    }
+  }
+
+  .notice {
+    margin: calc(24 * var(--rf-u)) 0 0;
+    color: var(--rf-notice-mobile);
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-regular);
+    font-size: calc(10 * var(--rf-privacy-u)); /* Figma 375: 10 / 14 */
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+
+    @media (width >= 900px) {
+      margin-top: calc(48 * var(--rf-u));
+      color: var(--rf-notice);
+      opacity: 0.5;
+      font-size: calc(12 * var(--rf-privacy-u)); /* Figma 1280: 12 / 16 */
+      line-height: 1.3333;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  .notice a {
+    color: inherit;
+  }
+
+  &.is-success .notice,
+  &.is-otp .notice {
+    display: none;
+  }
+
+  .back {
+    display: none;
+    align-items: center;
+    gap: calc(4 * var(--rf-u));
+    margin: 0 0 calc(32 * var(--rf-u));
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--rf-muted);
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--rf-u));
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor: pointer;
+
+    @media (width >= 900px) {
+      margin-bottom: calc(48 * var(--rf-u));
+    }
+  }
+
+  &.is-otp .back {
+    display: inline-flex;
+  }
+
+  .back-chevron {
+    width: calc(8 * var(--rf-u));
+    height: calc(8 * var(--rf-u));
+    border-left: 1.5px solid currentcolor;
+    border-bottom: 1.5px solid currentcolor;
+    transform: rotate(45deg);
+  }
+
+  .otp-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+
+    /* mobile: 16px between the "Enter code" line and Change Number (row gap)
+       but only 8px between the text and the number on the same line (column
+       gap) — Figma frames 2085665806 / 2085665826. Desktop keeps 8px. */
+    gap: calc(16 * var(--rf-u)) calc(8 * var(--rf-u));
+    margin: 0 0 calc(32 * var(--rf-u));
+
+    /* "Enter the N Digit code sent on": Figma New Science Regular —
+       mobile 14px / 135% / -2%, desktop 16px / 150% / 0%. (Previously
+       inherited Inter, the body font.) Fixed 14px on mobile so it matches
+       Figma on every phone; desktop keeps the proportional unit. */
+    font-family: var(--heading-font-family);
+    font-weight: var(--font-weight-regular);
+    font-size: 14px;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+
+    @media (width >= 900px) {
+      gap: calc(8 * var(--rf-u));
+      font-size: calc(16 * var(--rf-u));
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+  }
+
+  .otp-number {
+    /* Phone number: Figma New Science Medium (500), letter-spacing 0 —
+       mobile 14px / 145%, desktop 16px / 150%. Size and family inherit
+       from .otp-head. */
+    font-weight: var(--font-weight-medium);
+    line-height: 1.45;
+    letter-spacing: 0;
+
+    @media (width >= 900px) {
+      line-height: 1.5;
+    }
+  }
+
+  .change,
+  .resend-link {
+    align-self: auto;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    font-family: inherit;
+    color: var(--rf-muted);
+
+    /* Fixed 14px on mobile (Figma "New Science/14") so it matches the OTP
+       heading on every phone; desktop keeps the proportional unit. */
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    cursor: pointer;
+
+    @media (width >= 900px) {
+      font-size: calc(14 * var(--rf-u));
+    }
+  }
+
+  /* Change Number: Figma "New Science/14 Regular Upper" on both breakpoints —
+     New Science 400, 14px, line-height 135%, letter-spacing -4%, #595959. */
+  .change {
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.35;
+    letter-spacing: -0.04em;
+    color: var(--rf-change-number-text);
+  }
+
+  /* During the countdown: show "Resend code in 0:30", hide the Resend link.
+     Once the timer hits 0:00 (JS adds .can-resend), swap them — the RESEND
+     CODE link replaces the timer text. */
+  .resend-link {
+    display: none;
+  }
+
+  .resend.can-resend .resend-timer {
+    display: none;
+  }
+
+  .resend.can-resend .resend-link {
+    display: inline;
+
+    /* disabled while a resend is in flight — no pointer, dimmed, like Submit */
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  .otp-boxes {
+    display: flex;
+    gap: calc(8 * var(--rf-u));
+  }
+
+  .otp-box {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: calc(76 * var(--rf-u));
+    height: calc(79 * var(--rf-u));
+    padding: 0;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: calc(12 * var(--rf-u));
+    background: var(--rf-field-bg);
+    color: var(--color-white);
+
+    /* OTP value and the "X" placeholder: Figma "New Science/16 Regular",
+       16px / 150% (nodes 1349:3734 desktop / 1349:4331 mobile). Fixed 16px on
+       mobile so the X matches Figma on every phone, not scaled by viewport
+       height; desktop keeps the proportional unit. */
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-regular);
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, background 0.15s ease;
+
+    @media (width >= 900px) {
+      font-size: calc(16 * var(--rf-u));
+    }
+
+    /* Figma: white at 50% (was muted-60% × 0.5 ≈ 30%, too faint) */
+    &::placeholder {
+      color: var(--color-white);
+      opacity: 0.5;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-white);
+    }
+
+    &.is-error {
+      background: var(--rf-error-bg);
+      border-color: var(--rf-error);
+      color: var(--rf-error);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+
+  .otp-error {
+    /* box row → error gap is 32px in Figma on both breakpoints
+       (Frame 1321322883, nodes 1349:3725 / 1349:4321) */
+    margin: calc(32 * var(--rf-u)) 0 0;
+    color: var(--rf-error);
+    font-size: calc(14 * var(--rf-u));
+  }
+
+  .resend {
+    margin: calc(32 * var(--rf-u)) 0 0;
+    color: var(--rf-muted);
+
+    /* "Resend code in 0:30" swaps in place of the Resend Code link, so it
+       shares the same fixed 14px on mobile. */
+    font-size: 14px;
+
+    @media (width >= 900px) {
+      font-size: calc(14 * var(--rf-u));
+    }
+  }
+
+  .otp:has(.otp-error:not([hidden])) .resend {
+    color: var(--rf-error);
+
+    /* When the error is shown it sits directly above Resend, so this margin is
+       the error→resend gap. Figma: 32px mobile (unchanged) / 20px desktop
+       (Frame 2085665807 gap, node 1349:3741). */
+    @media (width >= 900px) {
+      margin-top: calc(20 * var(--rf-u));
+    }
+  }
+
+  .otp .submit {
+    /* Resend → Submit gap is 32px on both breakpoints in Figma
+       (Frame 2085663108, nodes 1349:3724 / 1349:4320) */
+    margin-top: calc(32 * var(--rf-u));
+
+    /* Mobile OTP Submit is 154px wide (Figma node 1349:4340), narrower than
+       the fields-screen GET OTP (197px) that the base .submit uses. Desktop
+       stays at the base 172px override, so scope this to mobile only. */
+    @media (width < 900px) {
+      min-width: calc(154 * var(--rf-u));
+    }
+  }
+
+  .success:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(56 * var(--rf-u));
+    height: calc(56 * var(--rf-u));
+    margin-bottom: calc(32 * var(--rf-u));
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-black);
+
+    @media (width >= 900px) {
+      width: calc(96 * var(--rf-u));
+      height: calc(96 * var(--rf-u));
+      margin-bottom: calc(48 * var(--rf-u));
+    }
+  }
+
+  .check-icon {
+    display: flex;
+    width: calc(28 * var(--rf-u));
+    height: calc(28 * var(--rf-u));
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (width >= 900px) {
+      width: calc(48 * var(--rf-u));
+      height: calc(48 * var(--rf-u));
+    }
+  }
+
+  /* same family switch as .heading */
+  .success-title {
+    margin: 0 0 calc(24 * var(--rf-u));
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: calc(24 * var(--rf-u));
+    line-height: 1.33;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+
+    @media (width >= 900px) {
+      margin-bottom: calc(48 * var(--rf-u));
+      font-family: var(--font-family-display);
+      font-size: calc(40 * var(--rf-u));
+      line-height: 1.4;
+      letter-spacing: 0.01em;
+    }
+  }
+
+  .success-text {
+    max-width: 46ch;
+    margin: 0;
+    color: var(--rf-muted);
+    font-size: calc(14 * var(--rf-u));
+    line-height: 1.57;
+
+    @media (width >= 900px) {
+      color: var(--color-gray-30);
+      font-size: calc(20 * var(--rf-u));
+      line-height: 1.4;
+    }
+  }
+
+  .back-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: calc(197 * var(--rf-u));
+    height: calc(48 * var(--rf-u));
+    margin-top: calc(24 * var(--rf-u));
+    padding: 0 calc(24 * var(--rf-u));
+    border-radius: calc(12 * var(--rf-u));
+    background: var(--color-white);
+    color: var(--color-black);
+    font-family: var(--font-family-base);
+    font-size: calc(14 * var(--rf-u));
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform 0.15s ease, background 0.15s ease;
+
+    /* existing lift + the Figma glitch hover background */
+    &:hover {
+      background: rgb(255 255 255 / 80%);
+      transform: translateY(-2px);
+    }
+
+    @media (width >= 900px) {
+      min-width: calc(172 * var(--rf-u));
+      height: calc(64 * var(--rf-u));
+      margin-top: calc(48 * var(--rf-u));
+      font-size: calc(16 * var(--rf-u));
+    }
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .status {
+    margin: calc(16 * var(--rf-u)) 0 0;
+    color: var(--rf-muted);
+    font-size: calc(14 * var(--rf-u));
+    line-height: 1.4;
+
+    &:empty {
+      display: none;
+    }
+
+    &.is-error {
+      color: var(--rf-error);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+
+  .otp {
+    position: relative;
+  }
+
+  .otp .status {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: calc(8 * var(--rf-u)) 0 0;
+  }
+
+  &.align-center .heading,
+  &.align-center .intro,
+  &.align-center .notice {
+    text-align: center;
+  }
+
+  &.align-right .heading,
+  &.align-right .intro,
+  &.align-right .notice {
+    text-align: right;
+  }
+
+  &.align-justify .heading,
+  &.align-justify .intro,
+  &.align-justify .notice {
+    text-align: justify;
+  }
+}
+
+.register-form-captcha:empty {
+  display: none;
+}
+
+.grecaptcha-badge {
+  z-index: 9999 !important;
+}
+
+/* collapsed to the logo until its toggle opens it (register-form.js); the
+   extra specificity and !important outrank Google's own hover expansion */
+body .grecaptcha-badge:not(.is-expanded) {
+  right: -186px !important;
+}
+
+body .grecaptcha-badge.is-expanded {
+  right: 0 !important;
+}
+
+/* invisible, over the 70px logo at the badge's left end */
+.grecaptcha-badge .grecaptcha-toggle {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 70px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}

@@ -1,0 +1,683 @@
+/* Columns "Split" style (product page, PHEV), loaded by columns.js only when the style is
+   used. Two full-bleed video panes laid over each other, each with a big label and a frosted
+   stats card, and a film card at the bottom. From 900px the first pane is clipped at a seam
+   that moves to the half the mouse is over (columns-split.js sets data-side) and shows that
+   half's card; on phones the first pane wipes away to the second on a scroll gesture. Under
+   reduced motion phones stack the panes (the base layout) and nothing animates. */
+
+main .section:has(.columns.split) {
+  margin: 0;
+  padding: 0;
+
+  .columns-wrapper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.columns.split {
+  --split-gutter: 20px;
+  --split-radius: 18px;
+  --split-glass-bg: rgb(12 12 12 / 22%);
+  --split-glass-edge: inset 0 0 0 1px rgb(255 255 255 / 14%);
+
+  /* the film card's offset from the bottom, clear of the CTA dock as Figma; the cards sit 80px
+     above it */
+  --split-foot: calc(71px + env(safe-area-inset-bottom, 0px));
+  --split-card-bottom: var(--split-gutter);
+
+  /* GSAP power3.out, power2.in and power2.inOut, as on the source */
+  --split-ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --split-ease-in: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  --split-ease-in-out: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --split-move: 1.1s;
+  --split-show: 0.6s;
+  --split-hide: 0.3s;
+  --split-delay: 0.15s;
+
+  position: relative;
+  color: var(--color-white);
+  background: var(--color-black);
+
+  > .split-frame {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .split-pane {
+    position: relative;
+    box-sizing: border-box;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  /* a little taller than the pane, its bottom on the pane's: the video's frame sits 6% higher,
+     as on the source */
+  .split-media {
+    position: absolute;
+    inset: -6% 0 0;
+    z-index: 0;
+    line-height: 0;
+
+    picture,
+    img,
+    video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    picture {
+      position: absolute;
+      inset: 0;
+    }
+
+    video {
+      position: relative;
+      pointer-events: none;
+    }
+
+    /* darker at the top and bottom, behind the label and the cards */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(rgb(0 0 0 / 26%), rgb(0 0 0 / 0%) 24%, rgb(0 0 0 / 0%) 64%, rgb(0 0 0 / 30%));
+      pointer-events: none;
+    }
+  }
+
+  .split-left .split-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgb(0 0 0 / 8%);
+    pointer-events: none;
+  }
+
+  /* the authored link and the emptied image line: read by columns-split.js, not shown */
+  .split-video-link,
+  .split-poster {
+    display: none;
+  }
+
+  /* the labels at the top, as Figma and the prototype (the section hides the site header) */
+  .split-label {
+    position: absolute;
+    inset: 84px var(--split-gutter) auto;
+    z-index: 3;
+    margin: 0;
+    font-family: var(--font-family-display);
+
+    /* as the prototype on phones: one line across the width, at most 28px */
+    font-size: min(28px, calc((100vw - 2 * var(--split-gutter)) / 13.9));
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.05;
+    letter-spacing: normal;
+    text-transform: uppercase;
+    color: var(--color-white);
+
+    /* the prototype's tight drop shadow, for depth; without its wide grey glow */
+    text-shadow: 0 1px 2px rgb(0 0 0 / 22%);
+    pointer-events: none;
+
+    /* any length of label: long words break, at most 3 lines (2 from 900px), the rest cut off */
+    overflow-wrap: anywhere;
+    max-height: 3lh;
+    overflow: visible clip;
+  }
+
+  /* the frosted card: stats over the heading and text on phones */
+  .split-card {
+    position: absolute;
+    inset: auto var(--split-gutter) var(--split-card-bottom);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    box-sizing: border-box;
+    padding: 6px;
+    border-radius: var(--split-radius);
+    background: var(--split-glass-bg);
+    box-shadow: var(--split-glass-edge);
+    backdrop-filter: blur(40px) saturate(1.2);
+    color: var(--color-white);
+  }
+
+  /* the cards clear the film card */
+  &:has(> .split-film) {
+    --split-card-bottom: calc(var(--split-foot) + 80px);
+  }
+
+  .split-stats {
+    display: flex;
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 14px 14px 12px;
+  }
+
+  .split-stat {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgb(255 255 255 / 80%);
+
+    /* value and label one line each, the rest cut off */
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  .split-stat-value {
+    display: block;
+    margin-bottom: 6px;
+    font-family: var(--font-family-display);
+    font-size: 18px;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-white);
+  }
+
+  /* a value with no label after it (columns-split.js) */
+  .split-stat-solo .split-stat-value {
+    margin-bottom: 0;
+  }
+
+  .split-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 4px 14px 14px;
+
+    > * {
+      margin: 0;
+    }
+
+    /* three lines, then an ellipsis */
+    p {
+      display: -webkit-box;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: var(--font-weight-medium);
+      line-height: 20px;
+      color: rgb(255 255 255 / 88%);
+      text-wrap: pretty;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+  }
+
+  /* two lines, the rest cut off */
+  .split-card-title {
+    max-height: 2lh;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    font-family: var(--font-family-display);
+    font-size: 17px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    letter-spacing: normal;
+    text-transform: uppercase;
+    color: var(--color-white);
+  }
+
+  /* the band the seam leaves between the panes (from 900px) */
+  .split-seam {
+    display: none;
+  }
+
+  /* the film card, at the bottom over the panes */
+  > .split-film {
+    position: absolute;
+    inset: auto var(--split-gutter) var(--split-foot);
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 8px 20px 8px 8px;
+    border-radius: var(--split-radius);
+    background: rgb(12 12 12 / 20%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
+    backdrop-filter: blur(24px) saturate(1.2);
+    color: var(--color-white);
+    cursor: pointer;
+  }
+
+  > .split-film > div {
+    flex: 0 1 auto;
+    order: unset;
+  }
+
+  > .split-film > .split-film-media {
+    position: relative;
+    flex: none;
+    width: 72px;
+    height: 52px;
+    border-radius: calc(var(--split-radius) - 8px);
+    overflow: hidden;
+    background: rgb(34 34 34);
+    line-height: 0;
+
+    picture,
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .film-badge {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 12%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 22%);
+    backdrop-filter: blur(3px);
+    color: var(--color-white);
+    translate: -50% -50%;
+    transition: background 0.25s;
+
+    svg {
+      width: 10px;
+      height: 10px;
+      margin-left: 2px;
+    }
+  }
+
+  > .split-film:hover .film-badge {
+    background: rgb(255 255 255 / 26%);
+  }
+
+  .split-film-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .split-film-copy p,
+  .split-film-copy :is(h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+  }
+
+  .split-film-eyebrow {
+    font-size: 10px;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.3;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 72%);
+
+    /* one line, the rest cut off */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  .split-film-text {
+    font-size: 13px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.35;
+    color: rgb(255 255 255 / 92%);
+    text-wrap: pretty;
+  }
+
+  /* what the film's dialog shows, not the card */
+  .split-film-detail {
+    display: none;
+  }
+
+  .split-film-open {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  .split-film-open:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 3px;
+  }
+
+  /* phones: one pane over the other; the first wipes up on a slant to show the second */
+  @media (width < 900px) and (prefers-reduced-motion: no-preference) {
+    &:not(.is-authoring) > .split-frame {
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+    }
+
+    &:not(.is-authoring) .split-pane {
+      position: absolute;
+      inset: 0;
+      min-height: 0;
+      overflow: visible;
+    }
+
+    &:not(.is-authoring) .split-left .split-media {
+      --tilt: 7vh;
+
+      z-index: 1;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% + var(--tilt)));
+      transition: clip-path var(--split-move) var(--split-ease-in-out);
+    }
+
+    &:not(.is-authoring) .split-right .split-media {
+      scale: 1.08;
+      transform-origin: 50% 100%;
+      transition: scale var(--split-move) var(--split-ease-out);
+    }
+
+    > .split-frame[data-side='right'] .split-left .split-media {
+      clip-path: polygon(0 0, 100% 0, 100% calc(0% - var(--tilt)), 0 0);
+    }
+
+    > .split-frame[data-side='right'] .split-right .split-media {
+      scale: none;
+    }
+
+    > .split-frame[data-side] :is(.split-label, .split-card) {
+      transition:
+        opacity var(--split-show) var(--split-ease-out),
+        translate var(--split-show) var(--split-ease-out),
+        filter var(--split-show) var(--split-ease-out);
+    }
+
+    > .split-frame[data-side='left'] .split-right :is(.split-label, .split-card),
+    > .split-frame[data-side='right'] .split-left :is(.split-label, .split-card) {
+      opacity: 0;
+      translate: 0 14px;
+      filter: blur(6px);
+      pointer-events: none;
+      transition-duration: var(--split-hide);
+      transition-timing-function: var(--split-ease-in);
+    }
+
+    > .split-frame[data-side='right'] .split-left :is(.split-label, .split-card) {
+      translate: 0 -12px;
+    }
+  }
+
+  /* side by side: the first pane is clipped at the seam (--split), which data-side moves */
+  @media (width >= 900px) {
+    &,
+    &:has(> .split-film) {
+      --split-gutter: 64px;
+      --split-foot: 100px;
+      --split-card-bottom: 64px;
+    }
+
+    > .split-frame {
+      --split: 51%;
+    }
+
+    > .split-frame[data-side='left'] {
+      --split: 80%;
+    }
+
+    > .split-frame[data-side='right'] {
+      --split: 15%;
+    }
+
+    &:not(.is-authoring) > .split-frame {
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+      cursor: ew-resize;
+    }
+
+    &:not(.is-authoring) .split-pane {
+      position: absolute;
+      inset: 0;
+      min-height: 0;
+    }
+
+    &:not(.is-authoring) .split-left {
+      z-index: 2;
+      clip-path: inset(0 calc(100% - var(--split)) 0 0);
+      transition: clip-path var(--split-move) var(--split-ease-out);
+    }
+
+    .split-seam {
+      position: absolute;
+      inset: 0 auto 0 var(--split);
+      z-index: 3;
+      display: block;
+      width: 28px;
+      margin-left: -14px;
+      backdrop-filter: blur(2px);
+      mask-image: linear-gradient(90deg, rgb(0 0 0 / 0%), rgb(0 0 0) 35%, rgb(0 0 0) 65%, rgb(0 0 0 / 0%));
+      pointer-events: none;
+      transition: left var(--split-move) var(--split-ease-out);
+    }
+
+    /* each label stays in its half (24px short of the middle), at most 2 lines */
+    .split-label {
+      inset: 64px auto auto var(--split-gutter);
+      max-width: calc(50vw - var(--split-gutter) - 24px);
+      max-height: 2lh;
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    .split-right .split-label {
+      inset: 64px var(--split-gutter) auto auto;
+    }
+
+    /* the card: stats beside the heading and text, shown only for the leading half */
+    .split-card {
+      right: auto;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      padding: 6px 24px 6px 6px;
+    }
+
+    .split-right .split-card {
+      right: var(--split-gutter);
+      left: auto;
+    }
+
+    .split-stats {
+      flex-direction: column;
+      gap: 24px;
+      width: 156px;
+      padding: 14px;
+    }
+
+    /* a long label may run into the column's padding and the gap, cut 4px short of the text */
+    .split-stat {
+      flex: none;
+      margin-right: -26px;
+      font-size: 14px;
+    }
+
+    .split-stat-value {
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .split-card-text {
+      justify-content: space-between;
+      gap: 0;
+      box-sizing: border-box;
+      width: 216px;
+      min-height: 113px;
+      padding: 0;
+
+      p {
+        font-size: 14px;
+        line-height: 22px;
+      }
+    }
+
+    .split-card-title {
+      font-size: 20px;
+    }
+
+    > .split-frame[data-side] :is(.split-label, .split-card) {
+      transition:
+        opacity var(--split-show) var(--split-ease-out),
+        translate var(--split-show) var(--split-ease-out);
+    }
+
+    > .split-frame[data-side] .split-card {
+      opacity: 0;
+      translate: 0 16px;
+      pointer-events: none;
+      transition-duration: var(--split-hide);
+    }
+
+    > .split-frame[data-side='left'] .split-left .split-card,
+    > .split-frame[data-side='right'] .split-right .split-card {
+      opacity: 1;
+      translate: none;
+      pointer-events: auto;
+      transition-duration: var(--split-show);
+      transition-delay: var(--split-delay);
+    }
+
+    > .split-frame[data-side='left'] .split-right .split-label,
+    > .split-frame[data-side='right'] .split-left .split-label {
+      opacity: 0;
+      translate: 20px 0;
+      transition-duration: var(--split-hide);
+      transition-timing-function: var(--split-ease-in);
+    }
+
+    > .split-frame[data-side='right'] .split-left .split-label {
+      translate: -20px 0;
+    }
+
+    /* the film card, centred */
+    > .split-film {
+      inset: auto auto var(--split-foot) 50%;
+      gap: 14px;
+      width: 256px;
+      padding: 8px 16px 8px 8px;
+      translate: -50% 0;
+    }
+
+    > .split-film > .split-film-media {
+      width: 64px;
+      height: 48px;
+    }
+
+    .split-film-text {
+      font-size: 12px;
+    }
+  }
+
+  /* screens wider than the source's 1440px frame: its full-size card and film card */
+  @media (width > 1440px) {
+    .split-card {
+      gap: 24px;
+    }
+
+    .split-stats {
+      width: 182px;
+      padding: 18px;
+    }
+
+    .split-card-text {
+      width: 240px;
+    }
+
+    > .split-film {
+      gap: 16px;
+      width: 296px;
+      padding: 8px 20px 8px 8px;
+    }
+
+    > .split-film > .split-film-media {
+      width: 72px;
+      height: 52px;
+    }
+
+    .split-film-text {
+      font-size: 13px;
+    }
+  }
+
+  @media (width >= 900px) and (height <= 800px) {
+    &,
+    &:has(> .split-film) {
+      --split-foot: 83px;
+    }
+  }
+
+  /* no movement: the panes and cards change at once */
+  @media (prefers-reduced-motion: reduce) {
+    --split-move: 0s;
+    --split-show: 0s;
+    --split-hide: 0s;
+    --split-delay: 0s;
+  }
+
+  /* Universal Editor: everything visible and in place, nothing over the components */
+  &.is-authoring {
+    > .split-frame,
+    .split-pane {
+      height: auto;
+      min-height: 0;
+    }
+
+    .split-pane {
+      padding: var(--split-gutter);
+    }
+
+    .split-label,
+    .split-card,
+    > .split-film {
+      position: relative;
+      inset: auto;
+      translate: none;
+      margin-block: var(--split-gutter);
+    }
+
+    > .split-film {
+      width: auto;
+      margin: var(--split-gutter);
+    }
+
+    > .split-film-empty {
+      min-height: 68px;
+      outline: 1px dashed rgb(255 255 255 / 40%);
+    }
+
+    .split-video-link,
+    .split-poster,
+    .split-film-detail {
+      display: block;
+    }
+
+    .split-seam {
+      display: none;
+    }
+  }
+}

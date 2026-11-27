@@ -1,0 +1,370 @@
+/* Columns "Reach Us" variant: Contact Us page (Figma "NR / Contact Us
+   1280x720"). Loaded by columns.js only when the variant is picked. Styles the
+   whole section holding the block — Title, Columns (3 × 2), Text; see
+   columns-reach-us.js. */
+
+main > .section:has(.columns.reach-us) {
+  /* teal-to-black gradient; starts at the very top so it also sits behind
+     the fixed, floating global header. Below the light top the stops are
+     Figma's (#065f6d 45%, #022f37 65%, #011c22 80%, #000c10 92%), remapped
+     to the frame: its gradient starts above the frame, at the 25% stop */
+  --reach-us-gradient:
+    linear-gradient(
+      180deg,
+      #4d8c95 0%,
+      #0b6072 16%,
+      #065f6d 26.7%,
+      #022f37 53.3%,
+      #011c22 73.3%,
+      #000c10 89.3%,
+      #000 100%
+    );
+
+  /* type: New Science (regular, not Extended) throughout */
+  --reach-us-font: 'new-science', new-science-fallback, 'Anek Latin', roboto-condensed, arial, sans-serif;
+  --reach-us-color: var(--color-white);
+  --reach-us-title-color: rgb(255 255 255 / 80%);
+  --reach-us-label-color: rgb(255 255 255 / 90%);
+  --reach-us-muted-color: rgb(255 255 255 / 80%);
+  --reach-us-divider-color: rgb(255 255 255 / 20%);
+
+  /* sizes: mobile first (Figma 375 frame); desktop (>= 900px) scales the
+     Figma 1280 frame */
+  --reach-us-gutter: clamp(20px, 5vw, 64px);
+  --reach-us-pad-top: 128px; /* header pill bottom (44 + 50) + Figma 41 to the caps − 7 half-leading */
+  --reach-us-pad-bottom: 47px;
+  --reach-us-title-size: 32px;
+  --reach-us-title-lh: 1.25; /* 40 / 32 */
+  --reach-us-title-ls: -0.02em; /* -0.64px at 32px */
+  --reach-us-label-size: 14px;
+  --reach-us-label-lh: 1.2143; /* 17 / 14 */
+  --reach-us-label-ls: 0.05em; /* 0.7px at 14px */
+  --reach-us-info-lh: 0.9286; /* INFO: 13 / 14 */
+  --reach-us-info-ls: -0.01em; /* -0.14px at 14px */
+  --reach-us-value-size: 16px;
+  --reach-us-value-lh: 1.375; /* 22 / 16 */
+  --reach-us-value-lh-loose: 1.5; /* working hours: 24 / 16 */
+  --reach-us-address-lh: var(--reach-us-value-lh); /* 24 / 16 on desktop */
+  --reach-us-meta-size: 12px; /* "Open in maps" */
+  --reach-us-meta-lh: 1.3333; /* 16 / 12 */
+  --reach-us-meta-ls: 0.03em; /* 0.36px at 12px */
+  --reach-us-intro-size: 13px;
+  --reach-us-intro-lh: 1.5385; /* 20 / 13 */
+  --reach-us-intro-width: none;
+  --reach-us-intro-offset: 0px; /* desktop: intro sits just below the row-2 top */
+  --reach-us-info-offset: 16px; /* intro → Info is 48, the other groups 32 */
+  --reach-us-address-width: none;
+  --reach-us-divider-width: 1.5px;
+  --reach-us-title-gap: 23px; /* heading → divider (32 on desktop) */
+  --reach-us-divider-gap: 32px; /* divider → columns */
+  --reach-us-label-gap: 14px; /* label → value (21 on desktop) */
+  --reach-us-label-gap-tight: 14px; /* Socials (18 on desktop) */
+  --reach-us-hours-gap: 18px; /* Working hours label → value */
+  --reach-us-meta-gap: 24px; /* address → "Open in maps" (35 on desktop) */
+  --reach-us-group-gap: 32px; /* value → next label in a column (General → Press) */
+  --reach-us-row-gap: 32px; /* between contact groups (48 on desktop) */
+  --reach-us-col-gap: 32px;
+  --reach-us-foot-gap: 48px; /* min space above working hours; mobile: either side of its divider */
+  --reach-us-transition: 200ms ease;
+
+  /* the contact details outgrow one screen (always on mobile), so the
+     section sizes to its content instead of the one-viewport snap height */
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  justify-content: flex-start;
+  overflow: visible;
+  padding: var(--reach-us-pad-top) 0 var(--reach-us-pad-bottom);
+  background: var(--reach-us-gradient);
+  color: var(--reach-us-color);
+  font-family: var(--reach-us-font);
+
+  & > div {
+    max-width: none;
+    margin: 0;
+    padding: 0 var(--reach-us-gutter);
+  }
+
+  & :is(h1, h2, h3, h4, h5, h6, p, ul) {
+    margin: 0;
+  }
+
+  /* Title + full-width divider */
+  & > .reach-us-head :is(h1, h2, h3, h4, h5, h6) {
+    margin-bottom: var(--reach-us-divider-gap);
+    padding-bottom: var(--reach-us-title-gap);
+    border-bottom: var(--reach-us-divider-width) solid var(--reach-us-divider-color);
+    color: var(--reach-us-title-color);
+    font-family: var(--reach-us-font);
+    font-size: var(--reach-us-title-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--reach-us-title-lh);
+    letter-spacing: var(--reach-us-title-ls);
+    text-transform: uppercase;
+  }
+
+  /* Columns: one grid for all six cells (rows flattened with display:
+     contents). Mobile stacks intro, Info, then the contact groups. */
+  & .columns.reach-us {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--reach-us-row-gap) var(--reach-us-col-gap);
+
+    & > div {
+      display: contents;
+    }
+
+    & > div > div {
+      order: 3;
+      min-width: 0;
+    }
+
+    & > div:first-child > div:first-child {
+      order: 2;
+      margin-top: var(--reach-us-info-offset);
+    }
+
+    /* intro copy (row 2, column 1) */
+    & > div:nth-child(2) > div:first-child {
+      order: 1;
+      max-width: var(--reach-us-intro-width);
+      margin-top: var(--reach-us-intro-offset);
+
+      & p {
+        font-size: var(--reach-us-intro-size);
+        line-height: var(--reach-us-intro-lh);
+      }
+
+      & p + p {
+        margin-top: 1em;
+      }
+    }
+
+    /* Info label: full white, medium, tight */
+    & > div:first-child > div:first-child :is(h2, h3, h4, h5, h6) {
+      color: var(--reach-us-color);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--reach-us-info-lh);
+      letter-spacing: var(--reach-us-info-ls);
+    }
+
+    /* address (row 1, column 2) wraps at the designed width */
+    & > div:first-child > div:nth-child(2) {
+      --reach-us-value-lh: var(--reach-us-address-lh);
+
+      max-width: var(--reach-us-address-width);
+    }
+
+    /* Socials: label at 80%, tighter label gap */
+    & > div:nth-child(2) > div:nth-child(3) :is(h2, h3, h4, h5, h6) {
+      color: var(--reach-us-muted-color);
+
+      & + :is(p, ul) {
+        margin-top: var(--reach-us-label-gap-tight);
+      }
+    }
+  }
+
+  /* cell + working-hours content: heading = label, paragraph = value.
+     Spacing is sibling-based, not child-based: in Universal Editor each Text
+     component's elements sit inside an extra div[data-aue-type="richtext"]
+     wrapper (editor-support-rte.js), and a cell may hold several Texts. */
+  & .columns.reach-us > div > div,
+  & .reach-us-foot {
+    /* between separate Text components in one cell */
+    & > * + * {
+      margin-top: var(--reach-us-group-gap);
+    }
+
+    & :is(h2, h3, h4, h5, h6, p, ul) + :is(p, ul) {
+      margin-top: var(--reach-us-label-gap);
+    }
+
+    /* a later label in the same column (Press) */
+    & :is(h2, h3, h4, h5, h6, p, ul) + :is(h2, h3, h4, h5, h6) {
+      margin-top: var(--reach-us-group-gap);
+      color: var(--reach-us-muted-color);
+    }
+
+    & > * + * > :is(h2, h3, h4, h5, h6):first-child {
+      color: var(--reach-us-muted-color);
+    }
+
+    & :is(h2, h3, h4, h5, h6) {
+      color: var(--reach-us-label-color);
+      font-family: var(--reach-us-font);
+      font-size: var(--reach-us-label-size);
+      font-weight: var(--font-weight-regular);
+      line-height: var(--reach-us-label-lh);
+      letter-spacing: var(--reach-us-label-ls);
+      text-transform: uppercase;
+    }
+
+    & :is(p, li) {
+      font-size: var(--reach-us-value-size);
+      font-weight: var(--font-weight-medium);
+      line-height: var(--reach-us-value-lh);
+      overflow-wrap: anywhere;
+    }
+
+    /* "Open in maps" (any maps link) */
+    & p.reach-us-meta {
+      margin-top: var(--reach-us-meta-gap);
+      color: var(--reach-us-muted-color);
+      font-size: var(--reach-us-meta-size);
+      font-weight: var(--font-weight-regular);
+      line-height: var(--reach-us-meta-lh);
+      letter-spacing: var(--reach-us-meta-ls);
+      text-transform: uppercase;
+    }
+
+    & ul {
+      display: flex;
+      flex-direction: column;
+      gap: var(--reach-us-group-gap);
+      padding: 0;
+      list-style: none;
+    }
+
+    /* Working hours: full-white label, own label gap */
+    &.reach-us-foot :is(h2, h3, h4, h5, h6) {
+      color: var(--reach-us-color);
+
+      & + :is(p, ul) {
+        margin-top: var(--reach-us-hours-gap);
+      }
+    }
+  }
+
+  /* links: plain text in the design; underline on hover, ring on focus */
+  & a:any-link {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 0.2em;
+    transition: color var(--reach-us-transition);
+
+    &:hover {
+      color: var(--reach-us-color);
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--reach-us-color);
+      outline-offset: 4px;
+    }
+  }
+
+  /* "Open in maps" is underlined at rest, as in the design */
+  & a.reach-us-maps:any-link {
+    text-decoration: underline;
+  }
+
+  /* working hours, pinned to the bottom of the screen; below desktop a
+     divider sets them apart from the contact groups */
+  & > .reach-us-foot {
+    --reach-us-value-lh: var(--reach-us-value-lh-loose);
+
+    margin-top: auto;
+    padding-top: var(--reach-us-foot-gap);
+
+    &::before {
+      content: '';
+      display: block;
+      margin-bottom: var(--reach-us-foot-gap);
+      border-top: var(--reach-us-divider-width) solid var(--reach-us-divider-color);
+    }
+  }
+
+  /* tablet: intro + Info full width, then a 2 × 2 contact grid */
+  @media (width >= 600px) {
+    --reach-us-pad-top: 160px;
+    --reach-us-title-size: 48px;
+    --reach-us-label-size: 16px;
+    --reach-us-label-lh: 1.1875; /* 19 / 16 */
+    --reach-us-meta-size: 14px;
+    --reach-us-meta-lh: 1.357; /* 19 / 14 */
+    --reach-us-intro-width: 480px;
+    --reach-us-info-offset: 0px;
+    --reach-us-title-gap: 32px;
+    --reach-us-label-gap: 21px;
+    --reach-us-label-gap-tight: 18px;
+    --reach-us-row-gap: 48px;
+    --reach-us-col-gap: 48px;
+
+    & .columns.reach-us {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      & > div:first-child > div:first-child,
+      & > div:nth-child(2) > div:first-child {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  /* desktop: the Figma 1280 × 720 frame, scaled to fit one screen. Every
+     vertical size and font is Figma px × --ru — the scale at which the frame
+     fits the viewport (1 at 1280 × 720, 1.35 at 1728 × 1117, 1.5 at
+     1920 × 1080). Horizontal spacing is viewport-relative (vw), as in the
+     frame. Outside the 0.75–1.5 range the content stops scaling: very short
+     windows scroll instead of shrinking text further, very large screens
+     keep the content at 1.5× with the working hours pinned to the bottom. */
+  @media (width >= 900px) {
+    --ru: clamp(0.75px, min(100vw / 1280, 100svh / 720), 1.5px);
+    --reach-us-gutter: 5vw; /* 64 / 1280 */
+    --reach-us-col-gap: 9.22vw; /* 118 / 1280 */
+    --reach-us-pad-top: calc(130 * var(--ru)); /* Figma: heading top at 130 */
+    --reach-us-label-lh: 1.1875; /* 19 / 16 */
+    --reach-us-info-lh: 0.9375; /* INFO: 15 / 16 */
+    --reach-us-value-lh: 1.25; /* 20 / 16 */
+    --reach-us-address-lh: 1.5; /* 24 / 16 */
+    --reach-us-intro-lh: 1.5; /* 18 / 12 */
+    --reach-us-pad-bottom: calc(39 * var(--ru)); /* Figma: hours end at 681 of 720 */
+    --reach-us-title-size: calc(48 * var(--ru));
+    --reach-us-label-size: calc(16 * var(--ru));
+    --reach-us-value-size: calc(16 * var(--ru));
+    --reach-us-meta-size: calc(14 * var(--ru));
+    --reach-us-intro-size: max(12px, calc(12 * var(--ru))); /* readable floor */
+    --reach-us-intro-width: max(309px, calc(309 * var(--ru))); /* never narrower than its floored font needs */
+    --reach-us-intro-offset: calc(7 * var(--ru)); /* Figma: 453 − row-2 top 446 */
+    --reach-us-address-width: calc(283 * var(--ru));
+    --reach-us-divider-width: calc(1.48 * var(--ru));
+    --reach-us-title-gap: calc(32 * var(--ru));
+    --reach-us-divider-gap: calc(32 * var(--ru));
+    --reach-us-label-gap: calc(21 * var(--ru));
+    --reach-us-label-gap-tight: calc(18 * var(--ru));
+    --reach-us-hours-gap: calc(18 * var(--ru));
+    --reach-us-meta-gap: calc(35 * var(--ru));
+    --reach-us-group-gap: calc(24 * var(--ru));
+    --reach-us-row-gap: calc(48 * var(--ru));
+    --reach-us-foot-gap: calc(48 * var(--ru)); /* minimum; margin-top: auto fills the rest (Figma: hours at 596) */
+
+    & .columns.reach-us {
+      /* Figma columns start at 64 | 587 | 988 → 405 | 283 | 228 with the 118
+         gap; the last never narrower than its longest email */
+      grid-template-columns: minmax(0, 405fr) minmax(0, 283fr) minmax(max-content, 228fr);
+
+      & > div > div,
+      & > div:first-child > div:first-child,
+      & > div:nth-child(2) > div:first-child {
+        grid-column: auto;
+        order: 0;
+      }
+    }
+
+    & > .reach-us-foot::before {
+      content: none;
+    }
+  }
+}
+
+/* Universal Editor: the canvas iframe grows to fit its content, so any
+   viewport-relative height (100svh) feeds back into itself and the section
+   grows without end. The global editor reset in styles.css (min-height:
+   auto) is outranked by the :has() selector above, so repeat it here; scale
+   by width only, since svh is meaningless in that iframe. Editor-only — the
+   data-aue-* attributes don't exist on the published page. */
+body:has([data-aue-resource]) main > .section:has(.columns.reach-us) {
+  --ru: clamp(0.75px, 100vw / 1280, 1.5px);
+
+  min-height: auto;
+}

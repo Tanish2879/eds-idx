@@ -4,6 +4,8 @@ logs/*
 node_modules/*
 
 helix-importer-ui
+# migration import scripts: kept in the local workspace only
+tools/importer/
 .DS_Store
 *.bak
 .idea
@@ -11,5 +13,6 @@ helix-importer-ui
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
-migration-work/navigation-validation/
-migration-work/footer-validation/
+
+fstab.yaml
+well-known/adobe/cloudmanager-challenge.txt

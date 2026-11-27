@@ -1,0 +1,266 @@
+/* Social Deck — section container (declared once; children nested with &). */
+main .section.social-deck-container {
+  display: flex;
+  flex-direction: column;
+
+  /* `safe` centres only while the content fits. Plain `center` splits any
+     overflow evenly above and below, pulling the content up over padding-top
+     (this section is a fixed one-fold height with overflow clipped). */
+  justify-content: safe center;
+  box-sizing: border-box;
+  background-color: #0a0a0a;
+  background-image: url('social-deck-bg-mobile.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+  padding-top: 152px; /* Figma top padding, mobile */
+
+  /* collapse default wrapper margins so the group stays tight */
+  & .default-content-wrapper,
+  & .social-deck-wrapper {
+    max-width: unset;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* heading — New Science Extended; mobile size, max-width forces 3 lines.
+     Casing is not forced: authors type UPPERCASE themselves where wanted. */
+  & :is(h1, h2, h3) {
+    max-width: 11em;
+    margin: 0 auto 12px;
+    color: #fff;
+    font-family: var(--font-family-display);
+    font-weight: var(--font-weight-regular);
+    font-size: var(--heading-font-size-xs);
+    line-height: 1.286;
+    letter-spacing: -0.045em;
+    text-align: center;
+  }
+
+  /* sub-heading — #dfdfdf @ 50%; New Science Medium 18px / 95% (matches Figma); casing is
+     the author's. max-width forces the 2-line wrap (after "and") narrower than the heading. */
+  & .default-content-wrapper p {
+    max-width: 15.5em;
+    margin: 0 auto;
+    color: #dfdfdf;
+    opacity: 0.5;
+    font-family: var(--font-family-base);
+    font-weight: var(--font-weight-medium);
+    font-size: 18px;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    text-align: center;
+  }
+
+  /* desktop: landscape background + larger two-line heading */
+  @media (width >= 900px) {
+    background-image: url('social-deck-bg.webp');
+
+    /* --sd-scale (set by JS) scales the whole composition to fill one fold. */
+    --sd-scale: 1;
+
+    justify-content: flex-start;
+    height: 100svh; /* one fold; svh (not dvh) avoids mobile toolbar reflow */
+
+    /* In Universal Editor the block/section is instrumented with
+       data-aue-resource and drawn inside the editor iframe, where 100svh
+       resolves against a very tall canvas and balloons the section. Pin a
+       fixed one-fold height there so the authoring view stays compact.
+       (Same approach as the hero block.) */
+    &[data-aue-resource],
+    &:has(.social-deck.block[data-aue-resource]) {
+      height: 768px;
+    }
+
+    /* Figma top padding (72px), scaled uniformly with the rest. */
+    padding-top: calc(148px * var(--sd-scale));
+
+    & :is(h1, h2, h3) {
+      max-width: 15em; /* ~771px @ 52px — 2-line wrap matching Figma (em-based, so it tracks the scaled font) */
+      font-size: calc(52px * var(--sd-scale)); /* Figma desktop heading */
+      line-height: 1.154;
+      margin-bottom: calc(12px * var(--sd-scale));
+    }
+
+    /* sub-heading — desktop: New Science Medium / 95% (inherited from base);
+       single line. Only the size scales with the composition. */
+    & .default-content-wrapper p {
+      max-width: none;
+      font-size: calc(18px * var(--sd-scale)); /* Figma desktop sub-heading */
+    }
+  }
+}
+
+/* Fixed-arc carousel. JS positions each card (transform/brightness/z-index)
+   from a single scrollAngle; the arc shape is constant. Mobile = 3-slot crown,
+   desktop = 5-slot crown. Scoped to `.social-deck.block` (both classes) so it
+   only matches the decorated block, never a stray `social-deck` element. */
+.social-deck.block {
+  --sd-heading: #fff;
+  --sd-subtitle: #dfdfdf;
+  --sd-card-radius: 16px;
+  --sd-card-border-width: 1px;
+
+  position: relative;
+  padding: 0;
+  background-color: transparent; /* let the section gradient show through */
+  overflow: hidden;
+  text-align: center;
+
+  & .social-deck-stage {
+    /* centre card width; JS derives the arc radius from it */
+    --sd-card-w: min(62vw, 300px);
+
+    position: relative;
+    z-index: 1;
+    height: 520px;
+    margin: 16px 0 0;
+    overflow: hidden;
+    touch-action: pan-y; /* JS owns horizontal, browser owns vertical */
+    user-select: none;
+
+    & img {
+      /* stylelint-disable-next-line property-no-vendor-prefix -- no standard equivalent */
+      -webkit-user-drag: none; /* belt-and-suspenders alongside the JS draggable=false */
+    }
+  }
+
+  /* optional authored background image */
+  & picture.social-deck-bg {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+
+    & img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+  }
+
+  /* instrumented authored cards, hidden but kept in the DOM so UE can edit them */
+  & .social-deck-source {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    list-style: none;
+    pointer-events: none;
+  }
+
+  /* arc origin: horizontal centre, near the top */
+  & .social-deck-cards {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    display: block;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: visible;
+    touch-action: pan-y; /* allow vertical page scroll; JS drives horizontal */
+
+    & .social-deck-arc-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--sd-card-w);
+      list-style: none;
+      border-radius: var(--sd-card-radius);
+      overflow: hidden;
+      background: #1a1a1a;
+      border: var(--sd-card-border-width) solid rgb(255 255 255 / 20%);
+      box-shadow: 0 20px 40px rgb(0 0 0 / 45%);
+      transform-origin: center top;
+      cursor: pointer;
+      will-change: transform, opacity;
+    }
+
+    & .social-deck-card-dim {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    & li img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* caption text — mobile: 15px / 110% */
+    & .social-deck-card-media .social-deck-card-body p {
+      display: block;
+      margin: 0;
+      color: #9a9a9a;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+    }
+  }
+
+  & .social-deck-card-media {
+    position: relative;
+    aspect-ratio: 3 / 4; /* portrait card, matches Figma (≈249×333 on mobile) */
+  }
+
+  & .social-deck-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* caption overlay on a dark gradient */
+  & .social-deck-card-body {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 48px 20px 20px;
+    text-align: left;
+    font-family: var(--font-family-base);
+    background: linear-gradient(to top, rgb(0 0 0 / 85%), rgb(0 0 0 / 0%));
+  }
+
+  /* desktop: wider crown, larger cards, 3:4 aspect */
+  @media (width >= 900px) {
+    /* Figma desktop card radius/border (mobile is 16px / 1.18px) */
+    --sd-card-radius: 18.73px;
+    --sd-card-border-width: 1.46px;
+
+    & .social-deck-stage {
+      --sd-card-w: 307px; /* Figma desktop card; paired with arc radius 1381 for clean gaps */
+
+      height: 760px; /* fits the taller 410px cards fanned on the arc (no clipping) */
+      margin-top: calc(24px * var(--sd-scale, 1)); /* Figma gap, scaled uniformly */
+      cursor: grab;
+    }
+
+    & .social-deck-cards {
+      top: calc(40px * var(--sd-scale, 1)); /* Figma apex offset, scaled uniformly */
+    }
+
+    & .social-deck-stage:active {
+      cursor: grabbing;
+    }
+
+    /* caption text — desktop: ~18.6px / 110% */
+    & .social-deck-cards .social-deck-card-media .social-deck-card-body p {
+      font-size: 20px;
+    }
+  }
+}

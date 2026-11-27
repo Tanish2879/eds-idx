@@ -1,0 +1,472 @@
+/* Related Blogs "Left" style (class "left"), loaded by related-blogs.js only when the block
+   has the class; the Center (default) style is untouched (everything here is scoped to .left).
+   Design: the dealer prototype's newsroom panel (#news) in a light section: the eyebrow
+   (default content before the block), the uppercase heading left and a black View all
+   button right, then three cards: rounded image, uppercase title and one grey line
+   "Category · 28 Oct 2026. Description" (related-blogs.js folds category + date into it).
+   Desktop follows the prototype's 1280 x 720 frame scaled to fit the screen (--rbn-u, as the
+   source's --u): head at 116 and cards at 228 of 720, 64 from the screen edges. The
+   prototype only scales that frame down on phones (4px text), so below 900px the panel uses
+   readable sizes on a 390 x 844 frame, the cards in a swipe row clear of the price bar.
+   Greys are #666 instead of the source's #808080 to keep AA contrast on the light ground. */
+
+/* ---------- section: the eyebrow and the panel's place in the one-screen fold ---------- */
+main > .section:has(> .related-blogs-wrapper > .related-blogs.left) {
+  --rbn-u: clamp(0.85px, min(100vw / 390, 100svh / 844), 1.3px);
+  --rbn-side: calc(20 * var(--rbn-u));
+  --rbn-ink: var(--color-black);
+  --rbn-quiet: var(--color-gray-60);
+
+  /* phones: centred between the floating header and the price bar, as the source centres
+     its frame */
+  justify-content: center;
+  padding: calc(100 * var(--rbn-u)) 0 calc(88 * var(--rbn-u));
+}
+
+main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .default-content-wrapper {
+  max-width: none;
+  margin: 0;
+  padding: 0 var(--rbn-side) calc(10 * var(--rbn-u));
+  text-align: start;
+}
+
+/* eyebrow ("From the newsroom") */
+main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .default-content-wrapper > p {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: max(12px, calc(12 * var(--rbn-u)));
+  line-height: 1.26;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--rbn-quiet);
+}
+
+/* ---------- block ---------- */
+.related-blogs.left {
+  gap: calc(24 * var(--rbn-u));
+  padding: 0 var(--rbn-side);
+  background-color: transparent;
+  color: var(--rbn-ink);
+}
+
+.related-blogs.left .related-blogs-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: calc(16 * var(--rbn-u));
+}
+
+/* two lines, as the source's 463-wide box (14.5em of its 32) */
+.related-blogs.left .related-blogs-heading {
+  max-width: 14.5em;
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-weight: var(--font-weight-medium);
+  font-size: calc(24 * var(--rbn-u));
+  line-height: 0.985;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-align: start;
+  color: var(--rbn-ink);
+}
+
+/* black button; the hover is the letter glitch only (the source never recolours it) */
+main .related-blogs.left a.related-blogs-view-all.button:any-link {
+  flex: 0 0 auto;
+  min-width: calc(168 * var(--rbn-u));
+  height: max(44px, calc(44 * var(--rbn-u)));
+  padding: 0 calc(24 * var(--rbn-u));
+  border: 0;
+  border-radius: calc(8 * var(--rbn-u));
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-regular);
+  font-size: max(12px, calc(12 * var(--rbn-u)));
+  line-height: 1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s, transform 0.2s;
+}
+
+main .related-blogs.left a.related-blogs-view-all.button:any-link:hover,
+main .related-blogs.left a.related-blogs-view-all.button:any-link:focus-visible {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+main .related-blogs.left a.related-blogs-view-all.button:any-link:focus-visible {
+  outline: 2px solid var(--rbn-ink);
+  outline-offset: 3px;
+}
+
+/* phones: a swipe row running to the screen edges */
+.related-blogs.left .related-blogs-cards {
+  gap: calc(12 * var(--rbn-u));
+  margin: 0 calc(-1 * var(--rbn-side));
+  padding: 0 var(--rbn-side);
+  scroll-padding-inline: var(--rbn-side);
+}
+
+.related-blogs.left .related-blogs-card {
+  flex: 0 0 calc(290 * var(--rbn-u));
+}
+
+.related-blogs.left .related-blogs-card-link {
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--rbn-u));
+  height: auto;
+  color: inherit;
+}
+
+.related-blogs.left .related-blogs-card-media {
+  position: relative;
+  flex: none;
+  aspect-ratio: 417 / 270;
+  border-radius: calc(12 * var(--rbn-u));
+  background-color: #eee;
+}
+
+.related-blogs.left .related-blogs-card-media img {
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* no zoom on phones (the mobile design has none), nor the Center style's; desktop below */
+.related-blogs.left .related-blogs-card-link:hover .related-blogs-card-media img {
+  transform: none;
+}
+
+.related-blogs.left .related-blogs-card-link:focus-visible {
+  outline: 2px solid var(--rbn-ink);
+  outline-offset: 4px;
+  border-radius: calc(12 * var(--rbn-u));
+}
+
+/* no card surface: title, then the grey meta + description line */
+.related-blogs.left .related-blogs-card-body {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.related-blogs.left .related-blogs-card-top {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--rbn-u));
+}
+
+.related-blogs.left .related-blogs-card-title {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: calc(16 * var(--rbn-u));
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--rbn-ink);
+}
+
+/* four lines at most on phones, three on desktop (the source's), so a long summary can't
+   run into the price bar */
+.related-blogs.left .related-blogs-card-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: max(12px, calc(14 * var(--rbn-u)));
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--rbn-quiet);
+}
+
+/* editor-only placeholder (no articles) */
+.related-blogs.left .related-blogs-empty {
+  color: var(--rbn-quiet);
+  text-align: start;
+}
+
+/* ---------- phones: the mobile design (meridian-motors-mobile, #news) ----------
+   Its unit is 390 / 375 on a 390 x 844 screen (--rbn-p); its text boxes are trimmed to the
+   capitals, so the margins below are the trimmed gaps less this font's half-leading. The
+   eyebrow starts the design's 22 below the header, the cards (tall photos, the swipe row)
+   take the height left, and the outlined View all button (placed after the cards by
+   related-blogs.js) sits full width, the design's 81 above the screen's bottom (clear of
+   the price bar). */
+@media (width < 900px) {
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) {
+    --rbn-p: clamp(0.75px, min(100vw / 375, 100svh / 640), 1.6px);
+    --rbn-side: calc(16 * var(--rbn-p));
+    --rbn-ink: #0a0a0a;
+
+    justify-content: flex-start;
+    padding: calc(108 * var(--rbn-u)) 0 calc(81 * var(--rbn-p) + env(safe-area-inset-bottom));
+  }
+
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .default-content-wrapper {
+    padding-bottom: 0;
+  }
+
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .default-content-wrapper > p {
+    font-size: calc(12 * var(--rbn-p));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.33;
+    letter-spacing: 0;
+  }
+
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .related-blogs-wrapper {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .related-blogs.left {
+    flex: 1 1 auto;
+    gap: 0;
+    min-height: 0;
+  }
+
+  .related-blogs.left .related-blogs-heading {
+    max-width: none;
+    margin-top: calc(4.5 * var(--rbn-p));
+    font-size: calc(30 * var(--rbn-p));
+    line-height: 1.18;
+    letter-spacing: 0;
+    color: #121212;
+  }
+
+  /* the swipe row: tall cards, the photo taking what the text leaves */
+  .related-blogs.left .related-blogs-cards {
+    flex: 1 1 auto;
+    gap: calc(10 * var(--rbn-p));
+    min-height: 0;
+    margin-top: calc(18.6 * var(--rbn-p));
+    padding-bottom: calc(8 * var(--rbn-p));
+    overscroll-behavior-x: contain;
+  }
+
+  .related-blogs.left .related-blogs-card {
+    display: flex;
+    flex: 0 0 calc(304 * var(--rbn-p));
+  }
+
+  .related-blogs.left .related-blogs-card-link {
+    flex: 1 1 auto;
+    gap: 0;
+    min-height: 0;
+  }
+
+  .related-blogs.left .related-blogs-card-media {
+    flex: 1 1 0;
+    min-height: 0;
+    aspect-ratio: auto;
+    border-radius: calc(18 * var(--rbn-p));
+    background-color: #1e1e1e;
+
+    picture {
+      display: block;
+      height: 100%;
+    }
+  }
+
+  @supports (container-type: size) {
+    main:has(.hero.dealer) .related-blogs.left .related-blogs-cards {
+      container-type: size;
+    }
+
+    main:has(.hero.dealer) .related-blogs.left .related-blogs-card {
+      flex-basis: calc(300 * var(--rbn-p));
+    }
+
+    main:has(.hero.dealer) .related-blogs.left .related-blogs-card-media {
+      flex: none;
+      height: min(calc(324 * var(--rbn-p)), 100cqh - 158.8 * var(--rbn-p));
+    }
+  }
+
+  .related-blogs.left .related-blogs-card-link:focus-visible {
+    outline-offset: -2px;
+    border-radius: calc(18 * var(--rbn-p));
+  }
+
+  .related-blogs.left .related-blogs-card-body {
+    flex: none;
+  }
+
+  .related-blogs.left .related-blogs-card-top {
+    gap: 0;
+  }
+
+  /* two lines kept for the title and three for the summary, so the photos line up */
+  .related-blogs.left .related-blogs-card-title {
+    min-height: 2.6em;
+    margin-top: calc(20.7 * var(--rbn-p));
+    font-size: calc(20 * var(--rbn-p));
+    line-height: 1.3;
+    color: rgb(10 10 10 / 85%);
+  }
+
+  .related-blogs.left .related-blogs-card-desc {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    min-height: 4.5em;
+    margin-top: calc(6.1 * var(--rbn-p));
+    font-size: calc(12 * var(--rbn-p));
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: rgb(10 10 10 / 70%);
+  }
+
+  /* View all: outlined, full width, under the cards */
+  main .related-blogs.left > a.related-blogs-view-all.button:any-link,
+  main .related-blogs.left > a.related-blogs-view-all.button:any-link:hover,
+  main .related-blogs.left > a.related-blogs-view-all.button:any-link:focus-visible {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    height: calc(48 * var(--rbn-p));
+
+    /* the design's 22 from the summary's last baseline (its text trimmed), less our descent */
+    margin-top: calc(8.5 * var(--rbn-p));
+    padding: 0 calc(16 * var(--rbn-p));
+    border: 1px solid var(--rbn-ink);
+    border-radius: calc(8 * var(--rbn-p));
+    background-color: transparent;
+    color: var(--rbn-ink);
+    font-size: calc(12 * var(--rbn-p));
+    letter-spacing: 0.02em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    main .related-blogs.left > a.related-blogs-view-all.button:any-link:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+/* ---------- desktop: the 1280 x 720 frame ---------- */
+@media (width >= 900px) {
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) {
+    --rbn-u: min(100vw / 1280, 100svh / 720);
+    --rbn-side: calc(64 * var(--rbn-u));
+
+    /* the frame is centred in the screen; the head starts 116 down it */
+    justify-content: flex-start;
+    padding: calc(max(0px, (100svh - 720 * var(--rbn-u)) / 2) + 116 * var(--rbn-u)) 0 0;
+  }
+
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .default-content-wrapper {
+    padding-bottom: calc(16 * var(--rbn-u));
+  }
+
+  /* this build of New Science sets its text lower in the line than the source's: the
+     eyebrow, heading, button label and card titles are lifted back onto the source's baselines
+     (1.3, 2.7, 3.6 and 2.4 of --rbn-u), the boxes and the head's height unchanged */
+  main > .section:has(> .related-blogs-wrapper > .related-blogs.left) > .default-content-wrapper > p {
+    margin-top: calc(-1.3 * var(--rbn-u));
+    font-size: max(11px, calc(12 * var(--rbn-u)));
+  }
+
+  /* head → cards: 18, then each card's own 24 */
+  .related-blogs.left {
+    gap: calc(18 * var(--rbn-u));
+  }
+
+  .related-blogs.left .related-blogs-heading {
+    margin: calc(-2.7 * var(--rbn-u)) 0 calc(4 * var(--rbn-u));
+    font-size: calc(32 * var(--rbn-u));
+  }
+
+  main .related-blogs.left a.related-blogs-view-all.button:any-link {
+    height: calc(48 * var(--rbn-u));
+    padding-top: calc(7.1 * var(--rbn-u));
+    font-size: max(11px, calc(12 * var(--rbn-u)));
+  }
+
+  main:has(.hero.dealer) .related-blogs.left a.related-blogs-view-all.button:any-link {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(8 * var(--rbn-u));
+    width: fit-content;
+    min-width: 0;
+    height: calc(48 * var(--rbn-u));
+    min-height: 0;
+    margin: 0;
+    padding: calc(3 * var(--rbn-u)) calc(32 * var(--rbn-u)) calc(4 * var(--rbn-u));
+    border: none;
+    border-radius: calc(8 * var(--rbn-u));
+    background-color: #000;
+    color: #fff;
+    font-family: var(--font-family-base);
+    font-size: max(11px, calc(12 * var(--rbn-u)));
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .related-blogs.left .related-blogs-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: calc(20 * var(--rbn-u));
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  /* the 24 above each card is part of its link, as the source's (hover and focus cover it) */
+  .related-blogs.left .related-blogs-card-link {
+    gap: calc(32 * var(--rbn-u));
+    padding-top: calc(24 * var(--rbn-u));
+  }
+
+  .related-blogs.left .related-blogs-card-media {
+    height: calc(240 * var(--rbn-u));
+    aspect-ratio: auto;
+    border-radius: calc(16 * var(--rbn-u));
+  }
+
+  /* the source's ring: square, 3 out, round the whole link */
+  .related-blogs.left .related-blogs-card-link:focus-visible {
+    outline-offset: 3px;
+    border-radius: 0;
+  }
+
+  /* the photo's slow zoom on hover (the mobile design has none) */
+  @media (prefers-reduced-motion: no-preference) {
+    .related-blogs.left .related-blogs-card-link:hover .related-blogs-card-media img {
+      transform: scale(1.04);
+    }
+  }
+
+  .related-blogs.left .related-blogs-card-top {
+    gap: calc(16 * var(--rbn-u));
+  }
+
+  .related-blogs.left .related-blogs-card-title {
+    margin: calc(-2.4 * var(--rbn-u)) 0 calc(2.4 * var(--rbn-u));
+    font-size: max(14px, calc(20 * var(--rbn-u)));
+  }
+
+  .related-blogs.left .related-blogs-card-desc {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: max(12px, calc(14 * var(--rbn-u)));
+  }
+}

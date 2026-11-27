@@ -42,10 +42,62 @@
           "name": "title",
           "label": "Title",
           "value": "",
-          "description": "The card's heading. Max 40 characters.",
+          "description": "Up to 40 characters, so the title fits the card on every screen.",
           "validation": {
             "maxLength": 40,
             "customErrorMsg": "Keep the title to 40 characters at most."
+          }
+        },
+        {
+          "component": "select",
+          "name": "classes",
+          "label": "Style",
+          "value": "",
+          "description": "Default: the white card, with the text and thumbnails beside the image. Cover: the image fills the screen, the items become colour swatches down the left (each item's Thumbnail is its swatch, e.g. a paint colour) and the title sits at the bottom. Two Cover showcases in sections one after the other (e.g. Exterior and Interior) get a switch at the top between them: give each a View name.",
+          "options": [
+            { "name": "Default", "value": "" },
+            { "name": "Cover", "value": "cover" }
+          ]
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "classes_view-tabs",
+          "label": "Show the Views as Tabs",
+          "description": "Cover only. Set on the first view (e.g. Exterior). The Cover sections right after it become tabs on this screen, so scrolling goes on to the next section instead of to them.",
+          "condition": { "===": [{ "var": "classes" }, "cover"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "View name",
+          "value": "",
+          "description": "Cover only: this view's name on the switch, e.g. Exterior. Up to 16 characters.",
+          "condition": { "===": [{ "var": "classes" }, "cover"] },
+          "validation": {
+            "maxLength": 16,
+            "customErrorMsg": "Keep the view name to 16 characters at most."
+          }
+        },
+        {
+          "component": "aem-content",
+          "name": "link",
+          "label": "Button link",
+          "description": "Cover only, optional: a button at the bottom right, e.g. to the car configurator.",
+          "condition": { "===": [{ "var": "classes" }, "cover"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "linkText",
+          "label": "Button text",
+          "value": "",
+          "description": "Cover only: the button's text, e.g. Build your own. Up to 24 characters.",
+          "condition": { "===": [{ "var": "classes" }, "cover"] },
+          "validation": {
+            "maxLength": 24,
+            "customErrorMsg": "Keep the button text to 24 characters at most."
           }
         }
       ]
@@ -60,7 +112,7 @@
           "label": "Thumbnail",
           "multi": false,
           "required": true,
-          "description": "Shown in the thumbnail tray. Required."
+          "description": "Required: the item needs its thumbnail."
         },
         {
           "component": "text",
@@ -76,7 +128,7 @@
           "label": "Showcase image",
           "multi": false,
           "required": true,
-          "description": "The image the + points sit on. Required."
+          "description": "Required: the item needs its showcase image."
         },
         {
           "component": "text",
@@ -91,24 +143,19 @@
           "name": "title",
           "label": "Title",
           "value": "",
-          "description": "Max 40 characters.",
+          "description": "Up to 40 characters, so the title fits the card on every screen.",
           "validation": {
             "maxLength": 40,
             "customErrorMsg": "Keep the title to 40 characters at most."
           }
         },
         {
-          "component": "text",
+          "component": "richtext",
           "valueType": "string",
-          "valueFormat": "string-multiline",
           "name": "description",
           "label": "Description",
           "value": "",
-          "description": "Max 160 characters.",
-          "validation": {
-            "maxLength": 160,
-            "customErrorMsg": "Keep the description to 160 characters at most."
-          }
+          "description": "Up to 160 characters, so the description fits the card on every screen; longer text is shortened on the page. A paragraph, or a heading where the description is the item's caption (Combat page)."
         },
         {
           "component": "richtext",
@@ -116,7 +163,7 @@
           "name": "hotspots",
           "label": "Hotspots (+ points)",
           "value": "",
-          "description": "One bullet per + point, at most 6: x, y | TITLE | description (x and y: % of the image from its bottom-left corner). Drag the + points in preview mode to place them."
+          "description": "Up to 8 bullets, one per + point, written as: x, y | TITLE | description (title up to 40 characters, description up to 200). x and y are percentages of the image from its bottom-left corner, and the + is centred on that point. You can drag the + points to any position in preview mode. A maximum of 8 hotspots is allowed. Cover style: link a point's TITLE to its photo in AEM Assets and the photo shows in its detail panel; the photos linked on one colour are used for the other colours too."
         }
       ]
     }

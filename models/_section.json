@@ -26,13 +26,187 @@
           "description": "The label shown for this section in the Content Tree"
         },
         {
+          "component": "text",
+          "valueType": "string",
+          "name": "anchor",
+          "label": "Anchor",
+          "description": "Optional. A short id such as safety, so a link to #safety scrolls to this section. Lowercase letters, numbers and dashes; use each one once per page."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "navLabel",
+          "label": "Side navigation label",
+          "description": "Optional: this section's name in the page's side navigation, e.g. Technology. The side navigation shows when at least one section has one."
+        },
+        {
           "component": "multiselect",
           "name": "style",
           "label": "Style",
+          "description": "No Snap - If enabled, removes section from the scroll-snap animation.\nHide Scroll Indicator - hides the Scroll cue in this section's hero.\nArticle Hero - add an Image, Breadcrumb, Title and Article Info.\nArticle Body - the article content.\nPrimary V2 Buttons - every primary button in this section uses the Primary V2 look.\nCollage - Add a Title, a Text and exactly 8 Images.\nImage Gradient - darkens the bottom of every image and video in this section.\nWave In - when the page scrolls to this section, it rises over the previous one behind a soft wave edge.\nSide Panel (popups) - on a page under /modals/: the popup opens as a full-height panel from the right instead of a centred card.\nProduct Page - a light (off-white) background with dark text; in it, Cards Carousel, Vertical Tabs, Accordion and Spec Table Showcase take their product page layout.\nStatement - a short line shown very large across the screen, its words rising into place, e.g. between two sections: add only a Title (a few words) to the section.\nHide Header - scrolling down to this section slides the site header away; scrolling up brings it back.\nShow Floater - shows the Floater on this section.\nReserve Band - the compact black closing band: add a Title, the brochure links followed by their label, a link such as Find a dealer, then two buttons.",
           "options": [
             {
-              "name": "Highlight",
-              "value": "highlight"
+              "name": "No Snap",
+              "value": "no-snap"
+            },
+            {
+              "name": "Hide Scroll Indicator",
+              "value": "hide-scroll"
+            },
+            {
+              "name": "Article Hero",
+              "value": "article-hero"
+            },
+            {
+              "name": "Article Body",
+              "value": "article-body"
+            },
+            {
+              "name": "Primary V2 Buttons",
+              "value": "primary-v2-buttons"
+            },
+            {
+              "name": "Collage",
+              "value": "collage"
+            },
+            {
+              "name": "Image Gradient",
+              "value": "media-gradient"
+            },
+            {
+              "name": "Wave In",
+              "value": "wave-in"
+            },
+            {
+              "name": "Side Panel (popups)",
+              "value": "side-panel"
+            },
+            {
+              "name": "Product Page",
+              "value": "light"
+            },
+            {
+              "name": "Statement",
+              "value": "statement"
+            },
+            {
+              "name": "Hide Header",
+              "value": "hide-header"
+            },
+            {
+              "name": "FAQ Columns",
+              "value": "faq-columns"
+            },
+            {
+              "name": "FAQ Center",
+              "value": "faq-center"
+            },
+            {
+              "name": "Show Floater",
+              "value": "show-floater"
+            },
+            {
+              "name": "Reserve Band",
+              "value": "reserve-band"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "padding-top",
+          "label": "Padding Top",
+          "description": "Optional. Leave on Default to keep the section's standard spacing.",
+          "value": "",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "16px",
+              "value": "16px"
+            },
+            {
+              "name": "24px",
+              "value": "24px"
+            },
+            {
+              "name": "32px",
+              "value": "32px"
+            },
+            {
+              "name": "48px",
+              "value": "48px"
+            },
+            {
+              "name": "64px",
+              "value": "64px"
+            },
+            {
+              "name": "80px",
+              "value": "80px"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "padding-bottom",
+          "label": "Padding Bottom",
+          "description": "Optional. Leave on Default to keep the section's standard spacing.",
+          "value": "",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "16px",
+              "value": "16px"
+            },
+            {
+              "name": "24px",
+              "value": "24px"
+            },
+            {
+              "name": "32px",
+              "value": "32px"
+            },
+            {
+              "name": "48px",
+              "value": "48px"
+            },
+            {
+              "name": "64px",
+              "value": "64px"
+            },
+            {
+              "name": "80px",
+              "value": "80px"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "text-align",
+          "label": "Text Alignment",
+          "description": "Optional. Aligns the section's titles and text. Leave on Default to keep the standard alignment.",
+          "value": "",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Left",
+              "value": "left"
+            },
+            {
+              "name": "Center",
+              "value": "center"
+            },
+            {
+              "name": "Right",
+              "value": "right"
             }
           ]
         }
@@ -51,26 +225,27 @@
         "cards",
         "columns",
         "fragment",
-        "hero-fullbleed",
-        "carousel-showcase",
-        "carousel-marquee",
-        "carousel-dealer",
-        "cards-timeline",
-        "hero-interactive",
-        "parallax-collage",
-        "hero-video",
-        "engine-showcase",
-        "blog-carousel",
-        "reservation-form",
-        "confirmation",
-        "payment-failed",
-        "careers-hero",
-        "job-board",
-        "careers-perks",
-        "jsw-footer",
-        "jsw-nav",
+        "social-deck",
+        "countdown",
+        "register-form",
+        "strip-teaser",
+        "featured-blogs",
+        "content-listing",
+        "related-blogs",
+        "article-carousel",
+        "breadcrumb",
+        "article-info",
+        "spec-table",
+        "table",
+        "stats-production",
+        "featured-intro",
+        "events",
+        "embed",
+        "video",
         "interactive-showcase",
-        "collage"
+        "tabs",
+        "accordion",
+        "floater"
       ]
     }
   ]

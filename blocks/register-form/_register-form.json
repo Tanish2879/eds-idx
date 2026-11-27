@@ -1,0 +1,159 @@
+{
+  "definitions": [
+    {
+      "title": "Register Form",
+      "id": "register-form",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Register Form",
+              "model": "register-form",
+              "filter": "richtext"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "register-form",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Decorative Image",
+          "required": true,
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "imageAlt",
+          "label": "Image Alt Text",
+          "description": "Describe the image for screen readers and SEO.",
+          "required": true,
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "heading",
+          "label": "Heading & Intro",
+          "required": true,
+          "value": "<h2>Be the first to know</h2><p>Leave your details and we'll tell you when reservations open, before anyone else hears about it.</p>"
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "consent",
+          "label": "Consent Text",
+          "required": true,
+          "value": "I agree to JSW Motors storing my details and contacting me about the launch, reservations and related updates over email, SMS, WhatsApp and phone, as in the <a href=\"#privacy\">Privacy Notice.</a>"
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "notice",
+          "label": "Privacy Notice",
+          "required": true,
+          "value": ""
+        },
+        {
+          "component": "aem-content",
+          "valueType": "string",
+          "name": "redirect",
+          "label": "Thank-you Page Link",
+          "description": "Page to redirect to after a successful registration. Internal path (e.g. /thank-you) or a full URL."
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "requestSent",
+          "label": "Request Sent Pop-up",
+          "description": "Booking only (used when the Thank-you Page Link is empty). The heading is the pop-up's title (e.g. Request sent to Meridian Motors); each paragraph starting with a bold label is a row (e.g. **Dealer** Meridian Motors, Plot 14, Sector 54, Golf Course Road, Gurgaon); a plain paragraph is the status line (e.g. Waiting for Meridian Motors to call you); a link is the outlined button beside Done (e.g. Explore the Combat to #combat). The visitor's email and contact are added automatically.",
+          "condition": { "===": [{ "var": "classes" }, "booking"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "mapName",
+          "label": "Map Pop-up Name",
+          "description": "Booking only. The bold line of the pop-up over the map's pin, e.g. Meridian Motors.",
+          "condition": { "===": [{ "var": "classes" }, "booking"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "mapAddress",
+          "label": "Map Address",
+          "description": "Booking only. The address the Google map shows and marks, e.g. Plot 14, Sector 54, Gurgaon; also the pop-up's second line. With it the map replaces the Decorative Image (which stays as the fallback); clicking the map opens the address in Google Maps.",
+          "condition": { "===": [{ "var": "classes" }, "booking"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "mapCoordinates",
+          "label": "Map Coordinates",
+          "description": "Booking only. The dealer's latitude and longitude, comma-separated, e.g. 28°26' N, 77°06' E (or 28.4333, 77.1). Clicking the map and Get directions go to this exact point in Google Maps (else to the Map Address); the Find Us Card also shows them at the top corners of its drawing.",
+          "condition": { "===": [{ "var": "classes" }, "booking"] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "wayfindRegion",
+          "label": "Find Us: Region",
+          "description": "Find Us Card only. Under the pin on the map drawing, e.g. Gurugram · Haryana.",
+          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "wayfindCity",
+          "label": "Find Us: City",
+          "description": "Find Us Card only. Beside the pin icon under the address, e.g. Gurugram, India.",
+          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "wayfindPin",
+          "label": "Find Us: PIN Code",
+          "description": "Find Us Card only. The postal code, e.g. 122011 (shown as PIN 122011).",
+          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "wayfindNote",
+          "label": "Find Us: Closing Line",
+          "description": "Find Us Card only. The line along the card's foot, e.g. We look forward to meeting you.",
+          "condition": { "===": [{ "var": "classes_wayfind" }, true] }
+        },
+        {
+          "component": "select",
+          "name": "classes",
+          "label": "Style",
+          "description": "Default: the registration form. Booking: the dealer microsite's quote request: the details (email optional, pincode as in Default), then the OTP and the Request Sent pop-ups; the lead is sent with source Dealer Microsite and channel Digital. The Decorative Image is the map beside it.",
+          "value": "",
+          "options": [
+            { "name": "Default", "value": "" },
+            { "name": "Booking", "value": "booking" }
+          ]
+        },
+        {
+          "component": "boolean",
+          "valueType": "boolean",
+          "name": "classes_wayfind",
+          "label": "Find Us Card",
+          "description": "Booking only. The right side shows a Find us card instead of the map: an Our showroom map drawing, the dealer's name (Map Pop-up Name) and address (Map Address), city and PIN, a Get directions button to Google Maps and a closing line. The form on the left is unchanged.",
+          "condition": { "===": [{ "var": "classes" }, "booking"] }
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

@@ -1,0 +1,17 @@
+/* Section style "Hide Header" (models/_section.json, scripts/header-hide.js): the site header
+   slides away on a move down to such a section and back on a move up (0.5s, power3.out, as on the
+   Code T prototype). Loaded only on pages that use it. */
+
+header .nav-wrapper {
+  transition: translate 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+body.header-tucked header .nav-wrapper {
+  translate: 0 -110%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header .nav-wrapper {
+    transition: none;
+  }
+}

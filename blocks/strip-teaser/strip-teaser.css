@@ -1,0 +1,191 @@
+/* /blocks/strip-teaser/strip-teaser.css */
+
+/* Sections are one viewport tall (min-height even when No Snap); the strip is
+   a 461px band in Figma, so its section sizes to its content instead. */
+main > .section.strip-teaser-container {
+  height: auto;
+  min-height: 0;
+
+  /* Global "main > .section > div" caps every wrapper at 1200px with side
+     padding; the strip is full-bleed, so release it for this wrapper only. */
+  & > .strip-teaser-wrapper {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Scope each selector in the block with `.block.strip-teaser` to avoid accidental conflicts outside the block */
+
+/* Mobile (Figma 393 frame): 522px band, content from 91px down */
+.block.strip-teaser {
+  /* Fluid type: linear from the Figma 375 frame to the 1280 frame via clamp(),
+     then scaling with the viewport past 1280 (size / 1280 in vw) via max() */
+  --strip-title-size: max(clamp(32px, 25.37px + 1.768vw, 48px), 3.75vw); /* 32 -> 48 */
+  --strip-label-size: max(clamp(12px, 17.657px - 0.442vw, 16px), 0.9375vw); /* 16 -> 12 */
+
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 522px;
+  padding: 91px 15px var(--spacing-40);
+  background-color: var(--color-black);
+  color: var(--color-white);
+  box-sizing: border-box;
+
+  /* The background image, dimmed to 50% */
+  & .bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+
+    & picture,
+    & img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+
+      /* Figma mobile shows the photo 353.5px in from its left edge */
+      object-position: 57.2% center;
+    }
+  }
+
+  /* The strip text content: headline and buttons */
+  & .content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-20);
+    width: 100%;
+    text-align: center;
+
+    /* The headline */
+    & h1 {
+      /* Figma text box (311px at 32px), in em so the line breaks hold as the size scales */
+      max-width: 9.72em;
+      margin: 0;
+
+      /* Figma uses the Extended cut of New Science (Extended Regular) */
+      font-family: var(--font-family-display);
+      font-size: var(--strip-title-size);
+      font-weight: var(--font-weight-regular);
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      color: var(--color-white);
+
+      /* break words longer than the line so they can't push past the padding */
+      overflow-wrap: anywhere;
+    }
+  }
+
+  /* The buttons. Mobile: fixed 155px buttons wrap (Photos + Videos, then Brand centred) */
+  & .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-8);
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    & li {
+      flex: 0 0 155px;
+      margin: 0;
+      padding: 0;
+    }
+
+    & a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      width: 100%;
+      height: 46px;
+      padding: var(--spacing-12) var(--spacing-8);
+      border: 0.74px solid var(--color-white); /* Figma 0.7407px */
+      border-radius: var(--radius-8);
+      background-color: transparent;
+      font-family: var(--button-font-family);
+      font-size: var(--strip-label-size);
+      font-weight: var(--font-weight-regular);
+      line-height: 1.2;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: rgb(255 255 255 / 70%);
+      transition: background-color 150ms ease, color 150ms ease;
+
+      /* same hover as the global secondary CTA: 10% white fill */
+      &:hover {
+        background-color: var(--button-outlined-hover-bg-on-dark);
+        color: var(--color-white);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-white);
+        outline-offset: 2px;
+      }
+
+      &:active {
+        background-color: rgb(255 255 255 / 18%);
+      }
+
+      &[aria-selected='true'] {
+        background-color: var(--color-white);
+        color: var(--color-black);
+      }
+    }
+  }
+
+  /* Tablet: no Figma frame; a centred 360px band */
+  @media (width >= 600px) {
+    align-items: center;
+    min-height: 360px;
+    padding: var(--spacing-64) var(--spacing-24);
+
+    & .bg picture,
+    & .bg img {
+      object-position: center;
+    }
+
+    & .content {
+      gap: 27px; /* Figma desktop value, no spacing token */
+    }
+
+    /* Figma 1280 frame line-height and tracking */
+    & .content h1 {
+      max-width: 13.69em; /* 657px at 48px: 2 lines */
+      line-height: 1.25; /* 60px at 48px */
+      letter-spacing: -0.02em;
+    }
+
+    & .buttons {
+      flex-wrap: nowrap;
+      width: auto;
+
+      & a {
+        line-height: 1.3333; /* 16px at 12px */
+        letter-spacing: 0.03em;
+      }
+    }
+  }
+
+  /* Desktop (Figma 1728 frame): 461px band with the content centred; it grows
+     only when a long headline needs more room, so the text is never clipped */
+  @media (width >= 1200px) {
+    min-height: 461px;
+    padding: var(--spacing-64) 0;
+
+    /* widens with the fluid headline so its Figma line breaks hold on wide screens */
+    & .content {
+      width: max(819px, var(--strip-title-size) * 13.69);
+    }
+  }
+}

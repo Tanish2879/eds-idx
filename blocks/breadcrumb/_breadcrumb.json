@@ -1,0 +1,35 @@
+{
+  "definitions": [
+    {
+      "title": "Breadcrumb",
+      "id": "breadcrumb",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Breadcrumb",
+              "model": "breadcrumb"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "breadcrumb",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "text",
+          "value": "",
+          "label": "Breadcrumb",
+          "valueType": "string",
+          "description": "Links separated by \" / \". Leave empty to hide."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
