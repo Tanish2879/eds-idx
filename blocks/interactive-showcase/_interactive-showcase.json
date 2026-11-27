@@ -53,7 +53,7 @@
           "name": "classes",
           "label": "Style",
           "value": "",
-          "description": "Default: the white card, with the text and thumbnails beside the image. Cover: the image fills the screen, the items become colour swatches down the left (each item's Thumbnail is its swatch, e.g. a paint colour) and the title sits at the bottom. Two Cover showcases in sections one after the other (e.g. Exterior and Interior) get a switch at the top between them: give each a View name.",
+          "description": "Cover: full-screen image with items as colour swatches (Thumbnail = swatch). Cover sections in a row get a switch; give each a View name.",
           "options": [
             { "name": "Default", "value": "" },
             { "name": "Cover", "value": "cover" }
@@ -64,7 +64,7 @@
           "valueType": "boolean",
           "name": "classes_view-tabs",
           "label": "Show the Views as Tabs",
-          "description": "Cover only. Set on the first view (e.g. Exterior). The Cover sections right after it become tabs on this screen, so scrolling goes on to the next section instead of to them.",
+          "description": "Cover only. Set on the first view; the Cover sections right after it become tabs on this screen.",
           "condition": { "===": [{ "var": "classes" }, "cover"] }
         },
         {
@@ -155,7 +155,7 @@
           "name": "description",
           "label": "Description",
           "value": "",
-          "description": "Up to 160 characters, so the description fits the card on every screen; longer text is shortened on the page. A paragraph, or a heading where the description is the item's caption (Combat page)."
+          "description": "Up to 160 characters; longer text is shortened. A paragraph, or a heading when the description is the item's caption."
         },
         {
           "component": "richtext",
@@ -163,7 +163,7 @@
           "name": "hotspots",
           "label": "Hotspots (+ points)",
           "value": "",
-          "description": "Up to 8 bullets, one per + point, written as: x, y | TITLE | description (title up to 40 characters, description up to 200). x and y are percentages of the image from its bottom-left corner, and the + is centred on that point. You can drag the + points to any position in preview mode. A maximum of 8 hotspots is allowed. Cover style: link a point's TITLE to its photo in AEM Assets and the photo shows in its detail panel; the photos linked on one colour are used for the other colours too."
+          "description": "Up to 8 bullets: x, y | TITLE | description (40 / 200 characters). x, y = % from bottom-left; drag in preview. Cover: link TITLE to its photo."
         }
       ]
     }

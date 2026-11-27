@@ -83,7 +83,7 @@
         "valueType": "string",
         "name": "footer-style",
         "label": "Footer Style",
-        "description": "Default: the site footer's look. Dealer: the dealer site's footer (Explore / Book / Reach us columns, Connect icons, the legal lines and Privacy policy on a dark band). Left unset, a footer with link columns but no logo shows as Dealer.",
+        "description": "Default: the site footer. Dealer: the dealer footer (link columns, Connect icons, legal band). Unset, a footer with columns but no logo shows as Dealer.",
         "value": "",
         "options": [
           {
@@ -221,7 +221,7 @@
         "component": "multiselect",
         "name": "style",
         "label": "Style",
-        "description": "No Snap - If enabled, removes section from the scroll-snap animation.\nHide Scroll Indicator - hides the Scroll cue in this section's hero.\nArticle Hero - add an Image, Breadcrumb, Title and Article Info.\nArticle Body - the article content.\nPrimary V2 Buttons - every primary button in this section uses the Primary V2 look.\nCollage - Add a Title, a Text and exactly 8 Images.\nImage Gradient - darkens the bottom of every image and video in this section.\nWave In - when the page scrolls to this section, it rises over the previous one behind a soft wave edge.\nSide Panel (popups) - on a page under /modals/: the popup opens as a full-height panel from the right instead of a centred card.\nProduct Page - a light (off-white) background with dark text; in it, Cards Carousel, Vertical Tabs, Accordion and Spec Table Showcase take their product page layout.\nStatement - a short line shown very large across the screen, its words rising into place, e.g. between two sections: add only a Title (a few words) to the section.\nHide Header - scrolling down to this section slides the site header away; scrolling up brings it back.\nShow Floater - shows the Floater on this section.\nReserve Band - the compact black closing band: add a Title, the brochure links followed by their label, a link such as Find a dealer, then two buttons.",
+        "description": "Combine as needed. Collage: Title, Text, 8 images. Statement: a short Title only. Side Panel: /modals/ pages only. Reserve Band: Title, links, 2 buttons.",
         "options": [
           {
             "name": "No Snap",
@@ -551,7 +551,7 @@
         "component": "select",
         "name": "classes",
         "label": "Style",
-        "description": "Default - a grid of cards.\nCarousel - auto-rotates; recommended: 6 to 12 cards.\nTimeline - 6 to 10 cards.\nPillars - up to 6 cards, JPG or PNG images only.\nRoller - 3 to 6 cards, one per scroll step.\nRail - a horizontally scrolling row of fixed-width cards, any number.\nFeatures (and Features Classic, the earlier version of its look) - cards that open their details in a pop-up, with a Next button to the next card.\n  Image cards (Technology, Safety), any number, in a sideways-scrolling row: the picture fills the card; its title shows on one line, its short line on two; the rest shows in the pop-up (title 2 lines, text 6 lines on phones, 8 on desktop).\n  Stat tiles (Performance), 1 or more: 1 to 4 tiles fill the row; with 5 or more, 4 show at a time (pages of 4, 2 x 2, on phones) and arrows move to the rest. Value in bold, up to 16 characters (e.g. 590 Nm); label up to 2 lines; in the pop-up, title up to 3 lines and description up to 250 characters. The section's figure: up to 4 digits and a 4-letter unit (e.g. 359 PS).\n  Longer texts end in … on the page (Universal Editor shows them whole). Card text order: see the card's Text field.",
+        "description": "Carousel: 6–12 cards. Timeline: 6–10. Pillars: up to 6, JPG/PNG only. Roller: 3–6. Rail and Features: any number; Features opens each card in a pop-up.",
         "options": [
           {
             "name": "Default",
@@ -612,7 +612,7 @@
         "name": "text",
         "value": "",
         "label": "Text",
-        "description": "Pillars: 1. Label 2. Heading 3. Description, opening words in bold. Timeline: 1. Title as a heading, 2. Description 3. Location in italics. Roller: 1. Title as a heading 2. Description. Carousel in a Light section: 1. Label 2. Title as a heading 3. Description 4. Link. Features: 1. Title as a heading (image card, one line), or in bold for a stat tile (up to 16 characters, e.g. 590 Nm) 2. Short line (two lines) 3. and on: the detail, shown with the image when the card is opened; a heading first is the detail title (up to 3 lines on a stat tile), and a stat tile shows up to 250 characters of the rest. Longer texts end in … on the page.",
+        "description": "Pillars: label, heading, text. Timeline: heading, text, italic location. Roller: heading, text. Features: title, short line, then the pop-up detail.",
         "valueType": "string"
       }
     ]
@@ -638,7 +638,7 @@
         "component": "select",
         "name": "classes",
         "label": "Style",
-        "description": "Default is a standard columns layout. Thank You is a full-bleed split (image + centered content) on a dark surface. Reach Us is the Contact Us layout (use 3 columns × 2 rows): it also styles the Title above and the Text below it in the same section and adds a live IST clock. Split is two full-screen video panes side by side (2 columns): each column a link to an MP4, a heading, bold-first stat lines (e.g. **1100+ KM** range), a heading and text for its card; an optional 2nd row is a film card (image | eyebrow, line, MP4 link, then a heading and text for the film). Reach Us (Photo) is the Reach Us layout over a dark photo instead of the gradient: put an Image (and optionally a Text with a link to an MP4, for a muted looping film) alone in one cell, e.g. the empty first cell of the second row.",
+        "description": "Thank You: image and centred text. Reach Us: 3 columns × 2 rows. Split: 2 columns, each an MP4 link, heading and stats. Reach Us (Photo): add an image cell.",
         "value": "",
         "options": [
           {
@@ -1067,7 +1067,7 @@
         "valueType": "string",
         "name": "links",
         "label": "Links",
-        "description": "As anywhere on the site: bold = primary button, italic = secondary, plain = text link; with no button, the last link is the primary one. Brochure: its two links on one line, then a line with the label."
+        "description": "Bold = primary button, italic = secondary, plain = text link; with no button, the last link is primary. Brochure: two links, then a label line."
       },
       {
         "component": "select",
@@ -1217,7 +1217,7 @@
         "valueType": "string",
         "name": "thumbnail",
         "label": "Video Thumbnail (Desktop)",
-        "description": "Optional. Only used for a video: the image shown until it plays. Product: the image of the Watch the film card. Dealer: the image of the product card, bottom right.",
+        "description": "Optional. Image shown until the video plays. Product: the Watch the film card image. Dealer: the product card image.",
         "condition": {
           "and": [
             {
@@ -1289,7 +1289,7 @@
         "valueType": "string",
         "name": "text",
         "label": "Text",
-        "description": "Heading, text and buttons. Carousel: shown on every slide without its own Text (with Opening Animation, its first two paragraphs are the animation's lines). Tech Slides: shown below every slide; key and value paragraph pairs (e.g. Battery / 26.7 kWh) become stat tiles, then the button. Product, in this order: title (Heading 1), a link to the film's MP4 (its text is the card's eyebrow, e.g. Watch the film) and the card's text in the next paragraph, the price line (amount in bold), then the button. Dealer, in this order: the status line (e.g. Closed today · Opens Monday, 10am), the dealer's name (Heading 1), the address, the two buttons in one paragraph, then the product card's paragraphs: its title (e.g. [ New ] Combat), the price line and a line of text.",
+        "description": "Heading, text and buttons. Tech Slides: label/value pairs become stats. Product and Dealer: title as Heading 1, then their card, price and buttons in order.",
         "value": ""
       },
       {
@@ -1351,7 +1351,7 @@
         "component": "select",
         "name": "classes",
         "label": "Style",
-        "description": "Hero layout. Carousel and Tech Slides take up to 3 slides. Product: a car launch hero with the logo and a big centred title, a Watch the film card and the price beside the button. Its Background Image is the whole scene (e.g. the car in its landscape); the Logo has its own field. Dealer: a dealer storefront hero with the status line, name, address and two buttons bottom left, and a product card (the Video Thumbnail and the paragraphs after the buttons) bottom right.",
+        "description": "Carousel and Tech Slides: up to 3 slides. Product: launch hero; the Background Image is the full scene. Dealer: storefront hero with a product card.",
         "value": "",
         "options": [
           {
@@ -1401,7 +1401,7 @@
         "valueType": "boolean",
         "name": "classes_opening",
         "label": "Opening Animation",
-        "description": "Carousel only. On load the first slide plays in a small card in the middle of the screen, then grows to fill it. The first two Text paragraphs appear either side of the card, and only there (screen readers still get them).",
+        "description": "Carousel only. The first slide opens as a small centred card, then fills the screen; the first two Text paragraphs sit either side of it.",
         "condition": {
           "===": [
             {
@@ -1416,7 +1416,7 @@
         "valueType": "boolean",
         "name": "classes_showroom",
         "label": "Showroom Layout",
-        "description": "Carousel only. The Text stays beside every slide: its first paragraphs are the eyebrow above the slide's heading, and each paragraph that starts with a bold label (e.g. **Address** Plot 14, Sector 54) becomes a row of the info card under the slide's text. Each slide's own Text gives its heading and description.",
+        "description": "Carousel only. Text's first paragraphs become the eyebrow; paragraphs starting with a bold label become info card rows.",
         "condition": {
           "===": [
             {
@@ -1445,7 +1445,7 @@
         "component": "select",
         "name": "classes_align",
         "label": "Heading Position",
-        "description": "Where the heading sits: left, centre or right. Only the heading moves; the text and buttons stay where the style puts them. Default keeps the style's own layout.",
+        "description": "Moves the heading only; text and buttons keep the style's layout. Default follows the style.",
         "value": "",
         "options": [
           {
@@ -1522,7 +1522,7 @@
         "valueType": "string",
         "name": "text",
         "label": "Text",
-        "description": "Optional. Heading, text and buttons for this slide. Uses the Hero's Text if empty. Tech Slides: label, heading, description, stats (e.g. Battery / 26.7 kWh) and a button.",
+        "description": "Optional. This slide's heading, text and buttons; uses the Hero's Text when empty. Tech Slides: label, heading, description, stats, button.",
         "value": ""
       },
       {
@@ -1573,7 +1573,7 @@
         "name": "classes",
         "label": "Style",
         "value": "",
-        "description": "Default: the white card, with the text and thumbnails beside the image. Cover: the image fills the screen, the items become colour swatches down the left (each item's Thumbnail is its swatch, e.g. a paint colour) and the title sits at the bottom. Two Cover showcases in sections one after the other (e.g. Exterior and Interior) get a switch at the top between them: give each a View name.",
+        "description": "Cover: full-screen image with items as colour swatches (Thumbnail = swatch). Cover sections in a row get a switch; give each a View name.",
         "options": [
           {
             "name": "Default",
@@ -1590,7 +1590,7 @@
         "valueType": "boolean",
         "name": "classes_view-tabs",
         "label": "Show the Views as Tabs",
-        "description": "Cover only. Set on the first view (e.g. Exterior). The Cover sections right after it become tabs on this screen, so scrolling goes on to the next section instead of to them.",
+        "description": "Cover only. Set on the first view; the Cover sections right after it become tabs on this screen.",
         "condition": {
           "===": [
             {
@@ -1709,7 +1709,7 @@
         "name": "description",
         "label": "Description",
         "value": "",
-        "description": "Up to 160 characters, so the description fits the card on every screen; longer text is shortened on the page. A paragraph, or a heading where the description is the item's caption (Combat page)."
+        "description": "Up to 160 characters; longer text is shortened. A paragraph, or a heading when the description is the item's caption."
       },
       {
         "component": "richtext",
@@ -1717,7 +1717,7 @@
         "name": "hotspots",
         "label": "Hotspots (+ points)",
         "value": "",
-        "description": "Up to 8 bullets, one per + point, written as: x, y | TITLE | description (title up to 40 characters, description up to 200). x and y are percentages of the image from its bottom-left corner, and the + is centred on that point. You can drag the + points to any position in preview mode. A maximum of 8 hotspots is allowed. Cover style: link a point's TITLE to its photo in AEM Assets and the photo shows in its detail panel; the photos linked on one colour are used for the other colours too."
+        "description": "Up to 8 bullets: x, y | TITLE | description (40 / 200 characters). x, y = % from bottom-left; drag in preview. Cover: link TITLE to its photo."
       }
     ]
   },
@@ -1777,7 +1777,7 @@
         "valueType": "string",
         "name": "requestSent",
         "label": "Request Sent Pop-up",
-        "description": "Booking only (used when the Thank-you Page Link is empty). The heading is the pop-up's title (e.g. Request sent to Meridian Motors); each paragraph starting with a bold label is a row (e.g. **Dealer** Meridian Motors, Plot 14, Sector 54, Golf Course Road, Gurgaon); a plain paragraph is the status line (e.g. Waiting for Meridian Motors to call you); a link is the outlined button beside Done (e.g. Explore the Combat to #combat). The visitor's email and contact are added automatically.",
+        "description": "Booking only, when no Thank-you link. Heading = title; bold-label paragraphs = rows; plain paragraph = status; link = outlined button.",
         "condition": {
           "===": [
             {
@@ -1807,7 +1807,7 @@
         "valueType": "string",
         "name": "mapAddress",
         "label": "Map Address",
-        "description": "Booking only. The address the Google map shows and marks, e.g. Plot 14, Sector 54, Gurgaon; also the pop-up's second line. With it the map replaces the Decorative Image (which stays as the fallback); clicking the map opens the address in Google Maps.",
+        "description": "Booking only. Address the map shows and marks; also the pop-up's second line. Replaces the Decorative Image; clicking opens Google Maps.",
         "condition": {
           "===": [
             {
@@ -1822,7 +1822,7 @@
         "valueType": "string",
         "name": "mapCoordinates",
         "label": "Map Coordinates",
-        "description": "Booking only. The dealer's latitude and longitude, comma-separated, e.g. 28°26' N, 77°06' E (or 28.4333, 77.1). Clicking the map and Get directions go to this exact point in Google Maps (else to the Map Address); the Find Us Card also shows them at the top corners of its drawing.",
+        "description": "Booking only. Latitude, longitude, comma-separated (degrees or decimal). Map clicks and Get directions go here, else to the Map Address.",
         "condition": {
           "===": [
             {
@@ -1896,7 +1896,7 @@
         "component": "select",
         "name": "classes",
         "label": "Style",
-        "description": "Default: the registration form. Booking: the dealer microsite's quote request: the details (email optional, pincode as in Default), then the OTP and the Request Sent pop-ups; the lead is sent with source Dealer Microsite and channel Digital. The Decorative Image is the map beside it.",
+        "description": "Default: registration form. Booking: dealer quote request (email optional) with OTP and Request Sent pop-ups; the Decorative Image is the map.",
         "value": "",
         "options": [
           {
@@ -1914,7 +1914,7 @@
         "valueType": "boolean",
         "name": "classes_wayfind",
         "label": "Find Us Card",
-        "description": "Booking only. The right side shows a Find us card instead of the map: an Our showroom map drawing, the dealer's name (Map Pop-up Name) and address (Map Address), city and PIN, a Get directions button to Google Maps and a closing line. The form on the left is unchanged.",
+        "description": "Booking only. Shows a Find us card instead of the map: drawing, dealer name, address, city, PIN and Get directions. The form is unchanged.",
         "condition": {
           "===": [
             {
@@ -1947,14 +1947,14 @@
         "valueType": "string",
         "name": "index",
         "label": "Query Index Path",
-        "description": "Index to read articles from, e.g. /news-index.json. Another site's index can be given as a full URL (e.g. https://www.jswmotors.com/news-index.json for a dealer site): its articles then link to that site. That site must allow this one to read it (CORS)."
+        "description": "Index to read articles from, e.g. /news-index.json, or another site's full index URL (articles then link there; it must allow CORS)."
       },
       {
         "component": "select",
         "valueType": "string",
         "name": "show",
         "label": "Show",
-        "description": "Current Page Tags: articles sharing this page's tags (the block is hidden when the page has no tags). Latest articles: the newest articles from the Root Path, whatever their tags.",
+        "description": "Current Page Tags: articles sharing this page's tags (hidden when it has none). Latest articles: the newest from the Root Path.",
         "value": "",
         "options": [
           {
@@ -1985,7 +1985,7 @@
         "valueType": "string",
         "name": "classes",
         "label": "Style",
-        "description": "Center (default): the heading centred over the cards. Left: the eyebrow and heading on the left, then title and summary under each image. In both, the View all button sits on the right of the heading.",
+        "description": "Center: heading centred over the cards. Left: eyebrow and heading on the left. View all always sits right of the heading.",
         "value": "",
         "options": [
           {
@@ -2008,7 +2008,7 @@
         "valueType": "string",
         "name": "classes",
         "label": "Auto-scroll",
-        "description": "Automatically rotate the deck at a fixed interval. Requires min. 2 cards and max. 12 cards. Strip: a flat row of cards with previous and next buttons instead of the arc (no auto-scroll).",
+        "description": "Rotates the deck at a fixed interval; needs 2 to 12 cards. Strip: a flat row with previous and next buttons, no auto-scroll.",
         "value": "",
         "options": [
           {
@@ -2458,7 +2458,7 @@
         "component": "multiselect",
         "name": "classes",
         "label": "Style",
-        "description": "Combine freely, e.g. Vertical + Pills. Accordion on mobile stacks the tabs below 600px. Specs lays out a spec comparison: give each tab a Fragment holding a Columns block (one column per model; row 1 the model names, every other cell a label and a value as two paragraphs). Locations shows each tab as an image tile: give each tab a city Title and one image as its Content; the open tab's image fills the section. FAQ puts text tabs above the accordions of a Light FAQ section: each tab then asks only for its Title; add one Accordion block per tab after the Tabs block in the same section (the first accordion goes in the first tab, and so on).",
+        "description": "Combine freely. Specs: a Fragment with a Columns block per tab. Locations: a Title and one image per tab. FAQ: one Accordion per tab after Tabs.",
         "options": [
           {
             "name": "Vertical",

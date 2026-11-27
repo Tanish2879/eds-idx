@@ -67,7 +67,7 @@
           "valueType": "string",
           "name": "thumbnail",
           "label": "Video Thumbnail (Desktop)",
-          "description": "Optional. Only used for a video: the image shown until it plays. Product: the image of the Watch the film card. Dealer: the image of the product card, bottom right.",
+          "description": "Optional. Image shown until the video plays. Product: the Watch the film card image. Dealer: the product card image.",
           "condition": { "and": [{ "!==": [{ "var": "classes" }, "carousel"] }, { "!==": [{ "var": "classes" }, "tech-slides"] }, { "!==": [{ "var": "classes" }, "statement"] }] },
           "multi": false
         },
@@ -85,7 +85,7 @@
           "valueType": "string",
           "name": "text",
           "label": "Text",
-          "description": "Heading, text and buttons. Carousel: shown on every slide without its own Text (with Opening Animation, its first two paragraphs are the animation's lines). Tech Slides: shown below every slide; key and value paragraph pairs (e.g. Battery / 26.7 kWh) become stat tiles, then the button. Product, in this order: title (Heading 1), a link to the film's MP4 (its text is the card's eyebrow, e.g. Watch the film) and the card's text in the next paragraph, the price line (amount in bold), then the button. Dealer, in this order: the status line (e.g. Closed today · Opens Monday, 10am), the dealer's name (Heading 1), the address, the two buttons in one paragraph, then the product card's paragraphs: its title (e.g. [ New ] Combat), the price line and a line of text.",
+          "description": "Heading, text and buttons. Tech Slides: label/value pairs become stats. Product and Dealer: title as Heading 1, then their card, price and buttons in order.",
           "value": ""
         },
         {
@@ -126,7 +126,7 @@
           "component": "select",
           "name": "classes",
           "label": "Style",
-          "description": "Hero layout. Carousel and Tech Slides take up to 3 slides. Product: a car launch hero with the logo and a big centred title, a Watch the film card and the price beside the button. Its Background Image is the whole scene (e.g. the car in its landscape); the Logo has its own field. Dealer: a dealer storefront hero with the status line, name, address and two buttons bottom left, and a product card (the Video Thumbnail and the paragraphs after the buttons) bottom right.",
+          "description": "Carousel and Tech Slides: up to 3 slides. Product: launch hero; the Background Image is the full scene. Dealer: storefront hero with a product card.",
           "value": "",
           "options": [
             { "name": "Default", "value": "" },
@@ -146,7 +146,7 @@
           "valueType": "boolean",
           "name": "classes_opening",
           "label": "Opening Animation",
-          "description": "Carousel only. On load the first slide plays in a small card in the middle of the screen, then grows to fill it. The first two Text paragraphs appear either side of the card, and only there (screen readers still get them).",
+          "description": "Carousel only. The first slide opens as a small centred card, then fills the screen; the first two Text paragraphs sit either side of it.",
           "condition": { "===": [{ "var": "classes" }, "carousel"] }
         },
         {
@@ -154,7 +154,7 @@
           "valueType": "boolean",
           "name": "classes_showroom",
           "label": "Showroom Layout",
-          "description": "Carousel only. The Text stays beside every slide: its first paragraphs are the eyebrow above the slide's heading, and each paragraph that starts with a bold label (e.g. **Address** Plot 14, Sector 54) becomes a row of the info card under the slide's text. Each slide's own Text gives its heading and description.",
+          "description": "Carousel only. Text's first paragraphs become the eyebrow; paragraphs starting with a bold label become info card rows.",
           "condition": { "===": [{ "var": "classes" }, "carousel"] }
         },
         {
@@ -169,7 +169,7 @@
           "component": "select",
           "name": "classes_align",
           "label": "Heading Position",
-          "description": "Where the heading sits: left, centre or right. Only the heading moves; the text and buttons stay where the style puts them. Default keeps the style's own layout.",
+          "description": "Moves the heading only; text and buttons keep the style's layout. Default follows the style.",
           "value": "",
           "options": [
             { "name": "Default", "value": "" },
@@ -234,7 +234,7 @@
           "valueType": "string",
           "name": "text",
           "label": "Text",
-          "description": "Optional. Heading, text and buttons for this slide. Uses the Hero's Text if empty. Tech Slides: label, heading, description, stats (e.g. Battery / 26.7 kWh) and a button.",
+          "description": "Optional. This slide's heading, text and buttons; uses the Hero's Text when empty. Tech Slides: label, heading, description, stats, button.",
           "value": ""
         },
         {

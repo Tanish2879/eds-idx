@@ -43,7 +43,7 @@
           "component": "multiselect",
           "name": "style",
           "label": "Style",
-          "description": "No Snap - If enabled, removes section from the scroll-snap animation.\nHide Scroll Indicator - hides the Scroll cue in this section's hero.\nArticle Hero - add an Image, Breadcrumb, Title and Article Info.\nArticle Body - the article content.\nPrimary V2 Buttons - every primary button in this section uses the Primary V2 look.\nCollage - Add a Title, a Text and exactly 8 Images.\nImage Gradient - darkens the bottom of every image and video in this section.\nWave In - when the page scrolls to this section, it rises over the previous one behind a soft wave edge.\nSide Panel (popups) - on a page under /modals/: the popup opens as a full-height panel from the right instead of a centred card.\nProduct Page - a light (off-white) background with dark text; in it, Cards Carousel, Vertical Tabs, Accordion and Spec Table Showcase take their product page layout.\nStatement - a short line shown very large across the screen, its words rising into place, e.g. between two sections: add only a Title (a few words) to the section.\nHide Header - scrolling down to this section slides the site header away; scrolling up brings it back.\nShow Floater - shows the Floater on this section.\nReserve Band - the compact black closing band: add a Title, the brochure links followed by their label, a link such as Find a dealer, then two buttons.",
+          "description": "Combine as needed. Collage: Title, Text, 8 images. Statement: a short Title only. Side Panel: /modals/ pages only. Reserve Band: Title, links, 2 buttons.",
           "options": [
             {
               "name": "No Snap",

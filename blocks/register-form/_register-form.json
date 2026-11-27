@@ -74,7 +74,7 @@
           "valueType": "string",
           "name": "requestSent",
           "label": "Request Sent Pop-up",
-          "description": "Booking only (used when the Thank-you Page Link is empty). The heading is the pop-up's title (e.g. Request sent to Meridian Motors); each paragraph starting with a bold label is a row (e.g. **Dealer** Meridian Motors, Plot 14, Sector 54, Golf Course Road, Gurgaon); a plain paragraph is the status line (e.g. Waiting for Meridian Motors to call you); a link is the outlined button beside Done (e.g. Explore the Combat to #combat). The visitor's email and contact are added automatically.",
+          "description": "Booking only, when no Thank-you link. Heading = title; bold-label paragraphs = rows; plain paragraph = status; link = outlined button.",
           "condition": { "===": [{ "var": "classes" }, "booking"] }
         },
         {
@@ -90,7 +90,7 @@
           "valueType": "string",
           "name": "mapAddress",
           "label": "Map Address",
-          "description": "Booking only. The address the Google map shows and marks, e.g. Plot 14, Sector 54, Gurgaon; also the pop-up's second line. With it the map replaces the Decorative Image (which stays as the fallback); clicking the map opens the address in Google Maps.",
+          "description": "Booking only. Address the map shows and marks; also the pop-up's second line. Replaces the Decorative Image; clicking opens Google Maps.",
           "condition": { "===": [{ "var": "classes" }, "booking"] }
         },
         {
@@ -98,7 +98,7 @@
           "valueType": "string",
           "name": "mapCoordinates",
           "label": "Map Coordinates",
-          "description": "Booking only. The dealer's latitude and longitude, comma-separated, e.g. 28°26' N, 77°06' E (or 28.4333, 77.1). Clicking the map and Get directions go to this exact point in Google Maps (else to the Map Address); the Find Us Card also shows them at the top corners of its drawing.",
+          "description": "Booking only. Latitude, longitude, comma-separated (degrees or decimal). Map clicks and Get directions go here, else to the Map Address.",
           "condition": { "===": [{ "var": "classes" }, "booking"] }
         },
         {
@@ -137,7 +137,7 @@
           "component": "select",
           "name": "classes",
           "label": "Style",
-          "description": "Default: the registration form. Booking: the dealer microsite's quote request: the details (email optional, pincode as in Default), then the OTP and the Request Sent pop-ups; the lead is sent with source Dealer Microsite and channel Digital. The Decorative Image is the map beside it.",
+          "description": "Default: registration form. Booking: dealer quote request (email optional) with OTP and Request Sent pop-ups; the Decorative Image is the map.",
           "value": "",
           "options": [
             { "name": "Default", "value": "" },
@@ -149,7 +149,7 @@
           "valueType": "boolean",
           "name": "classes_wayfind",
           "label": "Find Us Card",
-          "description": "Booking only. The right side shows a Find us card instead of the map: an Our showroom map drawing, the dealer's name (Map Pop-up Name) and address (Map Address), city and PIN, a Get directions button to Google Maps and a closing line. The form on the left is unchanged.",
+          "description": "Booking only. Shows a Find us card instead of the map: drawing, dealer name, address, city, PIN and Get directions. The form is unchanged.",
           "condition": { "===": [{ "var": "classes" }, "booking"] }
         }
       ]

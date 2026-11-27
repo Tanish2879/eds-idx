@@ -41,7 +41,7 @@
           "component": "multiselect",
           "name": "classes",
           "label": "Style",
-          "description": "Combine freely, e.g. Vertical + Pills. Accordion on mobile stacks the tabs below 600px. Specs lays out a spec comparison: give each tab a Fragment holding a Columns block (one column per model; row 1 the model names, every other cell a label and a value as two paragraphs). Locations shows each tab as an image tile: give each tab a city Title and one image as its Content; the open tab's image fills the section. FAQ puts text tabs above the accordions of a Light FAQ section: each tab then asks only for its Title; add one Accordion block per tab after the Tabs block in the same section (the first accordion goes in the first tab, and so on).",
+          "description": "Combine freely. Specs: a Fragment with a Columns block per tab. Locations: a Title and one image per tab. FAQ: one Accordion per tab after Tabs.",
           "options": [
             { "name": "Vertical", "value": "vertical" },
             { "name": "Pills", "value": "pills" },
