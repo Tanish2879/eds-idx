@@ -16,9 +16,7 @@
   --rf-u: clamp(0.6px, 100svh / 940, 1px);
   --rf-change-number-text: #595959;
 
-  /* privacy copy (consent + notice) follows the Figma mobile 375 × 911 frame
-     instead: 1 at 375 × 911, scaling with the screen, never below 0.75 so it
-     stays readable (desktop uses the 1280 × 720 frame, below) */
+  /* privacy copy scales to the Figma mobile 375×911 frame (desktop: 1280×720); min 0.75 */
   --rf-privacy-u: clamp(0.75px, min(100vw / 375, 100svh / 911), 1.5px);
   --rf-consent-text: #f2f2f2;
   --rf-notice-mobile: #666;
@@ -34,8 +32,7 @@
 
     --rf-u: clamp(0.62px, 100svh / 1116, 1px);
 
-    /* desktop privacy copy follows the Figma 1280 × 720 frame: 1 at
-       1280 × 720, scaling with the screen (1.5 at 1920 × 1080) */
+    /* desktop privacy copy: Figma 1280×720 frame (1.5 at 1920×1080) */
     --rf-privacy-u: clamp(0.75px, min(100vw / 1280, 100svh / 720), 1.5px);
   }
 
@@ -43,10 +40,7 @@
     height: 1000px;
   }
 
-  /* mobile: 300 design px tall when there's room; on short screens it gives
-     up height first (much higher shrink weight than .content), so the fixed
-     15px intro and 18px heading floor never push the form off the screen.
-     Only below 150 does .content start to scroll, as before */
+  /* mobile: high shrink weight so the image gives up height before .content has to scroll */
   .media {
     position: relative;
     flex: 0 1000 calc(300 * var(--rf-u));
@@ -85,8 +79,7 @@
     min-height: 0;
     overflow-y: auto;
 
-    /* snapping sections only: No Snap ones, and one followed by a No Snap section (the snap
-       leaves that boundary to native scroll), must let the scroll carry on into the page */
+    /* contain only on snapping sections; No Snap boundaries must scroll on into the page */
     main > .section:not(.no-snap, :has(+ .section.no-snap)) & {
       overscroll-behavior: contain;
     }
@@ -137,7 +130,7 @@
     color: var(--rf-muted);
     font-family: var(--heading-font-family);
     font-weight: var(--font-weight-medium);
-    font-size: 15px; /* client: fixed on mobile, beside the 16px fields; desktop stays fluid below */
+    font-size: 15px; /* client: fixed on mobile; desktop stays fluid */
     line-height: 1.43;
     letter-spacing: -0.005em;
 
@@ -236,8 +229,6 @@
     border-radius: calc(12 * var(--rf-u));
     background: var(--rf-field-bg);
     color: var(--color-white);
-
-    /* value, placeholder and floating label are all New Science (Figma UAT) */
     font-family: var(--font-family-base);
     font-weight: var(--font-weight-medium);
     font-size: max(16px, calc(16 * var(--rf-u)));
@@ -255,13 +246,7 @@
       border-color: var(--color-white);
     }
 
-    /* Browsers paint autofilled inputs with their own light background (the
-       lavender tint) and dark text, which wrecks the dark field and hides the
-       white label/value. The background can't be set directly, so override it
-       with a large inset box-shadow in the field colour, and force the text
-       colour with -webkit-text-fill-color. The long transition delay keeps the
-       override from being repainted away. Split into standard + -webkit rules
-       so one unsupported selector can't invalidate both. */
+    /* autofill: inset shadow + text-fill mask the UA's light tint; huge delay blocks its repaint */
     &:autofill {
       -webkit-text-fill-color: var(--color-white);
       caret-color: var(--color-white);
@@ -281,8 +266,7 @@
       height: calc(64 * var(--rf-u));
       padding: 0 calc(20 * var(--rf-u));
 
-      /* the 16px floor is only for the iOS Safari zoom-on-focus bug below;
-         desktop keeps the original uncapped fluid size */
+      /* the 16px floor is only for iOS zoom-on-focus; desktop keeps the uncapped fluid size */
       font-size: calc(16 * var(--rf-u));
     }
   }
@@ -306,10 +290,7 @@
     }
   }
 
-  /* the label rises (and the text drops below it) as soon as the field takes
-     focus, not on the first keystroke — otherwise the typed text jumped down
-     on the first letter and back up when cleared, and on iOS that caret jump
-     also made Safari re-scroll the page */
+  /* label rises on focus, not first keystroke, to avoid text/caret jumps (and iOS re-scroll) */
   .field.is-filled,
   .field:focus-within {
     .float {
@@ -326,13 +307,7 @@
     }
   }
 
-  /* Browser autofill doesn't reliably fire input/change, so JS can't add
-     .is-filled for autofilled values and the label stays hidden. Mirror the
-     filled state in pure CSS via the autofill pseudo-class so the floating
-     label rises for autofilled fields too. Both the standard :autofill and
-     WebKit's :-webkit-autofill are listed (Chrome/Safari still use the prefix);
-     they're split into separate rules because one unsupported selector would
-     otherwise invalidate the whole list. */
+  /* autofill may not fire input events, so mirror .is-filled; one rule per prefix (lists fail whole) */
   .field:has(.input:autofill) {
     .float {
       top: calc(14 * var(--rf-u));
@@ -475,8 +450,7 @@
       cursor: not-allowed;
     }
 
-    /* hover changes colour only — no lift/translate, per design. 80% white
-       per the Figma glitch hover (letter flicker in scripts/utils/glitch.js) */
+    /* colour-only hover (80% white, Figma glitch hover); no lift, per design */
     &:hover:not(:disabled) {
       background: rgb(255 255 255 / 80%);
     }
@@ -555,16 +529,11 @@
     flex-wrap: wrap;
     align-items: center;
 
-    /* mobile: 16px between the "Enter code" line and Change Number (row gap)
-       but only 8px between the text and the number on the same line (column
-       gap) — Figma frames 2085665806 / 2085665826. Desktop keeps 8px. */
+    /* mobile: 16px row gap, 8px column gap (Figma frames 2085665806 / 2085665826) */
     gap: calc(16 * var(--rf-u)) calc(8 * var(--rf-u));
     margin: 0 0 calc(32 * var(--rf-u));
 
-    /* "Enter the N Digit code sent on": Figma New Science Regular —
-       mobile 14px / 135% / -2%, desktop 16px / 150% / 0%. (Previously
-       inherited Inter, the body font.) Fixed 14px on mobile so it matches
-       Figma on every phone; desktop keeps the proportional unit. */
+    /* fixed 14px on mobile to match Figma on every phone; desktop stays proportional */
     font-family: var(--heading-font-family);
     font-weight: var(--font-weight-regular);
     font-size: 14px;
@@ -580,9 +549,7 @@
   }
 
   .otp-number {
-    /* Phone number: Figma New Science Medium (500), letter-spacing 0 —
-       mobile 14px / 145%, desktop 16px / 150%. Size and family inherit
-       from .otp-head. */
+    /* size and family inherit from .otp-head */
     font-weight: var(--font-weight-medium);
     line-height: 1.45;
     letter-spacing: 0;
@@ -605,8 +572,7 @@
     font-family: inherit;
     color: var(--rf-muted);
 
-    /* Fixed 14px on mobile (Figma "New Science/14") so it matches the OTP
-       heading on every phone; desktop keeps the proportional unit. */
+    /* fixed 14px on mobile to match the OTP heading; desktop stays proportional */
     font-size: 14px;
     letter-spacing: 0.02em;
     text-transform: uppercase;
@@ -618,8 +584,6 @@
     }
   }
 
-  /* Change Number: Figma "New Science/14 Regular Upper" on both breakpoints —
-     New Science 400, 14px, line-height 135%, letter-spacing -4%, #595959. */
   .change {
     font-family: var(--font-family-base);
     font-weight: var(--font-weight-regular);
@@ -628,9 +592,7 @@
     color: var(--rf-change-number-text);
   }
 
-  /* During the countdown: show "Resend code in 0:30", hide the Resend link.
-     Once the timer hits 0:00 (JS adds .can-resend), swap them — the RESEND
-     CODE link replaces the timer text. */
+  /* countdown shows the timer; JS adds .can-resend at 0:00 to swap in the Resend link */
   .resend-link {
     display: none;
   }
@@ -642,7 +604,7 @@
   .resend.can-resend .resend-link {
     display: inline;
 
-    /* disabled while a resend is in flight — no pointer, dimmed, like Submit */
+    /* disabled while a resend is in flight */
     &:disabled {
       cursor: not-allowed;
       opacity: 0.5;
@@ -667,10 +629,7 @@
     background: var(--rf-field-bg);
     color: var(--color-white);
 
-    /* OTP value and the "X" placeholder: Figma "New Science/16 Regular",
-       16px / 150% (nodes 1349:3734 desktop / 1349:4331 mobile). Fixed 16px on
-       mobile so the X matches Figma on every phone, not scaled by viewport
-       height; desktop keeps the proportional unit. */
+    /* fixed 16px on mobile (Figma "New Science/16"); desktop stays proportional */
     font-family: var(--font-family-base);
     font-weight: var(--font-weight-regular);
     font-size: 16px;
@@ -682,7 +641,6 @@
       font-size: calc(16 * var(--rf-u));
     }
 
-    /* Figma: white at 50% (was muted-60% × 0.5 ≈ 30%, too faint) */
     &::placeholder {
       color: var(--color-white);
       opacity: 0.5;
@@ -706,8 +664,6 @@
   }
 
   .otp-error {
-    /* box row → error gap is 32px in Figma on both breakpoints
-       (Frame 1321322883, nodes 1349:3725 / 1349:4321) */
     margin: calc(32 * var(--rf-u)) 0 0;
     color: var(--rf-error);
     font-size: calc(14 * var(--rf-u));
@@ -717,8 +673,7 @@
     margin: calc(32 * var(--rf-u)) 0 0;
     color: var(--rf-muted);
 
-    /* "Resend code in 0:30" swaps in place of the Resend Code link, so it
-       shares the same fixed 14px on mobile. */
+    /* matches the Resend Code link it swaps with (fixed 14px on mobile) */
     font-size: 14px;
 
     @media (width >= 900px) {
@@ -729,22 +684,16 @@
   .otp:has(.otp-error:not([hidden])) .resend {
     color: var(--rf-error);
 
-    /* When the error is shown it sits directly above Resend, so this margin is
-       the error→resend gap. Figma: 32px mobile (unchanged) / 20px desktop
-       (Frame 2085665807 gap, node 1349:3741). */
+    /* the error sits directly above Resend, so this is the error→resend gap (Figma) */
     @media (width >= 900px) {
       margin-top: calc(20 * var(--rf-u));
     }
   }
 
   .otp .submit {
-    /* Resend → Submit gap is 32px on both breakpoints in Figma
-       (Frame 2085663108, nodes 1349:3724 / 1349:4320) */
     margin-top: calc(32 * var(--rf-u));
 
-    /* Mobile OTP Submit is 154px wide (Figma node 1349:4340), narrower than
-       the fields-screen GET OTP (197px) that the base .submit uses. Desktop
-       stays at the base 172px override, so scope this to mobile only. */
+    /* mobile OTP Submit is 154px (Figma); desktop keeps the base 172px */
     @media (width < 900px) {
       min-width: calc(154 * var(--rf-u));
     }
@@ -923,8 +872,7 @@
   z-index: 9999 !important;
 }
 
-/* collapsed to the logo until its toggle opens it (register-form.js); the
-   extra specificity and !important outrank Google's own hover expansion */
+/* collapsed to its logo until toggled (JS); specificity + !important beat Google's hover */
 body .grecaptcha-badge:not(.is-expanded) {
   right: -186px !important;
 }

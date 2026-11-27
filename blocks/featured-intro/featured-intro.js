@@ -9,19 +9,16 @@ const clamp01 = (n) => Math.min(1, Math.max(0, n));
 const range = (v, a, b) => clamp01((v - a) / (b - a));
 const smooth = (t) => t * t * (3 - 2 * t);
 
-// the screen 2 → 3 step, and the wheel quiet time that starts a new gesture
+// screen 2 → 3 step duration; the wheel quiet time that starts a new gesture
 const STEP_MS = 1600;
 const GESTURE_GAP_MS = 200;
 const easeInOut = (t) => (t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2);
-// the title is up and out of the way before the story arrives: it finishes
-// rising at TITLE_END of the step (sooner on mobile), the story starts sliding
-// in at STORY_START
+// the title is out of the way (TITLE_END, sooner on mobile) before the story slides in
 const TITLE_END = 0.45;
 const TITLE_END_MOBILE = 0.2;
 const STORY_START = 0.3;
 const MOBILE = window.matchMedia('(width < 900px)');
-// the title's rise out of its mask (featured-intro.css), and the beat after it
-// before the featured story arrives by itself
+// the title's rise out of its mask (featured-intro.css), then a beat before auto-advance
 const TITLE_RISE_MS = 1200;
 const AUTO_ADVANCE_PAUSE_MS = 200;
 
@@ -32,14 +29,7 @@ const el = (tag, className, ...children) => {
   return node;
 };
 
-/**
- * Moves a field cell's content into a new element, keeping its Universal
- * Editor instrumentation.
- * @param {Element} row authored field row
- * @param {string} tag element to create
- * @param {string} className class for the element
- * @returns {Element|null}
- */
+/** Moves a field cell's text into a new element, keeping its Universal Editor instrumentation. */
 function fromField(row, tag, className) {
   if (!row || !row.textContent.trim()) return null;
   const cell = row.firstElementChild || row;
@@ -51,13 +41,7 @@ function fromField(row, tag, className) {
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-/**
- * Reads the authored date: the date picker stores it as an ISO date
- * (2026-10-28, possibly with a time after it). Dates typed as text before the
- * picker ("28 Oct 2026") are kept as written.
- * @param {string} value
- * @returns {{day: string, year: string, iso: string}|null}
- */
+/** Date picker values are ISO (maybe with a time); older text dates ("28 Oct 2026") stay as is. */
 function parseDate(value) {
   const iso = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (iso && MONTHS[Number(iso[2]) - 1]) {
@@ -68,10 +52,7 @@ function parseDate(value) {
   return text ? { day: text[1], year: text[2], iso: '' } : null;
 }
 
-/**
- * Shows the date as "28 Oct", an accent square and the year.
- * @param {Element|null} dateEl date element built by fromField
- */
+/** Shows the date as "28 Oct", an accent square and the year. */
 function decorateDate(dateEl) {
   if (!dateEl) return;
   const value = dateEl.textContent;
@@ -87,12 +68,7 @@ function decorateDate(dateEl) {
   dateEl.append(el('span', 'day', date.day), mark, el('span', 'year', date.year));
 }
 
-/**
- * Runs the callback once the section is visible. The first section stays hidden
- * until its image has loaded, and a transition started before that never shows.
- * @param {Element|null} section
- * @param {Function} callback
- */
+/** Runs callback once the section is shown: a transition started while hidden never plays. */
 function whenShown(section, callback) {
   const run = () => requestAnimationFrame(() => requestAnimationFrame(callback));
   if (!section || section.dataset.sectionStatus === 'loaded') {
@@ -107,12 +83,7 @@ function whenShown(section, callback) {
   observer.observe(section, { attributes: true, attributeFilter: ['data-section-status'] });
 }
 
-/**
- * Keeps the title on its one line: a title wider than its mask (very wide
- * letters, or a long title authored before the character limit) scales down
- * to fit instead of being cut off. Re-checked on resize and once fonts load.
- * @param {Element} block
- */
+/** Scales a title wider than its one-line mask down to fit; rechecked on resize and font load. */
 function fitTitle(block) {
   const mask = block.querySelector('.mask');
   const title = block.querySelector('.title');
@@ -126,33 +97,19 @@ function fitTitle(block) {
   document.fonts?.ready.then(fit);
 }
 
-/**
- * Sets the screen 2 → 3 progress: the title shrinks to the top while the
- * featured story slides in.
- * @param {Element} block
- * @param {number} t progress 0..1
- */
+/** Screen 2 → 3 progress t (0..1): the title shrinks to the top as the story slides in. */
 function render(block, t) {
   const titleEnd = MOBILE.matches ? TITLE_END_MOBILE : TITLE_END;
   block.style.setProperty('--shrink', `${range(t, 0, titleEnd)}`);
   block.style.setProperty('--slide', `${range(t, STORY_START, 1)}`);
 }
 
-/**
- * Builds the gesture stepper for the snap engine: one gesture plays exactly one
- * step. Step 0 is screen 2, step 1 screen 3 — the page also scrolls by the peek
- * distance so the next block rises into view under the pinned story. Scrolling
- * up plays it back.
- * @param {Element} block
- * @param {Element} section
- * @returns {object} controller for section-snap's registerBlockScroll
- */
+/** Snap stepper, one step per gesture; step 1 also scrolls by the peek so the next block shows. */
 function createStepper(block, section) {
   let step = 0;
   let t = 0;
   let frame = 0;
-  // a gesture that already played the step can't play another, however long
-  // or fast it keeps scrolling
+  // a gesture that already played the step can't play another, however long it keeps scrolling
   let consumed = false;
   let lastWheel = -Infinity;
   let lastMag = 0;
@@ -210,11 +167,7 @@ function createStepper(block, section) {
   };
 }
 
-/**
- * @param {Element} section
- * @param {Promise<number>} revealed resolves with the time the title started rising
- * @returns {Function} arm(play): play starts the step (stepper.autoPlay, or a scroll)
- */
+/** Returns arm(play): plays the step after the title rise, unless the user acts first. */
 function autoAdvance(section, revealed) {
   let cancelled = !!window.location.hash;
   const cancel = () => { cancelled = true; };
@@ -234,11 +187,7 @@ function autoAdvance(section, revealed) {
   });
 }
 
-/**
- * Fallback when the snap engine isn't running: the section becomes a scroll
- * runway and screen 2 → 3 scrubs with the page's scroll position.
- * @param {Element} block
- */
+/** Fallback without the snap engine: screen 2 → 3 scrubs with scroll over a runway. */
 function wireScrub(block) {
   block.classList.remove('is-stepped');
   block.closest('.section')?.classList.add('no-snap', 'scroll-runway', 'runway-hold');
@@ -261,15 +210,7 @@ function wireScrub(block) {
   update();
 }
 
-/**
- * Screen 1 → 2 plays on load (the title rises out of its mask); screen 2 → 3
- * then plays by itself right after (see autoAdvance), and as one step per
- * scroll gesture (the title moves to the top while the featured story slides
- * in), or scrubs with scroll when the snap engine isn't running. Not under
- * reduced motion or in Universal Editor, where the finished screen 3 shows
- * statically.
- * @param {Element} block
- */
+/** Screen 1 → 2 on load, then 2 → 3; static screen 3 under reduced motion or in UE. */
 function wireScroll(block) {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const authoring = !!document.querySelector('[data-aue-resource]');
@@ -292,11 +233,7 @@ function wireScroll(block) {
   }
   const arm = autoAdvance(section, revealed);
 
-  // The snap engine loads after the first screen. Register the stepper with it
-  // straight away, then keep it only if the engine actually starts:
-  // `snap-settled` is set on every path once the engine started or bowed out,
-  // `snap-active` only once the engine is
-  // live. Without the engine the block falls back to the scroll runway.
+  // register now, keep only if the engine starts: snap-settled = decided, snap-active = live
   const stepper = createStepper(block, section);
   const snap = import('../../scripts/section-snap.js').then((mod) => {
     mod.registerBlockScroll(section, stepper);
@@ -324,12 +261,7 @@ function wireScroll(block) {
   }
 }
 
-/**
- * Featured intro: a large page title (e.g. Newsroom, Blogs, Articles) that shrinks to
- * the top as the featured story (label, headline, date, read-more link, image) slides in.
- * Fields (model order): title, label, headline, date, link + link text, image + alt.
- * @param {Element} block
- */
+/** Fields (model order): title, label, headline, date, link + link text, image + alt. */
 export default function decorate(block) {
   const rows = [...block.children];
   const imageRow = rows.find((row) => row.querySelector('picture'));
@@ -347,8 +279,7 @@ export default function decorate(block) {
   if (link) {
     link.className = 'read-more';
     link.textContent = link.textContent.replace(/\s*→\s*$/, '').trim() || 'Read more';
-    // single editorial link, not an index-rendered list — look up its real
-    // category/publishDate from whichever index it points into
+    // a single editorial link: look up its category/publishDate from the index it points into
     findLinkedArticle(link.href).then((result) => {
       if (result) {
         tagArticleLink(link, result.item, {
@@ -361,8 +292,7 @@ export default function decorate(block) {
   const media = el('div', 'media');
   const img = imageRow?.querySelector('img');
   if (img) {
-    // The story slides in from off-screen, so it must not compete with the page's real LCP element
-    // (the header logo): normal priority. Phones get a smaller rendition than the desktop layout.
+    // slides in from off-screen, so normal priority (not the LCP); phones get a smaller rendition
     const picture = createOptimizedPicture(img.src, img.alt || '', false, [
       { media: '(min-width: 900px)', width: '1200' },
       { width: '750' },

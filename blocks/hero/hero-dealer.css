@@ -1,13 +1,4 @@
-/* Hero "Dealer" style (a dealer's storefront page), loaded by hero.js only when the style is
-   used. Full-screen showroom photo, the status line, the dealer's name, the address, two buttons
-   and a small product card (hero-dealer.js).
-   Desktop is drawn on the design's 1280 × 720 frame, scaled by --u to fit the screen (as the
-   source does): the copy bottom left, the card bottom right (the fixed price bar is hidden on
-   the hero, as in the design: its section has no "Show Floater").
-   Phone follows the mobile design's 375 × 640 frame, scaled by --u: the card at the top under
-   the site header, the copy and two full-width stacked buttons at the foot. The design trims
-   its text to the caps and baseline; the margins here are its gaps less our font's space above
-   the caps and below the baseline. */
+/* design frames 1280×720 / 375×640 scaled by --u; margins are cap/baseline gaps less font space */
 
 main > .section.hero-container .hero-wrapper .hero.dealer {
   --dealer-status-color: var(--color-white);
@@ -30,8 +21,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
   background-color: #1d1f22;
 
   @media (width < 900px) {
-    /* the 375 × 640 frame: 16 from the sides, the copy 20 from the foot, the card 14 under
-       the header (whose foot is --nav-offset, styles.css) */
+    /* 375 × 640 frame: 16 from the sides, copy 20 from the foot, card 14 under the header */
     --u: clamp(0.85px, min(100vw / 375, 100svh / 640), 1.3px);
     --dealer-foot: calc(20 * var(--u) + env(safe-area-inset-bottom));
     --dealer-address-color: rgb(255 255 255 / 75%);
@@ -52,8 +42,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
     padding: 0 calc(64 * var(--u)) var(--dealer-foot);
   }
 
-  /* a darker foot, so the copy reads over the photo (on desktop a touch deeper than the
-     design's 45% → 55%, to keep the status line and the address at AA over the lit glass) */
+  /* darker foot so the copy reads over the photo (55% on desktop keeps AA over the lit glass) */
   &::after {
     content: '';
     position: absolute;
@@ -228,8 +217,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
     }
   }
 
-  /* light "Book a test drive" and outlined "Get a quote", text only; their hover is the
-     letter glitch alone (hero-dealer.js opts the outlined one in) */
+  /* text-only buttons; hover is the letter glitch only (hero-dealer.js opts the outlined one in) */
   .cta.button {
     justify-content: center;
     width: auto;
@@ -424,8 +412,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
     }
   }
 
-  /* the photo: framed as in the design (on desktop the image overflows its box, cropped to
-     the car; on the phone a square, the car a touch left of and below the centre) */
+  /* photo framed as in the design: cropped to the car on desktop, a square on the phone */
   .dealer-card-media {
     position: relative;
     flex: 0 0 auto;
@@ -477,8 +464,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
     }
   }
 
-  /* the title's lines (hero-dealer.js splits it for the entrance): each rises out of its own
-     mask, which keeps room for the glyphs below the baseline */
+  /* title lines (split by hero-dealer.js) each rise out of a mask with room for descenders */
   .dealer-line {
     display: block;
     overflow: hidden;
@@ -490,15 +476,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
     display: block;
   }
 
-  /* entrance, the source's opening. Desktop: the photo opens from a centred rounded window
-     (inset 31% 36% of the screen, 28px round; 1.7s expo.inOut from 0.15s) as it settles from
-     1.32x (2s); from 1.45s the title rises out of its mask (1.1s power4.out), then the status
-     line, the address, the buttons and the card fade up 30 (0.8s power3.out, 0.06s apart, from
-     1.85s). Phone: the photo settles from 1.08x (1.6s power3.out, from 0.15s), the card drops
-     in 16 (0.8s, 0.35s), the status line rises 16 (0.6s, 0.45s), the title's lines rise out of
-     their masks (0.9s, 0.08s apart, from 0.5s), the address and the buttons 20 (0.7s, 0.7s and
-     0.78s); the status dot pulses. A title not split (yet) fades in whole; the line delays
-     discount the time the split took (--dealer-elapsed) */
+  /* entrance (the source's opening); line delays discount the split's time (--dealer-elapsed) */
   @media (prefers-reduced-motion: no-preference) {
     .bg-picture {
       display: block;
@@ -583,8 +561,7 @@ main > .section.hero-container .hero-wrapper .hero.dealer {
     }
   }
 
-  /* split or played: the title's own fade is done with; once the entrance is over
-     (.dealer-entered), nothing replays it when the layout changes */
+  /* split or played: fade done; after .dealer-entered nothing replays on layout change */
   .heading:is(:has(.dealer-line), .dealer-risen),
   &.dealer-entered :is(.bg, .bg-picture, .dealer-status, .heading, .dealer-address, .cta-wrapper, .dealer-card) {
     animation: none;

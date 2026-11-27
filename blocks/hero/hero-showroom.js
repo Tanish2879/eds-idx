@@ -1,32 +1,18 @@
-// Hero Carousel "Showroom Layout" (classes_showroom): the hero's own Text stays beside every
-// slide. Its paragraphs before the first label are the eyebrow (above the slide's heading);
-// each paragraph starting with a bold label ("**Address** Plot 14, …", or a bold-only
-// paragraph followed by its value) becomes a row of the info card under the slide's text.
+// Showroom: Text paras before the first bold label are the eyebrow; labelled paras form the card
 
 import { inEditor } from '../../scripts/utils/common.js';
 
-/**
- * The bold label a paragraph starts with, or null.
- * @param {HTMLParagraphElement} p
- * @returns {Element|null}
- */
 function leadingLabel(p) {
   const first = [...p.childNodes]
     .find((n) => n.nodeType !== Node.TEXT_NODE || n.textContent.trim());
   return first?.nodeType === Node.ELEMENT_NODE && first.matches('strong, b') ? first : null;
 }
 
-// how long the photo wipe runs (hero-showroom.css --sr-wipe-ms), plus a frame to settle
+// photo wipe duration (hero-showroom.css --sr-wipe-ms), plus a frame to settle
 const WIPE_MS = 950;
 const SETTLE_MS = 50;
 
-/**
- * Starts each further sentence of a slide heading on its own line, as the desktop source sets
- * them ("Sit in it.<br>Walk around it."); a heading of one sentence wraps on its own (balanced).
- * The breaks keep a space before them so phones, where the mobile design lets the heading wrap
- * ("Sit in it. Walk / around it."), can hide them (hero-showroom.css .showroom-break).
- * @param {Element} contents the slides' contents (.slide-contents)
- */
+/** Each further heading sentence on its own line; the space before each br lets phones hide it. */
 function breakSentences(contents) {
   contents.querySelectorAll(':scope > .content > :is(h1, h2, h3, h4, h5, h6)').forEach((heading) => {
     [...heading.childNodes].forEach((node) => {
@@ -47,11 +33,7 @@ function breakSentences(contents) {
   });
 }
 
-/**
- * Phones (the mobile design): a slide heading longer than two lines steps its size down
- * (4% a step) until it fits two; desktop keeps the stylesheet's size.
- * @param {Element} contents the slides' contents (.slide-contents)
- */
+/** Phones: shrinks headings over two lines in 4% steps until they fit; desktop keeps CSS size. */
 function fitHeadings(contents) {
   const phone = window.matchMedia('(width < 900px)');
   const headings = [...contents.querySelectorAll(':scope > .content > :is(h1, h2, h3, h4, h5, h6)')];
@@ -67,7 +49,7 @@ function fitHeadings(contents) {
       heading.style.fontSize = `${size}px`;
     }
   });
-  // refit once laid out, whenever the width changes, and once the web fonts are in
+  // refit on layout, width changes and web font load
   let width = -1;
   new ResizeObserver(([entry]) => {
     if (entry.contentRect.width === width) return;
@@ -78,13 +60,7 @@ function fitHeadings(contents) {
   document.fonts?.addEventListener('loadingdone', fit);
 }
 
-/**
- * The slide changes: no autoplay (hero.js); a thumbnail picks a slide (and, on phones, a
- * sideways swipe); the next photo wipes in (hero-showroom.css .is-wiping) and a pick during a
- * wipe waits for it. A scroll always moves the page on to the next / previous fold (the slides
- * don't take scroll steps).
- * @param {Element} block the hero carousel block
- */
+/** Thumbs (and phone swipes) pick slides; a pick during the photo wipe is queued until it ends. */
 function wireSlides(block) {
   const nav = block.querySelector(':scope > .slide-nav');
   const section = block.closest('.section');
@@ -132,7 +108,7 @@ function wireSlides(block) {
       thumb.click();
       return;
     }
-    // at once, with no wipe or caption transition
+    // instant: no wipe or caption transition
     endWipe();
     queued = null;
     instant = true;
@@ -144,7 +120,7 @@ function wireSlides(block) {
     }));
   };
 
-  // phones (the mobile design): a sideways swipe on the copy steps to the next or last slide
+  // phones: a sideways swipe on the copy steps to the next/previous slide
   const phone = window.matchMedia('(width < 900px)');
   const copy = block.querySelector(':scope > .slide-contents');
   let swipeX = null;
@@ -166,10 +142,6 @@ function wireSlides(block) {
   copy?.addEventListener('pointercancel', () => { swipeX = null; });
 }
 
-/**
- * @param {Element} block the hero carousel block
- * @param {Element} textCell the hero's own Text
- */
 export default function decorateShowroom(block, textCell) {
   if (!textCell) return;
   const paras = [...textCell.querySelectorAll(':scope > p')];
@@ -215,8 +187,7 @@ export default function decorateShowroom(block, textCell) {
     card.append(item);
   });
 
-  // Universal Editor: the card stays in the Text field (inline editing keeps working); on the
-  // site the label/value paragraphs give way to it, under the slide's own text
+  // UE: card stays in the Text field so inline editing works; on the site it replaces the paras
   if (inEditor()) {
     rows.forEach(({ source }) => source.forEach((p) => p.classList.add('showroom-source')));
     textCell.append(card);

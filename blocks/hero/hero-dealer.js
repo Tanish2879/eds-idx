@@ -1,35 +1,15 @@
-// Hero "Dealer" style (a dealer's storefront page), loaded by hero.js only when the style is
-// used. It builds on the Default hero (hero.js has already decorated the Text: heading,
-// subtext and buttons).
-// Fields:
-//   Background Image or Video (Desktop / Mobile) → the full-screen showroom photo
-//   Video Thumbnail (Desktop)                    → the image of the product card, bottom right
-//   Text, in this order:
-//     a paragraph before the title  → the status line (e.g. "Closed today · Opens Monday,
-//                                     10am"); a " · " in it becomes a dot
-//     the title (Heading 1)         → the dealer's name
-//     paragraphs before the buttons → the address
-//     the links                     → the buttons (the first is the main one)
-//     paragraphs after the buttons  → the product card: the first is its title ("[ New ]
-//                                     Combat", the bracketed part a tag), the rest its text
-//                                     (e.g. "Starting from ₹XX", a line of copy)
-// The entrance is CSS (hero-dealer.css); here the title is split into the lines it renders on,
-// so each rises out of its own mask, and put back once they have.
+// Dealer hero Text order: status line, H1 name, address, buttons, then product-card paragraphs
 
 import { inEditor } from '../../scripts/utils/common.js';
 
 const SEPARATOR = /\s+·\s+/;
 const TAG = /^(\s*\[[^\]]*\])\s*/;
 
-// the entrance's length (its last move ends by 2.83s, hero-dealer.css), and how many frames
-// the title is waited for to be laid out (the section shows after its blocks load)
+// entrance ends by 2.83s (hero-dealer.css); max frames to await layout (section shows late)
 const ENTRANCE_MS = 3000;
 const LAYOUT_FRAMES = 300;
 
-/**
- * Wraps the status line's " · " separators in a decorative dot, the words read out as they are.
- * @param {Element} line the status paragraph
- */
+/** Wraps " · " separators in an aria-hidden dot so the text reads out as authored. */
 function markSeparators(line) {
   if (line.children.length || !SEPARATOR.test(line.textContent)) return;
   const parts = line.textContent.split(SEPARATOR);
@@ -43,10 +23,7 @@ function markSeparators(line) {
   line.replaceChildren(...nodes);
 }
 
-/**
- * Wraps a leading "[ New ]" of the card title in a tag span.
- * @param {Element} title the card's first paragraph
- */
+/** Wraps a leading "[ New ]" of the card title in a tag span. */
 function markTag(title) {
   const first = title.firstChild;
   if (first?.nodeType !== Node.TEXT_NODE) return;
@@ -60,12 +37,7 @@ function markTag(title) {
   title.insertBefore(document.createTextNode(' '), first);
 }
 
-/**
- * Splits a plain-text title into the lines it renders on (span.dealer-line, each holding a
- * span.dealer-line-inner), the line breaks frozen. Null when it can't (inline markup).
- * @param {Element} el the title
- * @returns {{ lines: HTMLSpanElement[], restore: Function }|null}
- */
+/** Splits a plain-text title into its rendered lines for the rise; null if it has inline markup. */
 function splitLines(el) {
   if ([...el.childNodes].some((node) => node.nodeType === Node.ELEMENT_NODE)) return null;
   const words = el.textContent.trim().split(/\s+/).filter(Boolean);
@@ -94,7 +66,7 @@ function splitLines(el) {
     const inner = document.createElement('span');
     inner.className = 'dealer-line-inner';
     inner.textContent = lineWords.join(' ');
-    // the space keeps the words apart in the text read out
+    // the space keeps words apart in the accessible text
     line.append(inner, ' ');
     return line;
   });
@@ -102,14 +74,7 @@ function splitLines(el) {
   return { lines: lineEls, restore: () => el.replaceChildren(...original) };
 }
 
-/**
- * Once the hero is laid out: splits the title for its line-by-line rise (the delays less the
- * time this took, --dealer-elapsed), puts it back when the entrance is over and marks the
- * hero .dealer-entered, so a later layout change doesn't replay it. Not under reduced motion
- * or in Universal Editor.
- * @param {Element} block the hero
- * @param {Element|null} heading the title
- */
+/** Splits the title for the line rise once laid out, then restores it; off in UE/reduced motion. */
 function stageEntrance(block, heading) {
   if (inEditor() || !window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
   let frames = 0;
@@ -122,8 +87,7 @@ function stageEntrance(block, heading) {
     }
     let split = null;
     let t0 = performance.now();
-    // the lines as the title renders now; split again when the web fonts come in (they can
-    // change where it breaks), the rise carried on where it is
+    // re-split when web fonts load (line breaks can change), continuing the rise where it is
     const resplit = () => {
       if (!split) return;
       split.restore();
@@ -151,10 +115,6 @@ function stageEntrance(block, heading) {
   requestAnimationFrame(start);
 }
 
-/**
- * @param {Element} block the hero
- * @param {object} parts built by hero.js
- */
 export default function decorateDealer(block, {
   bg, textCell, thumb, rest, helpers,
 }) {
@@ -171,7 +131,6 @@ export default function decorateDealer(block, {
   const titleAt = title ? children.indexOf(title) : -1;
   const ctaAt = cta ? children.indexOf(cta) : -1;
 
-  // the status line: the paragraphs before the title
   if (titleAt > 0) {
     children.slice(0, titleAt).filter((el) => el.matches('p')).forEach((p) => {
       p.classList.add('dealer-status');
@@ -179,14 +138,12 @@ export default function decorateDealer(block, {
     });
   }
 
-  // the address: the paragraphs between the title and the buttons (or all after the title
-  // when there are no buttons)
+  // address: paragraphs between title and buttons (all after the title when no buttons)
   const addressEnd = ctaAt >= 0 ? ctaAt : children.length;
   children.slice(titleAt + 1, addressEnd)
     .filter((el) => el.matches('p'))
     .forEach((p) => p.classList.add('dealer-address'));
 
-  // the main column: everything up to the buttons
   const main = document.createElement('div');
   main.className = 'dealer-main';
   const mainEls = children.slice(0, ctaAt >= 0 ? ctaAt + 1 : children.length);
@@ -195,7 +152,6 @@ export default function decorateDealer(block, {
     main.append(...mainEls);
   }
 
-  // the product card: the paragraphs after the buttons, and the Video Thumbnail
   const cardLines = ctaAt >= 0
     ? children.slice(ctaAt + 1).filter((el) => el.matches('p') && el.textContent.trim())
     : [];
@@ -222,7 +178,7 @@ export default function decorateDealer(block, {
     textCell.append(card);
   }
 
-  // the outlined button glitches on hover too (scripts/utils/glitch.js), as the main one
+  // the outlined button also gets the hover glitch (scripts/utils/glitch.js)
   cta?.querySelectorAll('a.cta-secondary').forEach((a) => { a.dataset.glitch = ''; });
 
   block.replaceChildren(bg, textCell, ...rest);

@@ -6,13 +6,7 @@ import snapRow from '../../scripts/utils/snap-row.js';
 
 const LIMIT = 3;
 
-/**
- * Left style: folds each card's category and date into one grey line at the
- * start of the description ("Technology · 28 Oct 2026. Understanding …"), as
- * in the newsroom panel. The separate category and date elements are removed,
- * so screen readers hear the line once. Cards without either are left as is.
- * @param {Element} list The ul.related-blogs-cards
- */
+/** Left style: folds category and date into one meta line before the description (read once). */
 function foldNewsMeta(list) {
   list.querySelectorAll('.related-blogs-card-body').forEach((body) => {
     const cat = body.querySelector('.related-blogs-card-category');
@@ -53,13 +47,7 @@ function foldNewsMeta(list) {
   });
 }
 
-/**
- * Left style: the View all button sits at the right of the heading on desktop and, as in
- * the mobile newsroom panel, under the cards on phones. It is moved in the DOM (not just
- * reordered) so the reading and focus order follow what is shown.
- * @param {Element} block The block
- * @param {Element} list The ul.related-blogs-cards
- */
+/** Left style: View all moves (in the DOM) under the cards on phones so focus order matches. */
 function placeViewAll(block, list) {
   const head = block.querySelector('.related-blogs-head');
   const link = head?.querySelector('.related-blogs-view-all');
@@ -73,24 +61,7 @@ function placeViewAll(block, list) {
   phone.addEventListener('change', place);
 }
 
-/**
- * Related Blogs ("More Articles") — a heading plus up to 3 cards matching the
- * current page's tags.
- *
- * Authored rows (fixed order, matching the block model):
- *   1. heading (text) — defaults to "More Articles"
- *   2. root path (aem-content) — folder filter (e.g. /blogs)
- *   3. index (text) — query-index path (default /blog-index.json)
- *   4. show (select) — "" the current page's tags | "latest" newest from the root
- *   5. view all link (aem-content, optional)
- *   6. view all label (text, optional) — with a link, the View all button on the right of
- *      the heading (both styles); without a label there is no button
- * Tags come from current page metadata (cq-tags). Rows 4-6 are optional, so blocks
- * authored before they existed behave as before.
- * Style (classes): "" Center (default) — the heading centred; "left" Left — eyebrow and
- * heading on the left, title + summary under each image (related-blogs-left.css).
- * @param {Element} block
- */
+/** Rows: heading, root, index, show (tags|latest), view-all link, label; 4-6 are optional. */
 export default async function decorate(block) {
   const [headingRow, rootRow, indexRow, showRow, viewAllRow, viewAllLabelRow] = [...block.children];
   const headingText = cellVal(headingRow) || 'More Articles';
@@ -109,10 +80,6 @@ export default async function decorate(block) {
   const current = window.location.pathname.replace(/\.html$/, '');
   const editing = onAuthor();
 
-  /**
-   * The heading, plus the View all button on its right when a link and a label are authored.
-   * @returns {HTMLElement}
-   */
   const buildHead = () => {
     const heading = document.createElement('h2');
     heading.className = 'related-blogs-heading';
@@ -124,15 +91,12 @@ export default async function decorate(block) {
     link.className = 'related-blogs-view-all button';
     link.href = viewAll;
     link.textContent = viewAllLabel;
-    // the button's hover is the site's letter glitch (scripts/utils/glitch.js)
+    // hover letter glitch (scripts/utils/glitch.js)
     link.dataset.glitch = '';
     head.append(heading, link);
     return head;
   };
 
-  /**
-   * Completely removes the block and its wrapper from the page on live site.
-   */
   const hideBlock = () => {
     const wrapper = block.closest('.related-blogs-wrapper');
     const container = block.closest('.related-blogs-container');
@@ -143,9 +107,6 @@ export default async function decorate(block) {
     }
   };
 
-  /**
-   * Renders just the heading (used for empty/editor states).
-   */
   const renderHeadingOnly = () => {
     block.textContent = '';
     block.append(buildHead());
@@ -174,15 +135,14 @@ export default async function decorate(block) {
     indexPath,
   });
 
-  // an index on another site (a full URL, e.g. a dealer site reading the brand site's
-  // https://www.jswmotors.com/news-index.json): its articles' links and images live there
+  // cross-site index (e.g. dealer site reading jswmotors.com/news-index.json): absolutize URLs
   let indexOrigin = '';
   try {
     indexOrigin = new URL(indexPath, window.location.href).origin;
   } catch {
-    // a malformed path: read as this site's
+    // malformed path: treat as this site's
   }
-  // (copies: the fetched index is cached and shared)
+  // copy items: the fetched index is cached and shared
   const items = indexOrigin && indexOrigin !== window.location.origin
     ? found.map((item) => ({
       ...item,
@@ -211,10 +171,7 @@ export default async function decorate(block) {
 
   const list = document.createElement('ul');
   list.className = 'related-blogs-cards';
-  // 'split': category + title + description grouped, the date after them —
-  // the CSS lays that out as the mobile carousel card (date pinned to the
-  // bottom, no description) and the desktop card (category | date row above
-  // the title)
+  // 'split': category + title + desc grouped, date after; CSS reorders per breakpoint
   const contentType = contentTypeOf(indexPath);
   items.forEach((item, i) => list.append(buildArticleCard(item, {
     prefix: 'related-blogs-card',

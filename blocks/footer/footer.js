@@ -8,7 +8,7 @@ import {
 import { decorateExternalLinks } from '../../scripts/scripts.js';
 import decorateGlitch from '../../scripts/utils/glitch.js';
 
-// accessible-name labels per platform key (used when the link has no visible text)
+// accessible-name fallbacks per platform, used when a link has no visible text
 const SOCIAL_LABELS = {
   facebook: 'Facebook',
   instagram: 'Instagram',
@@ -30,7 +30,6 @@ const SOCIAL_ALIASES = {
   yt: 'youtube',
 };
 
-// platform per link address
 const SOCIAL_HOSTS = [
   [/(^|\.)instagram\.com$/i, 'instagram'],
   [/(^|\.)(facebook|fb)\.com$/i, 'facebook'],
@@ -41,15 +40,13 @@ const SOCIAL_HOSTS = [
 
 const text = (el) => (el ? el.textContent.trim() : '');
 
-// a social platform key for a name ("Instagram", "linked-in", "twitter" ...)
 function platform(name) {
   const n = (name || '').trim().toLowerCase().replace(/[\s_]+/g, '-');
   const key = SOCIAL_ALIASES[n] || n;
   return SOCIAL_KEYS.includes(key) ? key : null;
 }
 
-// The platform a link is for: its icon token, image (file name or alt), text or address.
-// Null when it's none.
+// A link's platform from its icon token, image (file name or alt), text or host; null if none.
 function iconKey(a) {
   const span = a.querySelector('span.icon');
   const iconClass = span && [...span.classList].find((c) => c.startsWith('icon-'));
@@ -71,8 +68,7 @@ function iconKey(a) {
     || null;
 }
 
-// Marks an authored icon that brings its own tile (fully painted, translucent or dark edge)
-// so it fills the tile (.channel.tile).
+// Marks an authored icon that brings its own tile (fully painted, translucent or dark edge).
 function markTile(img) {
   const check = () => {
     const { naturalWidth: w, naturalHeight: h } = img;
@@ -114,15 +110,13 @@ function markTile(img) {
   else img.addEventListener('load', check, { once: true });
 }
 
-// the platform an icon image is for, from its file name or alt text, or null
 function imageKey(img) {
   const file = (img.getAttribute('src') || '').split(/[?#]/)[0].split('/').pop()
     .replace(/\.[a-z0-9]+$/i, '');
   return platform(file) || platform(img.alt) || null;
 }
 
-// The Connect section's icons in authored order: a loose image (UE rich text) takes the
-// link for its platform, else the next link without an icon, else shows unlinked.
+// Loose images (UE rich text) take their platform's link, else the next icon-less one, else none.
 function socialItems(sec) {
   const order = new Map();
   [...sec.querySelectorAll('a, picture, img')].forEach((el, i) => order.set(el, i));
@@ -173,8 +167,7 @@ function buildExplore(section) {
     const a = li.querySelector('a');
     if (a) {
       a.classList.add('item', 'is-link');
-      // teaser-footer (not footer:explore) — location must stay in the
-      // agreed vocabulary; "explore" is a group label, not a location
+      // location must stay in the agreed vocabulary: "explore" is a group label, not a location
       a.dataset.cta = `teaser-footer:${token(text(a)) || 'not-set'}:view`;
       a.dataset.ctaPosition = index + 1;
       list.append(a);
@@ -191,12 +184,10 @@ function buildExplore(section) {
 
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 
-// the tail lights are found when at least this much of the 640-wide copy of
-// the photo is warm (a few dozen pixels)
+// min warm pixels (in the 640px-wide sample) for the tail lights to count as found
 const MIN_LIGHTS = 40;
 
-// An alpha mask of the photo (alpha = amount(r, g, b)), optionally blurred first,
-// with its weighted centre and total weight.
+// Alpha mask of the photo (alpha = amount(r, g, b)), optionally blurred, with its weighted centre.
 function photoMask(img, width, soften, amount) {
   const height = Math.max(1, Math.round((width * img.naturalHeight) / img.naturalWidth));
   const canvas = document.createElement('canvas');
@@ -230,8 +221,7 @@ function photoMask(img, width, soften, amount) {
   };
 }
 
-// Reads the backdrop once: a sky mask (teal pixels) and a tail-light mask (warm pixels)
-// with the lights' centre. Null when the photo can't be read (another origin).
+// Sky (teal) and tail-light (warm) masks of the backdrop; null if unreadable (cross-origin).
 function readBackdrop(img) {
   if (!img.naturalWidth) return null;
   try {
@@ -246,7 +236,7 @@ function readBackdrop(img) {
       centre: found ? lights.centre : null,
     };
   } catch {
-    return null; // a cross-origin photo can't be read
+    return null;
   }
 }
 
@@ -259,9 +249,7 @@ function photoPoint(stage, img, [fx, fy]) {
   return [r.left + (r.width - w) * 0.5 + fx * w, r.top + (r.height - h) + fy * h];
 }
 
-// Hover lights (from the prototype): a sky glow that follows the mouse and tail lights that
-// brighten as it nears them. Mouse only, not under reduced motion; sets --glow-* on the block.
-// The lights sit in the photo's stage, so they stay on the photo however the stage is sized.
+// Hover lights: sky glow follows the mouse, tail lights brighten as it nears them (--glow-*).
 function decorateGlow(block, backdrop) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const stage = backdrop.parentElement;
@@ -274,7 +262,7 @@ function decorateGlow(block, backdrop) {
   [glow, tail].forEach((el) => el.setAttribute('aria-hidden', 'true'));
   backdrop.after(glow, tail);
 
-  // the photo is read once, the first time a mouse comes over the footer
+  // the photo is read lazily, the first time a mouse comes over the footer
   let read = false;
   let lightsAt = null; // the tail lights' centre on the photo (fractions)
   block.addEventListener('pointerenter', (e) => {
@@ -340,8 +328,7 @@ function decorateGlow(block, backdrop) {
   });
 }
 
-// Phones and tablets: the link columns fold into an accordion, one open at a time, each
-// heading a button; on desktop the headings are plain text and every list shows.
+// Below 900px the link columns become a one-open-at-a-time accordion; desktop shows every list.
 function decorateAccordion(columns) {
   const mobile = window.matchMedia('(width < 900px)');
   const items = columns.map((column, index) => {
@@ -387,30 +374,25 @@ function decorateAccordion(columns) {
   mobile.addEventListener('change', apply);
 }
 
-// The page's "Visit" fold: its last section with content (an empty one, e.g. left by a page
-// metadata table, doesn't count), when it holds Columns in the Reach Us (Photo) style.
+// The last non-empty section (a metadata table can leave an empty one) if it has Reach Us (Photo).
 function visitFold() {
   const last = [...document.querySelectorAll('main > .section')].reverse()
     .find((section) => section.children.length);
   return last?.querySelector('.columns.reach-us.photo') ? last : null;
 }
 
-// The Dealer footer inside the Visit fold, as the dealer prototypes have it (#garage): the
-// built block moves into the fold's .reach-us-photo-footer container, its parts marked to come
-// in with the Visit content (.reach-us-photo-item, columns-reach-us-photo.js), and the site
-// footer band, left empty, is hidden (no blank band, no snap stop of its own). Links keep their
-// analytics attributes; the block keeps its classes and data-block-* (componentOf, the look).
+// Moves the Dealer footer into the Visit fold (prototype #garage) and hides the empty site footer.
 function mergeIntoFold(block, inner) {
   const fold = visitFold();
   const siteFooter = block.closest('footer');
   if (!fold || !siteFooter) return;
-  // rule and link columns first, then the legal lines and Privacy policy (the design's order)
+  // fade-in order per the design: rule and link columns, then the legal lines
   [inner.querySelector(':scope > .end'), inner.querySelector(':scope > .start'),
     inner.querySelector(':scope > .legal')]
     .filter(Boolean)
     .forEach((part) => part.classList.add('reach-us-photo-item'));
   const host = div('reach-us-photo-footer');
-  // still the page's footer for assistive tech (the site <footer> is hidden)
+  // still the page's footer landmark for assistive tech (the site <footer> is hidden)
   host.setAttribute('role', 'contentinfo');
   host.append(block);
   fold.append(host);
@@ -418,7 +400,6 @@ function mergeIntoFold(block, inner) {
   siteFooter.classList.add('footer-merged');
 }
 
-/** Loads and decorates the footer. */
 export default async function decorate(block) {
   // the page's own footer (metadata) first, then the site's /footer
   const footerMeta = getMetadata('footer');
@@ -434,28 +415,24 @@ export default async function decorate(block) {
     fragment = await loadFragment(path);
     if (fragment) break;
   }
-  // no footer content anywhere: leave the block empty rather than fail
   if (!fragment) return;
 
   block.textContent = '';
 
-  // Data-layer component type. The footer lives outside <main>, so the
-  // central decorateDataLayerHooks() cannot tag it — set it on the block here.
+  // the footer is outside <main>, so decorateDataLayerHooks() can't tag it
   block.dataset.blockType = 'nav';
 
-  // unwrap an inner <main> so we always work from the content divs
   const innerMain = fragment.querySelector('main');
   const source = innerMain || fragment;
   const sections = [...source.children].filter((el) => el.tagName === 'DIV');
 
-  // sort sections: social links/icons, link columns, background picture, CTA link,
-  // and anything else = legal (logo, copyright, legal links)
+  // sort sections: social, link columns, backdrop picture, CTA link; anything else is legal
   let reserveLink; // register CTA
-  let legal; // copyright + legal links (privacy, terms, ...)
-  let backdrop; // full-bleed background picture
-  let socialTitle; // Connect heading
-  const columnSections = []; // heading + link list sections
-  const socialLinks = []; // social platform anchors
+  let legal; // copyright + legal links
+  let backdrop;
+  let socialTitle;
+  const columnSections = [];
+  const socialLinks = [];
 
   sections.forEach((sec) => {
     const links = [...sec.querySelectorAll('a')];
@@ -479,16 +456,12 @@ export default async function decorate(block) {
     }
   });
   const [exploreSection] = columnSections;
-  // several link columns switch on the multi-column layout (logo + CTA on
-  // the left, columns + Connect on the right, legal links along the bottom)
+  // several link columns switch on the multi-column layout
   const columns = columnSections.length > 1;
 
-  // a logo or a link column switches on the Explore layout; without, the original footer
   const logoImg = legal?.querySelector('picture img');
 
-  // the dealer sites' look (footer-dealer.css), on the same content: page metadata "Footer
-  // Style" (Dealer / Default) decides; without it, link columns with no logo are a dealer
-  // footer (the brand footer always has the JSW logo)
+  // "Footer Style" metadata decides; else link columns without a logo mean dealer (brand has one)
   const footerStyle = getMetadata('footer-style').trim().toLowerCase();
   const dealer = footerStyle ? footerStyle === 'dealer' : columns && !logoImg;
   if (dealer) {
@@ -500,8 +473,6 @@ export default async function decorate(block) {
   if (columns) block.classList.add('columns');
 
   const inner = div('inner');
-  // left column (brand, copyright, legal links), centred CTA, right column
-  // (Explore links, social); on mobile the columns dissolve into one flow
   const start = div('start');
   const end = div('end');
 
@@ -517,8 +488,7 @@ export default async function decorate(block) {
 
     const copyright = div('copyright');
     legal.querySelectorAll('p').forEach((p) => {
-      // every link is a legal link, whether authored on its own line (a new
-      // paragraph) or several in one paragraph (Shift+Enter between them)
+      // every link is legal, whether one per paragraph or several in one (Shift+Enter)
       const links = [...p.querySelectorAll('a')];
       if (links.length) {
         links.forEach((a) => {
@@ -543,7 +513,6 @@ export default async function decorate(block) {
   });
   if (legalGroup.children.length) start.append(legalGroup);
 
-  // register-interest pill
   let cta;
   if (reserveLink) {
     cta = div('cta');
@@ -552,7 +521,6 @@ export default async function decorate(block) {
     const secondary = reserveLink.classList.contains('secondary');
     if (!primary && !secondary) reserveLink.classList.add('register', 'plain');
     if (!reserveLink.dataset.cta) reserveLink.dataset.cta = DEFAULT_CTA.footerRegister;
-    // primary CTAs get the same glitch hover as the hero's
     if (primary) decorateGlitch(reserveLink);
     cta.append(reserveLink);
   }
@@ -563,15 +531,13 @@ export default async function decorate(block) {
   // the dealer footer shows every list open on phones too (no accordion)
   if (columns && !dealer) decorateAccordion(linkColumns);
 
-  // social icon buttons
   if (socialLinks.length) {
     const social = div('social');
     socialLinks.forEach((a, index) => {
       const authored = a.querySelector('picture') || a.querySelector('img') || a.querySelector('span.icon');
       a.classList.add('channel');
       if (a.tagName !== 'A') {
-        // an icon image authored without a link: shown as it is, named by
-        // its alt text (or its platform)
+        // an unlinked icon image: shown as is, named by its alt text (or its platform)
         const img = a.querySelector('img');
         const key = img && imageKey(img);
         if (key) a.dataset.platform = key;
@@ -597,12 +563,10 @@ export default async function decorate(block) {
       }
       social.append(a);
     });
-    decorateIcons(social); // swaps icon spans for <img src="/icons/{key}.svg">
+    decorateIcons(social);
     social.querySelectorAll('img').forEach((img) => img.classList.add('symbol'));
-    // authored icons that bring their own tile fill it
     social.querySelectorAll('img:not([data-icon-name])').forEach(markTile);
     if (columns) {
-      // Connect column: its heading above the icons, like the link columns
       const connect = div('links connect');
       if (socialTitle) {
         const title = document.createElement('p');
@@ -638,22 +602,17 @@ export default async function decorate(block) {
     ]);
     bg.classList.add('backdrop');
     bg.setAttribute('aria-hidden', 'true');
-    // the photo and its lights share a stage: the whole footer on desktop, the photo's own
-    // box along the bottom on phones
+    // shared stage for photo and lights: the whole footer on desktop, the photo's box on phones
     const stage = div('stage');
     stage.append(bg);
     footer.append(stage);
-    // the columns footer's sky lights up under the mouse. Only built where there is a mouse:
-    // its blended glow layer makes the whole footer one blended paint, which iPhones couldn't
-    // repaint fast enough while scrolling (stale parts of the footer showed for a moment)
+    // mouse only: the blended glow layer made iPhones show stale footer paint while scrolling
     const mouse = window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches;
     if (columns && mouse) decorateGlow(block, bg);
   }
   footer.append(inner);
-  // social links (facebook, instagram, x, linkedin) open in a new tab
   decorateExternalLinks(footer);
   block.append(footer);
 
-  // the Dealer footer of a page that ends on the Visit fold goes into that fold
   if (dealer) mergeIntoFold(block, inner);
 }

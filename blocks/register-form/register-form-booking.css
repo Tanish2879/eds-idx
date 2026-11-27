@@ -1,10 +1,3 @@
-/* Register Form "Booking" style, loaded by register-form.js only when the style is used: the
-   dealer's quote request, its details and review steps (register-form-booking.js), in the dealer "Get in touch" look: a light form beside the map
-   card. Desktop follows the prototype's 1280 × 720 frame (1u = 1px there, scaling with the
-   screen); phones follow the dealer mobile design's 375 frame (1u = 1 design px fitted to the
-   screen width, as its --u, never below 0.8px) and its order: the heading, the details, the map
-   card, then Continue; the pop-ups are centred cards there (the phone block at the end). */
-
 .register-form-wrapper:has(> .register-form.booking) {
   background-color: transparent;
 }
@@ -38,14 +31,13 @@
   @media (width >= 900px) {
     --rfb-u: max(0.75px, min(100vw / 1280, 100svh / 720));
 
-    /* the map card on the right, the form on the left: 466 + 60 + 625 in the frame */
+    /* map card right, form left: 466 + 60 + 625 in the 1280 frame */
     flex-direction: row-reverse;
     align-items: center;
     justify-content: center;
     gap: calc(60 * var(--rfb-u));
   }
 
-  /* --- the map card --- */
   .media {
     flex: 0 1000 calc(200 * var(--rfb-u));
     min-height: calc(120 * var(--rfb-u));
@@ -91,8 +83,7 @@
     }
   }
 
-  /* --- with a Map Address: the Google map of it (register-form-booking.js buildMap), in grey,
-     over the authored image; the pin on the address (the map's centre) and its pop-up --- */
+  /* with a Map Address: grey Google map (JS buildMap) over the image, pin + pop-up at its centre */
   .media.has-map {
     position: relative;
     overflow: hidden;
@@ -208,15 +199,13 @@
     }
   }
 
-  /* --- the form column --- */
   .content {
     display: flex;
     flex-direction: column;
     padding: calc(20 * var(--rfb-u)) calc(20 * var(--rfb-u)) calc(24 * var(--rfb-u));
 
     @media (width >= 900px) {
-      /* room around the 466u column so the scroll box doesn't clip the focus rings; the
-         form runs 1u lower than the map card, as in the frame */
+      /* room around the 466u column so the scroll box doesn't clip focus rings; 1u below map */
       flex: 0 0 calc(466 * var(--rfb-u) + 64px);
       height: calc(591 * var(--rfb-u) + 8px);
       margin: -4px -32px calc(-4px - var(--rfb-u));
@@ -234,9 +223,7 @@
     }
   }
 
-  /* the display font's caps (New Science Extended from Typekit) sit 0.12em lower in their line
-     box than in the design's font files: the heading and the pop-up titles are drawn that much
-     higher, so their letters land where the design has them (their boxes don't move) */
+  /* Typekit's display caps sit 0.12em lower than the design's font files; shift glyphs up */
   .heading,
   .booking-modal-title {
     translate: 0 -0.12em;
@@ -274,7 +261,6 @@
     flex: 1 0 auto;
   }
 
-  /* --- steps --- */
   .booking-step:not([hidden]),
   .fields:not([hidden]) {
     display: flex;
@@ -308,7 +294,6 @@
     line-height: 1.2;
   }
 
-  /* --- the buttons at the foot of each step --- */
   .booking-actions {
     display: flex;
     gap: calc(8 * var(--rfb-u));
@@ -376,7 +361,6 @@
     flex: 1 1 0;
   }
 
-  /* --- step 1: details --- */
   .row {
     gap: calc(8 * var(--rfb-u));
   }
@@ -550,7 +534,6 @@
     border-color: var(--rfb-err);
   }
 
-  /* the privacy notice, above the buttons of the details and review steps */
   .notice {
     margin: calc(12 * var(--rfb-u)) 0 0;
     color: var(--rfb-muted);
@@ -581,7 +564,7 @@
     }
   }
 
-  /* --- the Request sent pop-up's rows --- */
+  /* Request sent pop-up rows */
   .booking-summary {
     display: flex;
     flex-direction: column;
@@ -605,7 +588,6 @@
     }
   }
 
-  /* --- OTP --- */
   .back {
     margin: 0 0 calc(16 * var(--rfb-u));
     color: var(--rfb-ink);
@@ -722,11 +704,7 @@
     }
   }
 
-  /* --- the pop-ups (OTP, Request sent): <dialog>s over the details, as the dealer design's
-     cards (520u wide, 40u padding, 24u corners) on a dimmed, slightly blurred page --- */
-
-  /* the details stay in view behind a pop-up; the base form's Back (OTP to details) gives way
-     to the pop-up's Change number and close button */
+  /* details stay visible behind a pop-up; its Change number / close replace the base Back */
   &:is(.is-otp, .is-success) .fields[data-screen='fields'] {
     display: flex;
     flex: 1 0 auto;
@@ -851,8 +829,7 @@
     }
   }
 
-  /* OTP: the "code sent on …" line under the title, one line of text with the number in it as
-     the design has it; the boxes centred */
+  /* OTP: the "code sent on …" line as one line of text with the number inline; boxes centred */
   .booking-modal .otp-head {
     display: block;
     margin: calc(14 * var(--rfb-u)) 0 0;
@@ -919,10 +896,7 @@
     }
   }
 
-  /* --- phones: the dealer mobile design (#touch, its details step #s-det). Positions are the
-     design's, its text boxes trimmed to the caps: New Science's caps sit (lh − 1) / 2 + 0.22em
-     below its line box and its baseline (lh − 1) / 2 + 0.06em above the box's foot, so a gap
-     between two texts there is the design's minus those two --- */
+  /* phones: design gaps minus New Science's cap (+0.22em) and baseline (+0.06em) offsets */
   @media (width < 900px) {
     --rfb-ink: #121212;
     --rfb-key: #0a0a0a;
@@ -930,8 +904,7 @@
     /* the 343u column, centred once the frame stops growing */
     --rfb-gutter: max(calc(16 * var(--rfb-u)), (100vw - 343 * var(--rfb-u)) / 2);
 
-    /* heading at the top, Continue at the foot, the map card taking the room between; if the
-       details outgrow the screen the map goes first, then the column scrolls */
+    /* map card fills the room between heading and Continue; shrinks first, then column scrolls */
     .content {
       flex: 1 1 auto;
       min-height: 0;
@@ -997,8 +970,7 @@
       line-height: 1.45;
     }
 
-    /* the map card (#mapC), moved here by register-form-booking.js: up to 206 tall, 16 under
-       the notice, the pin where the design has it */
+    /* the map card, moved here by register-form-booking.js: up to 206 tall, 16 under the notice */
     .media {
       flex: 1 1 calc(206 * var(--rfb-u));
       min-height: 0;
@@ -1030,8 +1002,7 @@
       padding: calc(10 * var(--rfb-u)) calc(12 * var(--rfb-u));
     }
 
-    /* Continue: 48 tall, 20 above the foot of the screen (and the home bar); the status line
-       goes above it, so the button keeps the bottom room even when the column scrolls */
+    /* Continue 20 above the screen foot; status goes above it so the button keeps the bottom */
     .fields > .booking-actions {
       order: 2;
       padding: calc(21 * var(--rfb-u)) 0 calc(20 * var(--rfb-u) + env(safe-area-inset-bottom, 0px));
@@ -1048,8 +1019,7 @@
       letter-spacing: 0.02em;
     }
 
-    /* the pop-ups: the design's 343 card (24 padding and corners), centred on the screen as
-       its .sheet is, rising a little into place */
+    /* pop-ups: the design's 343 card, centred on the screen */
     .booking-modal {
       width: min(calc(343 * var(--rfb-u)), calc(100vw - 32px));
       max-height: calc(100dvh - 32px);
@@ -1077,8 +1047,7 @@
         height: calc(48 * var(--rfb-u));
       }
 
-      /* Request sent: the design's one full-width button; ours are two (the authored link,
-         then Done), one under the other so a long link text still fits */
+      /* Request sent: our two buttons stack so a long authored link text still fits */
       .success .booking-actions {
         flex-direction: column;
       }
