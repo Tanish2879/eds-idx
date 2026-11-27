@@ -1,8 +1,3 @@
-/* Social Deck "Strip" style: a flat row of portrait cards that scrolls
-   sideways, with prev/next below it. The section's default content (eyebrow,
-   heading, social icon list) is laid out here too. */
-
-/* ---------- the strip ---------- */
 .social-deck.block.strip {
   --sd-card-radius: calc(32 * var(--sd-u, 1px));
   --sd-fade-in: 0.5825;
@@ -125,8 +120,7 @@
     letter-spacing: 0;
   }
 
-  /* arrow tile, top right of every card; decorative, so it never takes the
-     pointer */
+  /* decorative arrow tile, top right of every card */
   & .social-deck-strip-card::after {
     content: '';
     position: absolute;
@@ -148,7 +142,6 @@
     background-color: rgb(255 255 255 / 32%);
   }
 
-  /* prev / next, left-aligned under the row */
   & .social-deck-strip-nav {
     display: flex;
     gap: 10px;
@@ -156,7 +149,7 @@
     margin-top: 43.9px;
     padding: 0 var(--sd-side, 20px);
 
-    /* fast repeated taps (also on a disabled arrow) must not double-tap zoom */
+    /* no double-tap zoom on fast repeated taps (also on a disabled arrow) */
     touch-action: manipulation;
 
     &[hidden] {
@@ -237,18 +230,18 @@
   }
 }
 
-/* ---------- section: one dark fold, head + strip + arrows ---------- */
+/* section: head + strip + arrows in one full-screen fold */
 main .section.social-deck-container:has(.social-deck.strip) {
   /* mobile frame (375×815) */
   --sd-side: clamp(20px, 5.2vw, 44px);
   --sd-h-size: clamp(20px, 5.8667vw, 36px);
   --sd-top: clamp(100px, 13.25svh, 140px);
 
-  /* head (eyebrow 14, 7, heading 27, 20, socials 40), then 50.8 to the cards */
+  /* 131.8 = eyebrow 14 + 7 + 20 + socials 40 + 50.8 to the cards, plus the heading row */
   --sd-h-row: calc(var(--sd-h-size) * 27 / 22);
   --sd-head-h: calc(131.8px + var(--sd-h-row));
 
-  /* 43.9 to the arrows, 44 arrows, at least 16 below */
+  /* 103.9 = 43.9 to the arrows + 44 arrows + 16 min below; 451 = card height */
   --sd-u: min(calc(100vw / 420), calc((100svh - var(--sd-top) - var(--sd-head-h) - 103.9px) / 451));
 
   justify-content: flex-start;
@@ -339,7 +332,7 @@ main .section.social-deck-container:has(.social-deck.strip) {
     background: rgb(255 255 255 / 22%);
   }
 
-  /* 16.67 glyph */
+  /* 16.67px glyph in the 40px tile */
   & .default-content-wrapper > ul .icon {
     display: block;
     width: calc(100% - 23.33px);
@@ -420,7 +413,7 @@ main .section.social-deck-container:has(.social-deck.strip) {
       border-radius: calc(8 * var(--sd-u));
     }
 
-    /* 16.67 glyph */
+    /* 16.67px glyph in the 40px tile */
     & .default-content-wrapper > ul .icon {
       width: calc(100% - 23.33 * var(--sd-u));
       height: calc(100% - 23.33 * var(--sd-u));
@@ -428,12 +421,7 @@ main .section.social-deck-container:has(.social-deck.strip) {
   }
 }
 
-/* ---------- Light section (section style "light", styles/section-light.css) ----------
-   Colours only, measured from the source's light Socials panel: eyebrow #666,
-   heading #121212, social tiles and arrows rgb(0 0 0 / 7%) with a #121212 /
-   #000 glyph, 12% on hover / focus, card fill #222. The photo cards keep their
-   dark caption shade, caption and arrow tile, as the source does. The section
-   background is the light section's own --section-bg. */
+/* Light section: colours only, from the source's light Socials panel; photo cards stay dark */
 .section.light .social-deck.block.strip {
   & .social-deck-cards.social-deck-strip-track:focus-visible {
     outline-color: rgb(18 18 18);
@@ -471,7 +459,7 @@ main .section.light.social-deck-container:has(.social-deck.strip) {
     color: rgb(18 18 18);
   }
 
-  /* social text links in one paragraph: a row of small tiles like the icons */
+  /* text-link socials in one paragraph: a row of tiles like the icon list */
   /* stylelint-disable-next-line no-descending-specificity -- unrelated to the card caption p */
   & .default-content-wrapper > p:has(> a) {
     display: flex;
@@ -501,8 +489,6 @@ main .section.light.social-deck-container:has(.social-deck.strip) {
     }
   }
 
-  /* social tiles: icon list or text links (white icon glyphs are inverted to
-     black, as on the source) */
   & .default-content-wrapper > ul a:any-link,
   & .default-content-wrapper > p > a:any-link {
     background: rgb(0 0 0 / 7%);

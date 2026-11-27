@@ -1,24 +1,12 @@
-/* Related Blogs "News" style (class "news"), loaded by related-blogs.js only when the block
-   has the class; the Default style is untouched (everything here is scoped to .news).
-   Design: the dealer prototype's newsroom panel (#news) in a light section: the eyebrow
-   (default content before the block), the uppercase heading left and a black View all
-   button right, then three cards: rounded image, uppercase title and one grey line
-   "Category · 28 Oct 2026. Description" (related-blogs.js folds category + date into it).
-   Desktop follows the prototype's 1280 x 720 frame scaled to fit the screen (--rbn-u, as the
-   source's --u): head at 116 and cards at 228 of 720, 64 from the screen edges. The
-   prototype only scales that frame down on phones (4px text), so below 900px the panel uses
-   readable sizes on a 390 x 844 frame, the cards in a swipe row clear of the price bar.
-   Greys are #666 instead of the source's #808080 to keep AA contrast on the light ground. */
+/* "news" style, loaded only with the class; greys are #666 (not the source's #808080) for AA */
 
-/* ---------- section: the eyebrow and the panel's place in the one-screen fold ---------- */
 main > .section:has(> .related-blogs-wrapper > .related-blogs.news) {
   --rbn-u: clamp(0.85px, min(100vw / 390, 100svh / 844), 1.3px);
   --rbn-side: calc(20 * var(--rbn-u));
   --rbn-ink: var(--color-black);
   --rbn-quiet: var(--color-gray-60);
 
-  /* phones: centred between the floating header and the price bar, as the source centres
-     its frame */
+  /* phones: centred between the floating header and the price bar */
   justify-content: center;
   padding: calc(100 * var(--rbn-u)) 0 calc(88 * var(--rbn-u));
 }
@@ -42,7 +30,6 @@ main > .section:has(> .related-blogs-wrapper > .related-blogs.news) > .default-c
   color: var(--rbn-quiet);
 }
 
-/* ---------- block ---------- */
 .related-blogs.news {
   gap: calc(24 * var(--rbn-u));
   padding: 0 var(--rbn-side);
@@ -72,7 +59,7 @@ main > .section:has(> .related-blogs-wrapper > .related-blogs.news) > .default-c
   color: var(--rbn-ink);
 }
 
-/* black button; the hover is the letter glitch only (the source never recolours it) */
+/* black button; hover is the letter glitch only (the source never recolours it) */
 main .related-blogs.news a.related-blogs-view-all.button:any-link {
   flex: 0 0 auto;
   min-width: calc(168 * var(--rbn-u));
@@ -171,8 +158,7 @@ main .related-blogs.news a.related-blogs-view-all.button:any-link:focus-visible 
   color: var(--rbn-ink);
 }
 
-/* four lines at most on phones, three on desktop (the source's), so a long summary can't
-   run into the price bar */
+/* max four lines on phones, three on desktop, so a long summary can't reach the price bar */
 .related-blogs.news .related-blogs-card-desc {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -200,7 +186,7 @@ main .related-blogs.news a.related-blogs-view-all.button:any-link:focus-visible 
   }
 }
 
-/* ---------- desktop: the 1280 x 720 frame ---------- */
+/* desktop: the 1280 x 720 frame scaled to fit the screen (--rbn-u) */
 @media (width >= 900px) {
   main > .section:has(> .related-blogs-wrapper > .related-blogs.news) {
     --rbn-u: min(100vw / 1280, 100svh / 720);

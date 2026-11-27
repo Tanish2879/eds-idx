@@ -1,8 +1,4 @@
-/* /blocks/events/events.css */
-
-/* Events block: upcoming events carousel (Figma Opt 21 desktop, Newsroom mobile) */
-
-/* Full-bleed, full-screen band: release the global 1200px wrapper cap */
+/* full-bleed: release the global 1200px wrapper cap */
 main > .section.events-container {
   & > .events-wrapper {
     max-width: none;
@@ -12,10 +8,7 @@ main > .section.events-container {
   }
 }
 
-/* Scope each selector in the block with `.block.events` to avoid accidental conflicts outside the block */
-
-/* Mobile (Figma 402×874 frame). Every size is Figma px × --ev-u, so the whole
-   layout scales down to fit one screen under the fixed header. */
+/* every size is Figma px × --ev-u (mobile frame 402×874), so the layout fits one screen */
 .block.events {
   --ev-u: clamp(0.7px, min(100vw / 402, 100svh / 874), 1px); /* same unit as the header */
   --ev-top: calc(134 * var(--ev-u)); /* header pill bottom (44 + 50) + 40 */
@@ -28,8 +21,7 @@ main > .section.events-container {
   --ev-lift: calc(63 * var(--ev-u)); /* side cards sit lower than the centred one */
   --ev-head-h: calc(29 * var(--ev-u));
 
-  /* Figma: New Science Extended for the heading and mobile city, regular New
-     Science for the desktop city and the description */
+  /* New Science Extended: heading + mobile city; regular New Science: desktop city + text */
   --ev-text-font: 'new-science', new-science-fallback, 'Anek Latin', roboto-condensed, arial, sans-serif;
   --ev-city-font: var(--display-font-family);
   --ev-city-size: calc(24 * var(--ev-u));
@@ -49,7 +41,7 @@ main > .section.events-container {
   --ev-desc-ls: -0.01em;
   --ev-desc-w: none;
   --ev-venue-w: none;
-  --ev-ease: cubic-bezier(0.33, 1, 0.68, 1); /* ease-out cubic: starts at 3× its average speed (the script times settles on this) */
+  --ev-ease: cubic-bezier(0.33, 1, 0.68, 1); /* ease-out cubic; the script's settle timing assumes this curve */
   --ev-duration: 600ms;
 
   position: relative;
@@ -63,15 +55,14 @@ main > .section.events-container {
   color: #e6e6e6;
   user-select: none;
 
-  /* Desktop (Figma 1728×1000 "Opt 21") */
+  /* desktop (Figma 1728×1000 frame) */
   @media (width >= 900px) {
-    /* the height budget is the 1000 Figma frame plus the arrows under the
-       cards (~60), so they still fit on short laptop screens */
+    /* 1060 = 1000 Figma frame + ~60 for the arrows, so it fits short laptop screens */
     --ev-u: clamp(0.5px, min(100vw / 1728, 100svh / 1060), 1px);
     --ev-top: calc(175 * var(--ev-u)); /* header pill (40 + 55) + 80 */
     --ev-title-size: calc(100 * var(--ev-u));
     --ev-title-lh: calc(90 * var(--ev-u));
-    --ev-stage-gap: calc(75 * var(--ev-u)); /* heading text bottom → city text (Figma draws the city 5px above its 78px-down card frame) */
+    --ev-stage-gap: calc(75 * var(--ev-u)); /* heading bottom → city text (Figma city sits 5px above its card frame) */
     --ev-stage-h: calc(594 * var(--ev-u));
     --ev-card-w: calc(453 * var(--ev-u));
     --ev-gap: calc(64 * var(--ev-u));
@@ -88,7 +79,7 @@ main > .section.events-container {
     --ev-media-h: calc(327 * var(--ev-u));
     --ev-media-h-active: calc(438 * var(--ev-u));
     --ev-radius: calc(20 * var(--ev-u));
-    --ev-info-gap: calc(24 * var(--ev-u)); /* image → description text (its frame is 32px down, the text 8px above it) */
+    --ev-info-gap: calc(24 * var(--ev-u)); /* image → description text (frame 32px down, text 8px above it) */
     --ev-info-shift: 0px;
     --ev-desc-size: calc(24 * var(--ev-u));
     --ev-desc-lh: calc(32 * var(--ev-u));
@@ -109,16 +100,11 @@ main > .section.events-container {
     text-transform: uppercase;
     color: var(--color-white);
 
-    /* the heading's mask: hides the text while it waits above the heading box
-       (small margins keep the resting glyphs' tops and descenders unclipped) */
+    /* entrance mask; small margins keep resting glyph tops and descenders unclipped */
     clip-path: inset(-0.2em -50vw -0.35em);
   }
 
-  /* Entrance (Figma prototype Opt 66 → Opt 67): the heading drops 190px into
-     its mask while the cards rise 80px and fade in. The script drives both
-     from the section's scroll position (--enter for the cards, --enter-title
-     for the heading, which starts once the snap is 3/4 in), so they land
-     together with the section snap. */
+  /* entrance: the script drives --enter (cards) and --enter-title (heading) from scroll */
   & .events-title-text {
     display: inline-block;
     transform: translateY(calc(-190 * var(--ev-u) * (1 - var(--enter-title, var(--enter, 1)))));
@@ -138,9 +124,7 @@ main > .section.events-container {
     cursor: grabbing;
   }
 
-  /* previous / next arrows, centred under the cards (source: 44px buttons on
-     its 1280 frame = 59.4 Figma px here on desktop; fixed 44px on phones);
-     they enter with the cards */
+  /* 59.4 = the source's 44px buttons (1280 frame) in Figma px; fixed 44px on phones */
   & .events-nav {
     display: flex;
     justify-content: center;
@@ -199,10 +183,7 @@ main > .section.events-container {
     column-gap: var(--ev-gap); /* read by the script as the card spacing */
   }
 
-  /* --t: 1 for the centred (big) card, 0 for side cards; the script eases it
-     in between while a drag or swipe is in progress.
-     --g: 1 turns the image grayscale; set for events whose date has passed,
-     today's and upcoming events stay in colour wherever they sit. */
+  /* --t: 1 centred card, 0 side cards (script eases between); --g: 1 = grayscale past event */
   & .event {
     --t: 0;
     --g: 0;
@@ -222,16 +203,14 @@ main > .section.events-container {
     --g: 1;
   }
 
-  /* keyboard focus sits on the centred card (the arrow keys step the carousel) */
+  /* keyboard focus sits on the centred card (arrow keys step the carousel) */
   & .event:focus-visible {
     outline: 2px solid var(--color-white);
     outline-offset: calc(12 * var(--ev-u));
     border-radius: var(--ev-radius);
   }
 
-  /* GPU layers only while a finger / mouse is moving the row (the
-     browser promotes cards on its own during the settle animation); a permanent
-     layer on every card exhausts iPhone graphics memory and makes cards blink */
+  /* will-change only while dragging: permanent layers exhaust iPhone GPU memory, cards blink */
   &.is-dragging .event {
     will-change: transform;
   }
@@ -282,8 +261,7 @@ main > .section.events-container {
     background-color: var(--color-gray-90);
     transition: width var(--ev-duration) var(--ev-ease), height var(--ev-duration) var(--ev-ease);
 
-    /* Safari can drop the rounded clip of an animating card for a frame (square
-       corners flash); isolation + a mask keep the corners clipped */
+    /* Safari can drop the rounded clip mid-animation; isolation + mask keep corners clipped */
     isolation: isolate;
     mask-image: radial-gradient(#fff, #000);
 
@@ -296,9 +274,7 @@ main > .section.events-container {
       pointer-events: none;
     }
 
-    /* grayscale lives on the photo only, not on the whole moving card: a
-       filtered element that moves is redrawn every frame, which flickers on
-       iPhone (the date and city text are already neutral grey) */
+    /* grayscale on the photo only: a filtered moving card repaints each frame, flickers on iPhone */
     & img {
       filter: grayscale(var(--g));
       transition: filter var(--ev-duration) var(--ev-ease);
@@ -336,8 +312,7 @@ main > .section.events-container {
     cursor: pointer;
   }
 
-  /* description + venue: only shown for the centred event; stacked on mobile,
-     side by side on desktop */
+  /* description + venue: only shown for the centred event */
   & .event-info {
     display: flex;
     flex-direction: column;
@@ -404,12 +379,7 @@ main > .section.events-container {
   }
 }
 
-/* ---------- Light section (section style "light", styles/section-light.css) ----------
-   Colours only, measured from the source's light Events panel: heading
-   #2e2e2e, card head (city + date) #121212, description #000, venue #000 at
-   80%, image placeholder #ddd. The source has no arrows here, so they take
-   its light Socials arrows: rgb(0 0 0 / 7%) tile, #121212 glyph, 12% on
-   hover / focus. Sizes, spacing and type are unchanged. */
+/* Light section: colours only, from the source's light panel; arrows match light Socials */
 .section.light .block.events {
   color: rgb(18 18 18);
 

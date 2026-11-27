@@ -14,7 +14,6 @@ const SITE_KEYS = { stage: '6LeyxvEtAAAAACXf33K8qUr0S5qT458UbWKjvcBQ', prod: '6L
 const CAPTCHA_PROVIDER = 'recaptcha';
 const DIAL_CODE = '+91'; // India only; the service rejects any other code
 
-// Indian PIN code: 6 digits, never starting with 0
 const PINCODE_RE = /^[1-9]\d{5}$/;
 const PINCODE_LENGTH = 6;
 const MOBILE_RE = /^[6-9]\d{9}$/;
@@ -28,7 +27,7 @@ const TLD_MAX = 20;
 // Explicit list, not a suffix check: dev.jswmotors.com once fell through to prod
 const STAGE_HOSTS = [
   'dev.jswmotors.com', 'stage.jswmotors.com',
-  // the dealer sites' dev and stage tiers (same code, repoless); dealers.jswmotors.com is prod
+  // dealer sites' dev/stage tiers (repoless); dealers.jswmotors.com is prod
   'dev-dealers.jswmotors.com', 'stage-dealers.jswmotors.com',
   'localhost', '127.0.0.1',
 ];
@@ -97,8 +96,7 @@ const DEFAULT_CONSENT_TEXT = 'I agree to JSW Motors storing my details and conta
 const DEFAULT_CONSENT_LINK_HREF = '#privacy';
 const DEFAULT_CONSENT_LINK_TEXT = 'Privacy Notice.';
 
-// SHA-256 hex for the hashed email/phone Salesforce matches on. Inputs must be
-// normalised exactly as sent: email lowercased and trimmed, phone as 10 bare digits.
+// Inputs must be normalised as sent: email lowercased and trimmed, phone as 10 bare digits
 async function sha256Hex(value) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -111,16 +109,13 @@ function resolveEnv() {
   return STAGE_HOSTS.includes(h) || isPreviewHost(h) ? 'stage' : 'prod';
 }
 
-// No CAPTCHA on *.aem.page / *.aem.live (no reCAPTCHA key can be registered there);
-// must match the service's CAPTCHA_EXEMPT_ORIGINS
+// No reCAPTCHA key can be registered on *.aem.page/live; must match CAPTCHA_EXEMPT_ORIGINS
 const captchaRequired = () => !isPreviewHost(window.location.hostname);
 
 // 'otp-api-base' metadata can point the form at a local stub
 const resolveApiBase = () => (getMetadata('otp-api-base') || API_BASE).replace(/\/+$/, '');
 
-// The reCAPTCHA badge expands on hover, and a tap on touch leaves it open over the
-// CTA. Keep it collapsed, toggled by a button over the logo (taps inside Google's
-// iframe never reach us); a tap anywhere else collapses it.
+// A tap leaves the badge open over the CTA, and taps in Google's iframe never reach us: own toggle
 function collapsibleBadge(badge) {
   if (badge.querySelector('.grecaptcha-toggle')) return;
   const toggle = document.createElement('button');
@@ -198,8 +193,7 @@ function captchaLoader() {
   return { load, token };
 }
 
-// Builds elements without innerHTML, so authored strings are never parsed as markup.
-// true renders an empty attribute; false/null/undefined skip it.
+// No innerHTML, so authored strings are never parsed; true = empty attribute, false/null = skip
 function createEl(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
   Object.entries(attrs).forEach(([key, value]) => {
@@ -216,8 +210,7 @@ const isRequired = (val) => {
   return ['true', '1', 'yes'].includes(String(val).trim().toLowerCase());
 };
 
-// Same-origin only (root-relative, or http(s) on this origin), so authored content
-// can't make the redirect an XSS / open-redirect sink
+// Same-origin only, so authored content can't make the redirect an XSS / open-redirect sink
 const isSafeRedirect = (url) => {
   if (!url || url.startsWith('//')) return false;
   if (url.startsWith('/')) return true;
@@ -229,7 +222,6 @@ const isSafeRedirect = (url) => {
   }
 };
 
-// cuts the domain suffix after the last dot to TLD_MAX characters
 const capTld = (value) => {
   const at = value.lastIndexOf('@');
   if (at === -1) return value;
@@ -238,11 +230,8 @@ const capTld = (value) => {
   return value.slice(0, at + dot + 2 + TLD_MAX);
 };
 
-/**
- * @param {Element} block
- */
 export default async function decorate(block) {
-  // Booking style: its steps load alongside the placeholders (register-form-booking.js)
+  // Booking style assets load in parallel with the placeholders
   const booking = block.classList.contains('booking');
   const bookingModule = booking ? Promise.all([
     loadCSS(`${window.hlx.codeBasePath}/blocks/register-form/register-form-booking.css`),
@@ -250,23 +239,19 @@ export default async function decorate(block) {
   ]).then(([, mod]) => mod.default) : null;
   const placeholders = await fetchPlaceholders();
   const ph = (key, fallback) => placeholders[key] || fallback;
-  // placeholder text gets a trailing * only when the field is required
   const starred = (key, fallback, required) => `${ph(key, fallback).replace(/\*$/, '')}${required ? '*' : ''}`;
 
   // anchor for in-page links (e.g. a hero CTA to #register); first form only
   if (!document.getElementById('register')) block.id = 'register';
 
-  // Vertical keys belong to the form: keep them from section snap's window keydown,
-  // and outside a text field stop them scrolling too
+  // Keep vertical keys from section snap's window keydown; outside text fields, stop scrolling too
   block.addEventListener('keydown', (e) => {
     if (!['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown'].includes(e.key)) return;
     e.stopPropagation();
     if (!e.target.closest('input:not([type="checkbox"]), textarea')) e.preventDefault();
   });
 
-  // Booking: its own fields come after the Thank-you Page Link (6th row on): the Request Sent
-  // pop-up's text, the map's pop-up name and address; they are not fields of the form, so they
-  // are set aside for the style
+  // Booking: rows 6+ (Request Sent, map name/address) aren't form fields; set aside for the style
   const bookingRows = booking ? [...block.children].slice(5) : [];
   bookingRows.forEach((row) => row.remove());
   const [requestSentRow, mapNameRow, mapAddressRow] = bookingRows;
@@ -292,7 +277,6 @@ export default async function decorate(block) {
         ? createOptimizedPicture(img.src, img.alt || '', false, [{ width: '750' }])
         : img.closest('picture') || img;
     } else if (h) {
-      // "Heading & Intro" cell: a heading (normalised to <h2>) and an intro <p>
       if (h.tagName === 'H2') {
         heading = h;
       } else {
@@ -319,7 +303,7 @@ export default async function decorate(block) {
   const lastNameTooShort = ph('registerFormLastNameTooShort', 'Last name must be at least 1 character');
   const lastNamePlaceholder = starred('registerFormLastName', 'Last Name', isLastNameRequired);
 
-  // Booking: email is optional; the pincode is as in the default form
+  // Booking: email is optional
   const isEmailRequired = !booking && isRequired(placeholders.registerFormRequireEmail);
   const emailRequired = ph('registerFormEmailRequired', 'Email address required');
   const emailInvalid = ph('registerFormEmailInvalid', 'Enter a valid email address');
@@ -335,12 +319,11 @@ export default async function decorate(block) {
   const mobileInvalid = ph('registerFormMobileInvalid', 'Enter a valid 10-digit mobile number');
   const consentRequired = ph('registerFormConsentRequired', 'Tick this to continue');
 
-  // thank-you page: authored field first, then the placeholder; replaces the success screen
+  // a thank-you redirect replaces the success screen
   const rawRedirect = (redirectFromField || placeholders.registerFormRedirectUrl || '').trim();
   const redirectUrl = isSafeRedirect(rawRedirect) ? rawRedirect : '';
 
-  // Consent vs notice by content, not position (authored order has drifted before):
-  // the consent row carries the Privacy Notice link, the notice is plain prose
+  // Consent vs notice by content (consent has the link), not position: authored order has drifted
   const withLink = textRows.filter((r) => r.querySelector('a[href]'));
   let consentRow = null;
   let notice = null;
@@ -379,7 +362,6 @@ export default async function decorate(block) {
 
   const formId = 'register-form';
 
-  // labelled text field: hidden <label>, input with floating label, error text
   const buildField = (name, {
     type = 'text', placeholder, label, required = true, errorMsg, ...inputAttrs
   }) => createEl(
@@ -442,7 +424,6 @@ export default async function decorate(block) {
     inputmode: 'numeric',
   });
 
-  // country code and mobile share one row
   const mobileField = createEl(
     'div',
     { class: 'field' },
@@ -513,8 +494,7 @@ export default async function decorate(block) {
     class: 'otp-box',
     type: 'text',
     inputmode: 'numeric',
-    // room for the whole code (not 1): maxlength would clip an autofilled code
-    // before fillFrom() can spread it
+    // not 1: maxlength would clip an autofilled code before fillFrom() can spread it
     maxlength: String(OTP_LENGTH),
     'aria-label': `Digit ${i + 1} of ${OTP_LENGTH}`,
     placeholder: 'X',
@@ -596,16 +576,13 @@ export default async function decorate(block) {
   // separate from inFlight: it must outlast the request that set it
   let otpLockedOut = false;
 
-  // Analytics never receive personal values (names, email, phone, OTP, token);
-  // only field names, stable error codes and status literals
+  // Analytics never get personal values; only field names, error codes and status literals
   const dlComponent = componentOf(block);
   const formName = getMetadata('form-name') || 'register-interest';
-  // each fires once per page load
   let firedFormView = false;
   let firedFormStart = false;
   let firedMobileEntered = false;
   const firedStripped = {};
-  // form.firstField: the first field touched, reused by every event that reports it
   let firstFieldTouched = null;
 
   const track = (event, formData, increment = true) => dataLayerPush({
@@ -622,8 +599,7 @@ export default async function decorate(block) {
   // last error code pushed per field, so re-validation doesn't repeat it
   const trackedErrorCode = {};
 
-  // Get OTP reports every invalid field in one push, joined with "|" (the only
-  // separator not used inside codes or authored values)
+  // Get OTP sends all invalid fields in one push, joined with "|" (unused in codes/authored values)
   const trackBulkFieldErrors = (step, entries) => {
     track('formError', {
       step,
@@ -672,7 +648,6 @@ export default async function decorate(block) {
   const fieldWrap = (el) => el.closest('.field');
   const errorEl = (name) => form.querySelector(`.error[data-for="${name}"]`);
 
-  // floating label: the field is "filled" when it has a value
   const updateFilled = (el) => {
     const wrap = fieldWrap(el);
     if (!wrap) return;
@@ -686,8 +661,7 @@ export default async function decorate(block) {
     trackedErrorCode[name] = null;
   };
 
-  // Not colour alone: aria-invalid plus aria-describedby on the error text.
-  // shouldTrack=false updates the UI only, where the caller pushes its own error.
+  // shouldTrack=false updates the UI only, where the caller pushes its own error
   const showError = (name, message, errorCode, shouldTrack = true) => {
     fieldWrap(fields[name]).classList.add('has-error');
     errorEl(name).textContent = message;
@@ -701,12 +675,11 @@ export default async function decorate(block) {
   // only disabled in flight; validation runs on submit
   const refresh = () => { getOtpBtn.disabled = inFlight; };
 
-  // fields the user has focused; only these validate on blur
   const touched = new Set();
 
   // strips what a field can't hold as it's typed or pasted; reported once per field
   const sanitize = (el, clean, errorCode) => {
-    if (!el) return; // a field this form doesn't have
+    if (!el) return;
     el.addEventListener('input', () => {
       const cleaned = clean(el.value);
       if (cleaned === el.value) return;
@@ -716,9 +689,7 @@ export default async function decorate(block) {
       trackFieldError('details', el.name, errorCode);
     });
   };
-  // digits only, max 10, first digit 6-9
   sanitize(fields.mobile, (v) => v.replace(/\D/g, '').replace(/^[0-5]+/, '').slice(0, 10), 'mobile-input-rejected');
-  // digits only, max 6, no leading 0
   sanitize(fields.pincode, (v) => v.replace(/\D/g, '').replace(/^0+/, '').slice(0, PINCODE_LENGTH), 'pincode-input-rejected');
   sanitize(fields.firstname, (v) => v.replace(/\P{L}/gu, ''), 'name-input-rejected');
   sanitize(fields.lastname, (v) => v.replace(/\P{L}/gu, ''), 'name-input-rejected');
@@ -732,7 +703,6 @@ export default async function decorate(block) {
 
   Object.entries(fields).forEach(([name, el]) => {
     el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => {
-      // clear the error as soon as the field becomes valid
       if (fieldWrap(el).classList.contains('has-error')) {
         const { msg, code } = validators[name](el);
         if (msg) showError(name, msg, code); else clearError(name);
@@ -775,13 +745,11 @@ export default async function decorate(block) {
     form.querySelectorAll('[data-screen]').forEach((s) => { s.hidden = s.dataset.screen !== name; });
   };
 
-  // what the lead-submit payload carries beyond the fields, and what a valid fields screen does
-  // next: nothing more and Get OTP, except in the Booking style (register-form-booking.js)
+  // overridden by the Booking style (register-form-booking.js): lead payload extras, next step
   let leadExtras = () => ({});
   // eslint-disable-next-line no-use-before-define -- called only on submit, once all is defined
   let afterFieldsValid = () => requestCode(false);
 
-  // resend timer
   let timerId = null;
   const stopTimer = () => { if (timerId) { clearInterval(timerId); timerId = null; } };
   const startTimer = (seconds) => {
@@ -807,7 +775,6 @@ export default async function decorate(block) {
     }, 1000);
   };
 
-  // OTP boxes
   const otpValue = () => otpBoxEls.map((b) => b.value).join('');
   const refreshVerify = () => {
     verifyBtn.disabled = inFlight || otpLockedOut || otpValue().length !== OTP_LENGTH;
@@ -832,8 +799,7 @@ export default async function decorate(block) {
     refreshVerify();
   };
 
-  // Spreads digits across the boxes from `start` and focuses the first empty one.
-  // OS code autofill (iOS "From Messages", Android SMS) puts the whole code in one box.
+  // OS code autofill (iOS "From Messages", Android SMS) puts the whole code in one box
   const fillFrom = (start, raw) => {
     const digits = String(raw).replace(/\D/g, '').slice(0, OTP_LENGTH - start);
     if (!digits) return;
@@ -1015,8 +981,7 @@ export default async function decorate(block) {
     verificationToken = verified.data.verificationToken;
     track('otpVerified', { step: 'otp-verify', otpStatus: 'verified' });
 
-    // everything was collected on the first screen, so the lead is submitted now;
-    // the API still takes a single fullName as well as the parts
+    // the API takes a single fullName as well as the parts
     const q = new URLSearchParams(window.location.search);
     const firstName = fields.firstname.value.trim();
     const lastName = fields.lastname.value.trim();
@@ -1037,8 +1002,7 @@ export default async function decorate(block) {
       },
       verificationToken,
       ...leadExtras(),
-      // current-page params win; persisted ones (scripts/utils/attribution.js)
-      // fill in whatever this page doesn't carry
+      // current-page params override persisted ones (scripts/utils/attribution.js)
       utm: {
         ...getAttribution(),
         ...Object.fromEntries(
@@ -1084,7 +1048,6 @@ export default async function decorate(block) {
     // show every error at once, reported as one combined push
     let firstInvalid = null;
     const invalidFields = [];
-    // (only the fields the form has)
     Object.entries(validators).filter(([name]) => fields[name]).forEach(([name, fn]) => {
       const { msg, code } = fn(fields[name]);
       if (!msg) {

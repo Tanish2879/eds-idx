@@ -1,17 +1,7 @@
-/* Columns "Reach Us (Photo)" style (classes "reach-us photo"), loaded by columns.js only when
-   both classes are present, after columns-reach-us.css. Reach Us's layout over a dark photo
-   (and optional muted film) backdrop instead of its teal gradient; see
-   columns-reach-us-photo.js. Plain Reach Us is untouched.
-   Design: the dealer prototype's "Visit" panel (#garage), as it rests once its film has played:
-   the garage blurred (48px) and zoomed (1.14) under a radial shade, the title in New Science
-   Extended over a full-width rule, the groups at the frame's 64 | 587 | 946 columns, rows at
-   188 and 340 of 720. Desktop sizes are the frame's px x --ru (the scale at which the
-   1280 x 720 frame fits the screen, columns-reach-us.css). Below 900px it follows the dealer
-   mobile design's #garage (its 375 frame, the phone block below), arrival included. */
+/* Reach Us over a dark photo/film backdrop; desktop sizes are 1280 x 720 frame px x --ru */
 
 main > .section:has(.columns.reach-us.photo) {
-  /* the prototype's #gDim (25% → 55%), deeper so white text keeps AA contrast over the lit
-     frame: below desktop the groups run down over the bright middle of the photo */
+  /* deeper than the prototype's shade so white text keeps AA contrast over the lit photo */
   --reach-us-photo-shade:
     radial-gradient(
       80% 70% at 50% 60%,
@@ -27,8 +17,6 @@ main > .section:has(.columns.reach-us.photo) {
   --reach-us-photo-note-gap: 6px; /* address → directions */
   --reach-us-photo-intro-gap: 14px; /* showroom label → intro */
   --reach-us-photo-intro-width: none;
-
-  /* Reach Us's tokens, as the prototype's panel */
   --reach-us-pad-top: 128px; /* clear of the floating header */
   --reach-us-title-size: 28px;
   --reach-us-title-lh: 1.2;
@@ -59,9 +47,7 @@ main > .section:has(.columns.reach-us.photo) {
   isolation: isolate;
   background: #0b0b0b;
 
-  /* title: New Science Extended, white, over the full-width rule. The rule is drawn by the
-     heading's wrapper (so it can be drawn in on its own, below); Reach Us's border keeps its
-     place */
+  /* the rule is the wrapper's ::after so it can draw in on its own; the border keeps its space */
   & > .reach-us-head {
     position: relative;
 
@@ -97,14 +83,13 @@ main > .section:has(.columns.reach-us.photo) {
       margin: 0;
     }
 
-    /* blurred and zoomed in, as the prototype's panel once the lights are on */
     .reach-us-backdrop-img,
     .reach-us-backdrop-video {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      margin: 0; /* not Reach Us's gap between a cell's parts: the film lies on its poster */
+      margin: 0; /* the film lies on its poster */
       object-fit: cover;
       filter: blur(var(--reach-us-photo-blur));
       transform: scale(var(--reach-us-photo-zoom));
@@ -125,8 +110,6 @@ main > .section:has(.columns.reach-us.photo) {
     }
   }
 
-  /* the grid is Reach Us's: one column on phones; from tablet At the showroom across the top,
-     then Address | Opening hours and Phone | WhatsApp */
   & .columns.reach-us.photo {
     /* At the showroom: medium label, smaller intro copy */
     & > div:first-child > div:first-child {
@@ -163,8 +146,7 @@ main > .section:has(.columns.reach-us.photo) {
     --reach-us-col-gap: 48px;
   }
 
-  /* desktop: the prototype's 1280 x 720 frame, centred on the screen. Its side edges stretch to
-     the window (64 in from each side), the middle and right columns shifting out with them */
+  /* desktop: the 1280 x 720 frame centred; its side edges stretch to the window */
   @media (width >= 900px) {
     --reach-us-photo-shade:
       radial-gradient(
@@ -185,17 +167,14 @@ main > .section:has(.columns.reach-us.photo) {
     --reach-us-address-width: calc(283 * var(--ru));
     --reach-us-title-gap: calc(17 * var(--ru)); /* title box ends at 138, rule at 155 */
 
-    /* groups at 188; New Science (Typekit) draws its letters about 2px (1.8 frame px) lower in
-       the line box than the design's font files, so the groups start that much higher */
+    /* groups at 188, ~2px higher as Typekit New Science draws lower than the design's fonts */
     --reach-us-divider-gap: calc(31.2 * var(--ru) - 1px);
     --reach-us-label-gap: calc(12 * var(--ru));
     --reach-us-label-gap-tight: calc(12 * var(--ru));
     --reach-us-row-gap: 0px;
     --reach-us-col-gap: 0px;
 
-    /* the title's caps where the frame has them: New Science Extended (Typekit) sits 0.12em
-       lower in its line box than the design's font files; its box keeps its place (a relative
-       offset, as the arrival animates its translate) */
+    /* Typekit's font sits 0.12em low; a relative offset, as the arrival animates translate */
     & > .reach-us-head :is(h1, h2, h3, h4, h5, h6) {
       position: relative;
       top: -0.12em;
@@ -218,12 +197,7 @@ main > .section:has(.columns.reach-us.photo) {
     }
   }
 
-  /* phones: the dealer mobile design's #garage once lit (#gCol), on its 375 frame (1u = 1 design
-     px fitted to the screen width, as its --u, never below 0.8px): the title, the rule 30 under
-     it, then At the showroom and Address across, Opening hours | Phone over WhatsApp in its
-     174 | rest grid, 40 between groups. Its text boxes are trimmed to the caps; New Science's caps
-     sit (lh − 1) / 2 + 0.22em under its line box and its baseline (lh − 1) / 2 + 0.06em above
-     the box's foot, so each gap below is the design's minus those */
+  /* phones: the 375 design frame (1u = 1 design px); gaps exclude the font's cap offsets */
   @media (width < 900px) {
     --reach-us-photo-u: clamp(0.8px, min(100vw / 375, 100svh / 640), 1.6px);
     --reach-us-photo-note-size: calc(12 * var(--reach-us-photo-u)); /* directions (.vs) */
@@ -253,7 +227,7 @@ main > .section:has(.columns.reach-us.photo) {
     --reach-us-row-gap: 0px;
     --reach-us-col-gap: 0px;
 
-    /* the arrival's values on the phone frame (the timeline is the mobile design's gTl) */
+    /* the arrival's timings on phones (the mobile design's timeline) */
     --reach-us-photo-hint-bottom: calc(28 * var(--reach-us-photo-u) + env(safe-area-inset-bottom, 0px));
     --reach-us-photo-hint-font: var(--font-family-base);
     --reach-us-photo-hint-size: calc(11 * var(--reach-us-photo-u));
@@ -325,10 +299,7 @@ main > .section:has(.columns.reach-us.photo) {
     }
   }
 
-  /* the Dealer footer in the fold (footer.js moves it into .reach-us-photo-footer), as the
-     dealer prototypes' #garage: under the groups on the same backdrop, its own padding ending
-     the fold. Desktop: at the foot of the 720 frame (its rule at 460). Phones: straight after
-     the groups, as the mobile design's #gCol */
+  /* the Dealer footer moved into the fold by footer.js; at the 720 frame's foot on desktop */
   &:has(> .reach-us-photo-footer) {
     --reach-us-pad-bottom: 0px;
 
@@ -345,9 +316,7 @@ main > .section:has(.columns.reach-us.photo) {
     }
   }
 
-  /* with the snap, the fold with the footer is one screen; content taller than that (phones)
-     scrolls inside it once lit, 1:1 as the mobile design's column, over the backdrop held in
-     place (fixed, and clipped to the fold) */
+  /* with the snap the fold is one screen; taller content scrolls inside it over a fixed backdrop */
   html.snap-active &:has(> .reach-us-photo-footer) {
     height: 100vh;
     height: 100svh;
@@ -366,14 +335,7 @@ main > .section:has(.columns.reach-us.photo) {
     }
   }
 
-  /* the arrival (columns-reach-us-photo.js): state 0 (.reach-us-photo-arrival) shows the film
-     sharp with the content hidden and a hint; state 1 is everything above.
-     Timings are the prototype's timeline (s): the hint fades out 0–0.2 (0–0.4 on desktop, where
-     it has a 0.4s transition of its own), the photo blurs and
-     zooms and the shade comes in 0.3–1.2 (power2.inOut), the rule draws 0.7–1.6 (expo.out),
-     the title and groups rise 24 and fade in 0.6s each from 0.65, 0.04 apart (power3.out).
-     Back to state 0 plays it in reverse at 1.8x. Phones take the mobile design's values (the
-     variables set above): the photo 0.3–1.4, the rule from 1, the groups from 0.95 */
+  /* arrival state 0 (.reach-us-photo-arrival); timings match the prototype, back at 1.8x speed */
   @media (prefers-reduced-motion: no-preference) {
     --reach-us-photo-ease-media: cubic-bezier(0.45, 0, 0.55, 1); /* power2.inOut */
     --reach-us-photo-ease-rule: cubic-bezier(0.16, 1, 0.3, 1); /* expo.out */
@@ -382,7 +344,6 @@ main > .section:has(.columns.reach-us.photo) {
     --reach-us-photo-ease-item-back: cubic-bezier(0.55, 0.055, 0.675, 0.19); /* power3.in */
     --reach-us-photo-ease-hint: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* power1.out */
 
-    /* the hint, centred near the bottom (prototype #gHint) */
     & .columns.reach-us.photo > div > .reach-us-backdrop .reach-us-photo-hint {
       display: block;
       position: absolute;
@@ -400,8 +361,7 @@ main > .section:has(.columns.reach-us.photo) {
       white-space: nowrap;
       opacity: 0;
 
-      /* desktop: the prototype's 0.2s fade runs under the hint's own 0.4s transition, so it
-         leaves over about 0.45s, easing in and out */
+      /* desktop: the prototype's 0.2s fade under the hint's own 0.4s transition ≈ 0.45s */
       transition: opacity var(--reach-us-photo-hint-in, 0.45s) var(--reach-us-photo-hint-ease, ease-in-out);
     }
 
@@ -471,8 +431,7 @@ main > .section:has(.columns.reach-us.photo) {
       }
     }
 
-    /* a state set at once (arriving, or a change of window size); as specific as the rules
-       above, and after them */
+    /* a state set at once; must stay after the rules above (same specificity) */
     &.reach-us-photo-instant {
       & .columns.reach-us.photo > div > .reach-us-backdrop {
         :is(.reach-us-backdrop-img, .reach-us-backdrop-video, .reach-us-photo-hint),
@@ -489,8 +448,7 @@ main > .section:has(.columns.reach-us.photo) {
   }
 }
 
-/* an empty section after the fold with the footer (e.g. one left by a page metadata table)
-   takes no room: the fold ends the page */
+/* an empty section after the fold (e.g. left by a metadata table) takes no room */
 main > .section:has(.columns.reach-us.photo):has(> .reach-us-photo-footer) ~ .section:not(:has(*)) {
   height: 0;
   min-height: 0;

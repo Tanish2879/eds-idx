@@ -1,13 +1,6 @@
-/* Related Blogs — "More Articles": a centred heading and up to 3 blog cards.
-   Mobile (Figma 4547:7583, 375 frame): a swipeable row of dark cards, the date
-   pinned to the card bottom, no description. Desktop (Figma 4547:8630 +
-   heading 4547:8667, 1280 frame): three columns, a category | date row above
-   the title, then the description.
-   Every size is Figma px × --rb-u, the viewport's scale to its frame, so the
-   block matches at 375 / 1280 and stays fluid in between. */
+/* Sizes are Figma px × --rb-u (viewport scale to the 375 / 1280 frames), fluid in between */
 
-/* full width: the block's own padding is the Figma frame's margin, so the
-   section wrapper's max-width and side padding are dropped */
+/* full width: the block's own padding is the Figma frame margin, so the wrapper's are dropped */
 main > .section > .related-blogs-wrapper {
   max-width: none;
   margin: 0;
@@ -38,8 +31,7 @@ main > .section > .related-blogs-wrapper {
   color: var(--color-white);
 }
 
-/* heading + View all (only when a link and a label are authored): the heading stays centred,
-   the button under it on phones and at the right end of its row from tablet up */
+/* heading stays centred; View all under it on phones, at the row's right end from tablet up */
 .related-blogs .related-blogs-head {
   display: grid;
   justify-items: center;
@@ -160,7 +152,6 @@ main .related-blogs a.related-blogs-view-all.button:any-link:focus-visible {
   gap: calc(22 * var(--rb-u));
 }
 
-/* category and date share the small grey meta type */
 .related-blogs .related-blogs-card-category,
 .related-blogs .related-blogs-card-date {
   font-family: var(--font-family-base);
@@ -292,7 +283,6 @@ main .related-blogs a.related-blogs-view-all.button:any-link:focus-visible {
     color: var(--color-white);
   }
 
-  /* two lines, then an ellipsis (as in Figma) */
   .related-blogs .related-blogs-card-desc {
     display: -webkit-box;
     -webkit-box-orient: vertical;

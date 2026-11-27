@@ -1,9 +1,4 @@
-/* Hero Carousel "Showroom Layout" (class "showroom", loaded by hero.js only with it): the
-   hero's own Text stays beside every slide — the eyebrow above the slide's heading and the
-   info card (dl.showroom-card, built by hero-showroom.js) under the slide's text.
-   Desktop values are the source's 1280x720 frame (meridian-motors-dealer, #about), scaled by
-   --sr-u like the source's --u, with its edge pinning (--sr-ex, --sr-ey) on screens wider or
-   taller than 16:9. Phones get their own layout (the source only scales its desktop frame). */
+/* "showroom" style: desktop is the source's 1280x720 frame scaled by --sr-u, pinned past 16:9 */
 
 /* the wipe between photos (hero-showroom.js sets .is-wiping while it runs) */
 @property --sr-y {
@@ -72,13 +67,11 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
 
     align-items: flex-start;
 
-    /* the source's 92 / 7 / 12 copy offsets, less what this build of New Science adds above
-       its baselines (2.2, 2.7 and -2.7 of --sr-u), so the lines sit on the source's baselines */
+    /* the source's 92 / 7 / 12 offsets, less what this New Science build adds above baselines */
     padding: calc(89.8 * var(--sr-u) + 2 * var(--sr-ey)) 0 0 calc(64 * var(--sr-u));
   }
 
-  /* the source's shading: dark at the bottom, plus a light veil behind the copy (top left) so
-     white text stays readable (WCAG AA) on the bright showroom photo */
+  /* dark foot plus a light veil behind the copy so white text keeps AA on the bright photo */
   > .bg::after {
     content: "";
     position: absolute;
@@ -96,8 +89,7 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
     }
   }
 
-  /* the photos: one shown; a change wipes the next in over the last along a curved edge
-     (0.95s), the last drifting away and both blurring a little mid-way */
+  /* photos: the next wipes in along a curved edge (0.95s), both blurring a little mid-way */
   .slide {
     z-index: 0;
     visibility: hidden;
@@ -307,8 +299,7 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
     }
   }
 
-  /* a change of slide: the last caption blurs out (8 down, 0.25s power2.in), the next one blurs
-     back in from 0.45s (0.45s power3.out, its lines 0.06s apart) */
+  /* slide change: the last caption blurs out (8 down, 0.25s), the next blurs in from 0.45s */
   @media (prefers-reduced-motion: no-preference) {
     > .slide-contents > .content {
       &:not(.is-active) > * {
@@ -338,7 +329,6 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
     }
   }
 
-  /* reduced motion: the other slides' text is simply hidden */
   @media (prefers-reduced-motion: reduce) {
     > .slide-contents > .content:not(.is-active) {
       transition: none;
@@ -487,12 +477,7 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
     }
   }
 
-  /* ---------- phones: the mobile design (meridian-motors-mobile, #about) ----------
-     Its unit is 390 / 375 on a 390 x 844 screen (--sr-p); its text boxes are trimmed to the
-     capitals, so the margins below are the trimmed gaps less this font's half-leading. The
-     copy starts the design's 22 below the header; the thumbnail strip sits centred above the
-     info card at the bottom, the card the design's 82 above the screen's bottom (clear of the
-     price bar). */
+  /* phones: the mobile design (--sr-p = 390/375); margins are cap-trimmed gaps less half-leading */
   @media (width < 900px) {
     --sr-p: clamp(0.75px, min(100vw / 375, 100svh / 640), 1.6px);
     --sr-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -501,14 +486,12 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
 
     padding: calc(108 * var(--sr-m)) calc(16 * var(--sr-p)) calc(82 * var(--sr-p) + env(safe-area-inset-bottom));
 
-    /* the design's shading is a veil at the top only; ours is darker so the white copy keeps
-       AA contrast on the bright showroom photos */
+    /* darker than the design's top-only veil so the white copy keeps AA on bright photos */
     > .bg::after {
       background: linear-gradient(180deg, rgb(0 0 0 / 62%) 0%, rgb(0 0 0 / 58%) 24%, rgb(0 0 0 / 44%) 36%, rgb(0 0 0 / 0%) 52%);
     }
 
-    /* the design frames its photos a little left of centre on a tall screen (38 to 50%, per
-       photo; one value here, as the focal point isn't authored) */
+    /* the design frames photos left of centre on tall screens (one value; focal point unauthored) */
     .slide :is(img, video) {
       object-position: 40% 50%;
     }
@@ -550,7 +533,6 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
       }
     }
 
-    /* thumbnails: a strip centred above the card */
     > .slide-nav {
       align-self: center;
       gap: calc(10 * var(--sr-p));
@@ -601,8 +583,7 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
       }
     }
 
-    /* slide changes: the photos cross-fade (0.9s) and the new one settles from 1.06x (1.6s);
-       the caption fades down and out (0.3s), the next rises in from 0.12s */
+    /* slide change: photos cross-fade (0.9s), the new one settles from 1.06x; captions fade/rise */
     @media (prefers-reduced-motion: no-preference) {
       .slides .slide,
       &.is-wiping .slides .slide {
@@ -675,8 +656,7 @@ main .section.hero-container .hero-wrapper > .hero.carousel.showroom {
     display: none;
   }
 
-  /* Universal Editor: the slides' Text sits in each slide (hero.css); the eyebrow and the card
-     (inside the Text field, its label/value paragraphs hidden) at the top left */
+  /* UE: Text sits in each slide (hero.css); eyebrow and card (source paras hidden) at top left */
   &[data-aue-resource] {
     > .content {
       .showroom-source {

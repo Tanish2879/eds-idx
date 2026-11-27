@@ -1,23 +1,4 @@
-// Register Form "Booking" style, loaded by register-form.js only when the style is used: the
-// dealer microsite's "Get a quote" request, as in the dealer design:
-//   the details screen ("Tell us about you": names, email optional, pincode, mobile, consent;
-//     the privacy notice above "Continue"), then the existing journey:
-//   the OTP screen in a pop-up ("Verify your number": the code boxes, resend, Change number
-//     and Submit, a close button), and after the lead is created
-//   the "Request sent" pop-up: the authored Request Sent field (title, label rows, status line,
-//     a link as the outlined button) plus the visitor's email and their contact;
-//     Done closes it and clears the form.
-// On phones (below 900px) the map card moves under the details, above Continue, as in the
-// dealer mobile design; desktop keeps it beside the form.
-// The pop-ups are <dialog>s inside the form (the screens keep their data-screen and the
-// form's own handlers); the details stay behind them; on phones they are bottom sheets
-// (register-form-booking.css). A Thank-you Page Link still wins over
-// the Request sent pop-up (register-form.js redirects).
-// The lead-submit payload gains only the dealer microsite's lead source: source "Dealer
-// Microsite", channel "Digital", subsource "" (placeholders registerFormBookingSource /
-// Channel / Subsource override them); the lead API takes no other extra fields.
-// The deep links #quote and #test-drive (the hero's and price bar's buttons) bring the form
-// into view.
+// Booking style (dealer "Get a quote"), loaded by register-form.js only when the style is used
 
 const ANCHORS = ['quote', 'test-drive'];
 const LEAD_SOURCE = {
@@ -31,22 +12,13 @@ const CLOSE_ICON = '<svg viewBox="0 0 12 12" fill="none" aria-hidden="true" focu
 
 const mobileLabel = (digits) => (digits.length === 10 ? `${digits.slice(0, 5)} ${digits.slice(5)}` : digits);
 
-/**
- * The bold label a paragraph starts with, or null.
- * @param {HTMLParagraphElement} p
- * @returns {Element|null}
- */
+/** The bold label a paragraph starts with, or null. */
 function leadingLabel(p) {
   const first = [...p.childNodes]
     .find((n) => n.nodeType !== Node.TEXT_NODE || n.textContent.trim());
   return first?.nodeType === Node.ELEMENT_NODE && first.matches('strong, b') ? first : null;
 }
 
-/**
- * Reads the authored Request Sent field.
- * @param {Element|null} cell
- * @returns {{title: string, rows: Array<[string, string]>, status: string, link: Element|null}}
- */
 function readRequestSent(cell) {
   const out = {
     title: '', rows: [], status: '', link: null,
@@ -73,17 +45,7 @@ function readRequestSent(cell) {
   return out;
 }
 
-/**
- * The map card: with a Map Address, a Google Maps embed of that address (centred on it, in
- * grey) over the authored image (kept as the fallback while it loads or if it can't), the
- * dealer's pin on the address and the pop-up above it (Map Pop-up Name + the address). The
- * embed is a still picture (it would otherwise take the wheel and stop the section snap):
- * the whole card opens the address in Google Maps instead.
- * @param {Element} block the register form
- * @param {{name: string, address: string}} map the authored map fields
- * @param {Function} createEl register-form.js's element helper
- * @param {Function} ph placeholder lookup
- */
+/** The embed is inert (it would take the wheel and stop section snap); the card opens Maps. */
 function buildMap(block, map, createEl, ph) {
   const media = block.querySelector(':scope > .media');
   const address = map?.address || '';
@@ -119,10 +81,6 @@ function buildMap(block, map, createEl, ph) {
   media.append(frame, pin, tip, open);
 }
 
-/**
- * @param {Element} block the register form
- * @param {object} ctx built by register-form.js
- */
 export default function decorateBooking(block, {
   form, fields, ph, createEl, setScreen, requestSent, map, setLeadExtras,
 }) {
@@ -132,7 +90,6 @@ export default function decorateBooking(block, {
 
   const actions = (...buttons) => createEl('div', { class: 'booking-actions' }, ...buttons);
 
-  // --- the details screen ---
   const fieldsScreen = form.querySelector('[data-screen="fields"]');
   const notice = block.querySelector('.content > .notice');
   fieldsScreen.prepend(createEl('h3', { class: 'booking-step-title' }, ph('registerFormBookingAbout', 'Tell us about you')));
@@ -145,11 +102,9 @@ export default function decorateBooking(block, {
   } else {
     fieldsScreen.append(fieldsActions);
   }
-  // the notice goes with the details the visitor gives, above the button
   if (notice) fieldsActions.before(notice);
 
-  // phones: the map card sits under the details, above Continue, as the mobile design orders
-  // them; desktop keeps it beside the form (first in the block, where register-form.js put it)
+  // phones: map card under the details, above Continue; desktop: first in the block, by the form
   const media = block.querySelector(':scope > .media');
   const onPhone = window.matchMedia('(width < 900px)');
   const placeMap = () => {
@@ -159,8 +114,7 @@ export default function decorateBooking(block, {
   if (media) {
     placeMap();
     onPhone.addEventListener('change', placeMap);
-    // squeezed below 90 design px (short screens, error lines) it hides and keeps its room,
-    // as in the design; 1 design px = the phone CSS's --rfb-u
+    // under 90 design px it hides but keeps its room; 1 design px = the phone CSS's --rfb-u
     const designPx = () => Math.max(
       0.8,
       Math.min(window.innerWidth / 375, window.innerHeight / 640, 1.6),
@@ -170,7 +124,7 @@ export default function decorateBooking(block, {
     }).observe(media);
   }
 
-  // --- the pop-ups: <dialog>s in the form, each holding one of its screens ---
+  // pop-ups are <dialog>s inside the form, so the screens keep the form's own handlers
   const modal = (screen, labelId) => {
     const dialog = createEl('dialog', { class: 'booking-modal', 'aria-labelledby': labelId });
     screen.after(dialog);
@@ -178,7 +132,6 @@ export default function decorateBooking(block, {
     return dialog;
   };
 
-  // OTP: "Verify your number", the code sent to …, the boxes, resend, Change number + Submit
   const otpScreen = form.querySelector('[data-screen="otp"]');
   const otpTitleId = `${block.id || 'register-form'}-otp-title`;
   const otpDialog = otpScreen ? modal(otpScreen, otpTitleId) : null;
@@ -205,7 +158,6 @@ export default function decorateBooking(block, {
     otpScreen.querySelector('.otp-box')?.setAttribute('autofocus', '');
   }
 
-  // Request sent: the authored title, the visitor's email, the rows, the status
   const successScreen = form.querySelector('[data-screen="success"]');
   const sentTitleId = `${block.id || 'register-form'}-sent-title`;
   const sentDialog = successScreen ? modal(successScreen, sentTitleId) : null;
@@ -240,7 +192,7 @@ export default function decorateBooking(block, {
       .flatMap(([term, value]) => [createEl('dt', {}, term), createEl('dd', {}, value)]));
   };
 
-  // open / close the pop-up of the screen the form is on (register-form.js sets data-screen)
+  // opens the pop-up for the form's current screen (register-form.js sets data-screen)
   const root = document.documentElement;
   const show = (dialog) => {
     if (dialog && !dialog.open) dialog.showModal();
@@ -268,7 +220,6 @@ export default function decorateBooking(block, {
   };
   new MutationObserver(sync).observe(block, { attributes: true, attributeFilter: ['data-screen'] });
 
-  // Done: the pop-up closes and the form starts over, empty
   const done = () => {
     ['firstname', 'lastname', 'email', 'pincode', 'mobile'].forEach((name) => {
       const el = fields[name];
@@ -298,7 +249,6 @@ export default function decorateBooking(block, {
     subsource: ph('registerFormBookingSubsource', LEAD_SOURCE.subsource),
   }));
 
-  // #quote / #test-drive: bring the form into view
   const fromHash = () => {
     if (!ANCHORS.includes(window.location.hash.slice(1))) return;
     block.scrollIntoView({ block: 'start' });
